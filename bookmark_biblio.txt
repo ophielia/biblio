@@ -1,7 +1,8 @@
 use case 1 - setup project
-need client table, repository, as well as selectkey and value
-setup git, checkin
+done - need client table, repository, as well as selectkey and value
+done - setup git, checkin
 add values to selectkey and value - type, status, detail status
+done - change type, status, language and detail status in book to long
 
 
 
