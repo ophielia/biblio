@@ -16,6 +16,7 @@ import javax.validation.ConstraintViolationException;
 import meg.biblio.catalog.db.BookRepository;
 import meg.biblio.catalog.db.dao.BookDao;
 import meg.biblio.catalog.db.dao.BookDaoDataOnDemand;
+import meg.biblio.catalog.db.dao.PublisherDaoDataOnDemand;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -26,6 +27,9 @@ privileged aspect BookDaoDataOnDemand_Roo_DataOnDemand {
     private Random BookDaoDataOnDemand.rnd = new SecureRandom();
     
     private List<BookDao> BookDaoDataOnDemand.data;
+    
+    @Autowired
+    PublisherDaoDataOnDemand BookDaoDataOnDemand.publisherDaoDataOnDemand;
     
     @Autowired
     BookRepository BookDaoDataOnDemand.bookRepository;
@@ -40,7 +44,6 @@ privileged aspect BookDaoDataOnDemand_Roo_DataOnDemand {
         setIsbn10(obj, index);
         setIsbn13(obj, index);
         setLanguage(obj, index);
-        setPublisherkey(obj, index);
         setPublishyear(obj, index);
         setShelfclass(obj, index);
         setShelfclassverified(obj, index);
@@ -88,11 +91,6 @@ privileged aspect BookDaoDataOnDemand_Roo_DataOnDemand {
     public void BookDaoDataOnDemand.setLanguage(BookDao obj, int index) {
         Long language = new Integer(index).longValue();
         obj.setLanguage(language);
-    }
-    
-    public void BookDaoDataOnDemand.setPublisherkey(BookDao obj, int index) {
-        Long publisherkey = new Integer(index).longValue();
-        obj.setPublisherkey(publisherkey);
     }
     
     public void BookDaoDataOnDemand.setPublishyear(BookDao obj, int index) {

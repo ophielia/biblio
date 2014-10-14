@@ -9,6 +9,7 @@ import java.util.List;
 import javax.persistence.JoinTable;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.OrderColumn;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -47,7 +48,9 @@ private List<ArtistDao> authors;
 	@OrderColumn(name="subjectorder")
 	private List<SubjectDao> subjects;
 
-private Long publisherkey;
+@OneToOne
+@JoinColumn(name="ID")
+private PublisherDao publisher;
 private Long publishyear;
 private String isbn10;
 private String isbn13;

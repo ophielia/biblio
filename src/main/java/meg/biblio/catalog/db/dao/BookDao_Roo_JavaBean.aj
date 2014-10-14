@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.List;
 import meg.biblio.catalog.db.dao.ArtistDao;
 import meg.biblio.catalog.db.dao.BookDao;
+import meg.biblio.catalog.db.dao.PublisherDao;
 import meg.biblio.catalog.db.dao.SubjectDao;
 
 privileged aspect BookDao_Roo_JavaBean {
@@ -51,12 +52,12 @@ privileged aspect BookDao_Roo_JavaBean {
         this.subjects = subjects;
     }
     
-    public Long BookDao.getPublisherkey() {
-        return this.publisherkey;
+    public PublisherDao BookDao.getPublisher() {
+        return this.publisher;
     }
     
-    public void BookDao.setPublisherkey(Long publisherkey) {
-        this.publisherkey = publisherkey;
+    public void BookDao.setPublisher(PublisherDao publisher) {
+        this.publisher = publisher;
     }
     
     public Long BookDao.getPublishyear() {

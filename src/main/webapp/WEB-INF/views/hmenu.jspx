@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page" 
+  xmlns:menu="urn:jsptagdir:/WEB-INF/tags/menu" 
+  xmlns:moo="urn:jsptagdir:/WEB-INF/tags/moo"   
+  xmlns:sec="http://www.springframework.org/security/tags" id="hmenu" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    
+<ul id="nav">
+	<li>Catalog</li>
+</ul>    
+   
+</div>
