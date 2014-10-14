@@ -3,13 +3,13 @@
 
 package meg.biblio.catalog.db.dao;
 
-import meg.biblio.catalog.db.dao.ArtistDao;
+import meg.biblio.catalog.db.dao.PublisherDao;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
-privileged aspect ArtistDao_Roo_ToString {
+privileged aspect PublisherDao_Roo_ToString {
     
-    public String ArtistDao.toString() {
+    public String PublisherDao.toString() {
         return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
     

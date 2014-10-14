@@ -4,7 +4,6 @@
 package meg.biblio.catalog.db.dao;
 
 import meg.biblio.catalog.db.dao.ArtistDaoDataOnDemand;
-
 import org.springframework.beans.factory.annotation.Configurable;
 
 privileged aspect ArtistDaoDataOnDemand_Roo_Configurable {

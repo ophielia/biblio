@@ -5,15 +5,11 @@ package meg.biblio.catalog.db.dao;
 
 import java.util.Iterator;
 import java.util.List;
-
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
-
 import meg.biblio.catalog.db.FoundDetailsRepository;
-import meg.biblio.catalog.db.dao.FoundDetailsDao;
 import meg.biblio.catalog.db.dao.FoundDetailsDaoDataOnDemand;
 import meg.biblio.catalog.db.dao.FoundDetailsDaoIntegrationTest;
-
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -9,34 +9,34 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Version;
-import meg.biblio.catalog.db.dao.FoundDetailsDao;
+import meg.biblio.catalog.db.dao.PublisherDao;
 
-privileged aspect FoundDetailsDao_Roo_Jpa_Entity {
+privileged aspect PublisherDao_Roo_Jpa_Entity {
     
-    declare @type: FoundDetailsDao: @Entity;
+    declare @type: PublisherDao: @Entity;
     
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
-    private Long FoundDetailsDao.id;
+    private Long PublisherDao.id;
     
     @Version
     @Column(name = "version")
-    private Integer FoundDetailsDao.version;
+    private Integer PublisherDao.version;
     
-    public Long FoundDetailsDao.getId() {
+    public Long PublisherDao.getId() {
         return this.id;
     }
     
-    public void FoundDetailsDao.setId(Long id) {
+    public void PublisherDao.setId(Long id) {
         this.id = id;
     }
     
-    public Integer FoundDetailsDao.getVersion() {
+    public Integer PublisherDao.getVersion() {
         return this.version;
     }
     
-    public void FoundDetailsDao.setVersion(Integer version) {
+    public void PublisherDao.setVersion(Integer version) {
         this.version = version;
     }
     

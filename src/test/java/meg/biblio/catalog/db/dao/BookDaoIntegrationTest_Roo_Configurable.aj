@@ -4,7 +4,6 @@
 package meg.biblio.catalog.db.dao;
 
 import meg.biblio.catalog.db.dao.BookDaoIntegrationTest;
-
 import org.springframework.beans.factory.annotation.Configurable;
 
 privileged aspect BookDaoIntegrationTest_Roo_Configurable {

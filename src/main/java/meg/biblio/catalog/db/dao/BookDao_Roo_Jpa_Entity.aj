@@ -9,7 +9,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Version;
-
 import meg.biblio.catalog.db.dao.BookDao;
 
 privileged aspect BookDao_Roo_Jpa_Entity {

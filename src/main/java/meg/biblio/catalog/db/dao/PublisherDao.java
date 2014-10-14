@@ -1,7 +1,4 @@
-package meg.biblio.common.db.dao;
-import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
-
+package meg.biblio.catalog.db.dao;
 import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.jpa.entity.RooJpaEntity;
 import org.springframework.roo.addon.tostring.RooToString;
@@ -9,9 +6,5 @@ import org.springframework.roo.addon.tostring.RooToString;
 @RooJavaBean
 @RooToString
 @RooJpaEntity
-@Table(name="client")
-public class ClientDao {
-	
-	@NotNull
-	private String name;
+public class PublisherDao {
 }

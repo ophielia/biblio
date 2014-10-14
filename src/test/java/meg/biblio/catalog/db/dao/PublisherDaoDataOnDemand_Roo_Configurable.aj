@@ -3,11 +3,11 @@
 
 package meg.biblio.catalog.db.dao;
 
-import meg.biblio.catalog.db.dao.ClassificationDaoDataOnDemand;
+import meg.biblio.catalog.db.dao.PublisherDaoDataOnDemand;
 import org.springframework.beans.factory.annotation.Configurable;
 
-privileged aspect ClassificationDaoDataOnDemand_Roo_Configurable {
+privileged aspect PublisherDaoDataOnDemand_Roo_Configurable {
     
-    declare @type: ClassificationDaoDataOnDemand: @Configurable;
+    declare @type: PublisherDaoDataOnDemand: @Configurable;
     
 }

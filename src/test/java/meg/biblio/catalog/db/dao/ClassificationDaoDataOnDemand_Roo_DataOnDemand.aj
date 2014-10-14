@@ -8,14 +8,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
-
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
-
 import meg.biblio.catalog.db.ClassificationRepository;
 import meg.biblio.catalog.db.dao.ClassificationDao;
 import meg.biblio.catalog.db.dao.ClassificationDaoDataOnDemand;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

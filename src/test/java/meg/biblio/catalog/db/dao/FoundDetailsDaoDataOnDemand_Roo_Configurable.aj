@@ -4,7 +4,6 @@
 package meg.biblio.catalog.db.dao;
 
 import meg.biblio.catalog.db.dao.FoundDetailsDaoDataOnDemand;
-
 import org.springframework.beans.factory.annotation.Configurable;
 
 privileged aspect FoundDetailsDaoDataOnDemand_Roo_Configurable {

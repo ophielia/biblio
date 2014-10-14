@@ -5,7 +5,6 @@ package meg.biblio.catalog.db.dao;
 
 import java.util.Date;
 import java.util.List;
-
 import meg.biblio.catalog.db.dao.ArtistDao;
 import meg.biblio.catalog.db.dao.BookDao;
 import meg.biblio.catalog.db.dao.SubjectDao;

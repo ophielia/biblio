@@ -1,6 +1,7 @@
 package meg.biblio.common.db.dao;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -11,6 +12,7 @@ import org.springframework.roo.addon.tostring.RooToString;
 @RooJavaBean
 @RooToString
 @RooJpaEntity
+@Table(name="select_value")
 public class SelectValueDao {
 	
 	@NotNull
