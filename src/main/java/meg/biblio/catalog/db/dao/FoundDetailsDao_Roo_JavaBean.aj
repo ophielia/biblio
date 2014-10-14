@@ -7,6 +7,14 @@ import meg.biblio.catalog.db.dao.FoundDetailsDao;
 
 privileged aspect FoundDetailsDao_Roo_JavaBean {
     
+    public Long FoundDetailsDao.getBookid() {
+        return this.bookid;
+    }
+    
+    public void FoundDetailsDao.setBookid(Long bookid) {
+        this.bookid = bookid;
+    }
+    
     public String FoundDetailsDao.getTitle() {
         return this.title;
     }

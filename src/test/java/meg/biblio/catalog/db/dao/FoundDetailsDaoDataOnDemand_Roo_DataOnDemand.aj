@@ -30,6 +30,7 @@ privileged aspect FoundDetailsDaoDataOnDemand_Roo_DataOnDemand {
     public FoundDetailsDao FoundDetailsDaoDataOnDemand.getNewTransientFoundDetailsDao(int index) {
         FoundDetailsDao obj = new FoundDetailsDao();
         setAuthors(obj, index);
+        setBookid(obj, index);
         setDescription(obj, index);
         setIllustrators(obj, index);
         setIsbn10(obj, index);
@@ -45,6 +46,11 @@ privileged aspect FoundDetailsDaoDataOnDemand_Roo_DataOnDemand {
     public void FoundDetailsDaoDataOnDemand.setAuthors(FoundDetailsDao obj, int index) {
         String authors = "authors_" + index;
         obj.setAuthors(authors);
+    }
+    
+    public void FoundDetailsDaoDataOnDemand.setBookid(FoundDetailsDao obj, int index) {
+        Long bookid = new Integer(index).longValue();
+        obj.setBookid(bookid);
     }
     
     public void FoundDetailsDaoDataOnDemand.setDescription(FoundDetailsDao obj, int index) {

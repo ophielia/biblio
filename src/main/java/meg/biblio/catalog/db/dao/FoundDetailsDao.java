@@ -11,6 +11,7 @@ import org.springframework.roo.addon.tostring.RooToString;
 @Table(name="found_details")
 public class FoundDetailsDao {
 	
+	private Long bookid;
 	private String title;
 	private String authors;
 	private String illustrators;
