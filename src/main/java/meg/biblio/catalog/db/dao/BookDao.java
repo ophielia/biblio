@@ -6,6 +6,8 @@ import org.springframework.roo.addon.tostring.RooToString;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
+import javax.persistence.FetchType;
 import javax.persistence.JoinTable;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
@@ -24,7 +26,7 @@ private Long clientid;
 @NotNull
 private String title;
 
-@ManyToMany
+@ManyToMany(cascade = CascadeType.ALL, fetch=FetchType.EAGER)
 @JoinTable(
     name="BOOK_AUTHOR",
     joinColumns=@JoinColumn(name="book_id", referencedColumnName="id"),
@@ -32,7 +34,7 @@ private String title;
 @OrderColumn(name="authororder")
 private List<ArtistDao> authors;
 
-@ManyToMany
+@ManyToMany(cascade = CascadeType.ALL, fetch=FetchType.EAGER)
 @JoinTable(
 	    name="BOOK_ILLUSTRATOR",
 	    joinColumns=@JoinColumn(name="book_id", referencedColumnName="id"),
@@ -40,7 +42,7 @@ private List<ArtistDao> authors;
 	@OrderColumn(name="illustorder")
 	private List<ArtistDao> illustrators;
 
-@ManyToMany
+@ManyToMany(cascade = CascadeType.ALL, fetch=FetchType.EAGER)
 @JoinTable(
 	    name="BOOK_SUBJECT",
 	    joinColumns=@JoinColumn(name="book_id", referencedColumnName="id"),

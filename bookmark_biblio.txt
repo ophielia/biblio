@@ -1,38 +1,36 @@
 Use Case 14	     Add single book
 add book, display book, simple (temporary) booklist of titles to display.
 
-make structure - stubs for
-done - controller
-done - jsps
-done - service
-done - validator
-done - clientservice
-
-done - create test for service calls
-done - make it green
 implement validator
-
-fill in create jsp
-fill in display jsp
-
 controller test
-
-filling out - book list (just temp - very simple)
-
-
 add processing to locationstatus...., and unknown to booktype
-findOrCreateArtist - to reuse names in db
+
+done - fill in create jsp
+done - fill in display jsp
+done - filling out - book list (just temp - very simple)
+not now - usecase 16.5 findOrCreateArtist - to reuse names in db
+not now - usecase 16.5 artist name handling in general not done - needs handling in CS
+
 
 
 ---- begin commit changes ----
 
 
-
-	
 ---- end commit changes ----
+
+
 
 ----- begin branch changes ----
 
+
+done - make structure - stubs for
+done - controller
+done - jsps
+done - service
+done - validator
+done - clientservice
+done - create test for service calls
+done - make it green
 
 ---- end branch changes ----
 

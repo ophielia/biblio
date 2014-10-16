@@ -5,4 +5,11 @@
         <put-attribute name="body" value="/WEB-INF/views/book/create.jspx"/>
     </definition>
 
+    <definition extends="default" name="book/show">
+        <put-attribute name="body" value="/WEB-INF/views/book/show.jspx"/>
+    </definition>
+    
+    <definition extends="default" name="book/list">
+        <put-attribute name="body" value="/WEB-INF/views/book/list.jspx"/>
+    </definition>
 </tiles-definitions>

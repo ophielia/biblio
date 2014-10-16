@@ -271,6 +271,22 @@ public class BookModel  implements Serializable {
 		
 	}
 
+	public ArtistDao getMainAuthor() {
+		if (getAuthors()!=null && getAuthors().size()>0) {
+			ArtistDao author = getAuthors().get(0);
+			return author;
+		}
+		return new ArtistDao();
+	}
+	
+	public ArtistDao getMainIllustrator() {
+		if (getIllustrators()!=null && getIllustrators().size()>0) {
+			ArtistDao illus = getIllustrators().get(0);
+			return illus;
+		}
+		return new ArtistDao();
+	}
+	
 	public void processIllustratorEntry() {
 		// create ArtistDao
 		ArtistDao artist = new ArtistDao();

@@ -1,7 +1,9 @@
 package meg.biblio.catalog;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import meg.biblio.catalog.db.ArtistRepository;
 import meg.biblio.catalog.db.BookRepository;
 import meg.biblio.catalog.db.dao.ArtistDao;
 import meg.biblio.catalog.db.dao.BookDao;
@@ -10,14 +12,19 @@ import meg.biblio.catalog.web.model.BookModel;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 
 @Service
+@Transactional
 public class CatalogServiceImpl implements CatalogService {
 
 	@Autowired
 	BookRepository bookRepo;
+	
+	@Autowired
+	ArtistRepository artistRepo;
 	
 	
 	public  final class LocationStatus {
@@ -62,6 +69,15 @@ public class CatalogServiceImpl implements CatalogService {
 		book.setStatus(LocationStatus.PROCESSING);
 		book.setDetailstatus(DetailStatus.NODETAIL);
 		book.setType(BookType.UNKNOWN);
+		/*
+		// save authors
+		List<ArtistDao> authors = new ArrayList<ArtistDao>();
+		for (ArtistDao author:book.getAuthors()) {
+			ArtistDao newauthor = artistRepo.save(author);
+			authors.add(newauthor);
+		}
+		book.setAuthors(authors);
+		*/
 		
 		// persist book
 		BookDao saved = bookRepo.save(book);
@@ -83,10 +99,10 @@ public class CatalogServiceImpl implements CatalogService {
 			// get authors, subjects and illustrators
 			List<ArtistDao> authors = book.getAuthors();
 			book.setAuthors(authors);
-			List<ArtistDao> illustrators = book.getAuthors();
+			List<ArtistDao> illustrators = book.getIllustrators();
 			book.setIllustrators(illustrators);
 			List<SubjectDao> subjects= book.getSubjects();
-			book.setIllustrators(illustrators);			
+			book.setSubjects(subjects);			
 
 			// set book in model
 			BookModel model = new BookModel(book);
@@ -97,6 +113,15 @@ public class CatalogServiceImpl implements CatalogService {
 		}
 		// return model
 		return new BookModel();
+	}
+
+	
+	/**
+	 * Convenience method for testing/devpt.  Final will be done through SearchService.
+	 */
+	@Override
+	public List<BookDao> getAllBooks() {
+		return bookRepo.findAll();
 	}
 
 	
