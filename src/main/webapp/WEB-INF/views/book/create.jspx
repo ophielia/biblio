@@ -25,7 +25,8 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 
 <form:form action="${actionurl}" id="createbook" method="POST" modelAttribute="bookModel">
 <div>
-${ltitle}: <br /><form:input path="title" type="text" ></form:input><br />
+
+${ltitle}:<form:errors id="title_errors" class="errors" path="title" /> <br /><form:input path="title" type="text" ></form:input><br />
 </div>
 <div>
 ${lauthor}: <form:input path="aFname" type="text" ></form:input> <form:input path="aMname" type="text" ></form:input> <form:input path="aLname" type="text" ></form:input> <br />

@@ -1,20 +1,30 @@
 Use Case 14	     Add single book
 add book, display book, simple (temporary) booklist of titles to display.
 
-implement validator
-controller test
-add processing to locationstatus...., and unknown to booktype
+make a real query!
+make actual logic - single found, multiple found, none found
+make method to copy into founddetails
+make method to copy into bookdao
 
-done - fill in create jsp
-done - fill in display jsp
-done - filling out - book list (just temp - very simple)
-not now - usecase 16.5 findOrCreateArtist - to reuse names in db
-not now - usecase 16.5 artist name handling in general not done - needs handling in CS
+complete CS copyDetailsIntoFoundRecords - remember illustrators
+implement copyCompleteDetailsIntoBook
+
+---> industry identifiers
+
+
+name convenience method in author
+add detailstatus to db - detail found
 
 
 
 ---- begin commit changes ----
 
+done - fill in create jsp
+done - fill in display jsp
+done - filling out - book list (just temp - very simple)
+done - implement validator
+done - controller test
+done - add processing to locationstatus...., and unknown to booktype
 
 ---- end commit changes ----
 
@@ -48,6 +58,9 @@ done - change type, status, language and detail status in book to long
 ******* LATER DEVPT ******
 
 bookstatus - processing - after book bought, but before it's shelved (waiting for cover, for example).  Screen to enter when shelved??
+not now - usecase 16.5 findOrCreateArtist - to reuse names in db
+not now - usecase 16.5 artist name handling in general not done - needs handling in CS
+puzzle - how to insert a validator into controller test - basically, just do a different test to test Validator.  Stand alone test.
 
 ******* NOTES ******
 

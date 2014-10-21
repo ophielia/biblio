@@ -22,5 +22,6 @@ public class FoundDetailsDao {
 	private String isbn13;
 	private String language;
 	private String type;
+	private String searchserviceid;
 	
 }

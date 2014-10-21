@@ -38,6 +38,7 @@ privileged aspect FoundDetailsDaoDataOnDemand_Roo_DataOnDemand {
         setLanguage(obj, index);
         setPublisher(obj, index);
         setPublishyear(obj, index);
+        setSearchserviceid(obj, index);
         setTitle(obj, index);
         setType(obj, index);
         return obj;
@@ -86,6 +87,11 @@ privileged aspect FoundDetailsDaoDataOnDemand_Roo_DataOnDemand {
     public void FoundDetailsDaoDataOnDemand.setPublishyear(FoundDetailsDao obj, int index) {
         Long publishyear = new Integer(index).longValue();
         obj.setPublishyear(publishyear);
+    }
+    
+    public void FoundDetailsDaoDataOnDemand.setSearchserviceid(FoundDetailsDao obj, int index) {
+        String searchserviceid = "searchserviceid_" + index;
+        obj.setSearchserviceid(searchserviceid);
     }
     
     public void FoundDetailsDaoDataOnDemand.setTitle(FoundDetailsDao obj, int index) {

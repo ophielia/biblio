@@ -1,10 +1,13 @@
 package meg.biblio.catalog;
 
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.List;
 
 import meg.biblio.catalog.db.dao.ArtistDao;
 import meg.biblio.catalog.db.dao.BookDao;
+import meg.biblio.catalog.db.dao.FoundDetailsDao;
 import meg.biblio.catalog.web.model.BookModel;
 
 import org.junit.Assert;
@@ -83,5 +86,11 @@ public class CatalogServiceTest {
 		Assert.assertNotNull(result.getAuthors());
 		Assert.assertNotNull(result.getIllustrators());
 	}	
+	
+	@Test
+	public void testGetDetailsSingle() throws GeneralSecurityException, IOException {
+		catalogService.fillInDetailsForSingleBook(1L);
+		
+	}
 
 }

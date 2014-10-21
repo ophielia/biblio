@@ -95,4 +95,12 @@ privileged aspect FoundDetailsDao_Roo_JavaBean {
         this.type = type;
     }
     
+    public String FoundDetailsDao.getSearchserviceid() {
+        return this.searchserviceid;
+    }
+    
+    public void FoundDetailsDao.setSearchserviceid(String searchserviceid) {
+        this.searchserviceid = searchserviceid;
+    }
+    
 }

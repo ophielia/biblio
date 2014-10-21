@@ -15,6 +15,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.OrderColumn;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @RooJavaBean
 @RooToString
@@ -23,7 +24,9 @@ import javax.validation.constraints.NotNull;
 public class BookDao {
 
 private Long clientid;
+
 @NotNull
+@Size(min=1,message="field_required")
 private String title;
 
 @ManyToMany(cascade = CascadeType.ALL, fetch=FetchType.EAGER)

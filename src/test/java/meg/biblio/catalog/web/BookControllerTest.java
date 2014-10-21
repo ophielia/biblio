@@ -1,32 +1,15 @@
 package meg.biblio.catalog.web;
 
 
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-
-import javax.annotation.Resource;
-import javax.sql.DataSource;
-
-
-
-
-
-
-
-
-
-
 
 import meg.biblio.catalog.CatalogService;
 import meg.biblio.catalog.db.dao.ArtistDao;
@@ -44,36 +27,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.ui.ExtendedModelMap;
-import org.springframework.ui.Model;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-import junit.framework.Assert;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
@@ -86,7 +45,7 @@ public class BookControllerTest {
 	@Mock
 	ClientService clientService;	
 
-	@Mock
+	@Autowired
 	BookModelValidator bookValidator;
 	
 	
@@ -135,7 +94,7 @@ public class BookControllerTest {
     	BookModel returnmodel = new BookModel(book);
 
     	when(bookService.getAllBooks()).thenReturn(new ArrayList<BookDao>());
-    	when(bookService.createCatalogEntryFromBookModel(1L,returnmodel)).thenReturn(returnmodel);
+    	when(bookService.createCatalogEntryFromBookModel(any(Long.class),any(BookModel.class))).thenReturn(returnmodel);
     	when(clientService.getCurrentClientKey()).thenReturn(1L);
 
         this.mockMvc.perform(post("/books")
@@ -150,5 +109,29 @@ public class BookControllerTest {
 
     }
 
-   
+
+    @Test
+    public void getDisplayModel() throws Exception {
+    	BookDaoDataOnDemand cdod = new BookDaoDataOnDemand();
+    	ArtistDaoDataOnDemand adod = new ArtistDaoDataOnDemand();
+    	BookDao book = cdod.getNewTransientBookDao(0);
+    	ArtistDao artist = adod.getNewTransientArtistDao(0);
+    	book.setId(2222L);
+    	List<ArtistDao> authors = new ArrayList<ArtistDao>();
+    	authors.add(artist);
+    	book.setAuthors(authors);
+    	BookModel returnmodel = new BookModel(book);
+    	
+    	when(bookService.getAllBooks()).thenReturn(new ArrayList<BookDao>());
+    	when(bookService.loadBookModel(any(Long.class))).thenReturn(returnmodel);
+    	
+        this.mockMvc.perform(get("/books/display/{id}",22222L)
+        		.accept(MediaType.TEXT_HTML)
+        		.param("form","form")
+        		.header("content-type", "application/x-www-form-urlencoded"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("book/show"));
+
+
+    }    
 }
