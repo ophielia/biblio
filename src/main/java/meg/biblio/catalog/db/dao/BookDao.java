@@ -53,13 +53,13 @@ private List<ArtistDao> authors;
 	@OrderColumn(name="subjectorder")
 	private List<SubjectDao> subjects;
 
-@OneToOne
+@OneToOne(cascade = CascadeType.ALL, fetch=FetchType.EAGER)
 @JoinColumn(name="ID")
 private PublisherDao publisher;
 private Long publishyear;
 private String isbn10;
 private String isbn13;
-private Long language;
+private String language;
 private Long type;
 private String description;
 private Long status;

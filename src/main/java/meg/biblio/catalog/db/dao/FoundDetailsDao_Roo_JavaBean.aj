@@ -95,6 +95,14 @@ privileged aspect FoundDetailsDao_Roo_JavaBean {
         this.type = type;
     }
     
+    public String FoundDetailsDao.getImagelink() {
+        return this.imagelink;
+    }
+    
+    public void FoundDetailsDao.setImagelink(String imagelink) {
+        this.imagelink = imagelink;
+    }
+    
     public String FoundDetailsDao.getSearchserviceid() {
         return this.searchserviceid;
     }

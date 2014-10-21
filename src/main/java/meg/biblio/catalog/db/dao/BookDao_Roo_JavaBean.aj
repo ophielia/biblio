@@ -84,11 +84,11 @@ privileged aspect BookDao_Roo_JavaBean {
         this.isbn13 = isbn13;
     }
     
-    public Long BookDao.getLanguage() {
+    public String BookDao.getLanguage() {
         return this.language;
     }
     
-    public void BookDao.setLanguage(Long language) {
+    public void BookDao.setLanguage(String language) {
         this.language = language;
     }
     

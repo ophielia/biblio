@@ -1,19 +1,24 @@
-Use Case 14	     Add single book
-add book, display book, simple (temporary) booklist of titles to display.
+Use Case 14     Add single book
+	add book, display book, simple (temporary) booklist of titles to display.
+Use Case 15		Get info for single book
+Use Case 16.5	single text name to first, middle, last - comparison to db
 
-make a real query!
-make actual logic - single found, multiple found, none found
-make method to copy into founddetails
-make method to copy into bookdao
 
+
+
+
+
+---->  implement findSubjectForString - CS
+
+test copyCompleteDetailsIntoBook - make it green
+finish search logic - if nothing found, search what??
+elaborate query with publisher if necessary, illustrator
 complete CS copyDetailsIntoFoundRecords - remember illustrators
-implement copyCompleteDetailsIntoBook
-
----> industry identifiers
 
 
-name convenience method in author
-add detailstatus to db - detail found
+done - implement findPublisherForName - CS
+
+
 
 
 
@@ -25,6 +30,21 @@ done - filling out - book list (just temp - very simple)
 done - implement validator
 done - controller test
 done - add processing to locationstatus...., and unknown to booktype
+done - make method to copy into founddetails
+done - make method to copy into bookdao
+done - make a real query!
+done -  make actual logic - single found, multiple found, none found
+done - industry identifiers
+done -  test searchService findAuthor method
+done - implement copyCompleteDetailsIntoBook
+done - add "old" entries in testCopyDetailsAuthor
+done - test copyAuthorsIntoBook method CS
+done - name convenience method in author
+done - add detailstatus to db - detail found
+done - add preview links to founddetails
+done - open - illustrator handling
+done - repository - find Publisher by name 
+done - fill out test for copyAuthors to test for more cases
 
 ---- end commit changes ----
 

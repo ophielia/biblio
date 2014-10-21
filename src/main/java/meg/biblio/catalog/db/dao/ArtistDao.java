@@ -15,4 +15,16 @@ public class ArtistDao {
 	private String firstname;
 	private String middlename;
 	
+	
+	public boolean hasFirstname() {
+		return firstname!=null && firstname.length()>0;
+	}
+	
+	public boolean hasMiddlename() {
+		return middlename!=null && middlename.length()>0;
+	}
+	
+	public boolean hasLastname() {
+		return lastname!=null && lastname.length()>0;
+	}	
 }

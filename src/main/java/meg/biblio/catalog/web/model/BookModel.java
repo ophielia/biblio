@@ -133,7 +133,7 @@ public class BookModel  implements Serializable {
 		this.book.setIsbn13(isbn13);
 	}
 
-	public void setLanguage(Long language) {
+	public void setLanguage(String language) {
 		this.book.setLanguage(language);
 	}
 
@@ -209,7 +209,7 @@ public class BookModel  implements Serializable {
 		return book.getIsbn13();
 	}
 
-	public Long getLanguage() {
+	public String getLanguage() {
 		return book.getLanguage();
 	}
 

@@ -10,4 +10,5 @@ import org.springframework.roo.addon.tostring.RooToString;
 @RooJpaEntity
 @Table(name="publisher")
 public class PublisherDao {
+	public String name;
 }

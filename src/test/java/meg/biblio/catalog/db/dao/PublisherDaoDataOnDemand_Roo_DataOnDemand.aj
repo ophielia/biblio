@@ -29,7 +29,13 @@ privileged aspect PublisherDaoDataOnDemand_Roo_DataOnDemand {
     
     public PublisherDao PublisherDaoDataOnDemand.getNewTransientPublisherDao(int index) {
         PublisherDao obj = new PublisherDao();
+        setName(obj, index);
         return obj;
+    }
+    
+    public void PublisherDaoDataOnDemand.setName(PublisherDao obj, int index) {
+        String name = "name_" + index;
+        obj.setName(name);
     }
     
     public PublisherDao PublisherDaoDataOnDemand.getSpecificPublisherDao(int index) {

@@ -89,7 +89,7 @@ privileged aspect BookDaoDataOnDemand_Roo_DataOnDemand {
     }
     
     public void BookDaoDataOnDemand.setLanguage(BookDao obj, int index) {
-        Long language = new Integer(index).longValue();
+        String language = "language_" + index;
         obj.setLanguage(language);
     }
     

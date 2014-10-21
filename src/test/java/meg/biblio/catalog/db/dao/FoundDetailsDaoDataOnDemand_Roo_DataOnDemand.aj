@@ -33,6 +33,7 @@ privileged aspect FoundDetailsDaoDataOnDemand_Roo_DataOnDemand {
         setBookid(obj, index);
         setDescription(obj, index);
         setIllustrators(obj, index);
+        setImagelink(obj, index);
         setIsbn10(obj, index);
         setIsbn13(obj, index);
         setLanguage(obj, index);
@@ -62,6 +63,11 @@ privileged aspect FoundDetailsDaoDataOnDemand_Roo_DataOnDemand {
     public void FoundDetailsDaoDataOnDemand.setIllustrators(FoundDetailsDao obj, int index) {
         String illustrators = "illustrators_" + index;
         obj.setIllustrators(illustrators);
+    }
+    
+    public void FoundDetailsDaoDataOnDemand.setImagelink(FoundDetailsDao obj, int index) {
+        String imagelink = "imagelink_" + index;
+        obj.setImagelink(imagelink);
     }
     
     public void FoundDetailsDaoDataOnDemand.setIsbn10(FoundDetailsDao obj, int index) {
