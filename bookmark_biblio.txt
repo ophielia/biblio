@@ -4,15 +4,9 @@ Use Case 15		Get info for single book
 Use Case 16.5	single text name to first, middle, last - comparison to db
 
 
-
-skip this - (concentrate on test of public method instead) test copyCompleteDetailsIntoBook - make it green
-finish search logic - if nothing found, search what??
-elaborate query with publisher if necessary, illustrator
-big test of fillInDetailsForSingleBook(Long id) - with mocks
-
-done - complete CS copyDetailsIntoFoundRecords - remember illustrators
-done - implement findPublisherForName - CS
-
+show full detail for book after insert
+revisit enter book - single line author, illustrator - fill in details afterwards
+page for assigning details...
 
 
 
@@ -20,6 +14,14 @@ done - implement findPublisherForName - CS
 ---- begin commit changes ----
 
 done - implement findSubjectForString - CS
+skip this - (concentrate on test of public method instead) test copyCompleteDetailsIntoBook - make it green
+done - finish search logic - if nothing found, search what??
+done - elaborate query with publisher if necessary, illustrator
+skip - big test of fillInDetailsForSingleBook(Long id) - with mocks
+done - complete CS copyDetailsIntoFoundRecords - remember illustrators
+done - implement findPublisherForName - CS
+
+
 
 ---- end commit changes ----
 
@@ -80,6 +82,7 @@ puzzle - how to insert a validator into controller test - basically, just do a d
 
 ******* NOTES ******
 
-1. Testing filling in books after import of details...
+1. Testing filling in books after import of details... Separate Google calls into their own
+   service, which then can be mocked - and isolated for the test.
 
 ******* USE CASE MASTER ******

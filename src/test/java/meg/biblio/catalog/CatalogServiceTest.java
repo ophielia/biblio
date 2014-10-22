@@ -366,7 +366,7 @@ public class CatalogServiceTest {
 		Assert.assertNotNull(model);
 		Assert.assertNull(model.getDescription());
 		Assert.assertNotNull(found);
-		Assert.assertEquals(10, found.size());
+		Assert.assertEquals(5, found.size());
 		Assert.assertEquals(CatalogServiceImpl.DetailStatus.MULTIDETAILSFOUND, model.getDetailstatus().longValue());
 	}
 	

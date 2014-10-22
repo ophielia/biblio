@@ -338,9 +338,15 @@ public class CatalogServiceImpl implements CatalogService {
 		PublisherDao publisher = findPublisherForName(info.getPublisher());
 		book.setDescription(info.getDescription());
 		book.setPublisher(publisher);
-		Long publishyear = info.getPublishedDate() != null ? new Long(
-				info.getPublishedDate()) : null;
-		book.setPublishyear(publishyear);
+		if (info.getPublishedDate() != null) {
+			String publishyearstr = info.getPublishedDate();
+			// handle full date
+			if (publishyearstr.contains("-")) {
+				// chop off after dash
+				publishyearstr = publishyearstr.substring(0,publishyearstr.indexOf("-"));
+			}
+			book.setPublishyear(new Long(publishyearstr));
+		}
 		book.setLanguage(info.getLanguage());
 
 		copyAuthorsIntoBook(book, info.getAuthors());
@@ -386,7 +392,7 @@ public class CatalogServiceImpl implements CatalogService {
 			if (info==null) {
 				continue;
 			}
-			if (processedcnt>maxdetails) {
+			if (processedcnt>=maxdetails) {
 				break;
 			}			
 			detail.setBookid(book.getId());
