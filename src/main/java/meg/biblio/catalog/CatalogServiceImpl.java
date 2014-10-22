@@ -11,6 +11,7 @@ import meg.biblio.catalog.db.ArtistRepository;
 import meg.biblio.catalog.db.BookRepository;
 import meg.biblio.catalog.db.FoundDetailsRepository;
 import meg.biblio.catalog.db.PublisherRepository;
+import meg.biblio.catalog.db.SubjectRepository;
 import meg.biblio.catalog.db.dao.ArtistDao;
 import meg.biblio.catalog.db.dao.BookDao;
 import meg.biblio.catalog.db.dao.FoundDetailsDao;
@@ -51,6 +52,10 @@ public class CatalogServiceImpl implements CatalogService {
 	@Autowired
 	PublisherRepository pubRepo;
 	
+
+	@Autowired
+	SubjectRepository subjectRepo;
+	
 	@Autowired
 	SearchService searchService;
 	
@@ -59,6 +64,9 @@ public class CatalogServiceImpl implements CatalogService {
 
 	@Value("${biblio.appname}")
 	private String appname;
+	
+	@Value("${biblio.google.maxdetails}")
+	private int maxdetails;
 
 	public final class LocationStatus {
 		public static final long CHECKEDOUT = 1;
@@ -164,6 +172,8 @@ public class CatalogServiceImpl implements CatalogService {
 			String title = book.getTitle().toLowerCase();
 			title = title.replace(" ", "+");
 			querybuild.append(title);
+			boolean remainingauthors=false;
+			// try with author first
 			if (book.getAuthors() != null && book.getAuthors().size() > 0) {
 				ArtistDao author = book.getAuthors().get(0);
 				String authname = author.getLastname();
@@ -175,7 +185,34 @@ public class CatalogServiceImpl implements CatalogService {
 					authname = authname.toLowerCase().replace(" ", "+");
 					querybuild.append("+inauthor:").append(authname);
 				}
+				remainingauthors = book.getAuthors().size()>1;
+			} // if no authors available, try with illustrators
+			else if (book.getIllustrators() != null && book.getIllustrators().size() > 0) {
+				ArtistDao author = book.getIllustrators().get(0);
+				String authname = author.getLastname();
+				if (authname == null) {
+					authname = author.getFirstname() != null ? author
+							.getFirstname() : author.getMiddlename();
+				}
+				if (authname != null) {
+					authname = authname.toLowerCase().replace(" ", "+");
+					querybuild.append("+inauthor:").append(authname);
+				}
+				remainingauthors |= book.getIllustrators().size()>1;
 			}
+			// if no authors or illustrators available, try with publisher
+			else if (book.getPublisher()!=null) {
+				PublisherDao publisher = book.getPublisher();
+				String pubname = publisher.getName();
+				if (pubname!=null) {
+					pubname=pubname.trim().toLowerCase();
+					pubname = pubname.toLowerCase().replace(" ", "+");
+					pubname=pubname + "+";
+					// pubname added as general key
+					querybuild.insert(0, pubname);
+				}
+			}
+			
 			String query = querybuild.toString();
 
 			// query google
@@ -191,7 +228,7 @@ public class CatalogServiceImpl implements CatalogService {
 
 			// can run query with other params if nothing is found - with
 			// publisher, or with illustrator
-
+			
 			// process results
 			List<FoundDetailsDao> details = null;
 			if (volumes.getTotalItems() == 0 || volumes.getItems() == null) {
@@ -220,7 +257,6 @@ public class CatalogServiceImpl implements CatalogService {
 
 			// save founddetails if available
 			foundRepo.save(details);
-
 		}
 
 	}
@@ -274,6 +310,17 @@ public class CatalogServiceImpl implements CatalogService {
 		return null;
 	}
 
+	
+	public List<FoundDetailsDao> getFoundDetailsForBook(Long id) {
+		if (id != null) {
+			// query db for founddetails
+			List<FoundDetailsDao> details = foundRepo.findDetailsForBook(id);
+			// return founddetails
+			return details;
+		}
+		return null;
+	}
+	
 	private Volumes singleQueryGoogle(Books books, String query)
 			throws IOException {
 		// do search
@@ -303,28 +350,25 @@ public class CatalogServiceImpl implements CatalogService {
 		while (iter.hasNext()) {
 			IndustryIdentifiers ident = iter.next();
 			String type = ident.getType() != null ? ident.getType() : "";
-			if (type.endsWith(" 10")) {
+			if (type.endsWith("_10")) {
 				book.setIsbn10(ident.getIdentifier());
-			} else if (type.endsWith(" 13")) {
+			} else if (type.endsWith("_13")) {
 				book.setIsbn13(ident.getIdentifier());
 			}
 		}
 		// file categories into subjects - if containing fiction, assign type
 		List<String> categories = info.getCategories();
-		List<SubjectDao> subjects = new ArrayList<SubjectDao>();
-		for (String category : categories) {
-			// clean it up
-			if (category.toLowerCase().contains("nonfiction")) {
-				book.setType(BookType.NONFICTION);
+		if (categories!=null) {
+			List<SubjectDao> subjects = new ArrayList<SubjectDao>();
+			for (String category : categories) {
+				// clean it up
+				if (category.toLowerCase().contains("nonfiction")) {
+					book.setType(BookType.NONFICTION);
+				} else if (category.toLowerCase().contains("fiction")) {
+					book.setType(BookType.FICTION);
+					
+				} 
 				SubjectDao subject = findSubjectForString(category);
-				subjects.add(subject);
-			} else if (category.toLowerCase().contains("fiction")) {
-				book.setType(BookType.FICTION);
-				SubjectDao subject = findSubjectForString(category);
-				subjects.add(subject);
-			} else {
-				SubjectDao subject = new SubjectDao();
-				subject.setListing(category);
 				subjects.add(subject);
 			}
 		}
@@ -334,23 +378,39 @@ public class CatalogServiceImpl implements CatalogService {
 	private List<FoundDetailsDao> copyDetailsIntoFoundRecords(
 			List<Volume> items, BookDao book) {
 		List<FoundDetailsDao> details = new ArrayList<FoundDetailsDao>();
+		int processedcnt = 0;
 		for (Volume found : items) {
 			FoundDetailsDao detail = new FoundDetailsDao();
 			VolumeInfo info = found.getVolumeInfo();
+			
+			if (info==null) {
+				continue;
+			}
+			if (processedcnt>maxdetails) {
+				break;
+			}			
 			detail.setBookid(book.getId());
 			detail.setTitle(info.getTitle());
 			detail.setPublisher(info.getPublisher());
-			Long publishyear = info.getPublishedDate() != null ? new Long(
-					info.getPublishedDate()) : null;
-			detail.setPublishyear(publishyear);
+			if (info.getPublishedDate() != null) {
+				String publishyearstr = info.getPublishedDate();
+				// handle full date
+				if (publishyearstr.contains("-")) {
+					// chop off after dash
+					publishyearstr = publishyearstr.substring(0,publishyearstr.indexOf("-"));
+				}
+				detail.setPublishyear(new Long(publishyearstr));
+			}
 			detail.setLanguage(info.getLanguage());
 			detail.setDescription(info.getDescription());
 			String imagelink = info.getImageLinks() != null ? info
 					.getImageLinks().getThumbnail() : null;
 			detail.setImagelink(imagelink);
 			StringBuilder authors = new StringBuilder();
-			for (String author : info.getAuthors()) {
-				authors.append(author).append(",");
+			if (info.getAuthors()!=null) {
+				for (String author : info.getAuthors()) {
+					authors.append(author).append(",");
+				}
 			}
 			if (authors.length() > 1) {
 				authors.setLength(authors.length() - 1);
@@ -361,13 +421,14 @@ public class CatalogServiceImpl implements CatalogService {
 			while (iter.hasNext()) {
 				IndustryIdentifiers ident = iter.next();
 				String type = ident.getType() != null ? ident.getType() : "";
-				if (type.endsWith(" 10")) {
+				if (type.endsWith("_10")) {
 					detail.setIsbn10(ident.getIdentifier());
-				} else if (type.endsWith(" 13")) {
+				} else if (type.endsWith("_13")) {
 					detail.setIsbn13(ident.getIdentifier());
 				}
 			}
 			details.add(detail);
+			processedcnt++;
 		}
 	
 		return details;
@@ -525,8 +586,22 @@ public class CatalogServiceImpl implements CatalogService {
 		return book;
 	}
 
-	private SubjectDao findSubjectForString(String text) {
-		// TODO Auto-generated method stub
+	public SubjectDao findSubjectForString(String text) {
+		if (text != null) {
+			// clean up text
+			text = text.trim();
+			// query db
+			List<SubjectDao> foundlist = subjectRepo.findSubjectByText(text
+					.toLowerCase());
+			if (foundlist != null && foundlist.size() > 0) {
+				return foundlist.get(0);
+			} else {
+				// if nothing found, make new PublisherDao
+				SubjectDao pub = new SubjectDao();
+				pub.setListing(text);
+				return pub;
+			}
+		}
 		return null;
 	}
 

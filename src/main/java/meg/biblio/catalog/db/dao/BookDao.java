@@ -7,9 +7,11 @@ import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.FetchType;
 import javax.persistence.JoinTable;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.OrderColumn;
@@ -61,6 +63,9 @@ private String isbn10;
 private String isbn13;
 private String language;
 private Long type;
+
+@Lob 
+@Column( length=2512)
 private String description;
 private Long status;
 private Long detailstatus;

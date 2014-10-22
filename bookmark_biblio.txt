@@ -5,17 +5,12 @@ Use Case 16.5	single text name to first, middle, last - comparison to db
 
 
 
-
-
-
----->  implement findSubjectForString - CS
-
-test copyCompleteDetailsIntoBook - make it green
+skip this - (concentrate on test of public method instead) test copyCompleteDetailsIntoBook - make it green
 finish search logic - if nothing found, search what??
 elaborate query with publisher if necessary, illustrator
-complete CS copyDetailsIntoFoundRecords - remember illustrators
+big test of fillInDetailsForSingleBook(Long id) - with mocks
 
-
+done - complete CS copyDetailsIntoFoundRecords - remember illustrators
 done - implement findPublisherForName - CS
 
 
@@ -24,6 +19,23 @@ done - implement findPublisherForName - CS
 
 ---- begin commit changes ----
 
+done - implement findSubjectForString - CS
+
+---- end commit changes ----
+
+
+
+----- begin branch changes ----
+
+
+done - make structure - stubs for
+done - controller
+done - jsps
+done - service
+done - validator
+done - clientservice
+done - create test for service calls
+done - make it green
 done - fill in create jsp
 done - fill in display jsp
 done - filling out - book list (just temp - very simple)
@@ -45,22 +57,6 @@ done - add preview links to founddetails
 done - open - illustrator handling
 done - repository - find Publisher by name 
 done - fill out test for copyAuthors to test for more cases
-
----- end commit changes ----
-
-
-
------ begin branch changes ----
-
-
-done - make structure - stubs for
-done - controller
-done - jsps
-done - service
-done - validator
-done - clientservice
-done - create test for service calls
-done - make it green
 
 ---- end branch changes ----
 
@@ -84,5 +80,6 @@ puzzle - how to insert a validator into controller test - basically, just do a d
 
 ******* NOTES ******
 
+1. Testing filling in books after import of details...
 
 ******* USE CASE MASTER ******

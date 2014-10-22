@@ -6,11 +6,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import meg.biblio.catalog.db.ArtistRepository;
+import meg.biblio.catalog.db.BookRepository;
 import meg.biblio.catalog.db.PublisherRepository;
+import meg.biblio.catalog.db.SubjectRepository;
 import meg.biblio.catalog.db.dao.ArtistDao;
 import meg.biblio.catalog.db.dao.BookDao;
 import meg.biblio.catalog.db.dao.FoundDetailsDao;
 import meg.biblio.catalog.db.dao.PublisherDao;
+import meg.biblio.catalog.db.dao.SubjectDao;
 import meg.biblio.catalog.web.model.BookModel;
 
 import org.junit.Assert;
@@ -32,9 +35,14 @@ public class CatalogServiceTest {
 	@Autowired
 	ArtistRepository artistRepo;
 
-
+	@Autowired
+	BookRepository bookRepo;
+	
 	@Autowired
 	PublisherRepository pubRepo;	
+	
+	@Autowired
+	SubjectRepository subjectRepo;		
 	
 	@Test
 	public void testCreateCatalogEntry() {
@@ -97,11 +105,7 @@ public class CatalogServiceTest {
 		Assert.assertNotNull(result.getIllustrators());
 	}
 
-	@Test
-	public void testGetDetailsSingle() throws GeneralSecurityException, IOException {
-		catalogService.fillInDetailsForSingleBook(1L);
 
-	}
 
 
 	@Test
@@ -317,4 +321,78 @@ public class CatalogServiceTest {
 		Assert.assertNull(testpub);
 		
 	}
+	
+	@Test 
+	public void testFindDetailsSingleBook() throws GeneralSecurityException, IOException {
+		// currently basically doing a blow up test, with peeking
+		// full test requires moving Google Search into it's own service (possible)
+		// and setting up Mock for this search.  Not ready to do that now.
+		
+		// create book
+		BookDao book = new BookDao();
+		book.setTitle("Les trois brigands");
+		ArtistDao author = catalogService.textToArtistName("Toni Ungerer");
+		List<ArtistDao> authors = new ArrayList<ArtistDao>();
+		authors.add(author);
+		book.setAuthors(authors);
+		book = bookRepo.save(book);
+		
+		// service call
+		catalogService.fillInDetailsForSingleBook(book.getId());
+		BookModel model = catalogService.loadBookModel(book.getId());
+		
+		// Assertions
+		Assert.assertNotNull(model);
+		Assert.assertNotNull(model.getDescription());
+		Assert.assertEquals(CatalogServiceImpl.DetailStatus.DETAILFOUND, model.getDetailstatus().longValue());
+		Assert.assertNotNull(model.getPublishyear());
+	}
+	
+	@Test 
+	public void testFindDetailsSingleBookFoundDetails() throws GeneralSecurityException, IOException {
+		// create book
+		BookDao book = new BookDao();
+		book.setTitle("corps HumAin");
+		PublisherDao publisher = catalogService.findPublisherForName("Fleurus");
+		book.setPublisher(publisher);
+		book = bookRepo.save(book);
+		
+		// service call
+		catalogService.fillInDetailsForSingleBook(book.getId());
+		BookModel model = catalogService.loadBookModel(book.getId());
+		List<FoundDetailsDao> found = catalogService.getFoundDetailsForBook(book.getId());
+		
+		// Assertions
+		Assert.assertNotNull(model);
+		Assert.assertNull(model.getDescription());
+		Assert.assertNotNull(found);
+		Assert.assertEquals(10, found.size());
+		Assert.assertEquals(CatalogServiceImpl.DetailStatus.MULTIDETAILSFOUND, model.getDetailstatus().longValue());
+	}
+	
+	@Test
+	public void testFindSubjectByString() {
+		// find publisher "newJonestest"
+		SubjectDao testpub = catalogService.findSubjectForString("newJonestest");
+		// should be new - no id
+		Assert.assertNotNull(testpub);
+		Assert.assertNull(testpub.getId());
+		// save publisher
+		SubjectDao resultpub = subjectRepo.saveAndFlush(testpub);
+		Long id = resultpub.getId();
+		
+		// find publisher "newJonestest"
+		testpub = catalogService.findSubjectForString("newJonestest");
+		// now, should have same id as previously
+		Assert.assertNotNull(testpub);
+		Assert.assertNotNull(testpub.getId());
+		Assert.assertEquals(id,testpub.getId());
+		
+		// find with null
+		testpub = catalogService.findSubjectForString(null);
+		// should be null
+		Assert.assertNull(testpub);
+		
+	}
+	
 }
