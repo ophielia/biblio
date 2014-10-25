@@ -212,14 +212,6 @@ public class CatalogServiceImpl implements CatalogService {
 			// set book in model
 			BookModel model = new BookModel(book);
 
-			// set display hashes in model
-
-
-			HashMap<Long,String> booktypedisps = keyService.getDisplayHashForKey(booktypelkup,"en" );
-			HashMap<Long,String> bookstatusdisps = keyService.getDisplayHashForKey(bookstatuslkup,"en" );
-			HashMap<Long,String> detailstatusdisps = keyService.getDisplayHashForKey(detailstatuslkup,"en" );
-			
-			model.setDisplayInfo(booktypedisps, bookstatusdisps,detailstatusdisps);
 			
 			// return model
 			return model;
@@ -229,6 +221,14 @@ public class CatalogServiceImpl implements CatalogService {
 		return new BookModel();
 	}
 
+	public void setDisplayInfoForLanguage(String lang,BookModel model) {
+		// set display hashes in model
+		HashMap<Long,String> booktypedisps = keyService.getDisplayHashForKey(booktypelkup,lang );
+		HashMap<Long,String> bookstatusdisps = keyService.getDisplayHashForKey(bookstatuslkup,lang);
+		HashMap<Long,String> detailstatusdisps = keyService.getDisplayHashForKey(detailstatuslkup,lang );
+		
+		model.setDisplayInfo(booktypedisps, bookstatusdisps,detailstatusdisps);
+	}
 	public void fillInDetailsForSingleBook(Long id)
 			throws GeneralSecurityException, IOException {
 		JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
@@ -570,7 +570,7 @@ public class CatalogServiceImpl implements CatalogService {
 		return details;
 	}
 
-	public BookDao copyAuthorsIntoBook(BookDao book, List<String> foundauthors) {
+	private BookDao copyAuthorsIntoBook(BookDao book, List<String> foundauthors) {
 		if (foundauthors != null && book != null) {
 			HashMap<Long, ArtistDao> bookauthors = new HashMap<Long, ArtistDao>();
 			HashMap<Long, ArtistDao> bookillustrators = new HashMap<Long, ArtistDao>();
@@ -722,7 +722,7 @@ public class CatalogServiceImpl implements CatalogService {
 		return book;
 	}
 
-	public SubjectDao findSubjectForString(String text) {
+	private SubjectDao findSubjectForString(String text) {
 		if (text != null) {
 			// clean up text
 			text = text.trim();
@@ -745,7 +745,7 @@ public class CatalogServiceImpl implements CatalogService {
 
 
 
-	public PublisherDao findPublisherForName(String text) {
+	private PublisherDao findPublisherForName(String text) {
 		if (text != null) {
 			// clean up text
 			text = text.trim();

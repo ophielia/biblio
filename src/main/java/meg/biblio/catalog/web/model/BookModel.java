@@ -208,10 +208,10 @@ public class BookModel  implements Serializable {
 	}
 	
 	public String getBooktypeDisp() {
-		if (book.getType()!=null && booktypedisps.containsKey(book.getType())) {
+		if (book.getType()!=null && booktypedisps !=null &&booktypedisps.containsKey(book.getType())) {
 			return booktypedisps.get(book.getType());
 		}
-		return null;
+		return book.getType()+"";
 	}	
 
 	public String getDescription() {
@@ -223,10 +223,10 @@ public class BookModel  implements Serializable {
 	}
 
 	public String getStatusDisp() {
-		if (book.getStatus()!=null && bookstatusdisps.containsKey(book.getStatus())) {
+		if (book.getStatus()!=null && bookstatusdisps!=null && bookstatusdisps.containsKey(book.getStatus())) {
 			return bookstatusdisps.get(book.getStatus());
 		}
-		return null;
+		return book.getStatus()+"";
 	}
 	
 	public Long getDetailstatus() {
@@ -234,10 +234,10 @@ public class BookModel  implements Serializable {
 	}
 
 	public String getDetailstatusDisp() {
-		if (book.getDetailstatus()!=null && detailstatusdisps.containsKey(book.getDetailstatus())) {
+		if (book.getDetailstatus()!=null && detailstatusdisps!=null && detailstatusdisps.containsKey(book.getDetailstatus())) {
 			return detailstatusdisps.get(book.getDetailstatus());
 		}
-		return null;
+		return book.getDetailstatus() + "";
 	}
 		
 	public Long getShelfclass() {

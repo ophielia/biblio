@@ -71,6 +71,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 
 <spring:message code="button_save" htmlEscape="false" var="bsave"/>
 <spring:message code="button_cancel" htmlEscape="false" var="bcancel"/>
+<spring:message code="button_assign" htmlEscape="false" var="bassign"/>
 <spring:message code="entity_show" arguments="${lbook}" htmlEscape="false" var="pagetitle"/>
 
 
@@ -93,12 +94,12 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <table>
 <thead>
 <tr>
-<td>image</td>
-<td>title</td>
-<td>author</td>
-<td>publisher / <br /> published</td>
-<td>description</td>
-<td>description</td>
+<td></td>
+<td>${ltitle}</td>
+<td>${lauthor}</td>
+<td>${lpublisher} / <br /> ${lpublisher}</td>
+<td>${ldescription}</td>
+<td></td>
 </tr>
 </thead>
 <tbody>
@@ -110,7 +111,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <td>${detail.authors}</td>
 <td>${detail.publisher}<br />${detail.publishyear}</td>
 <td>${detail.description}</td>
-<td><a href="#" id="assign${detail.id}" >Assign</a></td>
+<td><a href="#" id="assign${detail.id}" >${bassign}</a></td>
 </tr>
 </c:forEach>
 

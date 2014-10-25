@@ -27,6 +27,8 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <spring:message code="label_book_classification" htmlEscape="false" var="lclassification"/>
 <spring:message code="label_book_classificationverified" htmlEscape="false" var="lclassverif"/>
 <spring:message code="label_book_bookid" htmlEscape="false" var="lclientbookid"/>
+<spring:message code="label_book_verified" htmlEscape="false" var="lvfd"/>
+<spring:message code="label_book_notverified" htmlEscape="false" var="lnvfd"/>
 
 
 <spring:message code="button_save" htmlEscape="false" var="bsave"/>
@@ -52,7 +54,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 	<div>
 	${lpublished}: ${bookModel.publishyear}
 	</div>	
-	<div>
+	<div style="text-indent:-15px;padding-left: 15px;">
 	${ldescription}: ${bookModel.description}
 	</div>		
 </div>
@@ -62,22 +64,23 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 	${lclientbookid}: ${bookModel.clientbookid}
 	</div>
 	<div>
-	${lclassification}: ${bookModel.shelfclass}
+	<c:set var="showver" value="${lnvfd}" />
+	<c:if test="${bookModel.shelfclassverified}">
+	<c:set var="showver" value="${lvfd}" />
+	</c:if>
+	${lclassification}: ${bookModel.shelfclass} (${showver})
 	</div>
 	<div>
-	${lclassverif}: ${bookModel.shelfclassverified}
-	</div>	
-	<div>
-	${lstatus}: ${bookModel.status}
+	${lstatus}: ${bookModel.statusDisp}
 	</div>
 	
 </div>
-<div style="width:100%;clear:both">
-${ldetailstatus}: ${bookModel.detailstatus}
-${llanguage}: ${bookModel.language}
-${lbooktype}: ${bookModel.type}
-${lisbn10}: ${bookModel.isbn10}
-${lisbn13}: ${bookModel.isbn13}
+<div style="width:100%;clear:both;padding-top:25px">
+<c:if test="${bookModel.detailstatus!=null}">${ldetailstatus}: ${bookModel.detailstatusDisp} | </c:if>
+<c:if test="${bookModel.language!=null}">${llanguage}: ${bookModel.language} | </c:if>
+<c:if test="${bookModel.type!=null}">${lbooktype}: ${bookModel.booktypeDisp} | </c:if>
+<c:if test="${bookModel.isbn10!=null}">${lisbn10}: ${bookModel.isbn10} | </c:if>
+<c:if test="${bookModel.isbn13!=null}">${lisbn13}: ${bookModel.isbn13} | </c:if>
 </div>
 
 

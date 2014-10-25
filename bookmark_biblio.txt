@@ -4,36 +4,25 @@ Use Case 15		Get info for single book
 Use Case 16.5	single text name to first, middle, last - comparison to db
 
 
-show full detail for book after insert
-need nice displays for codes....
-----> insert nice new displays in show....
-Header over details 
-short author and illustrator name labels
-code to only show if it has been filled in....
-verified next to classification (shows verified if true)
+branch complete - use case 14, 15 and 16.5 complete.
 
-pass language into loadBookModel
-
-done - problems assigning details page - assigndetail id is null, book id is null.  ponder
-done - debug empty publisher in assigndetails.
-done - debug author not saved in addEntry (CS)
-
-end of branch- lock down methods which had been tested.
-
-single volume id tag - for testing - jN9aPQAACAAJ
 
 ---- begin commit changes ----
 
-done - block out 3 divs - main info, shelving info, additional details (underneath)
+done - show full detail for book after insert
+done - need nice displays for codes....
+done - insert nice displays in show page....
+done - Header (or just a bit more space) over details 
+done - short author and illustrator name labels
+done - code to only show if it has been filled in....
+done - verified next to classification (shows verified if true)
+done - pass language into loadBookModel
+done - end of branch- lock down methods which had been tested.
 
 
 
 ---- end commit changes ----
 
-done - createCatalogEntryFromBookModel - add artist handling / db
-done - revisit enter book - single line author, illustrator - fill in details afterwards
-done - tie in fill in details in controller
-done - page for assigning details...
 
 
 ----- begin branch changes ----
@@ -75,6 +64,15 @@ done - elaborate query with publisher if necessary, illustrator
 skip - big test of fillInDetailsForSingleBook(Long id) - with mocks
 done - complete CS copyDetailsIntoFoundRecords - remember illustrators
 done - implement findPublisherForName - CS
+done - createCatalogEntryFromBookModel - add artist handling / db
+done - revisit enter book - single line author, illustrator - fill in details afterwards
+done - tie in fill in details in controller
+done - page for assigning details...
+done - problems assigning details page - assigndetail id is null, book id is null.  ponder
+done - debug empty publisher in assigndetails.
+done - debug author not saved in addEntry (CS)
+done - block out 3 divs - main info, shelving info, additional details (underneath)
+
 
 ---- end branch changes ----
 

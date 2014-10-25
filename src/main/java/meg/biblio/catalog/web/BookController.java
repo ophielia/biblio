@@ -3,6 +3,7 @@ package meg.biblio.catalog.web;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.List;
+import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -59,7 +60,8 @@ public class BookController {
     @RequestMapping(method = RequestMethod.POST, produces = "text/html")
     public String createBookEntry(BookModel model,  Model uiModel,BindingResult bindingResult, HttpServletRequest httpServletRequest) {
     	Long clientkey = clientService.getCurrentClientKey();
-    	
+    	Locale locale = httpServletRequest.getLocale();
+    	String lang = locale.getLanguage();
     	bookValidator.validateSimpleEntry(model, bindingResult);
 
 		if (bindingResult.hasErrors()) {
@@ -76,6 +78,7 @@ public class BookController {
         
         // add book to catalog
         BookModel book = catalogService.createCatalogEntryFromBookModel(clientkey,model);
+        catalogService.setDisplayInfoForLanguage(lang,model);
         Long bookid = book.getBookid();
         
         uiModel.addAttribute("bookModel", book);
@@ -90,9 +93,13 @@ public class BookController {
     
     @RequestMapping(value="/display/{id}", method = RequestMethod.GET, produces = "text/html")
     public String showBook(@PathVariable("id") Long id, Model uiModel, HttpServletRequest httpServletRequest) {
+    	Locale locale = httpServletRequest.getLocale();
+    	String lang = locale.getLanguage();
+
     	BookModel model = new BookModel();
     	if (id!=null) {
     		model = catalogService.loadBookModel(id);	
+    		catalogService.setDisplayInfoForLanguage(lang,model);
     	} 
     	
     	uiModel.addAttribute("bookModel",model);
@@ -102,6 +109,9 @@ public class BookController {
     
     @RequestMapping(value="/choosedetails/{id}", method = RequestMethod.GET, produces = "text/html")
     public String showBookDetails(@PathVariable("id") Long id, Model uiModel, HttpServletRequest httpServletRequest) {
+    	Locale locale = httpServletRequest.getLocale();
+    	String lang = locale.getLanguage();
+
     	BookModel model = new BookModel();
     	if (id!=null) {
         	// add found objects to model
@@ -109,6 +119,7 @@ public class BookController {
         	uiModel.addAttribute("foundDetails",multidetails);
     		
     		model = catalogService.loadBookModel(id);	
+    		catalogService.setDisplayInfoForLanguage(lang,model);
     	} 
     	
     	uiModel.addAttribute("bookModel",model);

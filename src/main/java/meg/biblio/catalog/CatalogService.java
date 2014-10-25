@@ -16,6 +16,8 @@ public interface CatalogService {
 	BookModel createCatalogEntryFromBookModel(Long clientkey, BookModel model);
 
 	BookModel loadBookModel(Long id);
+	
+	public void setDisplayInfoForLanguage(String lang,BookModel model);
 
 	void fillInDetailsForSingleBook(Long id) throws GeneralSecurityException, IOException;
 	
@@ -26,10 +28,6 @@ public interface CatalogService {
 	public List<FoundDetailsDao> getFoundDetailsForBook(Long id);
 	
 	public 	void assignDetailToBook(Long detailid, Long bookid) throws GeneralSecurityException, IOException;
-	/** lock down after development **/
-	public BookDao copyAuthorsIntoBook(BookDao book,List<String> foundauthors);
-	public PublisherDao findPublisherForName(String text);
-	public SubjectDao findSubjectForString(String text) ;
 
 
 
