@@ -3,7 +3,12 @@ package meg.biblio.catalog.web.model;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+
+
+
+
 
 
 
@@ -19,14 +24,17 @@ public class BookModel  implements Serializable {
 
 	private BookDao book;
 
-	private String aFname;
-	private String aLname;
-	private String aMname;
 
-	private String iFname;
-	private String iLname;
-	private String iMname;
+	private String authorname;
+	private String illustratorname;
+	private Long assignDetailId;
 
+	private HashMap<Long, String> booktypedisps;
+
+	private HashMap<Long, String> bookstatusdisps;
+
+	private HashMap<Long, String> detailstatusdisps;
+	
 	// *** constructors ***//
 	public BookModel(BookDao book) {
 		super();
@@ -48,53 +56,32 @@ public class BookModel  implements Serializable {
 	}
 
 	// *** getters and setters for web entry ***//
-	public String getAFname() {
-		return aFname;
+	public Long getAssignDetailId() {
+		return assignDetailId;
 	}
 
-	public void setAFname(String aFname) {
-		this.aFname = aFname;
+	public void setAssignDetailId(Long assignDetailId) {
+		this.assignDetailId = assignDetailId;
 	}
 
-	public String getALname() {
-		return aLname;
+	
+	public String getAuthorname() {
+		return authorname;
 	}
 
-	public void setALname(String aLname) {
-		this.aLname = aLname;
+	public void setAuthorname(String aFname) {
+		this.authorname = aFname;
 	}
 
-	public String getAMname() {
-		return aMname;
+	public String getIllustratorname() {
+		return illustratorname;
 	}
 
-	public void setAMname(String aMname) {
-		this.aMname = aMname;
+	public void setIllustratorname(String aLname) {
+		this.illustratorname = aLname;
 	}
 
-	public String getIFname() {
-		return iFname;
-	}
 
-	public void setIFname(String iFname) {
-		this.iFname = iFname;
-	}
-
-	public String getILname() {
-		return iLname;
-	}
-
-	public void setILname(String iLname) {
-		this.iLname = iLname;
-	}
-
-	public String getIMname() {
-		return iMname;
-	}
-
-	public void setIMname(String iMname) {
-		this.iMname = iMname;
-	}
 
 	// *** getters and setters for book object ***//
 	public void setClientid(Long clientid) {
@@ -194,7 +181,10 @@ public class BookModel  implements Serializable {
 	}
 
 	public PublisherDao getPublisher() {
-		return book.getPublisher();
+		if (book.getPublisher()!=null) {
+			return book.getPublisher();
+		}
+		return new PublisherDao();
 	}
 
 	public Long getPublishyear() {
@@ -216,6 +206,13 @@ public class BookModel  implements Serializable {
 	public Long getType() {
 		return book.getType();
 	}
+	
+	public String getBooktypeDisp() {
+		if (book.getType()!=null && booktypedisps.containsKey(book.getType())) {
+			return booktypedisps.get(book.getType());
+		}
+		return null;
+	}	
 
 	public String getDescription() {
 		return book.getDescription();
@@ -225,10 +222,24 @@ public class BookModel  implements Serializable {
 		return book.getStatus();
 	}
 
+	public String getStatusDisp() {
+		if (book.getStatus()!=null && bookstatusdisps.containsKey(book.getStatus())) {
+			return bookstatusdisps.get(book.getStatus());
+		}
+		return null;
+	}
+	
 	public Long getDetailstatus() {
 		return book.getDetailstatus();
 	}
 
+	public String getDetailstatusDisp() {
+		if (book.getDetailstatus()!=null && detailstatusdisps.containsKey(book.getDetailstatus())) {
+			return detailstatusdisps.get(book.getDetailstatus());
+		}
+		return null;
+	}
+		
 	public Long getShelfclass() {
 		return book.getShelfclass();
 	}
@@ -247,29 +258,7 @@ public class BookModel  implements Serializable {
 
 	
 	//***** convenience methods ****//
-	public void processAuthorEntry() {
-		// create ArtistDao
-		ArtistDao artist = new ArtistDao();
-		
-		if (aFname!=null) {
-			artist.setFirstname(aFname);
-		}
-		if (aLname!=null) {
-			artist.setLastname(aLname);
-		}
-		if (aMname!=null) {
-			artist.setMiddlename(aMname);
-		}
-		
-		// add to list
-		List<ArtistDao> authors = getAuthors();
-		if (authors==null) {
-			authors = new ArrayList<ArtistDao>();
-		}
-		authors.add(artist);
-		setAuthors(authors);
-		
-	}
+
 
 	public ArtistDao getMainAuthor() {
 		if (getAuthors()!=null && getAuthors().size()>0) {
@@ -286,28 +275,35 @@ public class BookModel  implements Serializable {
 		}
 		return new ArtistDao();
 	}
-	
-	public void processIllustratorEntry() {
-		// create ArtistDao
-		ArtistDao artist = new ArtistDao();
-		
-		if (iFname!=null) {
-			artist.setFirstname(iFname);
+
+	public void addAuthorToBook(ArtistDao author) {
+		if (author != null) {
+			List<ArtistDao> authors = book.getAuthors();
+			if (authors == null) {
+				authors = new ArrayList<ArtistDao>();
+			}
+			authors.add(author);
+			book.setAuthors(authors);
 		}
-		if (iLname!=null) {
-			artist.setLastname(iLname);
+	}
+
+	public void addIllustratorToBook(ArtistDao illustrator) {
+		if (illustrator != null) {
+			List<ArtistDao> illustrators = book.getAuthors();
+			if (illustrators == null) {
+				illustrators = new ArrayList<ArtistDao>();
+			}
+			illustrators.add(illustrator);
+			book.setIllustrators(illustrators);
 		}
-		if (iMname!=null) {
-			artist.setMiddlename(iMname);
-		}
-		
-		// add to list
-		List<ArtistDao> illustrators = getIllustrators();
-		if (illustrators==null) {
-			illustrators = new ArrayList<ArtistDao>();
-		}
-		illustrators.add(artist);
-		setIllustrators(illustrators);
+	}
+
+	public void setDisplayInfo(HashMap<Long, String> booktypedisps,
+			HashMap<Long, String> bookstatusdisps,
+			HashMap<Long, String> detailstatusdisps) {
+		this.booktypedisps = booktypedisps;
+		this.bookstatusdisps = bookstatusdisps;
+		this.detailstatusdisps = detailstatusdisps;
 		
 	}
 

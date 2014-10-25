@@ -3,6 +3,7 @@ package meg.biblio.catalog;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
@@ -18,6 +19,7 @@ import meg.biblio.catalog.db.dao.FoundDetailsDao;
 import meg.biblio.catalog.db.dao.PublisherDao;
 import meg.biblio.catalog.db.dao.SubjectDao;
 import meg.biblio.catalog.web.model.BookModel;
+import meg.biblio.common.SelectKeyService;
 import meg.biblio.search.SearchService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +43,12 @@ import com.google.api.services.books.model.Volumes;
 public class CatalogServiceImpl implements CatalogService {
 
 	@Autowired
+	SelectKeyService keyService;	
+	
+	@Autowired
+	SearchService searchService;
+	
+	@Autowired
 	BookRepository bookRepo;
 
 	@Autowired
@@ -51,14 +59,10 @@ public class CatalogServiceImpl implements CatalogService {
 
 	@Autowired
 	PublisherRepository pubRepo;
-	
 
 	@Autowired
 	SubjectRepository subjectRepo;
-	
-	@Autowired
-	SearchService searchService;
-	
+
 	@Value("${biblio.google.apikey}")
 	private String apikey;
 
@@ -67,7 +71,13 @@ public class CatalogServiceImpl implements CatalogService {
 	
 	@Value("${biblio.google.maxdetails}")
 	private int maxdetails;
+	
+	@Value("${biblio.google.turnedon}")
+	private boolean lookupwithgoogle;	
 
+	String booktypelkup = "booktype";
+
+	
 	public final class LocationStatus {
 		public static final long CHECKEDOUT = 1;
 		public static final long SHELVED = 2;
@@ -77,6 +87,8 @@ public class CatalogServiceImpl implements CatalogService {
 		public static final long PROCESSING = 6;
 	}
 
+	String bookstatuslkup = "bookstatus";
+
 	public static final class BookType {
 		public static final long FICTION = 1;
 		public static final long NONFICTION = 2;
@@ -85,6 +97,7 @@ public class CatalogServiceImpl implements CatalogService {
 		public static final long UNKNOWN = 5;
 	}
 
+	String detailstatuslkup = "detailstatus";
 	public static final class DetailStatus {
 		public static final long NODETAIL = 1;
 		public static final long DETAILNOTFOUND = 2;
@@ -115,17 +128,66 @@ public class CatalogServiceImpl implements CatalogService {
 		book.setStatus(LocationStatus.PROCESSING);
 		book.setDetailstatus(DetailStatus.NODETAIL);
 		book.setType(BookType.UNKNOWN);
-		/*
-		 * // save authors List<ArtistDao> authors = new ArrayList<ArtistDao>();
-		 * for (ArtistDao author:book.getAuthors()) { ArtistDao newauthor =
-		 * artistRepo.save(author); authors.add(newauthor); }
-		 * book.setAuthors(authors);
-		 */
+		book.setCreatedon(new Date());
+		
+		// handle authors and illustrators by
+		// retrieving any existing artists from db
+		if (book.getAuthors()!=null) {
+			List<ArtistDao> newauthors=new ArrayList<ArtistDao>();
+			for (ArtistDao author:book.getAuthors()) {
+				if (author.getId()!=null) {
+					// we have an existing author here - add it to the list
+					newauthors.add(author);
+				} else  {
+					// new author - check for match in db
+					ArtistDao dbfound = searchService
+							.findArtistMatchingName(author);
+					if (dbfound!=null) {
+						newauthors.add(dbfound);
+					} else {
+						newauthors.add(author);
+					}
+				}
+			}
+			book.setAuthors(newauthors);
+		}
+		if (book.getIllustrators()!=null) {
+			List<ArtistDao> newillustrators=new ArrayList<ArtistDao>();
+			for (ArtistDao illustrator:book.getIllustrators()) {
+				if (illustrator.getId()!=null) {
+					// we have an existing illustrator here - add it to the list
+					newillustrators.add(illustrator);
+				} else  {
+					// new illustrator - check for match in db
+					ArtistDao dbfound = searchService
+							.findArtistMatchingName(illustrator);
+					if (dbfound!=null) {
+						newillustrators.add(dbfound);
+					} else {
+						newillustrators.add(illustrator);
+					}
+				}
+			}
+			book.setIllustrators(newillustrators);
+		}
 
 		// persist book
 		BookDao saved = bookRepo.save(book);
 		Long bookid = saved.getId();
 
+		// fill in details with google call
+		if (lookupwithgoogle) {
+			try {
+				fillInDetailsForSingleBook(bookid);
+			} catch (GeneralSecurityException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
 		// reload book in bookmodel
 		BookModel result = loadBookModel(bookid);
 
@@ -150,6 +212,15 @@ public class CatalogServiceImpl implements CatalogService {
 			// set book in model
 			BookModel model = new BookModel(book);
 
+			// set display hashes in model
+
+
+			HashMap<Long,String> booktypedisps = keyService.getDisplayHashForKey(booktypelkup,"en" );
+			HashMap<Long,String> bookstatusdisps = keyService.getDisplayHashForKey(bookstatuslkup,"en" );
+			HashMap<Long,String> detailstatusdisps = keyService.getDisplayHashForKey(detailstatuslkup,"en" );
+			
+			model.setDisplayInfo(booktypedisps, bookstatusdisps,detailstatusdisps);
+			
 			// return model
 			return model;
 
@@ -261,6 +332,53 @@ public class CatalogServiceImpl implements CatalogService {
 
 	}
 
+	public void assignDetailToBook(Long detailid, Long bookid) throws GeneralSecurityException, IOException {
+		// dummy check - nothing null
+		if (detailid != null && bookid != null) {
+			JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+			// get detail
+			FoundDetailsDao detail = foundRepo.findOne(detailid);
+
+			if (detail != null) {
+				// dummy check - bookid = passed bookid
+				if (detail.getBookid().longValue() == bookid.longValue()) {
+					BookDao book = bookRepo.findOne(bookid);
+
+					// get searchserviceid
+					String searchid = detail.getSearchserviceid();
+
+					// query for volumeinfo
+					Volumes volumes = null;
+					final Books books = new Books.Builder(
+							GoogleNetHttpTransport.newTrustedTransport(),
+							jsonFactory, null)
+							.setApplicationName(appname)
+							.setGoogleClientRequestInitializer(
+									new BooksRequestInitializer(apikey))
+							.build();
+
+					Get detailsrequest = books.volumes().get(searchid);
+					Volume completedetails = detailsrequest.execute();
+
+					// copyDetailsIntoBook
+					copyCompleteDetailsIntoBook(completedetails, book);
+
+					// update book detailstatus
+					book.setDetailstatus(DetailStatus.DETAILFOUND);
+
+					// save book
+					bookRepo.saveAndFlush(book);
+					// delete found records
+					List<FoundDetailsDao> bookdetails = foundRepo
+							.findDetailsForBook(bookid);
+					foundRepo.delete(bookdetails);
+				}
+			}
+		}
+
+	}
+	
+	
 	public ArtistDao textToArtistName(String text) {
 		ArtistDao name = new ArtistDao();
 		if (text != null) {
@@ -344,8 +462,13 @@ public class CatalogServiceImpl implements CatalogService {
 			if (publishyearstr.contains("-")) {
 				// chop off after dash
 				publishyearstr = publishyearstr.substring(0,publishyearstr.indexOf("-"));
+				book.setPublishyear(new Long(publishyearstr));
+			} else if (publishyearstr.contains("?")) {
+				// do nothing - vague year
+			} else {
+				book.setPublishyear(new Long(publishyearstr));	
 			}
-			book.setPublishyear(new Long(publishyearstr));
+			
 		}
 		book.setLanguage(info.getLanguage());
 
@@ -396,6 +519,7 @@ public class CatalogServiceImpl implements CatalogService {
 				break;
 			}			
 			detail.setBookid(book.getId());
+			detail.setSearchserviceid(found.getId());
 			detail.setTitle(info.getTitle());
 			detail.setPublisher(info.getPublisher());
 			if (info.getPublishedDate() != null) {
@@ -404,8 +528,13 @@ public class CatalogServiceImpl implements CatalogService {
 				if (publishyearstr.contains("-")) {
 					// chop off after dash
 					publishyearstr = publishyearstr.substring(0,publishyearstr.indexOf("-"));
+					detail.setPublishyear(new Long(publishyearstr));
+				} else if (publishyearstr.contains("?")) {
+					// do nothing - vague year
+				} else {
+					detail.setPublishyear(new Long(publishyearstr));	
 				}
-				detail.setPublishyear(new Long(publishyearstr));
+				
 			}
 			detail.setLanguage(info.getLanguage());
 			detail.setDescription(info.getDescription());
@@ -433,6 +562,7 @@ public class CatalogServiceImpl implements CatalogService {
 					detail.setIsbn13(ident.getIdentifier());
 				}
 			}
+			
 			details.add(detail);
 			processedcnt++;
 		}

@@ -1,11 +1,16 @@
 package meg.biblio.catalog.web;
 
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
 import meg.biblio.catalog.CatalogService;
+import meg.biblio.catalog.CatalogServiceImpl;
+import meg.biblio.catalog.db.dao.ArtistDao;
 import meg.biblio.catalog.db.dao.BookDao;
+import meg.biblio.catalog.db.dao.FoundDetailsDao;
 import meg.biblio.catalog.web.model.BookModel;
 import meg.biblio.catalog.web.validator.BookModelValidator;
 import meg.biblio.common.ClientService;
@@ -18,6 +23,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 
 @RequestMapping("/books")
@@ -63,15 +69,22 @@ public class BookController {
         uiModel.asMap().clear();
         
         // process book entries (author, illustrator)
-        model.processAuthorEntry();
-        model.processIllustratorEntry();
+        ArtistDao author = catalogService.textToArtistName(model.getAuthorname());
+        ArtistDao illustrator = catalogService.textToArtistName(model.getIllustratorname());
+        model.addAuthorToBook(author);
+        model.addIllustratorToBook(illustrator);
         
         // add book to catalog
         BookModel book = catalogService.createCatalogEntryFromBookModel(clientkey,model);
         Long bookid = book.getBookid();
         
         uiModel.addAttribute("bookModel", book);
-
+        
+        // go to show single page, unless multi details were found
+        if (book.getDetailstatus().longValue() == CatalogServiceImpl.DetailStatus.MULTIDETAILSFOUND) {
+        	// go to pickdetails page
+        	return "redirect:/books/choosedetails/" + bookid;
+        }
         return "redirect:/books/display/" + bookid;
     }    
     
@@ -85,7 +98,40 @@ public class BookController {
     	uiModel.addAttribute("bookModel",model);
 
     	return "book/show";
-    }    
+    }   
+    
+    @RequestMapping(value="/choosedetails/{id}", method = RequestMethod.GET, produces = "text/html")
+    public String showBookDetails(@PathVariable("id") Long id, Model uiModel, HttpServletRequest httpServletRequest) {
+    	BookModel model = new BookModel();
+    	if (id!=null) {
+        	// add found objects to model
+        	List<FoundDetailsDao> multidetails = catalogService.getFoundDetailsForBook(id);
+        	uiModel.addAttribute("foundDetails",multidetails);
+    		
+    		model = catalogService.loadBookModel(id);	
+    	} 
+    	
+    	uiModel.addAttribute("bookModel",model);
+
+    	return "book/choosedetails";
+    }     
+    
+    @RequestMapping(value="/choosedetails", params={"detailid","bookid"} ,method = RequestMethod.POST, produces = "text/html")
+    public String assignBookDetails(@RequestParam("detailid") Long detailid, @RequestParam("bookid") Long bookid,Model uiModel, HttpServletRequest httpServletRequest) {
+    	// call catalog service
+    	try {
+			catalogService.assignDetailToBook(detailid, bookid);
+		} catch (GeneralSecurityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	
+    	// redirect to show book
+    	return "redirect:/books/display/" + bookid;
+    }      
     
     @RequestMapping(method = RequestMethod.GET, produces = "text/html")
     public String showBookList(Model uiModel, HttpServletRequest httpServletRequest) {

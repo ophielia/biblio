@@ -5,26 +5,35 @@ Use Case 16.5	single text name to first, middle, last - comparison to db
 
 
 show full detail for book after insert
-revisit enter book - single line author, illustrator - fill in details afterwards
-page for assigning details...
+need nice displays for codes....
+----> insert nice new displays in show....
+Header over details 
+short author and illustrator name labels
+code to only show if it has been filled in....
+verified next to classification (shows verified if true)
 
+pass language into loadBookModel
 
+done - problems assigning details page - assigndetail id is null, book id is null.  ponder
+done - debug empty publisher in assigndetails.
+done - debug author not saved in addEntry (CS)
 
+end of branch- lock down methods which had been tested.
+
+single volume id tag - for testing - jN9aPQAACAAJ
 
 ---- begin commit changes ----
 
-done - implement findSubjectForString - CS
-skip this - (concentrate on test of public method instead) test copyCompleteDetailsIntoBook - make it green
-done - finish search logic - if nothing found, search what??
-done - elaborate query with publisher if necessary, illustrator
-skip - big test of fillInDetailsForSingleBook(Long id) - with mocks
-done - complete CS copyDetailsIntoFoundRecords - remember illustrators
-done - implement findPublisherForName - CS
+done - block out 3 divs - main info, shelving info, additional details (underneath)
 
 
 
 ---- end commit changes ----
 
+done - createCatalogEntryFromBookModel - add artist handling / db
+done - revisit enter book - single line author, illustrator - fill in details afterwards
+done - tie in fill in details in controller
+done - page for assigning details...
 
 
 ----- begin branch changes ----
@@ -59,6 +68,13 @@ done - add preview links to founddetails
 done - open - illustrator handling
 done - repository - find Publisher by name 
 done - fill out test for copyAuthors to test for more cases
+done - implement findSubjectForString - CS
+skip this - (concentrate on test of public method instead) test copyCompleteDetailsIntoBook - make it green
+done - finish search logic - if nothing found, search what??
+done - elaborate query with publisher if necessary, illustrator
+skip - big test of fillInDetailsForSingleBook(Long id) - with mocks
+done - complete CS copyDetailsIntoFoundRecords - remember illustrators
+done - implement findPublisherForName - CS
 
 ---- end branch changes ----
 
@@ -79,6 +95,8 @@ bookstatus - processing - after book bought, but before it's shelved (waiting fo
 not now - usecase 16.5 findOrCreateArtist - to reuse names in db
 not now - usecase 16.5 artist name handling in general not done - needs handling in CS
 puzzle - how to insert a validator into controller test - basically, just do a different test to test Validator.  Stand alone test.
+createCatalogEntryFromBookModel - graceful handling of exception calling google books api
+assignBookDetails - graceful handling of exception
 
 ******* NOTES ******
 

@@ -8,8 +8,47 @@ xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
+  
+<spring:url value="/books/choosedetails" var="actionurl"/>  
     
+<script type="text/javascript">
+ require([
+          'dojo/dom',"dojo/on","dojo/dom-construct","dojo/dom-style",
+          'dojo/domReady!'
+      ], function (dom,on,domConstruct,domStyle) {
+	 
+	 	function getIndex(prefix,text) {
+			// gets a substring of the text, starting at the char after the length of the prefix
+			var stripped = text.substr(prefix.length);
+			return stripped;
+		} 
+	 	
 
+	
+
+		// wire up edit row buttons
+		dojo.query("a[id^='assign']").forEach(function(node) {
+			var id = node.id;
+
+			on(dojo.byId(id), 'click', function(event) {
+				// get index of clicked button
+				clickedid = event.currentTarget.id;
+				clickedidx = getIndex('assign', clickedid);
+
+				// get element assignDetailId
+				bookid = dojo.byId("bookid").value;
+				
+				var form = dojo.byId('assigndetail');
+	      		  form.action = "${actionurl}?detailid=" + clickedidx +
+	      		<![CDATA["&" ]]>+ "bookid=" + bookid;
+	      		  form.submit();
+
+			});
+		});
+
+
+	});
+</script>
 
 <spring:message code="label_book" htmlEscape="false" var="lbook"/>
 <spring:message code="label_book_title" htmlEscape="false" var="ltitle"/>
@@ -29,6 +68,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <spring:message code="label_book_bookid" htmlEscape="false" var="lclientbookid"/>
 
 
+
 <spring:message code="button_save" htmlEscape="false" var="bsave"/>
 <spring:message code="button_cancel" htmlEscape="false" var="bcancel"/>
 <spring:message code="entity_show" arguments="${lbook}" htmlEscape="false" var="pagetitle"/>
@@ -36,7 +76,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 
 <h1>${pagetitle}</h1>
 
-<div style="width:60%;float:left">
+<div>
 	<div>
 	${ltitle}: ${bookModel.title}
 	</div>
@@ -46,40 +86,37 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 	<div>
 	${lillustrator}: ${bookModel.mainIllustrator.firstname} ${bookModel.mainIllustrator.middlename} ${bookModel.mainIllustrator.lastname}
 	</div>
-	<div>
-	${lpublisher}: ${bookModel.publisher.name}
-	</div>	
-	<div>
-	${lpublished}: ${bookModel.publishyear}
-	</div>	
-	<div>
-	${ldescription}: ${bookModel.description}
-	</div>		
-</div>
-<div style="background-color: #C2C2A3;width: 35%;float: right;border: 1px dotted grey;padding: 5px;margin: 10px;">
-<!-- accent box -->
-	<div>
-	${lclientbookid}: ${bookModel.clientbookid}
-	</div>
-	<div>
-	${lclassification}: ${bookModel.shelfclass}
-	</div>
-	<div>
-	${lclassverif}: ${bookModel.shelfclassverified}
-	</div>	
-	<div>
-	${lstatus}: ${bookModel.status}
-	</div>
-	
-</div>
-<div style="width:100%;clear:both">
-${ldetailstatus}: ${bookModel.detailstatus}
-${llanguage}: ${bookModel.language}
-${lbooktype}: ${bookModel.type}
-${lisbn10}: ${bookModel.isbn10}
-${lisbn13}: ${bookModel.isbn13}
 </div>
 
 
+<form:form action="${actionurl}" id="assigndetail" method="POST" modelAttribute="bookModel">
+<table>
+<thead>
+<tr>
+<td>image</td>
+<td>title</td>
+<td>author</td>
+<td>publisher / <br /> published</td>
+<td>description</td>
+<td>description</td>
+</tr>
+</thead>
+<tbody>
 
+<c:forEach items="${foundDetails}" var="detail">
+<tr>
+<td><img src="${detail.imagelink}" /></td>
+<td>${detail.title}</td>
+<td>${detail.authors}</td>
+<td>${detail.publisher}<br />${detail.publishyear}</td>
+<td>${detail.description}</td>
+<td><a href="#" id="assign${detail.id}" >Assign</a></td>
+</tr>
+</c:forEach>
+
+</tbody>
+</table>
+<form:input path="assignDetailId" value="" ></form:input>
+<form:hidden path="bookid" ></form:hidden>
+</form:form>
 </div>

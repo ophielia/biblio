@@ -16,11 +16,11 @@ privileged aspect SelectValueDao_Roo_JavaBean {
         this.value = value;
     }
     
-    public Long SelectValueDao.getLanguagekey() {
+    public String SelectValueDao.getLanguagekey() {
         return this.languagekey;
     }
     
-    public void SelectValueDao.setLanguagekey(Long languagekey) {
+    public void SelectValueDao.setLanguagekey(String languagekey) {
         this.languagekey = languagekey;
     }
     

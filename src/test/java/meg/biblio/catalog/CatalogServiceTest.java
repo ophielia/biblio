@@ -17,6 +17,7 @@ import meg.biblio.catalog.db.dao.SubjectDao;
 import meg.biblio.catalog.web.model.BookModel;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +44,30 @@ public class CatalogServiceTest {
 	
 	@Autowired
 	SubjectRepository subjectRepo;		
+	
+	Long artistid;
+	Long pubtestid;
+	
+	@Before
+	public void setup() {
+		// make artist susan cooper
+		ArtistDao artist = catalogService.textToArtistName("Susan Cooper");
+		artist = artistRepo.save(artist);
+		artistid = artist.getId();
+		
+		// setup book with publisher
+		// create publisher
+		PublisherDao pub = new PublisherDao();
+		pub.setName("publisher");
+		// create book
+		BookDao pubtestbook = new BookDao();
+		pubtestbook.setTitle("testTitle");
+		// put publisher in book
+		pubtestbook.setPublisher(pub);
+		// save book
+		BookDao pubtest = bookRepo.saveAndFlush(pubtestbook);
+		pubtestid = pubtest.getId();
+	}
 	
 	@Test
 	public void testCreateCatalogEntry() {
@@ -71,41 +96,70 @@ public class CatalogServiceTest {
 		Assert.assertNotNull(result.getBookid());
 		Assert.assertNotNull(result.getClientid());
 		Assert.assertNotNull(result.getAuthors());
+		Assert.assertEquals(1, result.getAuthors().size());
+		ArtistDao resultart = result.getAuthors().get(0);
+		Assert.assertEquals("willikins",resultart.getLastname());
 		Assert.assertNotNull(result.getIllustrators());
+		
+		// test with existing author
+		book = new BookDao();
+		book.setTitle("the dark is rising");
+		author = new ArtistDao();
+		author.setFirstname("susan");
+		author.setLastname("cooper");
+		authors = new ArrayList<ArtistDao>();
+		authors.add(author);
+		book.setAuthors(authors);
+		
+		model = new BookModel(book);
+
+		// service call
+		result = catalogService.createCatalogEntryFromBookModel(1L, model);
+
+		// check call
+		Assert.assertNotNull(result);
+		Assert.assertNotNull(result.getBookid());
+		Assert.assertNotNull(result.getClientid());
+		Assert.assertNotNull(result.getAuthors());
+		Assert.assertNull(result.getIllustrators());
+		// test authors
+		ArtistDao artist = result.getAuthors().get(0);
+		Assert.assertEquals(artistid,artist.getId());
 	}
 
 	@Test
-	public void testCreateCatalogEntryModelHelper() {
+	public void testPublisherBug() {
+
+		// retreive book
+		BookDao book = bookRepo.findOne(pubtestid);
+		
+		
+		// check that publisher is not null
+		Assert.assertNotNull(book.getPublisher());
+	}
+	
+	@Test
+	public void testFillDetailsFromEntry() {
 		BookDao book = new BookDao();
-		book.setTitle("the quick brown fox");
-		// create model
+		book.setTitle("coco tout nu");
+		ArtistDao author = catalogService.textToArtistName("Monfreid");
+		List<ArtistDao> authors = new ArrayList<ArtistDao>();
+		authors.add(author);
+		book.setAuthors(authors);
+
 		BookModel model = new BookModel(book);
-		// set names through model
-		model.setAFname("first");
-		model.setALname("last");
-		model.setAMname("middle");
-		model.setIFname("first");
-		model.setILname("last");
-		model.setIMname("middle");
 
-		// process entries
-		model.processAuthorEntry();
-		model.processIllustratorEntry();
-
-		// service call to create book
+		// service call
 		BookModel result = catalogService.createCatalogEntryFromBookModel(1L, model);
 
 		// check call
 		Assert.assertNotNull(result);
 		Assert.assertNotNull(result.getBookid());
 		Assert.assertNotNull(result.getClientid());
-
-		// check authors and illustrators
 		Assert.assertNotNull(result.getAuthors());
-		Assert.assertNotNull(result.getIllustrators());
+		// now - check details - should not be no detail
+		Assert.assertTrue(CatalogServiceImpl.DetailStatus.NODETAIL!= result.getDetailstatus().longValue());
 	}
-
-
 
 
 	@Test

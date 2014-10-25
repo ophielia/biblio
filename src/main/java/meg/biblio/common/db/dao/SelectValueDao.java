@@ -19,7 +19,7 @@ public class SelectValueDao {
 	@Size(max = 100)
 	private String value;
 
-	private Long languagekey;
+	private String languagekey;
 	
 	@NotNull
 	@Size(max = 100)

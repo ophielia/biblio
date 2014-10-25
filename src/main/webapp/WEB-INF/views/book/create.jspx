@@ -13,8 +13,8 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 
 <spring:message code="label_book" htmlEscape="false" var="lbook"/>
 <spring:message code="label_book_title" htmlEscape="false" var="ltitle"/>
-<spring:message code="label_book_author" htmlEscape="false" var="lauthor"/>
-<spring:message code="label_book_illustrator" htmlEscape="false" var="lillustrator"/>
+<spring:message code="label_book_author_entry" htmlEscape="false" var="lauthor"/>
+<spring:message code="label_book_illustrator_entry" htmlEscape="false" var="lillustrator"/>
 <spring:message code="button_save" htmlEscape="false" var="bsave"/>
 <spring:message code="button_cancel" htmlEscape="false" var="bcancel"/>
 <spring:message code="global_menu_new" arguments="${lbook}" htmlEscape="false" var="pagetitle"/>
@@ -29,10 +29,10 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 ${ltitle}:<form:errors id="title_errors" class="errors" path="title" /> <br /><form:input path="title" type="text" ></form:input><br />
 </div>
 <div>
-${lauthor}: <form:input path="aFname" type="text" ></form:input> <form:input path="aMname" type="text" ></form:input> <form:input path="aLname" type="text" ></form:input> <br />
+${lauthor}: <form:input path="authorname" type="text" ></form:input>
 </div>
 <div>
-${lillustrator}: <form:input path="iFname" type="text" ></form:input> <form:input path="iMname" type="text" ></form:input> <form:input path="iLname" type="text" ></form:input> <br />
+${lillustrator}:  <form:input path="illustratorname" type="text" ></form:input>
 </div>
 
 	<input id="save" name="save" type="submit" value="${bsave}"/> 

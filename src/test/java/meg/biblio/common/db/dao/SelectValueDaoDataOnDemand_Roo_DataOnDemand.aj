@@ -60,7 +60,7 @@ privileged aspect SelectValueDaoDataOnDemand_Roo_DataOnDemand {
     }
     
     public void SelectValueDaoDataOnDemand.setLanguagekey(SelectValueDao obj, int index) {
-        Long languagekey = new Integer(index).longValue();
+        String languagekey = "languagekey_" + index;
         obj.setLanguagekey(languagekey);
     }
     

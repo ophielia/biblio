@@ -1,6 +1,7 @@
 package meg.biblio.common.db.dao;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -22,6 +23,6 @@ public class SelectKeyDao {
 	private String lookup;
 	
 	
-	@OneToMany(mappedBy = "selectkey", fetch=FetchType.EAGER)
+	@OneToMany(mappedBy = "selectkey",cascade = CascadeType.ALL, fetch=FetchType.EAGER)
 	private List<SelectValueDao> selectvalues;
 }

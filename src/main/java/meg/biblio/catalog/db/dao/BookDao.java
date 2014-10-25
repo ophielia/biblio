@@ -55,8 +55,7 @@ private List<ArtistDao> authors;
 	@OrderColumn(name="subjectorder")
 	private List<SubjectDao> subjects;
 
-@OneToOne(cascade = CascadeType.ALL, fetch=FetchType.EAGER)
-@JoinColumn(name="ID")
+@OneToOne(cascade = CascadeType.ALL, fetch=FetchType.EAGER)/*@JoinColumn(name="ID")*/
 private PublisherDao publisher;
 private Long publishyear;
 private String isbn10;
