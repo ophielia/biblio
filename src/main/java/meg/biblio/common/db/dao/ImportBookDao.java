@@ -7,4 +7,12 @@ import org.springframework.roo.addon.tostring.RooToString;
 @RooToString
 @RooJpaEntity
 public class ImportBookDao {
+	
+	private String clientbookid;
+	private String title;
+	private String author;
+	private String illustrator;
+	private String publisher;
+
+	
 }

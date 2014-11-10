@@ -19,14 +19,14 @@ public class ImportConfigManager {
     private String fileconfig;
 	
 	
-	public FileConfig getFileConfigForClient(int clientkey) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+	public FileConfig getFileConfigForClient(Long clientkey) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
 		// no real client key (yet) so just use defaults
 		Class clazz = Class.forName(fileconfig);
 		return (FileConfig) clazz.newInstance();
 
 	}
 	
-	public MapConfig getMapConfigForClient(int clientkey) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+	public MapConfig getMapConfigForClient(Long clientkey) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
 		Class clazz = Class.forName(mapconfig);
 		return (MapConfig) clazz.newInstance();
 

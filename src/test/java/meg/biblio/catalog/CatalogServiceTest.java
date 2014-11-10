@@ -1,7 +1,5 @@
 package meg.biblio.catalog;
 
-import java.io.IOException;
-import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -376,7 +374,7 @@ public class CatalogServiceTest {
 		
 	}*/
 	
-	@Test 
+	/*	@Test 
 	public void testFindDetailsSingleBook() throws GeneralSecurityException, IOException {
 		// currently basically doing a blow up test, with peeking
 		// full test requires moving Google Search into it's own service (possible)
@@ -402,7 +400,7 @@ public class CatalogServiceTest {
 		Assert.assertNotNull(model.getPublishyear());
 	}
 	
-/*
+
 	@Test 
 	public void testFindDetailsSingleBookFoundDetails() throws GeneralSecurityException, IOException {
 		// create book

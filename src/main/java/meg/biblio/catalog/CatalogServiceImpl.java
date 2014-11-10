@@ -20,6 +20,7 @@ import meg.biblio.catalog.db.dao.PublisherDao;
 import meg.biblio.catalog.db.dao.SubjectDao;
 import meg.biblio.catalog.web.model.BookModel;
 import meg.biblio.common.SelectKeyService;
+import meg.biblio.common.db.dao.ImportBookDao;
 import meg.biblio.search.SearchService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,7 +75,10 @@ public class CatalogServiceImpl implements CatalogService {
 	
 	@Value("${biblio.google.turnedon}")
 	private boolean lookupwithgoogle;	
-
+	
+	@Value("${biblio.google.batchsearchmax}")
+	private int batchsearchmax;
+	
 	String booktypelkup = "booktype";
 
 	
@@ -196,6 +200,91 @@ public class CatalogServiceImpl implements CatalogService {
 	}
 
 	@Override
+	public void createCatalogEntriesFromList(Long clientkey,List<Object> newbooks) {
+		List<BookModel> createdobjects=new ArrayList<BookModel>();
+		List<Long> bookids=new ArrayList<Long>();
+		
+		// go through list of ImportBookDaos, creating BookDao objects and persisting them
+		for (Object imported:newbooks) {
+			ImportBookDao newbook=(ImportBookDao)imported;
+			
+			// get book
+			BookDao book = new BookDao();
+
+			// add clientkey
+			book.setClientid(clientkey);
+
+			// add default entries for status, detail status, type
+			book.setStatus(LocationStatus.PROCESSING);
+			book.setDetailstatus(DetailStatus.NODETAIL);
+			book.setType(BookType.UNKNOWN);
+			book.setCreatedon(new Date());
+			
+			// handle authors and illustrators by
+			// retrieving any existing artists from db
+			if (newbook.getAuthor()!=null) {
+				List<ArtistDao> newauthors=new ArrayList<ArtistDao>();
+				ArtistDao author = textToArtistName(newbook.getAuthor());
+				// new author - check for match in db
+				ArtistDao dbfound = searchService
+						.findArtistMatchingName(author);
+				if (dbfound!=null) {
+					newauthors.add(dbfound);
+				} else {
+					newauthors.add(author);
+				}
+				book.setAuthors(newauthors);	
+			}
+			if (newbook.getIllustrator()!=null) {
+				List<ArtistDao> newillustrators=new ArrayList<ArtistDao>();
+				ArtistDao illustrator = textToArtistName(newbook.getIllustrator());
+				// new Illustrator - check for match in db
+				ArtistDao dbfound = searchService
+						.findArtistMatchingName(illustrator);
+				if (dbfound!=null) {
+					newillustrators.add(dbfound);
+				} else {
+					newillustrators.add(illustrator);
+				}
+				book.setIllustrators(newillustrators);	
+			}
+			if (newbook.getPublisher()!=null) {
+				List<ArtistDao> newillustrators=new ArrayList<ArtistDao>();
+				PublisherDao publisher = findPublisherForName(newbook.getPublisher());
+				book.setPublisher(publisher);	
+			}			
+
+			// persist book
+			BookDao saved = bookRepo.save(book);
+			Long bookid = saved.getId();
+			
+			// reload book in bookmodel
+			BookModel result = loadBookModel(bookid);
+			
+			// add info to lists
+			createdobjects.add(result);
+			bookids.add(bookid);
+		}
+		
+		// get info on set number of books
+		if (lookupwithgoogle) {
+			try {
+				fillInDetailsForList(createdobjects);
+			} catch (GeneralSecurityException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		
+		
+
+	}
+
+	@Override
 	public BookModel loadBookModel(Long id) {
 		// get book from repo
 		BookDao book = bookRepo.findOne(id);
@@ -229,7 +318,7 @@ public class CatalogServiceImpl implements CatalogService {
 		
 		model.setDisplayInfo(booktypedisps, bookstatusdisps,detailstatusdisps);
 	}
-	public void fillInDetailsForSingleBook(Long id)
+	private void fillInDetailsForSingleBook(Long id)
 			throws GeneralSecurityException, IOException {
 		JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
@@ -330,6 +419,115 @@ public class CatalogServiceImpl implements CatalogService {
 			foundRepo.save(details);
 		}
 
+	}
+
+	private void fillInDetailsForList(List<BookModel> createdobjects) throws GeneralSecurityException, IOException {
+		JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+		
+		// set up query google
+		Volumes volumes = null;
+		final Books books = new Books.Builder(
+				GoogleNetHttpTransport.newTrustedTransport(), jsonFactory,
+				null)
+				.setApplicationName(appname)
+				.setGoogleClientRequestInitializer(
+						new BooksRequestInitializer(apikey)).build();
+
+
+		
+		if (createdobjects!=null) {
+			int searchsize = createdobjects.size()>batchsearchmax?batchsearchmax:createdobjects.size();	
+			
+			for (int i=0;i<searchsize;i++) {
+				BookModel tofillin = createdobjects.get(i);
+				// get book
+				BookDao book = tofillin.getBook();
+		
+				if (book != null) {
+					// set up query for title and author
+					StringBuffer querybuild = new StringBuffer();
+					querybuild.append("intitle:");
+					String title = book.getTitle().toLowerCase();
+					title = title.replace(" ", "+");
+					querybuild.append(title);
+					boolean remainingauthors=false;
+					// try with author first
+					if (book.getAuthors() != null && book.getAuthors().size() > 0) {
+						ArtistDao author = book.getAuthors().get(0);
+						String authname = author.getLastname();
+						if (authname == null) {
+							authname = author.getFirstname() != null ? author
+									.getFirstname() : author.getMiddlename();
+						}
+						if (authname != null) {
+							authname = authname.toLowerCase().replace(" ", "+");
+							querybuild.append("+inauthor:").append(authname);
+						}
+						remainingauthors = book.getAuthors().size()>1;
+					} // if no authors available, try with illustrators
+					else if (book.getIllustrators() != null && book.getIllustrators().size() > 0) {
+						ArtistDao author = book.getIllustrators().get(0);
+						String authname = author.getLastname();
+						if (authname == null) {
+							authname = author.getFirstname() != null ? author
+									.getFirstname() : author.getMiddlename();
+						}
+						if (authname != null) {
+							authname = authname.toLowerCase().replace(" ", "+");
+							querybuild.append("+inauthor:").append(authname);
+						}
+						remainingauthors |= book.getIllustrators().size()>1;
+					}
+					// if no authors or illustrators available, try with publisher
+					else if (book.getPublisher()!=null) {
+						PublisherDao publisher = book.getPublisher();
+						String pubname = publisher.getName();
+						if (pubname!=null) {
+							pubname=pubname.trim().toLowerCase();
+							pubname = pubname.toLowerCase().replace(" ", "+");
+							pubname=pubname + "+";
+							// pubname added as general key
+							querybuild.insert(0, pubname);
+						}
+					}
+					
+					String query = querybuild.toString();
+
+					volumes = singleQueryGoogle(books, query);
+
+					// process results
+					List<FoundDetailsDao> details = null;
+					if (volumes.getTotalItems() == 0 || volumes.getItems() == null) {
+						// set detailstatus to not found in book
+						book.setDetailstatus(DetailStatus.DETAILNOTFOUND);
+					} else if (volumes.getTotalItems() == 1) {
+						// one volume found - get details for this, fill in the book,
+						// and save the book
+						book.setDetailstatus(DetailStatus.DETAILFOUND);
+						// do second query to get juicy description
+						Volume founddetails = volumes.getItems().get(0);
+						String volumeid = founddetails.getId();
+						Get detailsrequest = books.volumes().get(volumeid);
+						Volume completedetails = detailsrequest.execute();
+						copyCompleteDetailsIntoBook(completedetails, book);
+					} else {
+						// multiple volumes found. save info for volumes, and set
+						// detail status in book to multiple found
+						details = copyDetailsIntoFoundRecords(volumes.getItems(), book);
+						book.setDetailstatus(DetailStatus.MULTIDETAILSFOUND);
+					}
+
+					// save book
+					bookRepo.save(book);
+
+					// save founddetails if available
+					if (details!=null) {
+						foundRepo.save(details);	
+					}
+				}
+				
+			} // end loop through list
+		} // end if created objects not null
 	}
 
 	public void assignDetailToBook(Long detailid, Long bookid) throws GeneralSecurityException, IOException {

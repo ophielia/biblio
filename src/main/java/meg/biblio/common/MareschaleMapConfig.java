@@ -3,15 +3,16 @@ package meg.biblio.common;
 import java.util.ArrayList;
 import java.util.List;
 
-import meg.bank.util.imp.FieldMapping;
-import meg.bank.util.imp.MapConfig;
+import meg.tools.imp.MapConfig;
+import meg.tools.imp.utils.FieldMapping;
+
 
 
 
 public class MareschaleMapConfig implements MapConfig {
 
 	public String getDestinationClassName() {
-		return "meg.bank.bus.dao.BankTADao";
+		return "meg.biblio.common.db.dao.ImportBookDao";
 	}
 
 	public List<FieldMapping> getMappings() {
@@ -21,24 +22,29 @@ public class MareschaleMapConfig implements MapConfig {
 
 		FieldMapping map = new FieldMapping();
 		map.setFromFieldTag("field1");
-		map.setSetterMethod("setTransdate");
-		mappings.add(map);
-
-		map = new FieldMapping();
-		map.setFromFieldTag("field3");
-		map.setSetterMethod("setDetail");
-		mappings.add(map);
-
-		map = new FieldMapping();
-		map.setFromFieldTag("field4");
-		map.setSetterMethod("setAmount");
+		map.setSetterMethod("setClientbookid");
 		mappings.add(map);
 
 		map = new FieldMapping();
 		map.setFromFieldTag("field2");
-		map.setSetterMethod("setDescription");
+		map.setSetterMethod("setTitle");
 		mappings.add(map);
 
+		map = new FieldMapping();
+		map.setFromFieldTag("field3");
+		map.setSetterMethod("setAuthor");
+		mappings.add(map);
+
+		map = new FieldMapping();
+		map.setFromFieldTag("field4");
+		map.setSetterMethod("setIllustrator");
+		mappings.add(map);
+
+		map = new FieldMapping();
+		map.setFromFieldTag("field5");
+		map.setSetterMethod("setPublisher");
+		mappings.add(map);
+		
 		return mappings;
 	}
 

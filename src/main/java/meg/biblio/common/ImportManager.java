@@ -6,6 +6,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import meg.biblio.catalog.CatalogService;
+import meg.biblio.catalog.web.model.BookModel;
 import meg.biblio.search.SearchService;
 import meg.tools.FileUtils;
 import meg.tools.imp.FileConfig;
@@ -28,7 +30,7 @@ public class ImportManager {
 	private ImportConfigManager configman = new ImportConfigManager();
 
 	@Autowired
-	SearchService searchService;
+	CatalogService catalogService;
 	
     @Value("${biblio.import.archivdir}")
     private String archivedir;
@@ -54,7 +56,7 @@ public class ImportManager {
 		return importedobjects;
 	}
 
-	public List<Object> importTransactions(int clientkey, String filestr) {
+	public void importBookList(Long clientkey, String filestr) {
 		// get configs for client
 		FileConfig config=null;
 		MapConfig mapconfig=null;
@@ -72,45 +74,13 @@ public class ImportManager {
 		Date now = new Date();
 		String filename = getArchiveDir() + now.getTime() + "_"+clientkey+"_imp.txt";
 
-		// import file into BankTADaos
+		// import file into ImportBookDao
 		FileUtils.writeStringToFile(filename, filestr);
 		File file = new File(filename);
-		List<Object> newobjects = importFile(config, mapconfig, file);
+		List<Object> newbooks = importFile(config, mapconfig, file);
 
-		// Begin persisting objects
-		// ---- search for date of most recently entered banktrans for
-		//      comparison
-		//Date mostrecent = searchService.getMostRecentTransDate();
-		Calendar cal = Calendar.getInstance();
-		//cal.setTime(mostrecent);
-		// ---- set calendar to latest possible time in date
-		cal.set(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH), 23, 59, 59);
-
-		// ---- go through object list - create list without duplicates
-/*		List<BankTADao> nondups = new ArrayList<BankTADao>();
-		for (int i=0;i<newobjects.size();i++) {
-			BankTADao trans = (BankTADao) newobjects.get(i);
-			if (mostrecent.before(trans.getTransdate())) {
-				// ------ if date is after most recent db banktrans, save the trans
-				// immediately
-				nondups.add(trans);
-			} else {
-				// ------ if date is on or before the most recent db banktrans date,
-				// check for duplicate in db (on amount, desc, and date)
-				boolean duplicate = transService.doesDuplicateExist(trans);
-				if (!duplicate) nondups.add(trans);
-			}
-		}
-
-		// ---- persist non duplicates
-		for (BankTADao trans: nondups) {
-			transService.addTransaction(trans);
-		}
-		*/
-		// returned List is a list of error / log messages (although
-		// this isn't yet really implemented - currently just returns the list of new objects
-		// TODO: add result object
-		return newobjects;
+		// pass importbookdaos to CatalogService for import
+		catalogService.createCatalogEntriesFromList(clientkey,newbooks);
 
 	}
 

@@ -15,11 +15,13 @@ public interface CatalogService {
 
 	BookModel createCatalogEntryFromBookModel(Long clientkey, BookModel model);
 
+	void createCatalogEntriesFromList(Long clientkey,List<Object> newbooks);
+	
 	BookModel loadBookModel(Long id);
 	
 	public void setDisplayInfoForLanguage(String lang,BookModel model);
 
-	void fillInDetailsForSingleBook(Long id) throws GeneralSecurityException, IOException;
+	
 	
 	List<BookDao> getAllBooks();
 	
@@ -28,6 +30,8 @@ public interface CatalogService {
 	public List<FoundDetailsDao> getFoundDetailsForBook(Long id);
 	
 	public 	void assignDetailToBook(Long detailid, Long bookid) throws GeneralSecurityException, IOException;
+
+	
 
 
 

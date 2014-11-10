@@ -1,5 +1,4 @@
 UseCase16 - importbooks 16	     Import list of books
-						16	     Import list of books
 						20	     Batch get info for books - guess shelf classification 
 						21	     Progressive search for details
 						22	     shelf classifcation
@@ -7,9 +6,13 @@ UseCase16 - importbooks 16	     Import list of books
 
 
 
+test CSI createCatalogEntriesFromList
+make front end for import
+
+
 ---- begin commit changes ----
 
-
+done - backend import
 
 
 ---- end commit changes ----
