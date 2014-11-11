@@ -13,6 +13,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import meg.biblio.catalog.db.dao.ArtistDao;
+import meg.biblio.catalog.db.dao.BookDao;
 
 import org.springframework.stereotype.Service;
 
@@ -32,10 +33,7 @@ public class SearchServiceImpl implements SearchService {
 		Root<ArtistDao> exp = c.from(ArtistDao.class);
 		c.select(exp);
 
-
 		if (tomatch != null) {
-
-			
 			// get where clause
 			List<Predicate> whereclause = new ArrayList<Predicate>();
 			// lastname
@@ -84,7 +82,33 @@ public class SearchServiceImpl implements SearchService {
 	}
 
 
+	public List<BookDao> findBookByClientId(String clientbookid) {
+		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+		CriteriaQuery<BookDao> c = cb.createQuery(BookDao.class);
+		Root<BookDao> exp = c.from(BookDao.class);
+		c.select(exp);
 
+		if (clientbookid != null) {
+			// get where clause
+			List<Predicate> whereclause = new ArrayList<Predicate>();
+			
+			Expression<String> path = exp.get("clientbookid");
+			Expression<String> trim =cb.trim(path);
+			Predicate predicate = cb.equal(trim,clientbookid.trim());
+			whereclause.add(predicate);
+			
+			// creating the query
+			c.where(cb.and(whereclause.toArray(new Predicate[whereclause.size()])));
+			TypedQuery<BookDao> q = entityManager.createQuery(c);
+
+			
+			List<BookDao> results = q.getResultList();
+			return results;
+		}
+
+		return null;
+
+	}
 
 }
 

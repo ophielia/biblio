@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:c="http://java.sun.com/jsp/jstl/core" 
+xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" 
+xmlns:form="http://www.springframework.org/tags/form"
+xmlns:jsp="http://java.sun.com/JSP/Page" 
+xmlns:spring="http://www.springframework.org/tags" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+  
+ <spring:message code="label_import_results" htmlEscape="false" var="lresults"/>
+<spring:message code="label_import_listsize" htmlEscape="false" var="llistsize"/>
+<spring:message code="label_import_importedsize" htmlEscape="false" var="limportedsize"/>
+<spring:message code="label_import_totalerrors" htmlEscape="false" var="ltotalerrors"/>
+<spring:message code="label_import_duplicates" htmlEscape="false" var="lduplicates"/>
+<spring:message code="label_import_noids" htmlEscape="false" var="lnoids"/>
+  
+<h1>${lresults}</h1>  
+<br />
+<br />
+<br />
+${llistsize}: ${model.bookImportModel.importListSize} <br />
+${limportedsize}: ${model.bookImportModel.importedSize} <br />
+${ltotalerrors}: ${model.bookImportModel.TotalErrorsSize} <br /> 
+${lduplicates}: ${model.bookImportModel.DuplicatesSize} <br />  
+${lnoids}: ${model.bookImportModel.noIdSize} <br />  
+
+
+
+</div>

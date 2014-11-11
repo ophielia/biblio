@@ -15,7 +15,6 @@ public interface CatalogService {
 
 	BookModel createCatalogEntryFromBookModel(Long clientkey, BookModel model);
 
-	void createCatalogEntriesFromList(Long clientkey,List<Object> newbooks);
 	
 	BookModel loadBookModel(Long id);
 	
@@ -31,7 +30,9 @@ public interface CatalogService {
 	
 	public 	void assignDetailToBook(Long detailid, Long bookid) throws GeneralSecurityException, IOException;
 
-	
+	void createCatalogEntriesFromList(Long clientkey, List<BookModel> toimport);
+
+	public PublisherDao findPublisherForName(String text);
 
 
 

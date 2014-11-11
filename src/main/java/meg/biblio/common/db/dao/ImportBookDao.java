@@ -13,6 +13,6 @@ public class ImportBookDao {
 	private String author;
 	private String illustrator;
 	private String publisher;
-
+	private String error;
 	
 }

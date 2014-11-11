@@ -13,6 +13,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 
 <spring:message code="label_book" htmlEscape="false" var="lbook"/>
 <spring:message code="label_book_title" htmlEscape="false" var="ltitle"/>
+<spring:message code="label_book_clientbookid" htmlEscape="false" var="lclientbookid"/>
 <spring:message code="label_book_author_entry" htmlEscape="false" var="lauthor"/>
 <spring:message code="label_book_illustrator_entry" htmlEscape="false" var="lillustrator"/>
 <spring:message code="button_save" htmlEscape="false" var="bsave"/>
@@ -24,6 +25,10 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <h1>${pagetitle}</h1>
 
 <form:form action="${actionurl}" id="createbook" method="POST" modelAttribute="bookModel">
+<div>
+<form:errors id="clientbookid_errors" class="errors" path="clientbookid" /> 
+${lclientbookid}:<form:input path="clientbookid" type="text" ></form:input>
+</div>
 <div>
 <form:errors id="title_errors" class="errors" path="title" /> 
 ${ltitle}:<form:input path="title" type="text" ></form:input>

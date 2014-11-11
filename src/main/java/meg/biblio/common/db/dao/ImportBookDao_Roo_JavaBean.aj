@@ -47,4 +47,12 @@ privileged aspect ImportBookDao_Roo_JavaBean {
         this.publisher = publisher;
     }
     
+    public String ImportBookDao.getError() {
+        return this.error;
+    }
+    
+    public void ImportBookDao.setError(String error) {
+        this.error = error;
+    }
+    
 }

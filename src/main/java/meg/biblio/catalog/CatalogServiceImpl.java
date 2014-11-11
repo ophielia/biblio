@@ -122,6 +122,31 @@ public class CatalogServiceImpl implements CatalogService {
 	@Override
 	public BookModel createCatalogEntryFromBookModel(Long clientkey,
 			BookModel model) {
+		BookDao book = createBookFromBookModel(clientkey,model);
+		Long bookid = book.getId();
+
+		// fill in details with google call
+		if (lookupwithgoogle) {
+			try {
+				fillInDetailsForSingleBook(bookid);
+			} catch (GeneralSecurityException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		// reload book in bookmodel
+		BookModel result = loadBookModel(bookid);
+
+		// return bookmodel
+		return result;
+	}
+
+	private BookDao createBookFromBookModel(Long clientkey,
+			BookModel model) {
 		// get book
 		BookDao book = model.getBook();
 
@@ -177,85 +202,18 @@ public class CatalogServiceImpl implements CatalogService {
 
 		// persist book
 		BookDao saved = bookRepo.save(book);
-		Long bookid = saved.getId();
-
-		// fill in details with google call
-		if (lookupwithgoogle) {
-			try {
-				fillInDetailsForSingleBook(bookid);
-			} catch (GeneralSecurityException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
+		return saved;
 		
-		// reload book in bookmodel
-		BookModel result = loadBookModel(bookid);
-
-		// return bookmodel
-		return result;
 	}
-
+	
 	@Override
-	public void createCatalogEntriesFromList(Long clientkey,List<Object> newbooks) {
+	public void createCatalogEntriesFromList(Long clientkey,List<BookModel> toimport) {
 		List<BookModel> createdobjects=new ArrayList<BookModel>();
-		List<Long> bookids=new ArrayList<Long>();
 		
-		// go through list of ImportBookDaos, creating BookDao objects and persisting them
-		for (Object imported:newbooks) {
-			ImportBookDao newbook=(ImportBookDao)imported;
+		// go through list of BookModels, persisting them
+		for (BookModel imported:toimport) {
 			
-			// get book
-			BookDao book = new BookDao();
-
-			// add clientkey
-			book.setClientid(clientkey);
-
-			// add default entries for status, detail status, type
-			book.setStatus(LocationStatus.PROCESSING);
-			book.setDetailstatus(DetailStatus.NODETAIL);
-			book.setType(BookType.UNKNOWN);
-			book.setCreatedon(new Date());
-			
-			// handle authors and illustrators by
-			// retrieving any existing artists from db
-			if (newbook.getAuthor()!=null) {
-				List<ArtistDao> newauthors=new ArrayList<ArtistDao>();
-				ArtistDao author = textToArtistName(newbook.getAuthor());
-				// new author - check for match in db
-				ArtistDao dbfound = searchService
-						.findArtistMatchingName(author);
-				if (dbfound!=null) {
-					newauthors.add(dbfound);
-				} else {
-					newauthors.add(author);
-				}
-				book.setAuthors(newauthors);	
-			}
-			if (newbook.getIllustrator()!=null) {
-				List<ArtistDao> newillustrators=new ArrayList<ArtistDao>();
-				ArtistDao illustrator = textToArtistName(newbook.getIllustrator());
-				// new Illustrator - check for match in db
-				ArtistDao dbfound = searchService
-						.findArtistMatchingName(illustrator);
-				if (dbfound!=null) {
-					newillustrators.add(dbfound);
-				} else {
-					newillustrators.add(illustrator);
-				}
-				book.setIllustrators(newillustrators);	
-			}
-			if (newbook.getPublisher()!=null) {
-				List<ArtistDao> newillustrators=new ArrayList<ArtistDao>();
-				PublisherDao publisher = findPublisherForName(newbook.getPublisher());
-				book.setPublisher(publisher);	
-			}			
-
-			// persist book
-			BookDao saved = bookRepo.save(book);
+			BookDao saved = createBookFromBookModel(clientkey,imported); 
 			Long bookid = saved.getId();
 			
 			// reload book in bookmodel
@@ -263,7 +221,6 @@ public class CatalogServiceImpl implements CatalogService {
 			
 			// add info to lists
 			createdobjects.add(result);
-			bookids.add(bookid);
 		}
 		
 		// get info on set number of books
@@ -421,7 +378,7 @@ public class CatalogServiceImpl implements CatalogService {
 
 	}
 
-	private void fillInDetailsForList(List<BookModel> createdobjects) throws GeneralSecurityException, IOException {
+	private void fillInDetailsForList(List<BookModel> searchobjects) throws GeneralSecurityException, IOException {
 		JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 		
 		// set up query google
@@ -435,11 +392,11 @@ public class CatalogServiceImpl implements CatalogService {
 
 
 		
-		if (createdobjects!=null) {
-			int searchsize = createdobjects.size()>batchsearchmax?batchsearchmax:createdobjects.size();	
+		if (searchobjects!=null) {
+			int searchsize = searchobjects.size()>batchsearchmax?batchsearchmax:searchobjects.size();	
 			
 			for (int i=0;i<searchsize;i++) {
-				BookModel tofillin = createdobjects.get(i);
+				BookModel tofillin = searchobjects.get(i);
 				// get book
 				BookDao book = tofillin.getBook();
 		
@@ -943,7 +900,7 @@ public class CatalogServiceImpl implements CatalogService {
 
 
 
-	private PublisherDao findPublisherForName(String text) {
+	public PublisherDao findPublisherForName(String text) {
 		if (text != null) {
 			// clean up text
 			text = text.trim();

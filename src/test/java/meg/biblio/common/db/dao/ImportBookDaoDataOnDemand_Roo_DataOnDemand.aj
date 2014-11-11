@@ -31,6 +31,7 @@ privileged aspect ImportBookDaoDataOnDemand_Roo_DataOnDemand {
         ImportBookDao obj = new ImportBookDao();
         setAuthor(obj, index);
         setClientbookid(obj, index);
+        setError(obj, index);
         setIllustrator(obj, index);
         setPublisher(obj, index);
         setTitle(obj, index);
@@ -45,6 +46,11 @@ privileged aspect ImportBookDaoDataOnDemand_Roo_DataOnDemand {
     public void ImportBookDaoDataOnDemand.setClientbookid(ImportBookDao obj, int index) {
         String clientbookid = "clientbookid_" + index;
         obj.setClientbookid(clientbookid);
+    }
+    
+    public void ImportBookDaoDataOnDemand.setError(ImportBookDao obj, int index) {
+        String error = "error_" + index;
+        obj.setError(error);
     }
     
     public void ImportBookDaoDataOnDemand.setIllustrator(ImportBookDao obj, int index) {

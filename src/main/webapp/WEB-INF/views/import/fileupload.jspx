@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:c="http://java.sun.com/jsp/jstl/core" 
+xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" 
+xmlns:form="http://www.springframework.org/tags/form"
+xmlns:jsp="http://java.sun.com/JSP/Page" 
+xmlns:spring="http://www.springframework.org/tags" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+  
+  <spring:url value="/import/upload" var="actionurl" />
+  
+  <spring:message code="label_import" htmlEscape="false" var="ltitle"/>
+<form:form method="post" enctype="multipart/form-data" action="${actionurl}"
+	modelAttribute="mediaUploadDao">
+<h1>${ltitle}</h1>
+	<br />
+	<input type="file" name="content" id="content" /><br />
+	<input type="submit" value="Upload"/>
+</form:form>  
+  
+  
+  
+  
+  
+  
+  
+  
+  <!-- 
+    <form:create id="fc_meg_bank_bus_dao_MediaUploadDao" mulitpart="true" modelAttribute="mediaUploadDao" path="/import" render="${empty dependencies}" z="pPVOea9mehsdaI6tfgFV2MKJBhY=">
+        <field:input field="filepath" id="c_meg_bank_bus_dao_MediaUploadDao_filepath" render="false" required="true" z="user-managed"/>
+        <field:input field="contentType" id="c_meg_bank_bus_dao_MediaUploadDao_contentType" render="false" z="user-managed"/>
+        <field:input field="importClient" id="c_meg_bank_bus_dao_MediaUploadDao_importClient" render="true" required="true" validationMessageCode="field_invalid_integer" z="user-managed"/>
+        <field:input field="content" id="c_meg_bank_bus_dao_MediaUploadDao_content" z="AibCVBj79dZQiaLqq28DMjGF2yo="/>
+    </form:create>
+    <form:dependency dependencies="${dependencies}" id="d_meg_bank_bus_dao_MediaUploadDao" render="${not empty dependencies}" z="K1V9t7UdqiBl9HH43tX/qQPb4WA="/>
+    
+     -->
+</div>

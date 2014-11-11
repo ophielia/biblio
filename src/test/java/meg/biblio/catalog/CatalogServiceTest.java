@@ -11,6 +11,7 @@ import meg.biblio.catalog.db.dao.ArtistDao;
 import meg.biblio.catalog.db.dao.BookDao;
 import meg.biblio.catalog.db.dao.PublisherDao;
 import meg.biblio.catalog.web.model.BookModel;
+import meg.biblio.search.SearchService;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -28,6 +29,9 @@ public class CatalogServiceTest {
 
 	@Autowired
 	CatalogService catalogService;
+	
+	@Autowired
+	SearchService searchService;	
 
 	@Autowired
 	ArtistRepository artistRepo;
@@ -156,7 +160,47 @@ public class CatalogServiceTest {
 		// now - check details - should not be no detail
 		Assert.assertTrue(CatalogServiceImpl.DetailStatus.NODETAIL!= result.getDetailstatus().longValue());
 	}
+	
+ 	
+  @Test
+  public void testCreateFromList() {
+	  //createCatalogEntriesFromList(Long clientkey,List<BookModel> toimport) 
+	  // make three books add to list
+	  BookDao book1 = new BookDao();
+	  book1.setClientbookid("1A");
+	  book1.setTitle("Pride and Prejudice");
+	  BookDao book2 = new BookDao();
+	  book2.setClientbookid("2A");
+	  book2.setTitle("Sense and Sensibility");
+	  List<ArtistDao> authors = new ArrayList<ArtistDao>();
+	  ArtistDao author = catalogService.textToArtistName("Jane Austen");
+	  authors.add(author);
+	  BookDao book3 = new BookDao();
+	  book3.setClientbookid("3A");
+	  book3.setTitle("The Very Hungry Catepillar");
+	  authors = new ArrayList<ArtistDao>();
+	  author = catalogService.textToArtistName("Eric Carle");
+	  book3.setAuthors(authors);
+	  
+	  // to model, and in list
+	  List<BookModel> toimport = new ArrayList<BookModel>();
+	  toimport.add(new BookModel(book1));
+	  toimport.add(new BookModel(book2));
+	  toimport.add(new BookModel(book3));
+	  
+	  // service call
+	  catalogService.createCatalogEntriesFromList(new Long(1), toimport);
 
+	  // find by book id
+	  List<BookDao> found = searchService.findBookByClientId("1A");
+	  // Assert not null
+	  Assert.assertNotNull(found);
+	  Assert.assertTrue(1==found.size());
+	  BookDao result = found.get(0);
+	  Assert.assertEquals("Pride and Prejudice", result.getTitle());
+	  
+	  
+  }
 /*
 	@Test
 	public void testCopyDetailsAuthor() {
