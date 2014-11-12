@@ -1,14 +1,12 @@
 package meg.biblio.common;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import meg.tools.imp.MapConfig;
 import meg.tools.imp.FileConfig;
 
-
-
-
-
+@Component
 public class ImportConfigManager {
 
 	

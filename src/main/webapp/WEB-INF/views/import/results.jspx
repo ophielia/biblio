@@ -18,11 +18,11 @@ xmlns:spring="http://www.springframework.org/tags" version="2.0">
 <br />
 <br />
 <br />
-${llistsize}: ${model.bookImportModel.importListSize} <br />
-${limportedsize}: ${model.bookImportModel.importedSize} <br />
-${ltotalerrors}: ${model.bookImportModel.TotalErrorsSize} <br /> 
-${lduplicates}: ${model.bookImportModel.DuplicatesSize} <br />  
-${lnoids}: ${model.bookImportModel.noIdSize} <br />  
+${llistsize}: ${bookImportModel.importListSize} <br />
+${limportedsize}: ${bookImportModel.importedSize} <br />
+${ltotalerrors}: ${bookImportModel.totalErrorsSize} <br /> 
+${lduplicates}: ${bookImportModel.duplicatesSize} <br />  
+${lnoids}: ${bookImportModel.noIdSize} <br />  
 
 
 

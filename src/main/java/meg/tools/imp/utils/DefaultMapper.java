@@ -109,7 +109,7 @@ public class DefaultMapper implements Mapper {
 		String classname = mapconfig.getHelperClassName();
 		if (classname == null) {
 			// no helper class declared - use the default
-			classname = "meg.util.imp.DefaultMappingHelper";
+			classname = "meg.tools.imp.utils.DefaultMappingHelper";
 		}
 
 		try {

@@ -6,9 +6,6 @@ import java.util.List;
 import meg.tools.imp.MapConfig;
 import meg.tools.imp.utils.FieldMapping;
 
-
-
-
 public class MareschaleMapConfig implements MapConfig {
 
 	public String getDestinationClassName() {
@@ -49,7 +46,7 @@ public class MareschaleMapConfig implements MapConfig {
 	}
 
 	public String getHelperClassName() {
-		return "meg.bank.bus.imp.SocGenMappingHelper";
+		return "meg.tools.imp.utils.DefaultMappingHelper";
 	}
 
 }

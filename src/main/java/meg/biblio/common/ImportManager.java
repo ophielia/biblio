@@ -40,7 +40,9 @@ public class ImportManager {
 		public static final String noidsize="noidsize";
 		public static final String notitlesize="notitlesize";
 	} 
-	private ImportConfigManager configman = new ImportConfigManager();
+	
+	@Autowired
+	ImportConfigManager configman = new ImportConfigManager();
 
 	@Autowired
 	CatalogService catalogService;
@@ -113,7 +115,7 @@ public class ImportManager {
 			// note - only books with clientbookids are imported
 			if (clientbookid!=null) {
 				// check for existing clientbookid
-				List<BookDao> found = searchService.findBookByClientId(clientbookid); 
+				List<Long> found = searchService.findBookIdByClientId(clientbookid); 
 				if (found!=null && found.size()>0) {
 					// if exists - put newbook in duplicate list
 					errors.add((ImportBookDao)newbookobject);

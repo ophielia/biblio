@@ -10,5 +10,5 @@ public interface SearchService {
 
 	public ArtistDao findArtistMatchingName(ArtistDao tomatch);
 
-	public List<BookDao> findBookByClientId(String clientbookid);
+	public List<Long> findBookIdByClientId(String clientbookid);
 }

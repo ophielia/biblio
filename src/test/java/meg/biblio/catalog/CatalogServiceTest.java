@@ -192,11 +192,12 @@ public class CatalogServiceTest {
 	  catalogService.createCatalogEntriesFromList(new Long(1), toimport);
 
 	  // find by book id
-	  List<BookDao> found = searchService.findBookByClientId("1A");
+	  List<Long> found = searchService.findBookIdByClientId("1A");
+	  
 	  // Assert not null
 	  Assert.assertNotNull(found);
 	  Assert.assertTrue(1==found.size());
-	  BookDao result = found.get(0);
+	  BookDao result = bookRepo.findOne(found.get(0));
 	  Assert.assertEquals("Pride and Prejudice", result.getTitle());
 	  
 	  

@@ -82,12 +82,12 @@ public class SearchServiceImpl implements SearchService {
 	}
 
 
-	public List<BookDao> findBookByClientId(String clientbookid) {
+	public List<Long> findBookIdByClientId(String clientbookid) {
 		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-		CriteriaQuery<BookDao> c = cb.createQuery(BookDao.class);
+		CriteriaQuery<Long> c = cb.createQuery(Long.class);
 		Root<BookDao> exp = c.from(BookDao.class);
-		c.select(exp);
-
+		c.select(exp.<Long>get("id"));		
+		
 		if (clientbookid != null) {
 			// get where clause
 			List<Predicate> whereclause = new ArrayList<Predicate>();
@@ -99,10 +99,10 @@ public class SearchServiceImpl implements SearchService {
 			
 			// creating the query
 			c.where(cb.and(whereclause.toArray(new Predicate[whereclause.size()])));
-			TypedQuery<BookDao> q = entityManager.createQuery(c);
+			TypedQuery<Long> q = entityManager.createQuery(c);
 
 			
-			List<BookDao> results = q.getResultList();
+			List<Long> results = q.getResultList();
 			return results;
 		}
 

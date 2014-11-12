@@ -8,20 +8,8 @@ also - client book id in existing add book
 
 
 
------>  make front end for import
-done - controller start
-done - put "real" clientkey in controller
-done - what about some sort of number - imported and errors to be shown on new page
-done - make page
 
-TESTS FIRST, then run through
 
-done - make it green - test CSI createCatalogEntriesFromList
-done - CSI create..FromList - needs two things - check for duplicates  (, and escape apostrophes (check and see if this is necessary))
-nevermind - test SSI findBookByClientId
-
-done - add to menu
-try it out
 
 
 classification - http://dojotoolkit.org/reference-guide/1.10/dijit/form/DropDownButton.html
@@ -31,7 +19,16 @@ classification - http://dojotoolkit.org/reference-guide/1.10/dijit/form/DropDown
 
 ---- begin commit changes ----
 
-
+done - make front end for import
+done - controller start
+done - put "real" clientkey in controller
+done - what about some sort of number - imported and errors to be shown on new page
+done - make page
+done - make it green - test CSI createCatalogEntriesFromList
+done - CSI create..FromList - needs two things - check for duplicates  (, and escape apostrophes (check and see if this is necessary))
+nevermind - test SSI findBookByClientId
+done - add to menu
+done - try it out
 
 
 ---- end commit changes ----
