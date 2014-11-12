@@ -11,4 +11,6 @@ public interface SearchService {
 	public ArtistDao findArtistMatchingName(ArtistDao tomatch);
 
 	public List<Long> findBookIdByClientId(String clientbookid);
+	
+	public List<BookDao> findBooksWithoutDetails(int maxresults);	
 }

@@ -19,11 +19,14 @@ import meg.biblio.catalog.db.dao.FoundDetailsDao;
 import meg.biblio.catalog.db.dao.PublisherDao;
 import meg.biblio.catalog.db.dao.SubjectDao;
 import meg.biblio.catalog.web.model.BookModel;
+import meg.biblio.common.ClientService;
 import meg.biblio.common.SelectKeyService;
 import meg.biblio.search.SearchService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,13 +43,22 @@ import com.google.api.services.books.model.Volumes;
 
 @Service
 @Transactional
+@EnableScheduling
 public class CatalogServiceImpl implements CatalogService {
+
+	private final static class NameMatchType {
+		public static final long FIRSTINITIAL = 1;
+		public static final long LASTNAME = 2;
+	}
 
 	@Autowired
 	SelectKeyService keyService;	
 	
 	@Autowired
 	SearchService searchService;
+	
+	@Autowired
+	ClientService clientService;	
 	
 	@Autowired
 	BookRepository bookRepo;
@@ -78,41 +90,6 @@ public class CatalogServiceImpl implements CatalogService {
 	@Value("${biblio.google.batchsearchmax}")
 	private int batchsearchmax;
 	
-	String booktypelkup = "booktype";
-
-	
-	public final class LocationStatus {
-		public static final long CHECKEDOUT = 1;
-		public static final long SHELVED = 2;
-		public static final long LOSTBYLENDER = 3;
-		public static final long REMOVEDFROMCIRC = 4;
-		public static final long INVNOTFOUND = 5;
-		public static final long PROCESSING = 6;
-	}
-
-	String bookstatuslkup = "bookstatus";
-
-	public static final class BookType {
-		public static final long FICTION = 1;
-		public static final long NONFICTION = 2;
-		public static final long REFERENCE = 3;
-		public static final long FOREIGNLANGUAGE = 4;
-		public static final long UNKNOWN = 5;
-	}
-
-	String detailstatuslkup = "detailstatus";
-	public static final class DetailStatus {
-		public static final long NODETAIL = 1;
-		public static final long DETAILNOTFOUND = 2;
-		public static final long MULTIDETAILSFOUND = 3;
-		public static final long DETAILFOUND = 4;
-	}
-	
-	private static final class NameMatchType {
-		public static final long FIRSTINITIAL=1;
-		public static final long LASTNAME=2;
-	}
-
 	/**
 	 * Assumes validated BookModel. Saves a book to the database for the first
 	 * time. Usually, only minimal entries are made here - details are filled in
@@ -137,6 +114,9 @@ public class CatalogServiceImpl implements CatalogService {
 			}
 		}
 		
+		// call automatic classification of book
+		classifyBook(bookid);
+		
 		// reload book in bookmodel
 		BookModel result = loadBookModel(bookid);
 
@@ -144,6 +124,21 @@ public class CatalogServiceImpl implements CatalogService {
 		return result;
 	}
 
+	private void classifyBook(Long bookid) {
+		BookDao book = bookRepo.findOne(bookid);
+		if (book!=null) {
+			if (book.getClientid()!=null) {
+				Long clientkey = book.getClientid();
+				Classifier classifier = clientService.getClassifierForClient(clientkey);
+				book = classifier.classifyBook(book);
+				if (book.getShelfclass()!=null) {
+					// save book if classification assigned.
+					bookRepo.save(book);
+				}
+			}
+		}
+	}
+	
 	private BookDao createBookFromBookModel(Long clientkey,
 			BookModel model) {
 		// get book
@@ -381,7 +376,7 @@ public class CatalogServiceImpl implements CatalogService {
 
 	}
 
-	private void fillInDetailsForList(List<BookModel> searchobjects) throws GeneralSecurityException, IOException {
+	public void fillInDetailsForList(List<BookModel> searchobjects) throws GeneralSecurityException, IOException {
 		JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 		
 		// set up query google
@@ -968,6 +963,33 @@ public class CatalogServiceImpl implements CatalogService {
 	@Override
 	public List<BookDao> getAllBooks() {
 		return bookRepo.findAll();
+	}
+	
+	@Scheduled(fixedRate = 60000)
+	private void scheduledFillInDetails() {
+		// get list of books without details - max batchsearchmax
+		List<BookDao> nodetails = searchService.findBooksWithoutDetails(batchsearchmax);
+
+		// put books in book model
+		if (nodetails!=null) {
+			List<BookModel> adddetails = new ArrayList<BookModel>();
+			for (BookDao book:nodetails) {
+				adddetails.add(new BookModel(book));
+			}
+			// service call to fill in details
+			try {
+				fillInDetailsForList(adddetails);
+			} catch (GeneralSecurityException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		// end
+
 	}
 
 }

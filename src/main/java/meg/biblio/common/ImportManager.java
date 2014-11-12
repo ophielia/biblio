@@ -42,7 +42,7 @@ public class ImportManager {
 	} 
 	
 	@Autowired
-	ImportConfigManager configman = new ImportConfigManager();
+	ClientService clientService;
 
 	@Autowired
 	CatalogService catalogService;
@@ -82,9 +82,9 @@ public class ImportManager {
 		FileConfig config=null;
 		MapConfig mapconfig=null;
 		try {
-			config = configman
+			config = clientService
 					.getFileConfigForClient(clientkey);
-			mapconfig = configman
+			mapconfig = clientService
 					.getMapConfigForClient(clientkey);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -131,11 +131,13 @@ public class ImportManager {
 						if (newbook.getAuthor()!=null) {
 							List<ArtistDao> authors=new ArrayList<ArtistDao>();
 							ArtistDao author = catalogService.textToArtistName(newbook.getAuthor().trim());
+							authors.add(author);
 							book.setAuthors(authors);
 						}
 						if (newbook.getIllustrator()!=null) {
 							List<ArtistDao> illustrators=new ArrayList<ArtistDao>();
 							ArtistDao illustrator = catalogService.textToArtistName(newbook.getIllustrator().trim());
+							illustrators.add(illustrator);
 							book.setIllustrators(illustrators);
 						}
 						if (newbook.getPublisher()!=null) {

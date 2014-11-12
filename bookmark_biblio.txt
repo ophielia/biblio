@@ -6,7 +6,9 @@ UseCase16 - importbooks 16	     Import list of books
 also - client book id in existing add book
 
 
-
+Classification structure made
+begin MareschaleClassifier
+fill in ClassificationDao - long key, textdisplay, imagedisplay, language, description
 
 
 
@@ -19,6 +21,16 @@ classification - http://dojotoolkit.org/reference-guide/1.10/dijit/form/DropDown
 
 ---- begin commit changes ----
 
+done - Progressive search for details
+
+
+---- end commit changes ----
+
+
+
+----- begin branch changes ----
+
+done - backend import
 done - make front end for import
 done - controller start
 done - put "real" clientkey in controller
@@ -29,16 +41,6 @@ done - CSI create..FromList - needs two things - check for duplicates  (, and es
 nevermind - test SSI findBookByClientId
 done - add to menu
 done - try it out
-
-
----- end commit changes ----
-
-
-
------ begin branch changes ----
-
-done - backend import
-
 
 ---- end branch changes ----
 

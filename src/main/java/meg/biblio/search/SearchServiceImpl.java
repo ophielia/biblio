@@ -12,6 +12,7 @@ import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import meg.biblio.catalog.CatalogService;
 import meg.biblio.catalog.db.dao.ArtistDao;
 import meg.biblio.catalog.db.dao.BookDao;
 
@@ -107,6 +108,29 @@ public class SearchServiceImpl implements SearchService {
 		}
 
 		return null;
+
+	}
+	
+	public List<BookDao> findBooksWithoutDetails(int max) {
+		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+		CriteriaQuery<BookDao> c = cb.createQuery(BookDao.class);
+		Root<BookDao> exp = c.from(BookDao.class);
+		c.select(exp);		
+		
+			// get where clause
+			List<Predicate> whereclause = new ArrayList<Predicate>();
+			
+			Expression<Long> path = exp.get("detailstatus");
+			Predicate predicate = cb.equal(path,new Long(CatalogService.DetailStatus.NODETAIL));
+			whereclause.add(predicate);
+			
+			// creating the query
+			c.where(cb.and(whereclause.toArray(new Predicate[whereclause.size()])));
+			TypedQuery<BookDao> q = entityManager.createQuery(c).setMaxResults(max);
+
+			
+			List<BookDao> results = q.getResultList();
+			return results;
 
 	}
 
