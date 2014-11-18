@@ -128,19 +128,19 @@ public class ImportManager {
 						BookDao book = new BookDao();
 						book.setClientbookid(newbook.getClientbookid());
 						book.setTitle(title);
-						if (newbook.getAuthor()!=null) {
+						if (newbook.getAuthor()!=null && newbook.getAuthor().trim().length()>0 ) {
 							List<ArtistDao> authors=new ArrayList<ArtistDao>();
 							ArtistDao author = catalogService.textToArtistName(newbook.getAuthor().trim());
 							authors.add(author);
 							book.setAuthors(authors);
 						}
-						if (newbook.getIllustrator()!=null) {
+						if (newbook.getIllustrator()!=null && newbook.getIllustrator().trim().length()>0) {
 							List<ArtistDao> illustrators=new ArrayList<ArtistDao>();
 							ArtistDao illustrator = catalogService.textToArtistName(newbook.getIllustrator().trim());
 							illustrators.add(illustrator);
 							book.setIllustrators(illustrators);
 						}
-						if (newbook.getPublisher()!=null) {
+						if (newbook.getPublisher()!=null && newbook.getPublisher().trim().length()>0) {
 							PublisherDao publisher=catalogService.findPublisherForName(newbook.getPublisher());
 							book.setPublisher(publisher);
 						}						

@@ -121,16 +121,4 @@ privileged aspect ArtistDaoIntegrationTest_Roo_IntegrationTest {
         Assert.assertNotNull("Expected 'ArtistDao' identifier to no longer be null", obj.getId());
     }
     
-    @Test
-    public void ArtistDaoIntegrationTest.testDelete() {
-        ArtistDao obj = dod.getRandomArtistDao();
-        Assert.assertNotNull("Data on demand for 'ArtistDao' failed to initialize correctly", obj);
-        Long id = obj.getId();
-        Assert.assertNotNull("Data on demand for 'ArtistDao' failed to provide an identifier", id);
-        obj = artistRepository.findOne(id);
-        artistRepository.delete(obj);
-        artistRepository.flush();
-        Assert.assertNull("Failed to remove 'ArtistDao' with identifier '" + id + "'", artistRepository.findOne(id));
-    }
-    
 }

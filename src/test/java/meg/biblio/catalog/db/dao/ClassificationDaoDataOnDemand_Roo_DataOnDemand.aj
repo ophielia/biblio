@@ -31,7 +31,10 @@ privileged aspect ClassificationDaoDataOnDemand_Roo_DataOnDemand {
         ClassificationDao obj = new ClassificationDao();
         setClientid(obj, index);
         setDescription(obj, index);
-        setDisplay(obj, index);
+        setImagedisplay(obj, index);
+        setKey(obj, index);
+        setLanguage(obj, index);
+        setTextdisplay(obj, index);
         return obj;
     }
     
@@ -45,9 +48,24 @@ privileged aspect ClassificationDaoDataOnDemand_Roo_DataOnDemand {
         obj.setDescription(description);
     }
     
-    public void ClassificationDaoDataOnDemand.setDisplay(ClassificationDao obj, int index) {
-        String display = "display_" + index;
-        obj.setDisplay(display);
+    public void ClassificationDaoDataOnDemand.setImagedisplay(ClassificationDao obj, int index) {
+        String imagedisplay = "imagedisplay_" + index;
+        obj.setImagedisplay(imagedisplay);
+    }
+    
+    public void ClassificationDaoDataOnDemand.setKey(ClassificationDao obj, int index) {
+        Long key = new Integer(index).longValue();
+        obj.setKey(key);
+    }
+    
+    public void ClassificationDaoDataOnDemand.setLanguage(ClassificationDao obj, int index) {
+        String language = "language_" + index;
+        obj.setLanguage(language);
+    }
+    
+    public void ClassificationDaoDataOnDemand.setTextdisplay(ClassificationDao obj, int index) {
+        String textdisplay = "textdisplay_" + index;
+        obj.setTextdisplay(textdisplay);
     }
     
     public ClassificationDao ClassificationDaoDataOnDemand.getSpecificClassificationDao(int index) {

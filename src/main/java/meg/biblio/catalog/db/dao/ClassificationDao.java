@@ -12,6 +12,11 @@ import org.springframework.roo.addon.tostring.RooToString;
 public class ClassificationDao {
 	
 	private Long clientid;
-	private String display;
+	private Long key;
+	private String textdisplay;
+	private String imagedisplay;
+	private String language;
 	private String description;
+	
+
 }

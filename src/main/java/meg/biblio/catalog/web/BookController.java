@@ -2,6 +2,7 @@ package meg.biblio.catalog.web;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -11,10 +12,12 @@ import meg.biblio.catalog.CatalogService;
 import meg.biblio.catalog.CatalogServiceImpl;
 import meg.biblio.catalog.db.dao.ArtistDao;
 import meg.biblio.catalog.db.dao.BookDao;
+import meg.biblio.catalog.db.dao.ClassificationDao;
 import meg.biblio.catalog.db.dao.FoundDetailsDao;
 import meg.biblio.catalog.web.model.BookModel;
 import meg.biblio.catalog.web.validator.BookModelValidator;
 import meg.biblio.common.ClientService;
+import meg.biblio.common.SelectKeyService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -33,6 +36,9 @@ public class BookController {
 
 	@Autowired
 	CatalogService catalogService;
+	
+	@Autowired
+	SelectKeyService keyService;
 	
 	@Autowired
 	ClientService clientService;	
@@ -78,7 +84,6 @@ public class BookController {
         
         // add book to catalog
         BookModel book = catalogService.createCatalogEntryFromBookModel(clientkey,model);
-        catalogService.setDisplayInfoForLanguage(lang,model);
         Long bookid = book.getBookid();
         
         uiModel.addAttribute("bookModel", book);
@@ -99,7 +104,6 @@ public class BookController {
     	BookModel model = new BookModel();
     	if (id!=null) {
     		model = catalogService.loadBookModel(id);	
-    		catalogService.setDisplayInfoForLanguage(lang,model);
     	} 
     	
     	uiModel.addAttribute("bookModel",model);
@@ -119,7 +123,6 @@ public class BookController {
         	uiModel.addAttribute("foundDetails",multidetails);
     		
     		model = catalogService.loadBookModel(id);	
-    		catalogService.setDisplayInfoForLanguage(lang,model);
     	} 
     	
     	uiModel.addAttribute("bookModel",model);
@@ -147,5 +150,48 @@ public class BookController {
     @RequestMapping(method = RequestMethod.GET, produces = "text/html")
     public String showBookList(Model uiModel, HttpServletRequest httpServletRequest) {
     	return "book/list";
-    }       
+    }  
+    
+    @ModelAttribute("classHash")
+    public HashMap<Long,ClassificationDao> getClassificationInfo(HttpServletRequest httpServletRequest) {
+    	Locale locale = httpServletRequest.getLocale();
+    	String lang = locale.getLanguage();
+    	Long clientkey = clientService.getCurrentClientKey();
+    	
+    	HashMap<Long,ClassificationDao> shelfclasses =catalogService.getShelfClassHash(clientkey,lang);
+    			
+    	return shelfclasses; 
+    }
+    
+    
+    @ModelAttribute("typeLkup")
+    public HashMap<Long,String> getBookTypeLkup(HttpServletRequest httpServletRequest) {
+    	Locale locale = httpServletRequest.getLocale();
+    	String lang = locale.getLanguage();
+    	
+    	HashMap<Long, String> booktypedisps = keyService.getDisplayHashForKey(
+    			CatalogService.booktypelkup, lang);
+    	return booktypedisps; 
+    }
+
+    @ModelAttribute("statusLkup")
+    public HashMap<Long,String> getStatusLkup(HttpServletRequest httpServletRequest) {
+    	Locale locale = httpServletRequest.getLocale();
+    	String lang = locale.getLanguage();
+    	
+    	HashMap<Long, String> booktypedisps = keyService
+    			.getDisplayHashForKey(CatalogService.bookstatuslkup, lang);
+    	return booktypedisps; 
+    }   
+    
+    @ModelAttribute("detailstatusLkup")
+    public HashMap<Long,String> getDetailStatusLkup(HttpServletRequest httpServletRequest) {
+    	Locale locale = httpServletRequest.getLocale();
+    	String lang = locale.getLanguage();
+    	
+    	HashMap<Long, String> booktypedisps = keyService
+    			.getDisplayHashForKey(CatalogService.detailstatuslkup, lang);
+    	return booktypedisps; 
+    }      
+    
 }

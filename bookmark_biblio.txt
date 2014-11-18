@@ -3,13 +3,10 @@ UseCase16 - importbooks 16	     Import list of books
 						21	     Progressive search for details
 						22	     shelf classifcation
 
-also - client book id in existing add book
 
 
-Classification structure made
-begin MareschaleClassifier
-fill in ClassificationDao - long key, textdisplay, imagedisplay, language, description
 
+check in, merge branch into master
 
 
 
@@ -17,11 +14,23 @@ fill in ClassificationDao - long key, textdisplay, imagedisplay, language, descr
 classification - http://dojotoolkit.org/reference-guide/1.10/dijit/form/DropDownButton.html
 
 
+next up
+quick delay in master - widget for shelf classification
 
-
+then - usecase 3 full text indexing
+		2 search (title, author, keyword, publisher, shelfclass)
 ---- begin commit changes ----
 
-done - Progressive search for details
+done - Classification structure made
+done - begin MareschaleClassifier
+done - fill in ClassificationDao - long key, textdisplay, imagedisplay, language, description
+done - display classification in front end
+done - remove displays from BookModel
+done - correct show.jspx to not send Disps.
+done - remove disps from BookModel
+done - check classification - only english stuart little is classified, 
+done -   and it's classified incorrectly!!!
+done - test - client book id in existing add book
 
 
 ---- end commit changes ----
@@ -41,6 +50,7 @@ done - CSI create..FromList - needs two things - check for duplicates  (, and es
 nevermind - test SSI findBookByClientId
 done - add to menu
 done - try it out
+done - Progressive search for details
 
 ---- end branch changes ----
 

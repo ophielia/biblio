@@ -29,32 +29,32 @@ public class CatalogServiceTest {
 
 	@Autowired
 	CatalogService catalogService;
-	
+
 	@Autowired
-	SearchService searchService;	
+	SearchService searchService;
 
 	@Autowired
 	ArtistRepository artistRepo;
 
 	@Autowired
 	BookRepository bookRepo;
-	
+
 	@Autowired
-	PublisherRepository pubRepo;	
-	
+	PublisherRepository pubRepo;
+
 	@Autowired
-	SubjectRepository subjectRepo;		
-	
+	SubjectRepository subjectRepo;
+
 	Long artistid;
 	Long pubtestid;
-	
+
 	@Before
 	public void setup() {
 		// make artist susan cooper
 		ArtistDao artist = catalogService.textToArtistName("Susan Cooper");
 		artist = artistRepo.save(artist);
 		artistid = artist.getId();
-		
+
 		// setup book with publisher
 		// create publisher
 		PublisherDao pub = new PublisherDao();
@@ -68,7 +68,7 @@ public class CatalogServiceTest {
 		BookDao pubtest = bookRepo.saveAndFlush(pubtestbook);
 		pubtestid = pubtest.getId();
 	}
-	
+
 	@Test
 	public void testCreateCatalogEntry() {
 		BookDao book = new BookDao();
@@ -89,7 +89,8 @@ public class CatalogServiceTest {
 		BookModel model = new BookModel(book);
 
 		// service call
-		BookModel result = catalogService.createCatalogEntryFromBookModel(1L, model);
+		BookModel result = catalogService.createCatalogEntryFromBookModel(1L,
+				model);
 
 		// check call
 		Assert.assertNotNull(result);
@@ -98,9 +99,9 @@ public class CatalogServiceTest {
 		Assert.assertNotNull(result.getAuthors());
 		Assert.assertEquals(1, result.getAuthors().size());
 		ArtistDao resultart = result.getAuthors().get(0);
-		Assert.assertEquals("willikins",resultart.getLastname());
+		Assert.assertEquals("willikins", resultart.getLastname());
 		Assert.assertNotNull(result.getIllustrators());
-		
+
 		// test with existing author
 		book = new BookDao();
 		book.setTitle("the dark is rising");
@@ -110,7 +111,7 @@ public class CatalogServiceTest {
 		authors = new ArrayList<ArtistDao>();
 		authors.add(author);
 		book.setAuthors(authors);
-		
+
 		model = new BookModel(book);
 
 		// service call
@@ -124,7 +125,7 @@ public class CatalogServiceTest {
 		Assert.assertNull(result.getIllustrators());
 		// test authors
 		ArtistDao artist = result.getAuthors().get(0);
-		Assert.assertEquals(artistid,artist.getId());
+		Assert.assertEquals(artistid, artist.getId());
 	}
 
 	@Test
@@ -132,12 +133,11 @@ public class CatalogServiceTest {
 
 		// retreive book
 		BookDao book = bookRepo.findOne(pubtestid);
-		
-		
+
 		// check that publisher is not null
 		Assert.assertNotNull(book.getPublisher());
 	}
-	
+
 	@Test
 	public void testFillDetailsFromEntry() {
 		BookDao book = new BookDao();
@@ -150,7 +150,8 @@ public class CatalogServiceTest {
 		BookModel model = new BookModel(book);
 
 		// service call
-		BookModel result = catalogService.createCatalogEntryFromBookModel(1L, model);
+		BookModel result = catalogService.createCatalogEntryFromBookModel(1L,
+				model);
 
 		// check call
 		Assert.assertNotNull(result);
@@ -158,190 +159,247 @@ public class CatalogServiceTest {
 		Assert.assertNotNull(result.getClientid());
 		Assert.assertNotNull(result.getAuthors());
 		// now - check details - should not be no detail
-		Assert.assertTrue(CatalogServiceImpl.DetailStatus.NODETAIL!= result.getDetailstatus().longValue());
+		Assert.assertTrue(CatalogServiceImpl.DetailStatus.NODETAIL != result
+				.getDetailstatus().longValue());
 	}
-	
- 	
-  @Test
-  public void testCreateFromList() {
-	  //createCatalogEntriesFromList(Long clientkey,List<BookModel> toimport) 
-	  // make three books add to list
-	  BookDao book1 = new BookDao();
-	  book1.setClientbookid("1A");
-	  book1.setTitle("Pride and Prejudice");
-	  BookDao book2 = new BookDao();
-	  book2.setClientbookid("2A");
-	  book2.setTitle("Sense and Sensibility");
-	  List<ArtistDao> authors = new ArrayList<ArtistDao>();
-	  ArtistDao author = catalogService.textToArtistName("Jane Austen");
-	  authors.add(author);
-	  BookDao book3 = new BookDao();
-	  book3.setClientbookid("3A");
-	  book3.setTitle("The Very Hungry Catepillar");
-	  authors = new ArrayList<ArtistDao>();
-	  author = catalogService.textToArtistName("Eric Carle");
-	  book3.setAuthors(authors);
-	  
-	  // to model, and in list
-	  List<BookModel> toimport = new ArrayList<BookModel>();
-	  toimport.add(new BookModel(book1));
-	  toimport.add(new BookModel(book2));
-	  toimport.add(new BookModel(book3));
-	  
-	  // service call
-	  catalogService.createCatalogEntriesFromList(new Long(1), toimport);
 
-	  // find by book id
-	  List<Long> found = searchService.findBookIdByClientId("1A");
-	  
-	  // Assert not null
-	  Assert.assertNotNull(found);
-	  Assert.assertTrue(1==found.size());
-	  BookDao result = bookRepo.findOne(found.get(0));
-	  Assert.assertEquals("Pride and Prejudice", result.getTitle());
-	  
-	  
-  }
-/*
 	@Test
-	public void testCopyDetailsAuthor() {
-		BookDao testbook = new BookDao();
-		ArtistDao artist = new ArtistDao();
+	public void testClassifyBook() throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+		// create and save book
+		// book - with statusid detail found, language fr, and book type unknown
+		// - no author
+		// should have shelfclass null
+		BookDao book1 = new BookDao();
+		book1.setClientbookid("1");
+		book1.setClientid(1L);
+		book1.setTitle("Pride and Prejudice");
 		List<ArtistDao> authors = new ArrayList<ArtistDao>();
-		List<ArtistDao> illustrators = new ArrayList<ArtistDao>();
-		List<String> foundarray = new ArrayList<String>();
-		// test book, author "L Wilder" - Found array - Laura Wilder
-		artist = new ArtistDao();
-		artist.setFirstname("L");
-		artist.setLastname("Wilder");
-		authors.add(artist);
-		testbook.setAuthors(authors);
-		foundarray.add("Laura Wilder");
+		book1.setAuthors(authors);
+		book1.setDetailstatus(CatalogService.DetailStatus.DETAILFOUND);
+		book1.setLanguage("fr");
+		book1.setType(CatalogService.BookType.UNKNOWN);
+
+		book1 = bookRepo.save(book1);
 		// service call
-		BookDao resultbook = catalogService.copyAuthorsIntoBook(testbook, foundarray);
-		// should have author without id, and name Laura Wilder
-		Assert.assertNotNull(resultbook);
-		Assert.assertNotNull(resultbook.getAuthors());
-		ArtistDao testauth = resultbook.getAuthors().get(0);
-		Assert.assertNull(testauth.getId());
-		Assert.assertEquals("Laura", testauth.getFirstname());
-		Assert.assertEquals("Wilder", testauth.getLastname());
+		catalogService.classifyBook(book1.getId());
+		// test
+		book1 = bookRepo.findOne(book1.getId());
+		Assert.assertNotNull(book1);
+		Assert.assertNull(book1.getShelfclass());
 
-
-		// test book, illustrator "L Wilder" - Found array - Laura Wilder, Laura Wilder in db
-		ArtistDao dbartist = new ArtistDao();
-		dbartist.setFirstname("Laura");
-		dbartist.setLastname("Wilder");
-		dbartist = artistRepo.save(dbartist);
-		Long dbid = dbartist.getId();
-		testbook = new BookDao();
-		artist = new ArtistDao();
+		// create and save book
+		// book - with statusid detail found, language fr, and book type unknown
+		// - author "white"
+		// should have shelfclass 29
+		book1 = new BookDao();
+		book1.setClientbookid("1");
+		book1.setClientid(1L);
+		book1.setTitle("Pride and Prejudice");
 		authors = new ArrayList<ArtistDao>();
-		illustrators = new ArrayList<ArtistDao>();
-		foundarray = new ArrayList<String>();
-		// test book, author "L Wilder" - Found array - Laura Wilder
-		artist = new ArtistDao();
-		artist.setFirstname("L");
-		artist.setLastname("Wilder");
-		artist.setId(11L);
-		illustrators.add(artist);
-		testbook.setIllustrators(illustrators);
-		foundarray.add("Laura Wilder");
-		// service call
-		resultbook = catalogService.copyAuthorsIntoBook(testbook, foundarray);
-		// should have author with id, id should be artist "Laura Wilder"
-		Assert.assertNotNull(resultbook);
-		Assert.assertNull(resultbook.getAuthors());
-		Assert.assertNotNull(resultbook.getIllustrators());
-		testauth = resultbook.getIllustrators().get(0);
-		Assert.assertNotNull(testauth.getId());
-		Assert.assertEquals(dbid,testauth.getId());
-		Assert.assertEquals("Laura", testauth.getFirstname());
-		Assert.assertEquals("Wilder", testauth.getLastname());
+		ArtistDao author = catalogService.textToArtistName("Ed White");
+		authors.add(author);
+		book1.setAuthors(authors);
+		book1.setDetailstatus(CatalogService.DetailStatus.DETAILFOUND);
+		book1.setLanguage("fr");
+		book1.setType(CatalogService.BookType.UNKNOWN);
 
-
-		// test book, illustrator "Garth Williams" - Found array - Laura Wilder,Garth Williams -  nothing in db
-		testbook = new BookDao();
-		artist = new ArtistDao();
-		authors = new ArrayList<ArtistDao>();
-		illustrators = new ArrayList<ArtistDao>();
-		foundarray = new ArrayList<String>();
-		artist = new ArtistDao();
-		artist.setFirstname("Garth");
-		artist.setLastname("Williams");
-		illustrators.add(artist);
-		testbook.setIllustrators(illustrators);
-		foundarray.add("Laura Wilder");
-		foundarray.add("Garth Williams");
+		book1 = bookRepo.save(book1);
 		// service call
-		resultbook = catalogService.copyAuthorsIntoBook(testbook, foundarray);
-		// should have illust without id, and name "Garth Williams"
-		Assert.assertNotNull(resultbook);
-		Assert.assertNotNull(resultbook.getAuthors());
-		Assert.assertNotNull(resultbook.getIllustrators());
-		testauth = resultbook.getIllustrators().get(0);
-		Assert.assertNull(testauth.getId());
-		Assert.assertEquals("Garth", testauth.getFirstname());
-		Assert.assertEquals("Williams", testauth.getLastname());
+		catalogService.classifyBook(book1.getId());
+		// test
+		book1 = bookRepo.findOne(book1.getId());
+		Assert.assertNotNull(book1);
+		Assert.assertTrue(29L==book1.getShelfclass());
 		
+		// create and save book
+		// book - with statusid detail found, language en, and book type unknown
+		// - no author
+		// should have shelfclass 5
+		book1 = new BookDao();
+		book1.setClientbookid("1");
+		book1.setClientid(1L);
+		book1.setTitle("Pride and Prejudice");
+		authors = new ArrayList<ArtistDao>();
+		book1.setAuthors(authors);
+		book1.setDetailstatus(CatalogService.DetailStatus.DETAILFOUND);
+		book1.setLanguage("en");
+		book1.setType(CatalogService.BookType.UNKNOWN);
 
-		// test book, illustrator "Garth Williams" - Found array - Prince Humperdink,Laura Wilder,Garth Williams -  nothing in db
-		testbook = new BookDao();
-		artist = new ArtistDao();
-		authors = new ArrayList<ArtistDao>();
-		illustrators = new ArrayList<ArtistDao>();
-		foundarray = new ArrayList<String>();
-		artist = new ArtistDao();
-		artist.setFirstname("Garth");
-		artist.setLastname("Williams");
-		illustrators.add(artist);
-		testbook.setIllustrators(illustrators);
-		foundarray.add("Laura Wilder");
-		foundarray.add("Garth Williams");
-		foundarray.add("Prince Humperdink");
+		book1 = bookRepo.save(book1);
 		// service call
-		resultbook = catalogService.copyAuthorsIntoBook(testbook, foundarray);
-		// should have illust without id, and name "Garth Williams"
-		Assert.assertNotNull(resultbook);
-		Assert.assertNotNull(resultbook.getAuthors());
-		Assert.assertNotNull(resultbook.getIllustrators());
-		testauth = resultbook.getIllustrators().get(0);
-		Assert.assertNull(testauth.getId());
-		Assert.assertEquals("Garth", testauth.getFirstname());
-		Assert.assertEquals("Williams", testauth.getLastname());
-	
-		// test book, illustrator "Hilary Knight" - Found array - Kay Thompson,Hilary Knight -  Hilary Knight in db
-		dbartist = new ArtistDao();
-		dbartist.setFirstname("Hilary");
-		dbartist.setLastname("Knight");
-		dbartist = artistRepo.save(dbartist);
-		dbid = dbartist.getId();
-		testbook = new BookDao();
-		artist = new ArtistDao();
+		catalogService.classifyBook(book1.getId());
+		// test
+		book1 = bookRepo.findOne(book1.getId());
+		Assert.assertNotNull(book1);
+		Assert.assertTrue(5L==book1.getShelfclass());
+		
+		
+		// create and save book
+		// book - with statusid detail found, language fr, and book type
+		// non-fiction - author "beta"
+		// should have shelfclass null
+		book1 = new BookDao();
+		book1.setClientbookid("1");
+		book1.setClientid(1L);
+		book1.setTitle("Pride and Prejudice");
 		authors = new ArrayList<ArtistDao>();
-		illustrators = new ArrayList<ArtistDao>();
-		foundarray = new ArrayList<String>();
-		artist = new ArtistDao();
-		artist.setFirstname("Hilary");
-		artist.setLastname("Knight");
-		illustrators.add(artist);
-		testbook.setIllustrators(illustrators);
-		foundarray.add("Laura Wilder");
-		foundarray.add("Hilary Knight");
+		book1.setAuthors(authors);
+		book1.setDetailstatus(CatalogService.DetailStatus.DETAILFOUND);
+		book1.setLanguage("fr");
+		book1.setType(CatalogService.BookType.NONFICTION);
+
+		book1 = bookRepo.save(book1);
 		// service call
-		resultbook = catalogService.copyAuthorsIntoBook(testbook, foundarray);
-		// should have illustrator with id, id should be artist "Hilary Knight"
-		Assert.assertNotNull(resultbook);
-		Assert.assertNotNull(resultbook.getAuthors());
-		Assert.assertNotNull(resultbook.getIllustrators());
-		testauth = resultbook.getIllustrators().get(0);
-		Assert.assertNotNull(testauth.getId());
-		Assert.assertEquals(dbid,testauth.getId());
-		Assert.assertEquals("Hilary", testauth.getFirstname());
-		Assert.assertEquals("Knight", testauth.getLastname());		// service call
+		catalogService.classifyBook(book1.getId());
+		// test
+		book1 = bookRepo.findOne(book1.getId());
+		Assert.assertNotNull(book1);
+		Assert.assertNull(book1.getShelfclass());
+		
+		
+		
+	}
+
+	@Test
+	public void testCreateFromList() {
+		// createCatalogEntriesFromList(Long clientkey,List<BookModel> toimport)
+		// make three books add to list
+		BookDao book1 = new BookDao();
+		book1.setClientbookid("1A");
+		book1.setTitle("Pride and Prejudice");
+		BookDao book2 = new BookDao();
+		book2.setClientbookid("2A");
+		book2.setTitle("Sense and Sensibility");
+		List<ArtistDao> authors = new ArrayList<ArtistDao>();
+		ArtistDao author = catalogService.textToArtistName("Jane Austen");
+		authors.add(author);
+		BookDao book3 = new BookDao();
+		book3.setClientbookid("3A");
+		book3.setTitle("The Very Hungry Catepillar");
+		authors = new ArrayList<ArtistDao>();
+		author = catalogService.textToArtistName("Eric Carle");
+		book3.setAuthors(authors);
+
+		// to model, and in list
+		List<BookModel> toimport = new ArrayList<BookModel>();
+		toimport.add(new BookModel(book1));
+		toimport.add(new BookModel(book2));
+		toimport.add(new BookModel(book3));
+
+		// service call
+		catalogService.createCatalogEntriesFromList(new Long(1), toimport);
+
+		// find by book id
+		List<Long> found = searchService.findBookIdByClientId("1A");
+
+		// Assert not null
+		Assert.assertNotNull(found);
+		Assert.assertTrue(1 == found.size());
+		BookDao result = bookRepo.findOne(found.get(0));
+		Assert.assertEquals("Pride and Prejudice", result.getTitle());
 
 	}
-*/
+
+	/*
+	 * @Test public void testCopyDetailsAuthor() { BookDao testbook = new
+	 * BookDao(); ArtistDao artist = new ArtistDao(); List<ArtistDao> authors =
+	 * new ArrayList<ArtistDao>(); List<ArtistDao> illustrators = new
+	 * ArrayList<ArtistDao>(); List<String> foundarray = new
+	 * ArrayList<String>(); // test book, author "L Wilder" - Found array -
+	 * Laura Wilder artist = new ArtistDao(); artist.setFirstname("L");
+	 * artist.setLastname("Wilder"); authors.add(artist);
+	 * testbook.setAuthors(authors); foundarray.add("Laura Wilder"); // service
+	 * call BookDao resultbook = catalogService.copyAuthorsIntoBook(testbook,
+	 * foundarray); // should have author without id, and name Laura Wilder
+	 * Assert.assertNotNull(resultbook);
+	 * Assert.assertNotNull(resultbook.getAuthors()); ArtistDao testauth =
+	 * resultbook.getAuthors().get(0); Assert.assertNull(testauth.getId());
+	 * Assert.assertEquals("Laura", testauth.getFirstname());
+	 * Assert.assertEquals("Wilder", testauth.getLastname());
+	 * 
+	 * 
+	 * // test book, illustrator "L Wilder" - Found array - Laura Wilder, Laura
+	 * Wilder in db ArtistDao dbartist = new ArtistDao();
+	 * dbartist.setFirstname("Laura"); dbartist.setLastname("Wilder"); dbartist
+	 * = artistRepo.save(dbartist); Long dbid = dbartist.getId(); testbook = new
+	 * BookDao(); artist = new ArtistDao(); authors = new
+	 * ArrayList<ArtistDao>(); illustrators = new ArrayList<ArtistDao>();
+	 * foundarray = new ArrayList<String>(); // test book, author "L Wilder" -
+	 * Found array - Laura Wilder artist = new ArtistDao();
+	 * artist.setFirstname("L"); artist.setLastname("Wilder");
+	 * artist.setId(11L); illustrators.add(artist);
+	 * testbook.setIllustrators(illustrators); foundarray.add("Laura Wilder");
+	 * // service call resultbook = catalogService.copyAuthorsIntoBook(testbook,
+	 * foundarray); // should have author with id, id should be artist
+	 * "Laura Wilder" Assert.assertNotNull(resultbook);
+	 * Assert.assertNull(resultbook.getAuthors());
+	 * Assert.assertNotNull(resultbook.getIllustrators()); testauth =
+	 * resultbook.getIllustrators().get(0);
+	 * Assert.assertNotNull(testauth.getId());
+	 * Assert.assertEquals(dbid,testauth.getId()); Assert.assertEquals("Laura",
+	 * testauth.getFirstname()); Assert.assertEquals("Wilder",
+	 * testauth.getLastname());
+	 * 
+	 * 
+	 * // test book, illustrator "Garth Williams" - Found array - Laura
+	 * Wilder,Garth Williams - nothing in db testbook = new BookDao(); artist =
+	 * new ArtistDao(); authors = new ArrayList<ArtistDao>(); illustrators = new
+	 * ArrayList<ArtistDao>(); foundarray = new ArrayList<String>(); artist =
+	 * new ArtistDao(); artist.setFirstname("Garth");
+	 * artist.setLastname("Williams"); illustrators.add(artist);
+	 * testbook.setIllustrators(illustrators); foundarray.add("Laura Wilder");
+	 * foundarray.add("Garth Williams"); // service call resultbook =
+	 * catalogService.copyAuthorsIntoBook(testbook, foundarray); // should have
+	 * illust without id, and name "Garth Williams"
+	 * Assert.assertNotNull(resultbook);
+	 * Assert.assertNotNull(resultbook.getAuthors());
+	 * Assert.assertNotNull(resultbook.getIllustrators()); testauth =
+	 * resultbook.getIllustrators().get(0); Assert.assertNull(testauth.getId());
+	 * Assert.assertEquals("Garth", testauth.getFirstname());
+	 * Assert.assertEquals("Williams", testauth.getLastname());
+	 * 
+	 * 
+	 * // test book, illustrator "Garth Williams" - Found array - Prince
+	 * Humperdink,Laura Wilder,Garth Williams - nothing in db testbook = new
+	 * BookDao(); artist = new ArtistDao(); authors = new
+	 * ArrayList<ArtistDao>(); illustrators = new ArrayList<ArtistDao>();
+	 * foundarray = new ArrayList<String>(); artist = new ArtistDao();
+	 * artist.setFirstname("Garth"); artist.setLastname("Williams");
+	 * illustrators.add(artist); testbook.setIllustrators(illustrators);
+	 * foundarray.add("Laura Wilder"); foundarray.add("Garth Williams");
+	 * foundarray.add("Prince Humperdink"); // service call resultbook =
+	 * catalogService.copyAuthorsIntoBook(testbook, foundarray); // should have
+	 * illust without id, and name "Garth Williams"
+	 * Assert.assertNotNull(resultbook);
+	 * Assert.assertNotNull(resultbook.getAuthors());
+	 * Assert.assertNotNull(resultbook.getIllustrators()); testauth =
+	 * resultbook.getIllustrators().get(0); Assert.assertNull(testauth.getId());
+	 * Assert.assertEquals("Garth", testauth.getFirstname());
+	 * Assert.assertEquals("Williams", testauth.getLastname());
+	 * 
+	 * // test book, illustrator "Hilary Knight" - Found array - Kay
+	 * Thompson,Hilary Knight - Hilary Knight in db dbartist = new ArtistDao();
+	 * dbartist.setFirstname("Hilary"); dbartist.setLastname("Knight"); dbartist
+	 * = artistRepo.save(dbartist); dbid = dbartist.getId(); testbook = new
+	 * BookDao(); artist = new ArtistDao(); authors = new
+	 * ArrayList<ArtistDao>(); illustrators = new ArrayList<ArtistDao>();
+	 * foundarray = new ArrayList<String>(); artist = new ArtistDao();
+	 * artist.setFirstname("Hilary"); artist.setLastname("Knight");
+	 * illustrators.add(artist); testbook.setIllustrators(illustrators);
+	 * foundarray.add("Laura Wilder"); foundarray.add("Hilary Knight"); //
+	 * service call resultbook = catalogService.copyAuthorsIntoBook(testbook,
+	 * foundarray); // should have illustrator with id, id should be artist
+	 * "Hilary Knight" Assert.assertNotNull(resultbook);
+	 * Assert.assertNotNull(resultbook.getAuthors());
+	 * Assert.assertNotNull(resultbook.getIllustrators()); testauth =
+	 * resultbook.getIllustrators().get(0);
+	 * Assert.assertNotNull(testauth.getId());
+	 * Assert.assertEquals(dbid,testauth.getId()); Assert.assertEquals("Hilary",
+	 * testauth.getFirstname()); Assert.assertEquals("Knight",
+	 * testauth.getLastname()); // service call
+	 * 
+	 * }
+	 */
 	@Test
 	public void testTextToArtistName() {
 		// text "Michael Vincent Marbboury"
@@ -392,107 +450,84 @@ public class CatalogServiceTest {
 		Assert.assertEquals("Martin", name.getLastname());
 	}
 
-	
 	/*
-	@Test
-	public void testFindPublisherByName() {
-		// find publisher "newJonestest"
-		PublisherDao testpub = catalogService.findPublisherForName("newJonestest");
-		// should be new - no id
-		Assert.assertNotNull(testpub);
-		Assert.assertNull(testpub.getId());
-		// save publisher
-		PublisherDao resultpub = pubRepo.saveAndFlush(testpub);
-		Long id = resultpub.getId();
-		
-		// find publisher "newJonestest"
-		testpub = catalogService.findPublisherForName("newJonestest");
-		// now, should have same id as previously
-		Assert.assertNotNull(testpub);
-		Assert.assertNotNull(testpub.getId());
-		Assert.assertEquals(id,testpub.getId());
-		
-		// find with null
-		testpub = catalogService.findPublisherForName(null);
-		// should be null
-		Assert.assertNull(testpub);
-		
-	}*/
-	
-	/*	@Test 
-	public void testFindDetailsSingleBook() throws GeneralSecurityException, IOException {
-		// currently basically doing a blow up test, with peeking
-		// full test requires moving Google Search into it's own service (possible)
-		// and setting up Mock for this search.  Not ready to do that now.
-		
-		// create book
-		BookDao book = new BookDao();
-		book.setTitle("Les trois brigands");
-		ArtistDao author = catalogService.textToArtistName("Toni Ungerer");
-		List<ArtistDao> authors = new ArrayList<ArtistDao>();
-		authors.add(author);
-		book.setAuthors(authors);
-		book = bookRepo.save(book);
-		
-		// service call
-		catalogService.fillInDetailsForSingleBook(book.getId());
-		BookModel model = catalogService.loadBookModel(book.getId());
-		
-		// Assertions
-		Assert.assertNotNull(model);
-		Assert.assertNotNull(model.getDescription());
-		Assert.assertEquals(CatalogServiceImpl.DetailStatus.DETAILFOUND, model.getDetailstatus().longValue());
-		Assert.assertNotNull(model.getPublishyear());
-	}
-	
+	 * @Test public void testFindPublisherByName() { // find publisher
+	 * "newJonestest" PublisherDao testpub =
+	 * catalogService.findPublisherForName("newJonestest"); // should be new -
+	 * no id Assert.assertNotNull(testpub); Assert.assertNull(testpub.getId());
+	 * // save publisher PublisherDao resultpub = pubRepo.saveAndFlush(testpub);
+	 * Long id = resultpub.getId();
+	 * 
+	 * // find publisher "newJonestest" testpub =
+	 * catalogService.findPublisherForName("newJonestest"); // now, should have
+	 * same id as previously Assert.assertNotNull(testpub);
+	 * Assert.assertNotNull(testpub.getId());
+	 * Assert.assertEquals(id,testpub.getId());
+	 * 
+	 * // find with null testpub = catalogService.findPublisherForName(null); //
+	 * should be null Assert.assertNull(testpub);
+	 * 
+	 * }
+	 */
 
-	@Test 
-	public void testFindDetailsSingleBookFoundDetails() throws GeneralSecurityException, IOException {
-		// create book
-		BookDao book = new BookDao();
-		book.setTitle("corps HumAin");
-		PublisherDao publisher = catalogService.findPublisherForName("Fleurus");
-		book.setPublisher(publisher);
-		book = bookRepo.save(book);
-		
-		// service call
-		catalogService.fillInDetailsForSingleBook(book.getId());
-		BookModel model = catalogService.loadBookModel(book.getId());
-		List<FoundDetailsDao> found = catalogService.getFoundDetailsForBook(book.getId());
-		
-		// Assertions
-		Assert.assertNotNull(model);
-		Assert.assertNull(model.getDescription());
-		Assert.assertNotNull(found);
-		Assert.assertEquals(5, found.size());
-		Assert.assertEquals(CatalogServiceImpl.DetailStatus.MULTIDETAILSFOUND, model.getDetailstatus().longValue());
-	}
-	*/
-	
-/*
-	@Test
-	public void testFindSubjectByString() {
-		// find publisher "newJonestest"
-		SubjectDao testpub = catalogService.findSubjectForString("newJonestest");
-		// should be new - no id
-		Assert.assertNotNull(testpub);
-		Assert.assertNull(testpub.getId());
-		// save publisher
-		SubjectDao resultpub = subjectRepo.saveAndFlush(testpub);
-		Long id = resultpub.getId();
-		
-		// find publisher "newJonestest"
-		testpub = catalogService.findSubjectForString("newJonestest");
-		// now, should have same id as previously
-		Assert.assertNotNull(testpub);
-		Assert.assertNotNull(testpub.getId());
-		Assert.assertEquals(id,testpub.getId());
-		
-		// find with null
-		testpub = catalogService.findSubjectForString(null);
-		// should be null
-		Assert.assertNull(testpub);
-		
-	}
-	*/
+	/*
+	 * @Test public void testFindDetailsSingleBook() throws
+	 * GeneralSecurityException, IOException { // currently basically doing a
+	 * blow up test, with peeking // full test requires moving Google Search
+	 * into it's own service (possible) // and setting up Mock for this search.
+	 * Not ready to do that now.
+	 * 
+	 * // create book BookDao book = new BookDao();
+	 * book.setTitle("Les trois brigands"); ArtistDao author =
+	 * catalogService.textToArtistName("Toni Ungerer"); List<ArtistDao> authors
+	 * = new ArrayList<ArtistDao>(); authors.add(author);
+	 * book.setAuthors(authors); book = bookRepo.save(book);
+	 * 
+	 * // service call catalogService.fillInDetailsForSingleBook(book.getId());
+	 * BookModel model = catalogService.loadBookModel(book.getId());
+	 * 
+	 * // Assertions Assert.assertNotNull(model);
+	 * Assert.assertNotNull(model.getDescription());
+	 * Assert.assertEquals(CatalogServiceImpl.DetailStatus.DETAILFOUND,
+	 * model.getDetailstatus().longValue());
+	 * Assert.assertNotNull(model.getPublishyear()); }
+	 * 
+	 * 
+	 * @Test public void testFindDetailsSingleBookFoundDetails() throws
+	 * GeneralSecurityException, IOException { // create book BookDao book = new
+	 * BookDao(); book.setTitle("corps HumAin"); PublisherDao publisher =
+	 * catalogService.findPublisherForName("Fleurus");
+	 * book.setPublisher(publisher); book = bookRepo.save(book);
+	 * 
+	 * // service call catalogService.fillInDetailsForSingleBook(book.getId());
+	 * BookModel model = catalogService.loadBookModel(book.getId());
+	 * List<FoundDetailsDao> found =
+	 * catalogService.getFoundDetailsForBook(book.getId());
+	 * 
+	 * // Assertions Assert.assertNotNull(model);
+	 * Assert.assertNull(model.getDescription()); Assert.assertNotNull(found);
+	 * Assert.assertEquals(5, found.size());
+	 * Assert.assertEquals(CatalogServiceImpl.DetailStatus.MULTIDETAILSFOUND,
+	 * model.getDetailstatus().longValue()); }
+	 */
+
+	/*
+	 * @Test public void testFindSubjectByString() { // find publisher
+	 * "newJonestest" SubjectDao testpub =
+	 * catalogService.findSubjectForString("newJonestest"); // should be new -
+	 * no id Assert.assertNotNull(testpub); Assert.assertNull(testpub.getId());
+	 * // save publisher SubjectDao resultpub =
+	 * subjectRepo.saveAndFlush(testpub); Long id = resultpub.getId();
+	 * 
+	 * // find publisher "newJonestest" testpub =
+	 * catalogService.findSubjectForString("newJonestest"); // now, should have
+	 * same id as previously Assert.assertNotNull(testpub);
+	 * Assert.assertNotNull(testpub.getId());
+	 * Assert.assertEquals(id,testpub.getId());
+	 * 
+	 * // find with null testpub = catalogService.findSubjectForString(null); //
+	 * should be null Assert.assertNull(testpub);
+	 * 
+	 * }
+	 */
 }

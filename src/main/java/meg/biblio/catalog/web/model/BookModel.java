@@ -29,11 +29,7 @@ public class BookModel  implements Serializable {
 	private String illustratorname;
 	private Long assignDetailId;
 
-	private HashMap<Long, String> booktypedisps;
 
-	private HashMap<Long, String> bookstatusdisps;
-
-	private HashMap<Long, String> detailstatusdisps;
 	
 	// *** constructors ***//
 	public BookModel(BookDao book) {
@@ -206,13 +202,6 @@ public class BookModel  implements Serializable {
 	public Long getType() {
 		return book.getType();
 	}
-	
-	public String getBooktypeDisp() {
-		if (book.getType()!=null && booktypedisps !=null &&booktypedisps.containsKey(book.getType())) {
-			return booktypedisps.get(book.getType());
-		}
-		return book.getType()+"";
-	}	
 
 	public String getDescription() {
 		return book.getDescription();
@@ -222,24 +211,13 @@ public class BookModel  implements Serializable {
 		return book.getStatus();
 	}
 
-	public String getStatusDisp() {
-		if (book.getStatus()!=null && bookstatusdisps!=null && bookstatusdisps.containsKey(book.getStatus())) {
-			return bookstatusdisps.get(book.getStatus());
-		}
-		return book.getStatus()+"";
-	}
+
 	
 	public Long getDetailstatus() {
 		return book.getDetailstatus();
 	}
 
-	public String getDetailstatusDisp() {
-		if (book.getDetailstatus()!=null && detailstatusdisps!=null && detailstatusdisps.containsKey(book.getDetailstatus())) {
-			return detailstatusdisps.get(book.getDetailstatus());
-		}
-		return book.getDetailstatus() + "";
-	}
-		
+
 	public Long getShelfclass() {
 		return book.getShelfclass();
 	}
@@ -298,13 +276,6 @@ public class BookModel  implements Serializable {
 		}
 	}
 
-	public void setDisplayInfo(HashMap<Long, String> booktypedisps,
-			HashMap<Long, String> bookstatusdisps,
-			HashMap<Long, String> detailstatusdisps) {
-		this.booktypedisps = booktypedisps;
-		this.bookstatusdisps = bookstatusdisps;
-		this.detailstatusdisps = detailstatusdisps;
-		
-	}
+
 
 }

@@ -15,12 +15,36 @@ privileged aspect ClassificationDao_Roo_JavaBean {
         this.clientid = clientid;
     }
     
-    public String ClassificationDao.getDisplay() {
-        return this.display;
+    public Long ClassificationDao.getKey() {
+        return this.key;
     }
     
-    public void ClassificationDao.setDisplay(String display) {
-        this.display = display;
+    public void ClassificationDao.setKey(Long key) {
+        this.key = key;
+    }
+    
+    public String ClassificationDao.getTextdisplay() {
+        return this.textdisplay;
+    }
+    
+    public void ClassificationDao.setTextdisplay(String textdisplay) {
+        this.textdisplay = textdisplay;
+    }
+    
+    public String ClassificationDao.getImagedisplay() {
+        return this.imagedisplay;
+    }
+    
+    public void ClassificationDao.setImagedisplay(String imagedisplay) {
+        this.imagedisplay = imagedisplay;
+    }
+    
+    public String ClassificationDao.getLanguage() {
+        return this.language;
+    }
+    
+    public void ClassificationDao.setLanguage(String language) {
+        this.language = language;
     }
     
     public String ClassificationDao.getDescription() {

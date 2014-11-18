@@ -121,16 +121,4 @@ privileged aspect SelectValueDaoIntegrationTest_Roo_IntegrationTest {
         Assert.assertNotNull("Expected 'SelectValueDao' identifier to no longer be null", obj.getId());
     }
     
-    @Test
-    public void SelectValueDaoIntegrationTest.testDelete() {
-        SelectValueDao obj = dod.getRandomSelectValueDao();
-        Assert.assertNotNull("Data on demand for 'SelectValueDao' failed to initialize correctly", obj);
-        Long id = obj.getId();
-        Assert.assertNotNull("Data on demand for 'SelectValueDao' failed to provide an identifier", id);
-        obj = selectValueRepository.findOne(id);
-        selectValueRepository.delete(obj);
-        selectValueRepository.flush();
-        Assert.assertNull("Failed to remove 'SelectValueDao' with identifier '" + id + "'", selectValueRepository.findOne(id));
-    }
-    
 }

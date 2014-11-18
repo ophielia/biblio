@@ -59,11 +59,7 @@ privileged aspect SelectValueDaoDataOnDemand_Roo_DataOnDemand {
         obj.setDisporder(disporder);
     }
     
-    public void SelectValueDaoDataOnDemand.setLanguagekey(SelectValueDao obj, int index) {
-        String languagekey = "languagekey_" + index;
-        obj.setLanguagekey(languagekey);
-    }
-    
+        
     public void SelectValueDaoDataOnDemand.setValue(SelectValueDao obj, int index) {
         String value = "value_" + index;
         if (value.length() > 100) {
