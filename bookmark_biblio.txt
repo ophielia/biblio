@@ -21,16 +21,7 @@ then - usecase 3 full text indexing
 		2 search (title, author, keyword, publisher, shelfclass)
 ---- begin commit changes ----
 
-done - Classification structure made
-done - begin MareschaleClassifier
-done - fill in ClassificationDao - long key, textdisplay, imagedisplay, language, description
-done - display classification in front end
-done - remove displays from BookModel
-done - correct show.jspx to not send Disps.
-done - remove disps from BookModel
-done - check classification - only english stuart little is classified, 
-done -   and it's classified incorrectly!!!
-done - test - client book id in existing add book
+
 
 
 ---- end commit changes ----
@@ -39,18 +30,6 @@ done - test - client book id in existing add book
 
 ----- begin branch changes ----
 
-done - backend import
-done - make front end for import
-done - controller start
-done - put "real" clientkey in controller
-done - what about some sort of number - imported and errors to be shown on new page
-done - make page
-done - make it green - test CSI createCatalogEntriesFromList
-done - CSI create..FromList - needs two things - check for duplicates  (, and escape apostrophes (check and see if this is necessary))
-nevermind - test SSI findBookByClientId
-done - add to menu
-done - try it out
-done - Progressive search for details
 
 ---- end branch changes ----
 
@@ -118,7 +97,29 @@ done - verified next to classification (shows verified if true)
 done - pass language into loadBookModel
 done - end of branch- lock down methods which had been tested.
 
-
+** USE CASE 16, 20, 21, 22 import and classify books **
+done - backend import
+done - make front end for import
+done - controller start
+done - put "real" clientkey in controller
+done - what about some sort of number - imported and errors to be shown on new page
+done - make page
+done - make it green - test CSI createCatalogEntriesFromList
+done - CSI create..FromList - needs two things - check for duplicates  (, and escape apostrophes (check and see if this is necessary))
+nevermind - test SSI findBookByClientId
+done - add to menu
+done - try it out
+done - Progressive search for details
+done - Classification structure made
+done - begin MareschaleClassifier
+done - fill in ClassificationDao - long key, textdisplay, imagedisplay, language, description
+done - display classification in front end
+done - remove displays from BookModel
+done - correct show.jspx to not send Disps.
+done - remove disps from BookModel
+done - check classification - only english stuart little is classified, 
+done -   and it's classified incorrectly!!!
+done - test - client book id in existing add book
 
 
 ----- end complete history ----
