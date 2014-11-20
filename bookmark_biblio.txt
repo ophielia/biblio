@@ -6,7 +6,18 @@ UseCase16 - importbooks 16	     Import list of books
 
 
 
-check in, merge branch into master
+done - check in, merge branch into master
+
+select widget  ShelfClassSelect 
+need to pass in - jsonText, input to be updated, change
+
+mock up - wiping out and in is done
+add handle to current display
+add clicks to list items - to change current display
+handle no image
+fix tooltip for current display
+add to click - set passed in node
+
 
 
 

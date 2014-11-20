@@ -476,6 +476,13 @@ public class CatalogServiceImpl implements CatalogService {
 		}
 		return resulthash;
 	}
+	
+	@Override
+	public List<ClassificationDao> getShelfClassList(Long clientkey,
+			String lang) {
+		List<ClassificationDao> shelfclasses =classRepo.findByClientidAndLanguage(clientkey, lang);
+		return shelfclasses;
+	}	
 
 	/**
 	 * Convenience method for testing/devpt. Final will be done through

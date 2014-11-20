@@ -65,6 +65,8 @@ public interface CatalogService {
 	HashMap<Long, ClassificationDao> getShelfClassHash(Long clientkey,
 			String lang);
 
+	List<ClassificationDao> getShelfClassList(Long clientkey, String lang);
+
 
 
 }

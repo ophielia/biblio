@@ -29,6 +29,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import flexjson.JSONSerializer;
+
 
 @RequestMapping("/books")
 @Controller
@@ -111,6 +113,21 @@ public class BookController {
     	return "book/show";
     }   
     
+    @RequestMapping(value="/edit/{id}", method = RequestMethod.GET, produces = "text/html")
+    public String showEditBookForm(@PathVariable("id") Long id, Model uiModel, HttpServletRequest httpServletRequest) {
+    	Locale locale = httpServletRequest.getLocale();
+    	String lang = locale.getLanguage();
+
+    	BookModel model = new BookModel();
+    	if (id!=null) {
+    		model = catalogService.loadBookModel(id);	
+    	} 
+    	
+    	uiModel.addAttribute("bookModel",model);
+
+    	return "book/edit";
+    }     
+    
     @RequestMapping(value="/choosedetails/{id}", method = RequestMethod.GET, produces = "text/html")
     public String showBookDetails(@PathVariable("id") Long id, Model uiModel, HttpServletRequest httpServletRequest) {
     	Locale locale = httpServletRequest.getLocale();
@@ -162,6 +179,19 @@ public class BookController {
     			
     	return shelfclasses; 
     }
+    
+    @ModelAttribute("classJson")
+    public String getClassificationInfoAsJson(HttpServletRequest httpServletRequest) {
+    	Locale locale = httpServletRequest.getLocale();
+    	String lang = locale.getLanguage();
+    	Long clientkey = clientService.getCurrentClientKey();
+    	
+    	List<ClassificationDao> shelfclasses =catalogService.getShelfClassList(clientkey,lang);
+    	
+    	JSONSerializer serializer = new JSONSerializer();
+		String json = serializer.exclude("*.class").serialize(shelfclasses);
+		return json;
+    }    
     
     
     @ModelAttribute("typeLkup")

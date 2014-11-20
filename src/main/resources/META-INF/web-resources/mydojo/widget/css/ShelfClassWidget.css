@@ -1,0 +1,18 @@
+/* myApp/widget/css/shelfClassWidget.css */
+.shelfClassWidget {
+    border: 1px solid black;
+    padding: 10px;
+    overflow: hidden; /* I hear this helps clear floats inside */
+}
+ 
+.shelfClassWidget h3 {
+    font-size: 1.5em;
+    font-style: italic;
+    text-align: center;
+    margin: 0px;
+}
+ 
+.shelfClassWidget img {
+    max-width: 50px;
+    max-height: 50px;
+}
