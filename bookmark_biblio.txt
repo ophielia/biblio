@@ -1,38 +1,41 @@
-UseCase16 - importbooks 16	     Import list of books
-						20	     Batch get info for books - guess shelf classification 
-						21	     Progressive search for details
-						22	     shelf classifcation
-
-
-
-
-done - check in, merge branch into master
-
-select widget  ShelfClassSelect 
-need to pass in - jsonText, input to be updated, change
-
-mock up - wiping out and in is done
-add handle to current display
-add clicks to list items - to change current display
-handle no image
-fix tooltip for current display
-add to click - set passed in node
+UseCase16 - booksearch 3 full text indexing
+					   2 search (title, author, keyword, publisher, shelfclass) 
 
 
 
 
 
-classification - http://dojotoolkit.org/reference-guide/1.10/dijit/form/DropDownButton.html
+
+  
 
 
-next up
-quick delay in master - widget for shelf classification
 
-then - usecase 3 full text indexing
-		2 search (title, author, keyword, publisher, shelfclass)
+
+
+
+
+
+
+
+
+
+
+
 ---- begin commit changes ----
 
-
+done - basic rendering is done. now need to 1) wire up to clicks and 2) do initial set on image - setCurrentId or the like...
+done - check in, merge branch into master
+done - select widget  ShelfClassSelect 
+done - need to pass in - jsonText, input to be updated, change
+done - next try SelectWidget alone without any contained widgets
+done - mock up - wiping out and in is done
+done - add handle to current display
+done - done - add clicks to list items - to change current display
+handle no image
+done - fix tooltip for current display
+done - add to click - set passed in node
+done - quick delay in master - widget for shelf classification
+done - reset isDebug to false in load-scripts when done.
 
 
 ---- end commit changes ----

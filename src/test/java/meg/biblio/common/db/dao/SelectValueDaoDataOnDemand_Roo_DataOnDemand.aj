@@ -59,7 +59,6 @@ privileged aspect SelectValueDaoDataOnDemand_Roo_DataOnDemand {
         obj.setDisporder(disporder);
     }
     
-        
     public void SelectValueDaoDataOnDemand.setValue(SelectValueDao obj, int index) {
         String value = "value_" + index;
         if (value.length() > 100) {

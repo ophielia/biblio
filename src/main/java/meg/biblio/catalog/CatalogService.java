@@ -38,6 +38,8 @@ public interface CatalogService {
 	public void fillInDetailsForList(List<BookModel> searchobjects)
 			throws GeneralSecurityException, IOException;
 
+	public BookDao saveBook(BookDao book);
+	
 	public final static  class LocationStatus {
 		public static final long CHECKEDOUT = 1;
 		public static final long SHELVED = 2;

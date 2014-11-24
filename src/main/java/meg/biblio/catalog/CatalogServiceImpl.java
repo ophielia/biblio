@@ -305,7 +305,7 @@ public class CatalogServiceImpl implements CatalogService {
 					}
 
 					// save book
-					book = bookRepo.save(book);
+					book = saveBook(book);
 
 					// call automatic classification of book
 					try {
@@ -323,6 +323,39 @@ public class CatalogServiceImpl implements CatalogService {
 
 			} // end loop through list
 		} // end if created objects not null
+	}
+
+	
+	public BookDao saveBook(BookDao book) {
+		boolean bookchange = book.getTextchange();
+		
+		BookDao saved = bookRepo.save(book);
+		if (bookchange) {
+			indexBooktext(saved);
+		}
+
+		return saved;
+	}
+	
+	
+	private void indexBooktext(BookDao saved) {
+		// make counting hash
+		HashMap<String,Integer> wordcounts = new HashMap<String,Integer>();
+		
+		// mash up all text fields together - title, description, subjects, authors, illustrators
+		
+		// split all text into words
+		
+		// go through all words, counting each
+		
+		// now, save counted words - book, word, countintext
+		
+		// delete words counted words which are in todelete table
+		
+		
+		// String []strArray=s.split(" ");
+		//[^a-zA-Z ]
+		
 	}
 
 	public void assignDetailToBook(Long detailid, Long bookid)
@@ -504,7 +537,7 @@ public class CatalogServiceImpl implements CatalogService {
 					book = classifier.classifyBook(book);
 					if (book.getShelfclass() != null) {
 						// save book if classification assigned.
-						bookRepo.save(book);
+						saveBook(book);
 					}
 				}
 			}
@@ -571,7 +604,7 @@ public class CatalogServiceImpl implements CatalogService {
 		}
 
 		// persist book
-		BookDao saved = bookRepo.save(book);
+		BookDao saved = saveBook(book);
 		return saved;
 
 	}
@@ -672,7 +705,7 @@ public class CatalogServiceImpl implements CatalogService {
 			}
 
 			// save book
-			bookRepo.save(book);
+			saveBook(book);
 
 			// save founddetails if available
 			foundRepo.save(details);

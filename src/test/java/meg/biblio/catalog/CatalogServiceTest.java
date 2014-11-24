@@ -5,6 +5,8 @@ import java.util.List;
 
 import meg.biblio.catalog.db.ArtistRepository;
 import meg.biblio.catalog.db.BookRepository;
+import meg.biblio.catalog.db.FoundWordsDao;
+import meg.biblio.catalog.db.FoundWordsRepository;
 import meg.biblio.catalog.db.PublisherRepository;
 import meg.biblio.catalog.db.SubjectRepository;
 import meg.biblio.catalog.db.dao.ArtistDao;
@@ -35,6 +37,9 @@ public class CatalogServiceTest {
 
 	@Autowired
 	ArtistRepository artistRepo;
+	
+	@Autowired
+	FoundWordsRepository foundRepo;	
 
 	@Autowired
 	BookRepository bookRepo;
@@ -128,6 +133,38 @@ public class CatalogServiceTest {
 		Assert.assertEquals(artistid, artist.getId());
 	}
 
+	@Test
+	public void testIndexing() {
+		// make book with description "i am eating a hat. I am Eating a Hat";
+		BookDao book = bookRepo.findOne(pubtestid);
+		book.setDescription("i am eating a hat. I am Eating a Hat");
+		
+		// save book (calls indexing)
+		catalogService.saveBook(book);
+		
+		// get foundwords for book
+		List<FoundWordsDao> foundw = foundRepo.findWordsForBook( book);
+		
+		// should have 2 i, 2 eating, 2 hat
+		Assert.assertNotNull(foundw);
+		Assert.assertTrue(foundw.size()>0);
+		for (FoundWordsDao found:foundw) {
+			if (found.getWord().equals("i")) {
+				Assert.assertNotNull(found.getCountintext());
+				Assert.assertTrue(found.getCountintext().intValue()==2);
+			}
+			if (found.getWord().equals("eating")) {
+				Assert.assertNotNull(found.getCountintext());
+				Assert.assertTrue(found.getCountintext().intValue()==2);
+			}
+			if (found.getWord().equals("hat")) {
+				Assert.assertNotNull(found.getCountintext());
+				Assert.assertTrue(found.getCountintext().intValue()==2);
+			}
+		}
+		
+	}
+	
 	@Test
 	public void testPublisherBug() {
 

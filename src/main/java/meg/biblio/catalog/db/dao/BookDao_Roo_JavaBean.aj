@@ -5,6 +5,7 @@ package meg.biblio.catalog.db.dao;
 
 import java.util.Date;
 import java.util.List;
+import meg.biblio.catalog.db.FoundWordsDao;
 import meg.biblio.catalog.db.dao.ArtistDao;
 import meg.biblio.catalog.db.dao.BookDao;
 import meg.biblio.catalog.db.dao.PublisherDao;
@@ -24,24 +25,12 @@ privileged aspect BookDao_Roo_JavaBean {
         return this.title;
     }
     
-    public void BookDao.setTitle(String title) {
-        this.title = title;
-    }
-    
     public List<ArtistDao> BookDao.getAuthors() {
         return this.authors;
     }
     
-    public void BookDao.setAuthors(List<ArtistDao> authors) {
-        this.authors = authors;
-    }
-    
     public List<ArtistDao> BookDao.getIllustrators() {
         return this.illustrators;
-    }
-    
-    public void BookDao.setIllustrators(List<ArtistDao> illustrators) {
-        this.illustrators = illustrators;
     }
     
     public List<SubjectDao> BookDao.getSubjects() {
@@ -104,10 +93,6 @@ privileged aspect BookDao_Roo_JavaBean {
         return this.description;
     }
     
-    public void BookDao.setDescription(String description) {
-        this.description = description;
-    }
-    
     public Long BookDao.getStatus() {
         return this.status;
     }
@@ -154,6 +139,22 @@ privileged aspect BookDao_Roo_JavaBean {
     
     public void BookDao.setClientbookid(String clientbookid) {
         this.clientbookid = clientbookid;
+    }
+    
+    public List<FoundWordsDao> BookDao.getFoundwords() {
+        return this.foundwords;
+    }
+    
+    public void BookDao.setFoundwords(List<FoundWordsDao> foundwords) {
+        this.foundwords = foundwords;
+    }
+    
+    public Boolean BookDao.getTextchange() {
+        return this.textchange;
+    }
+    
+    public void BookDao.setTextchange(Boolean textchange) {
+        this.textchange = textchange;
     }
     
 }

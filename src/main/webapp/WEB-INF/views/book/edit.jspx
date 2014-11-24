@@ -10,6 +10,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
     <jsp:output omit-xml-declaration="yes"/>
 
 <link rel="stylesheet" href="/biblio/resources/mydojo/widget/css/ShelfClassWidget.css" media="screen"></link>
+<link rel="stylesheet" href="/biblio/resources/mydojo/widget/css/ShelfClassSelectWidget.css" media="screen"></link>
 
 
 <spring:message code="label_book" htmlEscape="false" var="lbook"/>
@@ -43,95 +44,31 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
       ], function (dom,on,domConstruct,domStyle) {
 	 
 
-		on(dojo.byId("shelfimg"), 'mouseover', function(event) {
-			// get index of clicked button
-			dojo.style(dojo.byId('shelfinfo'), "display", "block");
-		});
-		
-		on(dojo.byId("shelfimg"), 'mouseout', function(event) {
-			// get index of clicked button
-			dojo.style(dojo.byId('shelfinfo'), "display", "none");
-		});		
-
+/*
+ * 
+	on(dojo.byId("shelfimg"), 'mouseover', function(event) {
+		// get index of clicked button
+		dojo.style(dojo.byId('shelfinfo'), "display", "block");
+	});
+	
+	on(dojo.byId("shelfimg"), 'mouseout', function(event) {
+		// get index of clicked button
+		dojo.style(dojo.byId('shelfinfo'), "display", "none");
+	});		
+ */
 
 	});
  
- 
- require({baseUrl: "/biblio/resources/",
-	 packages: [
-	            { name: "dojo", location: "//yandex.st/dojo/1.9.1/dojo" },
-	            { name: "mydojo", location: "mydojo" }
-	        ]},
-		  ["dojo/request","dojo/mouse","dojo/query","dojo/on","dojo/fx","dojo/store/Memory","dojo/json", "dojo/dom", "dojo/_base/array",
-          "mydojo/widget/ShelfClassWidget", "dojo/domReady!"],
-		    function(request,mouse,query,on,fx, Memory,JSON,dom, arrayUtil, ShelfClassWidget){
-		    
-	 var text = '${classJson}';
-	 var data = JSON.parse(text);
-	 
-	 var classStore = new dojo.store.Memory({data: data, idProperty:"id"});
-	 
-	 var classiContainer = dom.byId("classlist");
-	 
-     arrayUtil.forEach(data, function(shelfclass){
-         // Create our widget and place it
-         var widget = new ShelfClassWidget(shelfclass).placeAt(classiContainer);
-     });
-     
-     // change the change button text
-     var changebutton = dojo.byId("changebutton");
-     changebutton.innerText="Change";
-     
-     function setCurrentDisplay(nodeid) {
-    	 var imagenode = dojo.byId("shelfimg");
-    	 var textnode = dojo.byId("shelftext");
-    	 var infonode = dojo.byId("shelfinfo");
-    	 var updatenode = dojo.byId("shelfchange");
-    	 // get object
-    	 var object = classStore.get(nodeid);
-    	 //alert(object.imagedisplay);
-    	 // set image
-    	 var hasimage =false;
-	 if (object.imagedisplay) {
-		 hasimage = true;
-	 	imagenode.src = object.imagedisplay;	
-	 } else {
-	 	//MM fill in!!imagenode.src = "/biblio
-	 }
-    	 
-    	 // set shelfinfo
-    	 infonode.innerHtml = object.textdisplay + " : " + object.description;
-    	 
-    	 // set shelftext
-    	 textnode.innerHtml = object.textdisplay;
-    	 
-
-    	 // set input
-    	 updatenode.value=object.key;
-    	 
-    	 // hide select
-    	 hideSelect();
-     }
-     
-     function hideSelect() {
-    	 fx.wipeOut({ node: classiContainer }).play(); 
-     }
-     
-     query(".shelfClassWidget").on("click", function(event){
-         		 	
-         		 	var nodeid = event.currentTarget.id;
-         	//alert("id is + " + nodeid);
-         	setCurrentDisplay(nodeid);
-    });
-     
-     on(classlist, mouse.leave, function(evt){
-         hideSelect();
-     });
-     on(changebutton, "click", function(evt){
-         fx.wipeIn({ node: classiContainer }).play();
-     });    
-     
-     
+ <c:set var="shelfclass" value="${classHash[bookModel.shelfclass]}" />
+ require(
+		  ["mydojo/widget/ShelfClassSelectWidget","dojo/dom", "dojo/domReady!"],
+		    function( ShelfClassSelectWidget,dom){
+	        	
+	        	var classiContainer = dom.byId("imageselectbox");
+	          
+	        	// Create our widget and place it
+	            var widget = new ShelfClassSelectWidget({displayId:${shelfclass.id},jsontext:'${classJson}',
+	            	changebuttontext:"Change",updatenodename:"shelfchange"}).placeAt(classiContainer);
 		});
  
  
@@ -175,24 +112,29 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 	<input type="text" id="shelfchange" value=""></input><br />
 	${lclassification}	
 	<c:if test="${not empty bookModel.shelfclass}">
-	(${showver}): 
-	<c:set var="shelfclass" value="${classHash[bookModel.shelfclass]}" />
-	<span>
+	(${showver})</c:if>: 
+	
+	
+	<!--  use this var to get the id of the currently selected classification -->
+	<span id="imageselectbox"></span>
+	
+<!-- <span>
 	<img id="shelfimg" src="${shelfclass.imagedisplay}" width="50x" style="margin-bottom:-10px"/>
 	<span id="shelftext" style="display: none;">${shelfclass.textdisplay}</span>
 	<span id="shelfinfo" style="display: none; position: absolute; padding: 5px; margin-top: 5px; background: white;">${shelfclass.textdisplay}:${shelfclass.description}</span>
-	</span>
-
-	</c:if>
-<button id="changebutton">Wipe block in</button>
+    <button id="changebutton">Wipe block in</button>
 	<div id="classlist" style="position:absolute;display:none"></div>
+	</span> -->	
 	
-		</div>
+	
+	
+    </div>
 
 	
 	<div>
 	${lstatus}: ${statusLkup[bookModel.status]}
 	</div>
+	
 	
 </div>
 <div style="width:100%;clear:both;padding-top:25px">

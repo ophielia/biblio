@@ -1,4 +1,6 @@
 package meg.biblio.catalog.db.dao;
+import meg.biblio.catalog.db.FoundWordsDao;
+
 import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.jpa.entity.RooJpaEntity;
 import org.springframework.roo.addon.tostring.RooToString;
@@ -13,9 +15,11 @@ import javax.persistence.JoinTable;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.OrderColumn;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -72,4 +76,30 @@ private Long shelfclass;
 private Boolean shelfclassverified;
 private Date createdon;
 private String clientbookid;
+@OneToMany(mappedBy = "book",cascade = CascadeType.ALL, fetch=FetchType.LAZY)
+private List<FoundWordsDao> foundwords;
+@Transient
+private Boolean textchange=new Boolean(false);
+
+
+	public void setAuthors(List<ArtistDao> authors) {
+        if (this.authors != authors) setTextchange(true);
+		this.authors = authors;
+    }
+
+	public void setDescription(String description) {
+		if (this.description != description) setTextchange(true);
+		this.description = description;
+    }
+
+	public void setIllustrators(List<ArtistDao> illustrators) {
+		if (this.illustrators != illustrators) setTextchange(true);
+		this.illustrators = illustrators;
+    }
+
+	public void setTitle(String title) {
+		if (this.title != title) setTextchange(true);
+		
+		this.title = title;
+    }
 }

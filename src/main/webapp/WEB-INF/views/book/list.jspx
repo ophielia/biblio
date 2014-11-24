@@ -32,7 +32,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <tr>
 <td>${book.title}</td>
 <td>
-<spring:url value="/books/display/${book.id}" var="editurl"/>
+<spring:url value="/books/edit/${book.id}" var="editurl"/>
 <a href="${editurl}">${ledit}</a>
 </td>
 </tr>
