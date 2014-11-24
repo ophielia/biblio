@@ -12,6 +12,10 @@ import meg.biblio.catalog.db.ArtistRepository;
 import meg.biblio.catalog.db.BookRepository;
 import meg.biblio.catalog.db.ClassificationRepository;
 import meg.biblio.catalog.db.FoundDetailsRepository;
+import meg.biblio.catalog.db.FoundWordsDao;
+import meg.biblio.catalog.db.FoundWordsRepository;
+import meg.biblio.catalog.db.IgnoredWordsDao;
+import meg.biblio.catalog.db.IgnoredWordsRepository;
 import meg.biblio.catalog.db.PublisherRepository;
 import meg.biblio.catalog.db.SubjectRepository;
 import meg.biblio.catalog.db.dao.ArtistDao;
@@ -67,7 +71,15 @@ public class CatalogServiceImpl implements CatalogService {
 
 	@Autowired
 	FoundDetailsRepository foundRepo;
+	
+	@Autowired
+	FoundWordsRepository indexRepo;	
 
+	
+	
+	@Autowired
+	IgnoredWordsRepository ignoredRepo;	
+	
 	@Autowired
 	ArtistRepository artistRepo;
 
@@ -76,9 +88,9 @@ public class CatalogServiceImpl implements CatalogService {
 
 	@Autowired
 	SubjectRepository subjectRepo;
-	
+
 	@Autowired
-	ClassificationRepository classRepo;	
+	ClassificationRepository classRepo;
 
 	@Value("${biblio.google.apikey}")
 	private String apikey;
@@ -94,9 +106,9 @@ public class CatalogServiceImpl implements CatalogService {
 
 	@Value("${biblio.google.batchsearchmax}")
 	private int batchsearchmax;
-	
+
 	@Value("${biblio.progressivefill.turnedon}")
-	private boolean progressivefillenabled;	
+	private boolean progressivefillenabled;
 
 	/**
 	 * Assumes validated BookModel. Saves a book to the database for the first
@@ -313,8 +325,8 @@ public class CatalogServiceImpl implements CatalogService {
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
-					} 
-					
+					}
+
 					// save founddetails if available
 					if (details != null) {
 						foundRepo.save(details);
@@ -325,10 +337,10 @@ public class CatalogServiceImpl implements CatalogService {
 		} // end if created objects not null
 	}
 
-	
+
 	public BookDao saveBook(BookDao book) {
 		boolean bookchange = book.getTextchange();
-		
+
 		BookDao saved = bookRepo.save(book);
 		if (bookchange) {
 			indexBooktext(saved);
@@ -336,26 +348,79 @@ public class CatalogServiceImpl implements CatalogService {
 
 		return saved;
 	}
-	
-	
+
+
 	private void indexBooktext(BookDao saved) {
 		// make counting hash
 		HashMap<String,Integer> wordcounts = new HashMap<String,Integer>();
-		
+		List<FoundWordsDao> foundwords = new ArrayList<FoundWordsDao>();
+
 		// mash up all text fields together - title, description, subjects, authors, illustrators
-		
+		StringBuffer charles = new StringBuffer(saved.getTitle());
+		if (saved.getDescription()!=null) {charles.append(" ").append(saved.getDescription());}
+		if (saved.getSubjects()!=null) {
+			for (SubjectDao subject:saved.getSubjects()) {
+				charles.append(" ").append(subject.getListing());	
+			}
+		}
+		if (saved.getAuthors()!=null) {
+			for (ArtistDao author:saved.getAuthors()) {
+				charles.append(" ").append(author.getDisplayName());	
+			}
+		}
+		if (saved.getIllustrators()!=null) {
+			for (ArtistDao author:saved.getIllustrators()) {
+				charles.append(" ").append(author.getDisplayName());	
+			}
+		}		
+
 		// split all text into words
+		String mashup = charles.toString();
+		// remove punctuation
+		String cleanmashup = mashup.replaceAll("[^a-zA-Z ]", " ");
+		// split by space
+		String[] words = cleanmashup.split(" ");
 		
 		// go through all words, counting each
+		for (int i=0;i<words.length;i++) {
+			String word = words[i];
+			word = word.toLowerCase().trim();
+			if (word.length()>0) {
+				// count this word....
+				if (wordcounts.containsKey(word)) {
+					// add to count
+					Integer count = wordcounts.get(word);
+					count++;
+					wordcounts.put(word, count);
+				} else {
+					// make new key
+					wordcounts.put(word, new Integer(1));
+				}
+			}
+		}
+		// get ignoredwords 
+		List<String> toignore = new ArrayList<String>();
+		List<IgnoredWordsDao> ignoredlist = ignoredRepo.findAll();
+		for (IgnoredWordsDao ignore:ignoredlist) {
+			toignore.add(ignore.getWord());
+		}
 		
 		// now, save counted words - book, word, countintext
-		
-		// delete words counted words which are in todelete table
-		
-		
-		// String []strArray=s.split(" ");
-		//[^a-zA-Z ]
-		
+		for (String word:wordcounts.keySet()) {
+			if (!toignore.contains(word)) {
+				Integer count = wordcounts.get(word);
+				FoundWordsDao wordcount = new FoundWordsDao();
+				wordcount.setBook(saved);
+				wordcount.setCountintext(count);
+				wordcount.setWord(word);
+				foundwords.add(wordcount);
+			}
+		}
+		// persist
+		if (foundwords.size()>0) {
+			indexRepo.save(foundwords);
+		}
+
 	}
 
 	public void assignDetailToBook(Long detailid, Long bookid)
@@ -395,7 +460,7 @@ public class CatalogServiceImpl implements CatalogService {
 
 					// save book
 					bookRepo.saveAndFlush(book);
-					
+
 					// classify book
 					try {
 						classifyBook(book.getId());
@@ -509,13 +574,13 @@ public class CatalogServiceImpl implements CatalogService {
 		}
 		return resulthash;
 	}
-	
+
 	@Override
 	public List<ClassificationDao> getShelfClassList(Long clientkey,
 			String lang) {
 		List<ClassificationDao> shelfclasses =classRepo.findByClientidAndLanguage(clientkey, lang);
 		return shelfclasses;
-	}	
+	}
 
 	/**
 	 * Convenience method for testing/devpt. Final will be done through
@@ -726,7 +791,7 @@ public class CatalogServiceImpl implements CatalogService {
 	private void copyCompleteDetailsIntoBook(Volume volume, BookDao book) {
 		VolumeInfo info = volume.getVolumeInfo();
 
-		
+
 		book.setTitle(info.getTitle());
 		PublisherDao publisher = findPublisherForName(info.getPublisher());
 		book.setDescription(info.getDescription());
@@ -1096,7 +1161,7 @@ public class CatalogServiceImpl implements CatalogService {
 }
 
 /*
- * 
+ *
  * public BookDao copyAuthorsIntoBook(BookDao book, List<String> foundauthors) {
  * if (foundauthors != null && book != null) { HashMap<Long,ArtistDao>
  * bookauthors = new HashMap<Long, ArtistDao>(); HashMap<Long,ArtistDao>
@@ -1107,13 +1172,13 @@ public class CatalogServiceImpl implements CatalogService {
  * illust:book.getIllustrators()) { bookillustrators.put(illust.getId(),
  * illust); } } List<ArtistDao> newauthors = new ArrayList<ArtistDao>();
  * List<ArtistDao> newillustrators = new ArrayList<ArtistDao>();
- * 
+ *
  * // go through all found authors for (String found : foundauthors) { boolean
  * matchfound = false;
- * 
+ *
  * // get name (ArtistDao) for authortext ArtistDao foundauthor =
  * textToName(found);
- * 
+ *
  * // go through book authors to find match (by last name) if (book.getAuthors()
  * != null) { for (ArtistDao existauth : book.getAuthors()) { if
  * (existauth.hasLastname() && foundauthor.hasLastname()) { if (existauth
@@ -1130,14 +1195,14 @@ public class CatalogServiceImpl implements CatalogService {
  * foundmorecomplete |= (existauth.hasFirstname() && foundauthor.hasFirstname()
  * && existauth .getFirstname().length() < foundauthor
  * .getFirstname().length());
- * 
+ *
  * // if foundauthor is more complete, find in db if (foundmorecomplete) {
- * 
+ *
  * ArtistDao match = searchService.findArtistMatchingName(foundauthor); // if
  * found, replace in list if (match != null) { newauthors.add(match); } else {
  * // if not found, replace copy // foundauthor info into current author
  * newauthors.add(foundauthor); } } } } } } // end book authors
- * 
+ *
  * // if not match, go through illustrators if (!matchfound) { for (ArtistDao
  * existillus : book.getIllustrators()) { if (existillus.hasLastname() &&
  * foundauthor.hasLastname()) { if (existillus .getLastname() .trim()
@@ -1152,19 +1217,19 @@ public class CatalogServiceImpl implements CatalogService {
  * foundmorecomplete |= (existillus.hasFirstname() && foundauthor.hasFirstname()
  * && existillus .getFirstname().length() < foundauthor
  * .getFirstname().length());
- * 
+ *
  * // if foundauthor is more complete, find in db if (foundmorecomplete) {
- * 
+ *
  * ArtistDao match = searchService.findArtistMatchingName(foundauthor); // if
  * found, replace in list if (match != null) { newillustrators.add(match); }
  * else { // if not found, replace copy // foundauthor info into current author
  * newillustrators.add(foundauthor); } } } } } } // end illustrators // if no
  * match found, add to authors if (!matchfound) { newauthors.add(foundauthor); }
- * 
- * 
- * 
+ *
+ *
+ *
  * } // end go through all foundauthors
- * 
+ *
  * // if authorlist has members, set in book if (newauthors.size()>0) {
  * book.setAuthors(newauthors); } // if illustratorlist has members, set in book
  * if (newillustrators.size()>0) { book.setIllustrators(newauthors); } } return

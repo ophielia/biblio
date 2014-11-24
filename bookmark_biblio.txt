@@ -6,37 +6,13 @@ UseCase16 - booksearch 3 full text indexing
 
 
 
-  
-
-
-
-
-
-
-
-
-
-
-
 
 
 
 ---- begin commit changes ----
 
-done - basic rendering is done. now need to 1) wire up to clicks and 2) do initial set on image - setCurrentId or the like...
-done - check in, merge branch into master
-done - select widget  ShelfClassSelect 
-done - need to pass in - jsonText, input to be updated, change
-done - next try SelectWidget alone without any contained widgets
-done - mock up - wiping out and in is done
-done - add handle to current display
-done - done - add clicks to list items - to change current display
-handle no image
-done - fix tooltip for current display
-done - add to click - set passed in node
-done - quick delay in master - widget for shelf classification
-done - reset isDebug to false in load-scripts when done.
-
+done - entities created, test made and failing
+done - make test green!
 
 ---- end commit changes ----
 
@@ -135,6 +111,21 @@ done - check classification - only english stuart little is classified,
 done -   and it's classified incorrectly!!!
 done - test - client book id in existing add book
 
+** MASTER WIDGET **
+
+done - basic rendering is done. now need to 1) wire up to clicks and 2) do initial set on image - setCurrentId or the like...
+done - check in, merge branch into master
+done - select widget  ShelfClassSelect 
+done - need to pass in - jsonText, input to be updated, change
+done - next try SelectWidget alone without any contained widgets
+done - mock up - wiping out and in is done
+done - add handle to current display
+done - done - add clicks to list items - to change current display
+handle no image
+done - fix tooltip for current display
+done - add to click - set passed in node
+done - quick delay in master - widget for shelf classification
+done - reset isDebug to false in load-scripts when done.
 
 ----- end complete history ----
 
@@ -151,5 +142,10 @@ assignBookDetails - graceful handling of exception
 
 1. Testing filling in books after import of details... Separate Google calls into their own
    service, which then can be mocked - and isolated for the test.
+   
+2. Indexing would be nice in future as aspect watching object implementing TextIndex or the like.  Not doing
+   for now, because not really necessary.  Feels too pretty for initial implementation. 
+   
+3. ignored words by client!!     
 
 ******* USE CASE MASTER ******

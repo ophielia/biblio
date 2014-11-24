@@ -7,6 +7,8 @@ import meg.biblio.catalog.db.ArtistRepository;
 import meg.biblio.catalog.db.BookRepository;
 import meg.biblio.catalog.db.FoundWordsDao;
 import meg.biblio.catalog.db.FoundWordsRepository;
+import meg.biblio.catalog.db.IgnoredWordsDao;
+import meg.biblio.catalog.db.IgnoredWordsRepository;
 import meg.biblio.catalog.db.PublisherRepository;
 import meg.biblio.catalog.db.SubjectRepository;
 import meg.biblio.catalog.db.dao.ArtistDao;
@@ -40,6 +42,9 @@ public class CatalogServiceTest {
 	
 	@Autowired
 	FoundWordsRepository foundRepo;	
+	
+	@Autowired
+	IgnoredWordsRepository ignoredRepo;		
 
 	@Autowired
 	BookRepository bookRepo;
@@ -60,6 +65,11 @@ public class CatalogServiceTest {
 		artist = artistRepo.save(artist);
 		artistid = artist.getId();
 
+		// add "eating" to ignored words list
+		IgnoredWordsDao ignored = new IgnoredWordsDao();
+		ignored.setWord("eating");
+		ignoredRepo.saveAndFlush(ignored);		
+		
 		// setup book with publisher
 		// create publisher
 		PublisherDao pub = new PublisherDao();
@@ -139,6 +149,8 @@ public class CatalogServiceTest {
 		BookDao book = bookRepo.findOne(pubtestid);
 		book.setDescription("i am eating a hat. I am Eating a Hat");
 		
+
+		
 		// save book (calls indexing)
 		catalogService.saveBook(book);
 		
@@ -148,20 +160,22 @@ public class CatalogServiceTest {
 		// should have 2 i, 2 eating, 2 hat
 		Assert.assertNotNull(foundw);
 		Assert.assertTrue(foundw.size()>0);
+		boolean eatingfound=false;
 		for (FoundWordsDao found:foundw) {
 			if (found.getWord().equals("i")) {
 				Assert.assertNotNull(found.getCountintext());
 				Assert.assertTrue(found.getCountintext().intValue()==2);
 			}
 			if (found.getWord().equals("eating")) {
-				Assert.assertNotNull(found.getCountintext());
-				Assert.assertTrue(found.getCountintext().intValue()==2);
+				eatingfound=true;
 			}
 			if (found.getWord().equals("hat")) {
 				Assert.assertNotNull(found.getCountintext());
 				Assert.assertTrue(found.getCountintext().intValue()==2);
 			}
 		}
+		// Assert that eating wasn't found(an ignored word)
+		Assert.assertFalse(eatingfound);
 		
 	}
 	

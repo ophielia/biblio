@@ -26,5 +26,21 @@ public class ArtistDao {
 	
 	public boolean hasLastname() {
 		return lastname!=null && lastname.length()>0;
+	}
+
+	public String getDisplayName() {
+		StringBuffer display = new StringBuffer();
+		if (hasFirstname()) {
+			display.append(this.firstname).append(" ");
+		}
+		if (hasMiddlename()) {
+			display.append(this.middlename).append(" ");
+		}
+		if (hasLastname()) {
+			display.append(this.lastname).append(" ");
+		}		
+		String displayname = display.toString();
+		
+		return displayname.trim();
 	}	
 }
