@@ -169,7 +169,7 @@ public class SearchServiceTest {
 		// now - just testing that it doesn't explode
 		BookSearchCriteria criteria = new BookSearchCriteria();
 		criteria.setClientid(new Long(1));
-		criteria.setPublisherentry("Ecole");
+		criteria.setPublisher("Ecole");
 		
 		List<BookDao> foundbooks = searchService.findBooksForCriteria(criteria);
 		Assert.assertNotNull(foundbooks);
@@ -205,5 +205,14 @@ public class SearchServiceTest {
 		foundbooks = searchService.findBooksForCriteria(criteria);
 		Assert.assertNotNull(foundbooks);
 
+	}
+	
+	@Test 
+	public void testBugEmptyCriteria() {
+		BookSearchCriteria criteria = new BookSearchCriteria();
+		criteria.setClientid(1L);
+		List<BookDao> foundbooks = searchService.findBooksForCriteria(criteria);
+		Assert.assertNotNull(foundbooks);
+		
 	}
 	}

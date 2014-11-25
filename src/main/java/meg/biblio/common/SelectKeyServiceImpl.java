@@ -14,28 +14,34 @@ import org.springframework.stereotype.Service;
 @Service
 public class SelectKeyServiceImpl implements SelectKeyService {
 
-    @Autowired
-    SelectKeyRepository keyRepo;
-    
-    @Autowired
-    SelectValueRepository valueRepo;
-	
+	@Autowired
+	SelectKeyRepository keyRepo;
+
+	@Autowired
+	SelectValueRepository valueRepo;
+
 	@Override
-	public HashMap<Long,String> getDisplayHashForKey(String key, String lang) {
+	public HashMap<Long, String> getDisplayHashForKey(String key, String lang) {
 		// lookup values for key, in language
-	List<SelectValueDao> values = valueRepo.findByKeyLanguageDisplay(key, lang,new Sort("disporder"));
+		List<SelectValueDao> values = getSelectValuesForKey(key, lang);
 		// put found values in hashmap
-		if (values!=null) {
-			HashMap<Long,String> map = new HashMap<Long,String>();
-			for (SelectValueDao sv:values) {
+		if (values != null) {
+			HashMap<Long, String> map = new HashMap<Long, String>();
+			for (SelectValueDao sv : values) {
 				map.put(new Long(sv.getValue()), sv.getDisplay());
 			}
 			// return hashmap
 			return map;
 		}
 		return null;
+	}
 
-
+	@Override
+	public List<SelectValueDao> getSelectValuesForKey(String key, String lang) {
+		// lookup values for key, in language
+		List<SelectValueDao> values = valueRepo.findByKeyLanguageDisplay(key,
+				lang, new Sort("disporder"));
+		return values;
 	}
 
 }

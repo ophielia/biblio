@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page" 
+xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" 
+xmlns:c="http://java.sun.com/jsp/jstl/core" 
+xmlns:spring="http://www.springframework.org/tags" 
+xmlns:form="http://www.springframework.org/tags/form" 
+xmlns:fmt="http://java.sun.com/jsp/jstl/fmt" 
+xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    
+    <spring:message code="label_book_search" var="searchtitle"/>
+    <h1>${searchtitle}</h1>
+
+<spring:message code="label_book_searchkeyword" htmlEscape="false" var="lkeyword"/>    
+<spring:message code="label_book_title" htmlEscape="false" var="ltitle"/>    
+<spring:message code="label_book_author" htmlEscape="false" var="lauthor"/>    
+<spring:message code="label_book_illustrator" htmlEscape="false" var="lillustrator"/>    
+<spring:message code="label_book_publisher" htmlEscape="false" var="lpublisher"/>    
+
+<spring:message code="label_book_clientbookid" htmlEscape="false" var="lclientbookid"/>    
+<spring:message code="label_book_classification" htmlEscape="false" var="lshelfclass"/>    
+<spring:message code="label_book_status" htmlEscape="false" var="lstatus"/>    
+<spring:message code="label_book_information" htmlEscape="false" var="linfo"/>    
+
+<spring:message code="button_sortby" htmlEscape="false" var="lsortby"/>    
+
+<spring:url value="/search" var="actionurl"/>
+<script type="text/javascript">
+ require([
+          'dojo/dom',"dojo/on","dijit/TooltipDialog", "dijit/popup",
+          'dojo/domReady!'
+      ], function (dom,on,TooltipDialog,popup) {
+	 
+	 	function getIndex(prefix,text) {
+			// gets a substring of the text, starting at the char after the length of the prefix
+			var stripped = text.substr(prefix.length);
+			return stripped;
+		} 
+		 
+
+
+	// wire up sort buttons
+	   	dojo.query("th[id^='aSort']").forEach(function(node) {
+	  		var id = node.id;
+
+	          on(dojo.byId(id), 'click', function(event){
+	        	  clickedid = event.currentTarget.id;
+	      		  sortaction = getIndex('aSort',clickedid);
+	      		  var form = dojo.byId('expenselist');
+	      		  form.action = "${actionurl}?sort=" + sortaction;
+	      		  form.submit();
+	          });
+	  	});
+
+	   	form = dojo.byId("expenselist");
+	   	on(form, "input#batchupd:click", function(event){
+	   	   if (this.id="batchupd") {
+	   		checkselect = dojo.byId("batchUpdate");
+	   		if (checkselect.value == "") {
+	   			alert("${missingcat}");
+		   		event.preventDefault();
+		   		event.stopPropagation();	   			
+	   		}
+	   	   }
+	   	});
+	   	
+	   	
+	   	form = dojo.byId("expenselist");
+	   	on(form, "input#batchQuickGroup:click", function(event){
+	   	   if (this.id="batchQuickGroup") {
+	   		checkselect = dojo.byId("quickgroupentry");
+	   		if (checkselect.value == "") {
+	   			alert("${missingqc}");
+		   		event.preventDefault();
+		   		event.stopPropagation();	   			
+	   		}
+	   	   }
+	   	});
+	   	
+	   	viewinfolink = dojo.byId("viewinfo");
+        on(viewinfolink , 'click', function(){
+        	checkselect = dojo.byId("quickgroupentry");
+        	idx = checkselect.value;
+        	if(idx != "") {
+              	popup.open({
+                    popup: getDialogForId(idx),
+                    around: dom.byId("quickgroupentry")
+                });
+            }
+        });
+    	
+    	function getDialogForId(id) {
+    		var link = "${previewurl}/" + id;
+    		var dialog = dijit.byId('myTooltipDialog'+ id);
+    		if (dialog!=null) {
+    			dialog.destroyRecursive(true);
+    		}
+    		var myTooltipDialog = new TooltipDialog({
+                id: 'myTooltipDialog'+ id,
+                style: "width: 300px;",
+                href:link,
+                loadingMessage:link,
+                onMouseLeave: function(){
+                    popup.close(myTooltipDialog);
+                }
+            });
+    		return myTooltipDialog;
+    	}    	
+	});
+ </script>
+
+
+<form:form action="${actionurl}" id="resultlist" method="PUT" modelAttribute="bookListModel">
+
+<table>
+<THEAD>
+<tr>
+<td>${lkeyword}</td>
+<td>${ltitle}</td>
+<td>${lauthor}</td>
+<td>${lpublisher}</td>
+</tr>
+</THEAD>
+<tbody>
+				<tr>
+					<td>
+						<form:input path="keyword" type="text"></form:input>
+					</td>
+					<td>
+						<form:input path="title" type="text"></form:input>
+					</td>
+					<td>
+						<form:input path="author" type="text"></form:input>
+					</td>
+					<td>
+						<form:input path="publisher" type="text"></form:input>
+					</td>
+				</tr>
+			</tbody>
+</table>
+		<spring:message code="button_search" htmlEscape="false" var="search_button"/>
+        <input id="searchbutton" type="submit" value="${search_button}"/>
+       <br />
+       <hr />
+       <br />
+		<span style="float: right"> ${lsortby}: <form:select
+				path="orderby" id="orderbyselect">
+				<option id="" label="- - Select - - " />
+				<c:forEach var="sortitem" items="${sortlist}">
+					<form:option value="${sortitem.value}" label="${sortitem.display}" />
+				</c:forEach>
+			</form:select>
+		</span>
+		<TABLE>
+		<thead>
+		
+				<tr >
+			<th>(image)</th>
+			<th>${ltitle}</th>
+			<th>${lauthor} / <br />${lillustrator} </th>
+			<th>${lpublisher}</th>
+			<th>${linfo}</th>
+			<th></th>
+		</tr>
+		</thead>
+		<tbody>
+		
+ <c:forEach var="book" items="${bookListModel.books}" varStatus="expstatus">
+ 			<tr>
+ 			
+			<td>(image)</td>
+			<td>${book.title}</td>
+			<td>${book.authorsAsString} / <br />${book.illustratorsAsString}</td>
+			<td>${book.publisher.name}</td>
+			<td>
+				<c:set var="shelfclass" value="${classHash[book.shelfclass]}" /> 
+				<c:choose>
+				<c:when test="${ not empty shelfclass.imagedisplay}">
+				<img id="shelfimg" src="${shelfclass.imagedisplay}" width="50x"
+				 />
+				</c:when>
+				<c:otherwise>
+				${shelfclass.textdisplay}
+				</c:otherwise>
+				</c:choose>
+				<br />
+	 			${lclientbookid}:${book.clientbookid} / <br />
+	 			${lstatus}:${statusLkup[book.status]} 
+	 		</td> 			
+ 			<td>
+			<spring:url value="/books/display/${book.id}" var="editurl"/>
+			<a href="${editurl}">Edit</a>
+			</td>
+
+ 			</tr>
+ </c:forEach>		
+		</tbody>
+		</TABLE>        
+</form:form>
+
+</div>

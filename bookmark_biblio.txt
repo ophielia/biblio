@@ -1,22 +1,42 @@
 UseCase16 - booksearch 3 full text indexing
 					   2 search (title, author, keyword, publisher, shelfclass) 
-
+					   18	Admin search - list by status.... (Checked out, shelved, removed from circulation)
+					   19	Dashboard stats - books in catalog, checked out, removed from circulation, without details, without classification
 
 begin front end for search
+add on change resubmit to sortby box.
+change Edit to Display or show - using polite label
+make author search into author / illustrator search
+
+admin search - search by classification, status, detail status, title, author, publisher
+sort by headers
+display, same as user search
+new controller - admin/search
+new jsp - adminsearch
+
+for later - limit of results, pagination
+
+dashboard - total in catalog, breakout by status
+SSI breakoutByBookField - returns HashMap - field, sum, receives field as parameter	
+	
 
 add language to indexing
 
+
+
+
+
 ---- begin commit changes ----
 
-done - delete existing words before adding again!!  :-)
-done - make BookSearchCriteria
-done - begin building SSI.findBooksForCriteria()
-done - backend search done for title, author, shelfclass, keyword.
-done - complete for publisher
-done - add "switch" in case keyword is set
-done - test for keyword and author together
-done - add order by.... order by keyword count (persistance) desc for keyword (default) otherwise default is datecreated desc.
-done - think about sum query by count, than sum - to pull up books which contain both keywords
+done - first step controller
+done - resultlist page - search by keyword, title, author, illustrator, publisher
+done - resultlist page - display shelfclass title (image) authors, illustrators, publishers, bookid
+done - add sortby box
+not now - add shelfclass to sortby
+nevermind - sort by clicks on headers
+not now - add illustrator to backend
+done - classification together with other book detail info....
+
 
 ---- end commit changes ----
 
@@ -26,6 +46,15 @@ done - think about sum query by count, than sum - to pull up books which contain
 
 done - entities created, test made and failing
 done - make test green!
+done - delete existing words before adding again!!  :-)
+done - make BookSearchCriteria
+done - begin building SSI.findBooksForCriteria()
+done - backend search done for title, author, shelfclass, keyword.
+done - complete for publisher
+done - add "switch" in case keyword is set
+done - test for keyword and author together
+done - add order by.... order by keyword count (persistance) desc for keyword (default) otherwise default is datecreated desc.
+done - think about sum query by count, than sum - to pull up books which contain both keywords
 
 
 ---- end branch changes ----

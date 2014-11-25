@@ -8,7 +8,7 @@ public class BookSearchCriteria {
 	private String illustrator;
 	private String title;
 	private String shelfclasskey;
-	private String publisherentry;
+	private String publisher;
 	private long orderby;
 	private long orderbydir;
 
@@ -16,13 +16,14 @@ public class BookSearchCriteria {
 
 
 	public static final class OrderBy {
-		public static final long PERTINANCE=1;
+		public static final long PERTINENCE=1;
 		public static final long DATEADDED=2;
 		public static final long TITLE=3;
 		public static final long AUTHOR=4;
 		public static final long SHELFCLASS=5;
 		
 	}
+	public static final String usersortlkup="usersort";
 	
 	public static final class OrderByDir {
 		public static final long ASC=1;
@@ -67,11 +68,11 @@ public class BookSearchCriteria {
 	public void setShelfclasskey(String shelfclasskey) {
 		this.shelfclasskey = shelfclasskey;
 	}
-	public String getPublisherentry() {
-		return publisherentry;
+	public String getPublisher() {
+		return publisher;
 	}
-	public void setPublisherentry(String publisherentry) {
-		this.publisherentry = publisherentry;
+	public void setPublisher(String publisherentry) {
+		this.publisher = publisherentry;
 	}
 	
 	
@@ -87,10 +88,10 @@ public class BookSearchCriteria {
 	
 
 	public long getOrderbydir() {
-		if (orderby==0) {
+		if (orderbydir==0) {
 			return getDefaultOrderDir();
 		}
-		return orderby;
+		return orderbydir;
 	}
 	public void setOrderbydir(long orderbydir) {
 		this.orderbydir = orderbydir;
@@ -99,7 +100,7 @@ public class BookSearchCriteria {
 	private long getDefaultOrder() {
 		// default is pertinance if keyword search is used, otherwise, by recent
 		if (getKeyword()!=null) {
-			return OrderBy.PERTINANCE;
+			return OrderBy.PERTINENCE;
 		} else {
 			return OrderBy.DATEADDED;
 		}

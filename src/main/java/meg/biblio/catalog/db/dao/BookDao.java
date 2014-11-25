@@ -102,4 +102,30 @@ private Boolean textchange=new Boolean(false);
 		
 		this.title = title;
     }
+	
+	public String getAuthorsAsString() {
+		if (this.authors!=null && this.authors.size()>0) {
+			StringBuffer authorlist = new StringBuffer();
+			for (ArtistDao author:this.authors ) {
+				authorlist.append(author.getDisplayName()).append(", ");
+			}
+			// remove last comma and space
+			authorlist.setLength(authorlist.length()-2);
+			return authorlist.toString();
+		}
+		return "";
+	}
+	
+	public String getIllustratorsAsString() {
+		if (this.illustrators!=null && this.illustrators.size()>0) {
+			StringBuffer illustratorlist = new StringBuffer();
+			for (ArtistDao illustrator:this.illustrators ) {
+				illustratorlist.append(illustrator.getDisplayName()).append(", ");
+			}
+			// remove last comma and space
+			illustratorlist.setLength(illustratorlist.length()-2);
+			return illustratorlist.toString();
+		}
+		return "";
+	}
 }

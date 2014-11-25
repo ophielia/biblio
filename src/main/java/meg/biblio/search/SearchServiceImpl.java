@@ -24,6 +24,7 @@ import meg.biblio.catalog.db.dao.PublisherDao;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class SearchServiceImpl implements SearchService {
@@ -144,7 +145,7 @@ public class SearchServiceImpl implements SearchService {
 
 	}
 	
-	
+	@Transactional
 	@Override
 	public List<BookDao> findBooksForCriteria(BookSearchCriteria criteria) {
 
@@ -283,7 +284,7 @@ public class SearchServiceImpl implements SearchService {
 					sortexpr=bookroot.get("title");
 				} else if (criteria.getOrderby()==BookSearchCriteria.OrderBy.SHELFCLASS) {
 					sortexpr=bookroot.get("shelfclass");
-				}else if (criteria.getOrderby()==BookSearchCriteria.OrderBy.PERTINANCE) {
+				}else if (criteria.getOrderby()==BookSearchCriteria.OrderBy.PERTINENCE) {
 					sortexpr=pertExp;
 				} else  {
 					// default
@@ -363,9 +364,9 @@ public class SearchServiceImpl implements SearchService {
 			}
 		}	
 		// publisher
-		if (criteria.getPublisherentry()!=null) {
+		if (criteria.getPublisher()!=null) {
 			q.setParameter("publisher",  "%"
-						+ criteria.getPublisherentry().toLowerCase().trim() + "%");	
+						+ criteria.getPublisher().toLowerCase().trim() + "%");	
 		}
 
 	}
@@ -438,7 +439,7 @@ public class SearchServiceImpl implements SearchService {
 			}
 		}
 		// publisher
-		if (criteria.getPublisherentry() != null) {
+		if (criteria.getPublisher() != null) {
 			Join<BookDao, PublisherDao> publishjoin = bookroot
 					.join("publisher");
 

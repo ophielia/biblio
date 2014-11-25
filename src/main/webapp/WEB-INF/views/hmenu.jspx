@@ -7,7 +7,7 @@
     <jsp:output omit-xml-declaration="yes"/>
     
 <ul id="nav">
-	<li><moo:menulink label="menu_catalog" url="/books" />
+	<li><moo:menulink label="menu_catalog" url="/search" />
 	<ul>
 			<li><moo:menulink label="menu_createbook" url="/books?form" /></li>
 		</ul></li>
