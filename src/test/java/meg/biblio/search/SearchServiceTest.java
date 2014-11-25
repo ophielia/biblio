@@ -1,15 +1,12 @@
 package meg.biblio.search;
 
-import java.io.IOException;
-import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.List;
 
 import meg.biblio.catalog.db.ArtistRepository;
+import meg.biblio.catalog.db.BookRepository;
 import meg.biblio.catalog.db.dao.ArtistDao;
 import meg.biblio.catalog.db.dao.BookDao;
-import meg.biblio.catalog.db.dao.FoundDetailsDao;
-import meg.biblio.catalog.web.model.BookModel;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -31,6 +28,9 @@ public class SearchServiceTest {
 	@Autowired
 	ArtistRepository artistRepo;
 
+
+	@Autowired
+	BookRepository bookRepo;
 	
 	@Before
 	public void setup() {
@@ -39,7 +39,16 @@ public class SearchServiceTest {
 		newart.setFirstname("Laura");
 		newart.setMiddlename("Ingalls");
 		newart.setLastname("Wilder");
-		artistRepo.saveAndFlush(newart);
+		newart = artistRepo.saveAndFlush(newart);
+		
+		// (sidestep - save in book)
+		BookDao book = new BookDao();
+		book.setClientid(new Long(1));
+		book.setTitle("Little House on the Prarie");
+		List<ArtistDao> authors = new ArrayList<ArtistDao>();
+		authors.add(newart);
+		book.setAuthors(authors);
+		bookRepo.save(book);
 		// put "John Smith" in db
 		newart = new ArtistDao();
 		newart.setFirstname("John");
@@ -101,5 +110,100 @@ public class SearchServiceTest {
 		Assert.assertNotNull(result);
 		Assert.assertEquals(testname.getLastname(),result.getLastname());		
 	}
+	
+	@Test
+	public void testBasicSearchByCriteria() {
+		// now - just testing that it doesn't explode
+		BookSearchCriteria criteria = new BookSearchCriteria();
+		criteria.setTitle("Coco");
+		
+		List<BookDao> foundbooks = searchService.findBooksForCriteria(criteria);
+		Assert.assertNotNull(foundbooks);
+	}
+	
+	@Test
+	public void testAuthorSearchByCriteria() {
+		// now - just testing that it doesn't explode
+		BookSearchCriteria criteria = new BookSearchCriteria();
+		criteria.setAuthor("Laura Ingalls Wilder");
+		criteria.setClientid(new Long(1));
+		
+		List<BookDao> foundbooks = searchService.findBooksForCriteria(criteria);
+		Assert.assertNotNull(foundbooks);
+	}	
+	
+	@Test
+	public void testKeywordWithCriteria() {
+		// now - just testing that it doesn't explode
+		BookSearchCriteria criteria = new BookSearchCriteria();
+		criteria.setClientid(new Long(1));
+		criteria.setKeyword("Coco");
+		
+		List<BookDao> foundbooks = searchService.findBooksForCriteria(criteria);
+		Assert.assertNotNull(foundbooks);
+		
+		// now - just testing that it doesn't explode
+		criteria = new BookSearchCriteria();
+		criteria.setClientid(new Long(1));
+		criteria.setKeyword("Coco l'éléphant");
+		
+		foundbooks = searchService.findBooksForCriteria(criteria);
+		Assert.assertNotNull(foundbooks);		
+	}		
+	
+	@Test
+	public void testKeywordWithOtherCriteria() {
+		// now - just testing that it doesn't explode
+		BookSearchCriteria criteria = new BookSearchCriteria();
+		criteria.setClientid(new Long(1));
+		criteria.setKeyword("Coco l'éléphant");
+		criteria.setAuthor("monfreid");
+		
+		List<BookDao> foundbooks = searchService.findBooksForCriteria(criteria);
+		Assert.assertNotNull(foundbooks);
+		
+	}		
+	
+	@Test
+	public void testPublisherWithCriteria() {
+		// now - just testing that it doesn't explode
+		BookSearchCriteria criteria = new BookSearchCriteria();
+		criteria.setClientid(new Long(1));
+		criteria.setPublisherentry("Ecole");
+		
+		List<BookDao> foundbooks = searchService.findBooksForCriteria(criteria);
+		Assert.assertNotNull(foundbooks);
+		
+			
+	}	
+	
+	@Test
+	public void testAuthorSortNoAuthorSearch() {
+		// search for books with coco in title - title sort, get count
+		BookSearchCriteria criteria = new BookSearchCriteria();
+		criteria.setClientid(new Long(1));
+		criteria.setTitle("Coco");
+		criteria.setOrderby(BookSearchCriteria.OrderBy.TITLE);
+		List<BookDao> foundbooks = searchService.findBooksForCriteria(criteria);
+		Assert.assertNotNull(foundbooks);
+		int searchonecount = foundbooks.size();
+		// search for books with coco in title - author sort, get count
+		criteria = new BookSearchCriteria();
+		criteria.setClientid(new Long(1));
+		criteria.setTitle("Coco");
+		criteria.setOrderby(BookSearchCriteria.OrderBy.AUTHOR);	
+		foundbooks = searchService.findBooksForCriteria(criteria);
+		Assert.assertNotNull(foundbooks);
+		int searchtwocount = foundbooks.size();		
+		// ensure that counts match
+		Assert.assertEquals(searchonecount,searchtwocount);
+		// search for books with monfried as author - author sort
+		criteria = new BookSearchCriteria();
+		criteria.setClientid(new Long(1));
+		criteria.setAuthor("monfreid");
+		criteria.setOrderby(BookSearchCriteria.OrderBy.AUTHOR);	
+		foundbooks = searchService.findBooksForCriteria(criteria);
+		Assert.assertNotNull(foundbooks);
 
-}
+	}
+	}

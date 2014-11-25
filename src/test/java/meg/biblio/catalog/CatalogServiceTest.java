@@ -177,6 +177,33 @@ public class CatalogServiceTest {
 		// Assert that eating wasn't found(an ignored word)
 		Assert.assertFalse(eatingfound);
 		
+		// do a second time - and ensure that results are the same
+		book.setDescription("i am eating a hat! I am Eating a Hat");
+		// save book (calls indexing)
+		catalogService.saveBook(book);
+		
+		// get foundwords for book
+		foundw = foundRepo.findWordsForBook( book);
+		
+		// should have 2 i, 2 eating, 2 hat
+		Assert.assertNotNull(foundw);
+		Assert.assertTrue(foundw.size()>0);
+		eatingfound=false;
+		for (FoundWordsDao found:foundw) {
+			if (found.getWord().equals("i")) {
+				Assert.assertNotNull(found.getCountintext());
+				Assert.assertTrue(found.getCountintext().intValue()==2);
+			}
+			if (found.getWord().equals("eating")) {
+				eatingfound=true;
+			}
+			if (found.getWord().equals("hat")) {
+				Assert.assertNotNull(found.getCountintext());
+				Assert.assertTrue(found.getCountintext().intValue()==2);
+			}
+		}
+		// Assert that eating wasn't found(an ignored word)
+		Assert.assertFalse(eatingfound);		
 	}
 	
 	@Test

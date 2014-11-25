@@ -2,23 +2,30 @@ UseCase16 - booksearch 3 full text indexing
 					   2 search (title, author, keyword, publisher, shelfclass) 
 
 
+begin front end for search
 
-
-
-
-
-
+add language to indexing
 
 ---- begin commit changes ----
 
-done - entities created, test made and failing
-done - make test green!
+done - delete existing words before adding again!!  :-)
+done - make BookSearchCriteria
+done - begin building SSI.findBooksForCriteria()
+done - backend search done for title, author, shelfclass, keyword.
+done - complete for publisher
+done - add "switch" in case keyword is set
+done - test for keyword and author together
+done - add order by.... order by keyword count (persistance) desc for keyword (default) otherwise default is datecreated desc.
+done - think about sum query by count, than sum - to pull up books which contain both keywords
 
 ---- end commit changes ----
 
 
 
 ----- begin branch changes ----
+
+done - entities created, test made and failing
+done - make test green!
 
 
 ---- end branch changes ----

@@ -12,5 +12,8 @@ public interface SearchService {
 
 	public List<Long> findBookIdByClientId(String clientbookid);
 	
-	public List<BookDao> findBooksWithoutDetails(int maxresults);	
+	public List<BookDao> findBooksWithoutDetails(int maxresults);
+
+	List<BookDao> findBooksForCriteria(BookSearchCriteria criteria);
+
 }

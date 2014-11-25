@@ -109,6 +109,8 @@ public class CatalogServiceImpl implements CatalogService {
 
 	@Value("${biblio.progressivefill.turnedon}")
 	private boolean progressivefillenabled;
+	
+
 
 	/**
 	 * Assumes validated BookModel. Saves a book to the database for the first
@@ -377,7 +379,7 @@ public class CatalogServiceImpl implements CatalogService {
 		// split all text into words
 		String mashup = charles.toString();
 		// remove punctuation
-		String cleanmashup = mashup.replaceAll("[^a-zA-Z ]", " ");
+		String cleanmashup = mashup.replaceAll("[^a-zA-Z'éèàùâêîôûëïç ]", " ");
 		// split by space
 		String[] words = cleanmashup.split(" ");
 		
@@ -398,6 +400,35 @@ public class CatalogServiceImpl implements CatalogService {
 				}
 			}
 		}
+		
+		// double all words with apostrophes
+		HashMap<String,Integer> noapostrophes = new HashMap<String,Integer>();
+		for (String word:wordcounts.keySet()) {
+			// go through all keys in wordcounts
+			// if word contains apostrophe
+			if (word.contains("'")) {
+				// get count
+				Integer count = wordcounts.get(word);
+		
+				// replace apostrophe with space
+				String noapos = word.replaceAll("'", " ");
+				// split on space
+				String[] noaposparts = noapos.split(" ");
+				// add each part to repeat hash with same count
+				for (int i=0;i<noaposparts.length;i++) {
+					String newword = noaposparts[i].trim();
+					noapostrophes.put(newword, count);
+				}
+			}
+		}
+		// add all repeat hash values and keys to wordcount
+		for (String word:noapostrophes.keySet()) {
+			Integer count = noapostrophes.get(word); 
+			wordcounts.put(word, count);
+		}
+		
+		
+		
 		// get ignoredwords 
 		List<String> toignore = new ArrayList<String>();
 		List<IgnoredWordsDao> ignoredlist = ignoredRepo.findAll();
@@ -407,17 +438,20 @@ public class CatalogServiceImpl implements CatalogService {
 		
 		// now, save counted words - book, word, countintext
 		for (String word:wordcounts.keySet()) {
-			if (!toignore.contains(word)) {
-				Integer count = wordcounts.get(word);
-				FoundWordsDao wordcount = new FoundWordsDao();
-				wordcount.setBook(saved);
-				wordcount.setCountintext(count);
-				wordcount.setWord(word);
-				foundwords.add(wordcount);
+			if (word.length() > 1) {
+				if (!toignore.contains(word)) {
+					Integer count = wordcounts.get(word);
+					FoundWordsDao wordcount = new FoundWordsDao();
+					wordcount.setBook(saved);
+					wordcount.setCountintext(count);
+					wordcount.setWord(word);
+					foundwords.add(wordcount);
+				}
 			}
 		}
 		// persist
 		if (foundwords.size()>0) {
+			indexRepo.deleteWordsForBook(saved);
 			indexRepo.save(foundwords);
 		}
 
@@ -1157,7 +1191,21 @@ public class CatalogServiceImpl implements CatalogService {
 
 		}
 	}
+	
+	private boolean reindex=true;
+	@Scheduled(fixedRate = 60000)
+	private void reindexBooks() {
+		if (reindex) {
 
+			// get list of books without details - max batchsearchmax
+			List<BookDao> toreindex = getAllBooks();
+			for (BookDao book:toreindex) {
+				book.setTextchange(true);
+				saveBook(book);
+			}
+			reindex=false;
+		}
+	}
 }
 
 /*

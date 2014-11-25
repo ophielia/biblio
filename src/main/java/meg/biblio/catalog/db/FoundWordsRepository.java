@@ -15,5 +15,8 @@ public interface FoundWordsRepository {
 	@Query("select r from FoundWordsDao as r where book = :book")
 	List<FoundWordsDao> findWordsForBook(@Param("book") BookDao book);
 	
+	@Modifying
+	@Query("delete from FoundWordsDao as r where book = :book")
+	void deleteWordsForBook(@Param("book") BookDao book);
 	
 }
