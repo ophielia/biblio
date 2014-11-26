@@ -1,6 +1,5 @@
 package meg.biblio.catalog.web;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -29,11 +28,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 
-@RequestMapping("/search")
+@RequestMapping("/admin/search")
 @Controller
-public class BookSearchController {
+public class BookAdminSearchController {
 
-	private final String sessioncriteria="sessioncriteriauser";
+	private final String sessioncriteria="sessioncriteriaadmin";
 	
 	@Autowired
 	SearchService searchService;
@@ -57,7 +56,7 @@ public class BookSearchController {
 		session.setAttribute(sessioncriteria,criteria);
 		List<BookDao> list = searchService.findBooksForCriteria(criteria, clientkey);
 		model.setBooks(list);
-		return "book/resultlist";
+		return "book/admin/resultlist";
     }
 	
 	@RequestMapping(method = RequestMethod.PUT, produces = "text/html")
@@ -69,7 +68,7 @@ public class BookSearchController {
 		List<BookDao> list = searchService.findBooksForCriteria(criteria, clientkey);
 		model.setBooks(list);
 
-		return "book/resultlist";
+		return "book/admin/resultlist";
 	}
 	
 	
@@ -82,10 +81,10 @@ public class BookSearchController {
 		}
 		HttpSession session = request.getSession();
 		session.setAttribute(sessioncriteria,criteria);
-		List<BookDao> list = searchService.findBooksForCriteria(criteria,clientkey);
+		List<BookDao> list = searchService.findBooksForCriteria(criteria, clientkey);
 		model.setBooks(list);
 
-		return "book/resultlist";
+		return "book/admin/resultlist";
 	
 	}
 	

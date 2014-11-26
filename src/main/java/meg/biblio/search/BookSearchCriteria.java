@@ -9,8 +9,11 @@ public class BookSearchCriteria {
 	private String title;
 	private String shelfclasskey;
 	private String publisher;
+	private Long status;
+	private Long detailstatus;
 	private long orderby;
 	private long orderbydir;
+	
 
 
 
@@ -38,11 +41,17 @@ public class BookSearchCriteria {
 	public void setClientid(Long clientid) {
 		this.clientid = clientid;
 	}
+	public boolean hasKeyword() {
+		return keyword!=null && keyword.trim().length()>0;
+	}
 	public String getKeyword() {
 		return keyword;
 	}
 	public void setKeyword(String keyword) {
 		this.keyword = keyword;
+	}
+	public boolean hasAuthor() {
+		return author!=null && author.trim().length()>0;
 	}
 	public String getAuthor() {
 		return author;
@@ -50,24 +59,55 @@ public class BookSearchCriteria {
 	public void setAuthor(String author) {
 		this.author = author;
 	}
+	public boolean hasIllustrator() {
+		return illustrator!=null && illustrator.trim().length()>0;
+	}	
 	public String getIllustrator() {
 		return illustrator;
 	}
 	public void setIllustrator(String illustrator) {
 		this.illustrator = illustrator;
 	}
+	public boolean hasTitle() {
+		return title!=null && title.trim().length()>0;
+	}		
 	public String getTitle() {
 		return title;
 	}
 	public void setTitle(String title) {
 		this.title = title;
 	}
+	public boolean hasShelfclasskey() {
+		return shelfclasskey!=null && shelfclasskey.trim().length()>0;
+	}		
 	public String getShelfclasskey() {
 		return shelfclasskey;
 	}
 	public void setShelfclasskey(String shelfclasskey) {
 		this.shelfclasskey = shelfclasskey;
 	}
+	public boolean hasStatus() {
+		return this.status!=null&&this.status.longValue()>0;
+	}
+	public Long getStatus() {
+		return this.status;
+	}
+	public void setStatus(Long status) {
+		this.status = status;
+	}	
+	public boolean hasDetailstatus() {
+		return this.detailstatus!=null&&this.detailstatus.longValue()>0;
+	}
+
+	public Long getDetailstatus() {
+		return detailstatus;
+	}
+	public void setDetailstatus(Long detailstatus) {
+		this.detailstatus = detailstatus;
+	}	
+	public boolean hasPublisher() {
+		return this.publisher!=null&&this.publisher.length()>0;
+	}	
 	public String getPublisher() {
 		return publisher;
 	}
@@ -99,7 +139,7 @@ public class BookSearchCriteria {
 	
 	private long getDefaultOrder() {
 		// default is pertinance if keyword search is used, otherwise, by recent
-		if (getKeyword()!=null) {
+		if (hasKeyword()) {
 			return OrderBy.PERTINENCE;
 		} else {
 			return OrderBy.DATEADDED;
@@ -107,6 +147,9 @@ public class BookSearchCriteria {
 	}
 	
 	private long getDefaultOrderDir() {
+		if (orderby==OrderBy.TITLE || orderby==OrderBy.AUTHOR) {
+			return OrderByDir.ASC;
+		}
 		return OrderByDir.DESC;
 		
 	}	

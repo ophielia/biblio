@@ -117,7 +117,7 @@ public class SearchServiceTest {
 		BookSearchCriteria criteria = new BookSearchCriteria();
 		criteria.setTitle("Coco");
 		
-		List<BookDao> foundbooks = searchService.findBooksForCriteria(criteria);
+		List<BookDao> foundbooks = searchService.findBooksForCriteria(criteria, 1L);
 		Assert.assertNotNull(foundbooks);
 	}
 	
@@ -128,7 +128,7 @@ public class SearchServiceTest {
 		criteria.setAuthor("Laura Ingalls Wilder");
 		criteria.setClientid(new Long(1));
 		
-		List<BookDao> foundbooks = searchService.findBooksForCriteria(criteria);
+		List<BookDao> foundbooks = searchService.findBooksForCriteria(criteria, 1L);
 		Assert.assertNotNull(foundbooks);
 	}	
 	
@@ -139,7 +139,7 @@ public class SearchServiceTest {
 		criteria.setClientid(new Long(1));
 		criteria.setKeyword("Coco");
 		
-		List<BookDao> foundbooks = searchService.findBooksForCriteria(criteria);
+		List<BookDao> foundbooks = searchService.findBooksForCriteria(criteria, 1L);
 		Assert.assertNotNull(foundbooks);
 		
 		// now - just testing that it doesn't explode
@@ -147,7 +147,7 @@ public class SearchServiceTest {
 		criteria.setClientid(new Long(1));
 		criteria.setKeyword("Coco l'éléphant");
 		
-		foundbooks = searchService.findBooksForCriteria(criteria);
+		foundbooks = searchService.findBooksForCriteria(criteria, 1L);
 		Assert.assertNotNull(foundbooks);		
 	}		
 	
@@ -159,7 +159,7 @@ public class SearchServiceTest {
 		criteria.setKeyword("Coco l'éléphant");
 		criteria.setAuthor("monfreid");
 		
-		List<BookDao> foundbooks = searchService.findBooksForCriteria(criteria);
+		List<BookDao> foundbooks = searchService.findBooksForCriteria(criteria, 1L);
 		Assert.assertNotNull(foundbooks);
 		
 	}		
@@ -171,7 +171,7 @@ public class SearchServiceTest {
 		criteria.setClientid(new Long(1));
 		criteria.setPublisher("Ecole");
 		
-		List<BookDao> foundbooks = searchService.findBooksForCriteria(criteria);
+		List<BookDao> foundbooks = searchService.findBooksForCriteria(criteria, 1L);
 		Assert.assertNotNull(foundbooks);
 		
 			
@@ -184,7 +184,7 @@ public class SearchServiceTest {
 		criteria.setClientid(new Long(1));
 		criteria.setTitle("Coco");
 		criteria.setOrderby(BookSearchCriteria.OrderBy.TITLE);
-		List<BookDao> foundbooks = searchService.findBooksForCriteria(criteria);
+		List<BookDao> foundbooks = searchService.findBooksForCriteria(criteria, 1L);
 		Assert.assertNotNull(foundbooks);
 		int searchonecount = foundbooks.size();
 		// search for books with coco in title - author sort, get count
@@ -192,7 +192,7 @@ public class SearchServiceTest {
 		criteria.setClientid(new Long(1));
 		criteria.setTitle("Coco");
 		criteria.setOrderby(BookSearchCriteria.OrderBy.AUTHOR);	
-		foundbooks = searchService.findBooksForCriteria(criteria);
+		foundbooks = searchService.findBooksForCriteria(criteria, 1L);
 		Assert.assertNotNull(foundbooks);
 		int searchtwocount = foundbooks.size();		
 		// ensure that counts match
@@ -202,7 +202,7 @@ public class SearchServiceTest {
 		criteria.setClientid(new Long(1));
 		criteria.setAuthor("monfreid");
 		criteria.setOrderby(BookSearchCriteria.OrderBy.AUTHOR);	
-		foundbooks = searchService.findBooksForCriteria(criteria);
+		foundbooks = searchService.findBooksForCriteria(criteria, 1L);
 		Assert.assertNotNull(foundbooks);
 
 	}
@@ -211,7 +211,7 @@ public class SearchServiceTest {
 	public void testBugEmptyCriteria() {
 		BookSearchCriteria criteria = new BookSearchCriteria();
 		criteria.setClientid(1L);
-		List<BookDao> foundbooks = searchService.findBooksForCriteria(criteria);
+		List<BookDao> foundbooks = searchService.findBooksForCriteria(criteria, 1L);
 		Assert.assertNotNull(foundbooks);
 		
 	}

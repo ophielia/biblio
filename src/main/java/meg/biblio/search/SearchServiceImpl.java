@@ -11,7 +11,6 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Join;
-import javax.persistence.criteria.Order;
 import javax.persistence.criteria.ParameterExpression;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
@@ -147,35 +146,25 @@ public class SearchServiceImpl implements SearchService {
 	
 	@Transactional
 	@Override
-	public List<BookDao> findBooksForCriteria(BookSearchCriteria criteria) {
+	public List<BookDao> findBooksForCriteria(BookSearchCriteria criteria, Long clientid) {
 
 		if (criteria!=null) {
-			if (criteria.getKeyword()!=null) {
-				return findBooksWithKeyword(criteria);
+			if (criteria.hasKeyword()) {
+				return findBooksWithKeyword(criteria, clientid);
 			}
 		}
-		return findBooksNoKeyword(criteria);
+		return findBooksNoKeyword(criteria, clientid);
 	}
 	
 	
-	private List<BookDao> findBooksNoKeyword(BookSearchCriteria criteria) {
+	private List<BookDao> findBooksNoKeyword(BookSearchCriteria criteria, Long clientid) {
 		
 		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
 		CriteriaQuery<BookDao> c = cb.createQuery(BookDao.class);
 		Root<BookDao> bookroot = c.from(BookDao.class);
 		c.select(bookroot);
 
-		
-		
-		/*
-		 * 
-		 * 		private static final long PERTINANCE=1;
-		private static final long DATEADDED=2;
-		private static final long TITLE=3;
-		private static final long AUTHOR=4;
-		private static final long SHELFCLASS=5;
-		 */
-		
+	
 		if (criteria != null) {
 			
 			
@@ -213,7 +202,7 @@ public class SearchServiceImpl implements SearchService {
 			TypedQuery<BookDao> q = entityManager.createQuery(c);
 
 			// setting the parameters
-			setParametersInQuery(criteria,q);
+			setParametersInQuery(criteria,q, clientid);
 			
 			return q.getResultList();
 
@@ -222,7 +211,7 @@ public class SearchServiceImpl implements SearchService {
 		return null;
 	}	
 
-	private List<BookDao> findBooksWithKeyword(BookSearchCriteria criteria) {
+	private List<BookDao> findBooksWithKeyword(BookSearchCriteria criteria, Long clientid) {
 
 		// process keywords
 		List<String> keywordlist = null;
@@ -277,7 +266,8 @@ public class SearchServiceImpl implements SearchService {
 			long orderdir=criteria.getOrderbydir();
 			if (sortexpr==null) {
 				if (criteria.getOrderby()==BookSearchCriteria.OrderBy.AUTHOR) {
-					sortexpr=bookroot.get("authors").get("lastname");
+					Join<BookDao, ArtistDao> authorjoin = bookroot.join("authors");
+					sortexpr=authorjoin.get("lastname");
 				} else if (criteria.getOrderby()==BookSearchCriteria.OrderBy.DATEADDED) {
 					sortexpr=bookroot.get("createdon");
 				} else if (criteria.getOrderby()==BookSearchCriteria.OrderBy.TITLE) {
@@ -301,7 +291,7 @@ public class SearchServiceImpl implements SearchService {
 			TypedQuery<Tuple> q = entityManager.createQuery(c);
 
 			// setting the parameters
-			setParametersInQuery(criteria,q);
+			setParametersInQuery(criteria,q, clientid);
 			
 			// add keyword(s) parameters
 			if (keywordlist==null) {
@@ -325,22 +315,29 @@ public class SearchServiceImpl implements SearchService {
 	}
 
 	
-	private void setParametersInQuery(BookSearchCriteria criteria, TypedQuery q) {
+	private void setParametersInQuery(BookSearchCriteria criteria, TypedQuery q, Long clientid) {
 		// always add clientid
-		q.setParameter("clientid", criteria.getClientid());
+		q.setParameter("clientid", clientid);
 
 		// title
-		if (criteria.getTitle() != null) {
+		if (criteria.hasTitle()) {
 			q.setParameter("title", "%"
 					+ criteria.getTitle().toLowerCase().trim() + "%");
 		}
 		// shelf class
-		if (criteria.getShelfclasskey() != null) {
+		if (criteria.hasShelfclasskey()) {
 			q.setParameter("shelfclass", criteria.getShelfclasskey());
 		}
-		
+		// status
+		if (criteria.hasStatus()) {
+			q.setParameter("status", criteria.getStatus());
+		}	
+		// detail status
+		if (criteria.hasDetailstatus()) {
+			q.setParameter("detailstatus", criteria.getDetailstatus());
+		}	
 		// author
-		if (criteria.getAuthor() != null) {
+		if (criteria.hasAuthor()) {
 			ArtistDao tomatch = catalogService.textToArtistName(criteria
 					.getAuthor());
 			// where firstname = firstname and middlename = middlename and
@@ -364,7 +361,7 @@ public class SearchServiceImpl implements SearchService {
 			}
 		}	
 		// publisher
-		if (criteria.getPublisher()!=null) {
+		if (criteria.hasPublisher()) {
 			q.setParameter("publisher",  "%"
 						+ criteria.getPublisher().toLowerCase().trim() + "%");	
 		}
@@ -382,7 +379,7 @@ public class SearchServiceImpl implements SearchService {
 		whereclause.add(cb.equal(bookroot.<Long> get("clientid"), clientparam));
 
 		// title
-		if (criteria.getTitle() != null) {
+		if (criteria.hasTitle()) {
 			ParameterExpression<String> param = cb.parameter(String.class,
 					"title");
 			whereclause
@@ -390,15 +387,31 @@ public class SearchServiceImpl implements SearchService {
 
 		}
 		// shelfclass
-		if (criteria.getShelfclasskey() != null) {
+		if (criteria.hasShelfclasskey()) {
 			ParameterExpression<Long> param = cb.parameter(Long.class,
 					"shelfclass");
 			whereclause.add(cb.equal(bookroot.<Long> get("shelfclass"), param));
 
 		}
 		
+		// status
+		if (criteria.hasStatus()) {
+			ParameterExpression<Long> param = cb.parameter(Long.class,
+					"status");
+			whereclause.add(cb.equal(bookroot.<Long> get("status"), param));
+
+		}		
+		
+		// detail status
+		if (criteria.hasDetailstatus()) {
+			ParameterExpression<Long> param = cb.parameter(Long.class,
+					"detailstatus");
+			whereclause.add(cb.equal(bookroot.<Long> get("status"), param));
+
+		}			
+		
 		// author
-		if (criteria.getAuthor() != null) {
+		if (criteria.hasAuthor()) {
 			Join<BookDao, ArtistDao> authorjoin = bookroot.join("authors");
 			ArtistDao tomatch = catalogService.textToArtistName(criteria
 					.getAuthor());
@@ -439,7 +452,7 @@ public class SearchServiceImpl implements SearchService {
 			}
 		}
 		// publisher
-		if (criteria.getPublisher() != null) {
+		if (criteria.hasPublisher()) {
 			Join<BookDao, PublisherDao> publishjoin = bookroot
 					.join("publisher");
 
@@ -454,45 +467,7 @@ public class SearchServiceImpl implements SearchService {
 		return whereclause;
 	}
 
-	private void setOrderBy(BookSearchCriteria criteria, CriteriaBuilder cb,
-			CriteriaQuery<BookDao> query, Root<BookDao> root) {
-		
-/*		List<String> sortstrings=new ArrayList<String>();
-		// set sort string
-		if (criteria.getSorttype() != null) {
-			if (criteria.getSorttype().equals(BookSearchCriteria.SortType.Amount)) {
-				sortstrings.add("displayamount");
-			} else if (criteria.getSorttype().equals(
-					BookSearchCriteria.SortType.Category)) {
-				sortstrings.add("catName");
-			} else if (criteria.getSorttype().equals(
-					BookSearchCriteria.SortType.Date)) {
-				sortstrings.add("transdate");
-				sortstrings.add("transid");
-			} else if (criteria.getSorttype().equals(
-					BookSearchCriteria.SortType.Detail)) {
-				sortstrings.add("detail");
-			}
-		} else {
-			sortstrings.add("transdate");
-			sortstrings.add("transid");
-		}
-		
-		// now, put into list of order objects with direction
-		List<Order> orderstatements = new ArrayList<Order>();
-		for (String sortparam:sortstrings) {
-			if (criteria.getSortdir()!=null && criteria.getSortdir().longValue()==BookSearchCriteria.SortDirection.Asc) {
-				 Order neworder = cb.asc(root.get(sortparam));
-				 orderstatements.add(neworder);
-			} else {
-				Order neworder = cb.desc(root.get(sortparam));
-				 orderstatements.add(neworder);
-			}
-		}
-		query.orderBy(orderstatements);
-		
-		*/
-	}
+
 	
 	
 	

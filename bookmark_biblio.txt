@@ -3,15 +3,14 @@ UseCase16 - booksearch 3 full text indexing
 					   18	Admin search - list by status.... (Checked out, shelved, removed from circulation)
 					   19	Dashboard stats - books in catalog, checked out, removed from circulation, without details, without classification
 
-begin front end for search
-add on change resubmit to sortby box.
-change Edit to Display or show - using polite label
-make author search into author / illustrator search
 
 admin search - search by classification, status, detail status, title, author, publisher
+done - back end -  classification, status, detail status, title, author, publisher
+back end -  booktype
 sort by headers
+update status, classification by checkbox
 display, same as user search
-new controller - admin/search
+new controller - detailsearch
 new jsp - adminsearch
 
 for later - limit of results, pagination
@@ -36,6 +35,11 @@ not now - add shelfclass to sortby
 nevermind - sort by clicks on headers
 not now - add illustrator to backend
 done - classification together with other book detail info....
+done - begin front end for search
+done - add on change resubmit to sortby box.
+done - results.jsp - get rid of unused javascript
+done - change Edit to Display or show - using polite label
+nevermind - make author search into author / illustrator search
 
 
 ---- end commit changes ----
@@ -183,5 +187,7 @@ assignBookDetails - graceful handling of exception
    for now, because not really necessary.  Feels too pretty for initial implementation. 
    
 3. ignored words by client!!     
+
+4. usersort of books with ASC and DESC in selectkeys.
 
 ******* USE CASE MASTER ******

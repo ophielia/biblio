@@ -33,13 +33,14 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
           'dojo/domReady!'
       ], function (dom,on,TooltipDialog,popup) {
 	 
-
+);
+	  	});
 
 	   	form = dojo.byId("resultlist");
 	   	var sortsel  = dojo.byId("orderbyselect");
 	   	on(sortsel, "change", function(event){
 	   	   // submit the form
-	   	   form.submit();
+	   	   form.submit;
 	   	});
 	   	
 	   	
