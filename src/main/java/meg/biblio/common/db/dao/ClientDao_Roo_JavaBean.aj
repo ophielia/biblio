@@ -15,4 +15,36 @@ privileged aspect ClientDao_Roo_JavaBean {
         this.name = name;
     }
     
+    public String ClientDao.getImportmapconfig() {
+        return this.importmapconfig;
+    }
+    
+    public void ClientDao.setImportmapconfig(String importmapconfig) {
+        this.importmapconfig = importmapconfig;
+    }
+    
+    public String ClientDao.getImportfileconfig() {
+        return this.importfileconfig;
+    }
+    
+    public void ClientDao.setImportfileconfig(String importfileconfig) {
+        this.importfileconfig = importfileconfig;
+    }
+    
+    public String ClientDao.getClassifyimplementation() {
+        return this.classifyimplementation;
+    }
+    
+    public void ClientDao.setClassifyimplementation(String classifyimplementation) {
+        this.classifyimplementation = classifyimplementation;
+    }
+    
+    public String ClientDao.getImagepath() {
+        return this.imagepath;
+    }
+    
+    public void ClientDao.setImagepath(String imagepath) {
+        this.imagepath = imagepath;
+    }
+    
 }

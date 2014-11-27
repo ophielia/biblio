@@ -1,6 +1,7 @@
 package meg.biblio.search;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -11,6 +12,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Join;
+import javax.persistence.criteria.Order;
 import javax.persistence.criteria.ParameterExpression;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
@@ -144,6 +146,86 @@ public class SearchServiceImpl implements SearchService {
 
 	}
 	
+	@Override
+	public Long getBookCount(Long clientid) {
+		// put together query
+				CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+				CriteriaQuery<Long> c = cb.createQuery(Long.class);
+				Root<BookDao> exp = c.from(BookDao.class);
+				Expression countExpression = cb.count(exp.<Number>get("id"));
+				c.select(countExpression);
+				
+				List<Predicate> whereclause = new ArrayList<Predicate>();
+
+				// making space for parameters
+				// always add client id
+				ParameterExpression<Long> clientparam = cb.parameter(Long.class, "clientid");
+				whereclause.add(cb.equal(exp.<Long> get("clientid"), clientparam));
+				
+				// adding the whereclause
+				c.where(cb.and(whereclause.toArray(new Predicate[whereclause.size()])));
+				
+				// creating the query
+				TypedQuery<Long> q = entityManager.createQuery(c);
+
+				// setting the parameters
+				// always add clientid
+				q.setParameter("clientid", clientid);
+						
+				
+				List<Long> results = q.getResultList(); 
+				if ( results!=null && results.size()>0 ) {
+					return results.get(0);
+				}
+				return 0L;
+	}
+	
+	@Override
+	public HashMap<Long, Long> breakoutByBookField(long bookkey,Long clientid) {
+
+		// determine field string
+		String fieldstring = "status";
+		if (bookkey==SearchService.Breakoutfield.DETAILSTATUS) {
+			fieldstring="detailstatus";
+		}
+		// put together query
+		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+		CriteriaQuery<Tuple> c = cb.createQuery(Tuple.class);
+		Root<BookDao> exp = c.from(BookDao.class);
+		Expression countExpression = cb.count(exp.<Number>get("id"));
+		c.multiselect(exp.get(fieldstring),countExpression)
+		.groupBy(exp.get(fieldstring));
+		
+		List<Predicate> whereclause = new ArrayList<Predicate>();
+
+		// making space for parameters
+		// always add client id
+		ParameterExpression<Long> clientparam = cb.parameter(Long.class, "clientid");
+		whereclause.add(cb.equal(exp.<Long> get("clientid"), clientparam));
+		
+		// adding the whereclause
+		c.where(cb.and(whereclause.toArray(new Predicate[whereclause.size()])));
+		
+		// creating the query
+		TypedQuery<Tuple> q = entityManager.createQuery(c);
+
+		// setting the parameters
+		// always add clientid
+		q.setParameter("clientid", clientid);
+				
+		
+		List<Tuple> results = q.getResultList(); 
+		HashMap<Long,Long> toreturn = new HashMap<Long,Long>();
+		
+		for (Tuple t: results) {
+			Long key= (Long) t.get(0);
+			Long value= (Long) t.get(1);
+			toreturn.put(key,value);
+		}
+		
+		return toreturn;		
+	}
+	
 	@Transactional
 	@Override
 	public List<BookDao> findBooksForCriteria(BookSearchCriteria criteria, Long clientid) {
@@ -177,6 +259,7 @@ public class SearchServiceImpl implements SearchService {
 			
 			// adding orderby
 			long orderdir=criteria.getOrderbydir();
+			List<Expression> exprlist = new ArrayList<Expression>();
 			if (sortexpr==null) {
 				if (criteria.getOrderby()==BookSearchCriteria.OrderBy.AUTHOR) {
 					Join<BookDao, ArtistDao> authorjoin = bookroot.join("authors");
@@ -187,17 +270,32 @@ public class SearchServiceImpl implements SearchService {
 					sortexpr=bookroot.get("title");
 				} else if (criteria.getOrderby()==BookSearchCriteria.OrderBy.SHELFCLASS) {
 					sortexpr=bookroot.get("shelfclass");
+				} else if (criteria.getOrderby()==BookSearchCriteria.OrderBy.BOOKID) {
+					exprlist.add(bookroot.get("clientbookidsort"));
+					sortexpr=bookroot.get("clientbookid");
+				} else if (criteria.getOrderby()==BookSearchCriteria.OrderBy.BOOKTYPE) {
+					sortexpr=bookroot.get("type");
+				} else if (criteria.getOrderby()==BookSearchCriteria.OrderBy.STATUS) {
+					sortexpr=bookroot.get("status");
+				} else if (criteria.getOrderby()==BookSearchCriteria.OrderBy.DETAILSTATUS) {
+					sortexpr=bookroot.get("detailstatus");
 				} else  {
 					// default
 					sortexpr=bookroot.get("title");
 				}  
-			}
+			} 
+			exprlist.add(sortexpr);
+			List<Order> orderlist = new ArrayList<Order>();
 			if (orderdir==BookSearchCriteria.OrderByDir.ASC) {
-				c.orderBy(cb.asc(sortexpr));
+				for (Expression order:exprlist) {
+					orderlist.add(cb.asc(order));
+				}
 			} else {
-				c.orderBy(cb.desc(sortexpr));
+				for (Expression order:exprlist) {
+					orderlist.add(cb.desc(order));
+				}
 			}
-			
+			c.orderBy(orderlist);
 			// creating the query
 			TypedQuery<BookDao> q = entityManager.createQuery(c);
 
@@ -264,6 +362,7 @@ public class SearchServiceImpl implements SearchService {
 			
 			// adding orderby
 			long orderdir=criteria.getOrderbydir();
+			List<Expression> orderlist = new ArrayList<Expression>();
 			if (sortexpr==null) {
 				if (criteria.getOrderby()==BookSearchCriteria.OrderBy.AUTHOR) {
 					Join<BookDao, ArtistDao> authorjoin = bookroot.join("authors");
@@ -274,17 +373,29 @@ public class SearchServiceImpl implements SearchService {
 					sortexpr=bookroot.get("title");
 				} else if (criteria.getOrderby()==BookSearchCriteria.OrderBy.SHELFCLASS) {
 					sortexpr=bookroot.get("shelfclass");
-				}else if (criteria.getOrderby()==BookSearchCriteria.OrderBy.PERTINENCE) {
-					sortexpr=pertExp;
+				} else if (criteria.getOrderby()==BookSearchCriteria.OrderBy.BOOKID) {
+					orderlist.add(bookroot.get("clientbookidsort"));
+					sortexpr=bookroot.get("clientbookid");
+				} else if (criteria.getOrderby()==BookSearchCriteria.OrderBy.BOOKTYPE) {
+					sortexpr=bookroot.get("type");
+				} else if (criteria.getOrderby()==BookSearchCriteria.OrderBy.STATUS) {
+					sortexpr=bookroot.get("status");
+				} else if (criteria.getOrderby()==BookSearchCriteria.OrderBy.DETAILSTATUS) {
+					sortexpr=bookroot.get("detailstatus");
 				} else  {
 					// default
 					sortexpr=bookroot.get("title");
 				}  
-			}
+			} 
+			orderlist.add(sortexpr);
 			if (orderdir==BookSearchCriteria.OrderByDir.ASC) {
-				c.orderBy(cb.asc(sortexpr));
+				for (Expression order:orderlist) {
+					c.orderBy(cb.asc(order));
+				}
 			} else {
-				c.orderBy(cb.desc(sortexpr));
+				for (Expression order:orderlist) {
+					c.orderBy(cb.desc(order));
+				}
 			}
 			
 			// creating the query
@@ -332,6 +443,10 @@ public class SearchServiceImpl implements SearchService {
 		if (criteria.hasStatus()) {
 			q.setParameter("status", criteria.getStatus());
 		}	
+		// status
+		if (criteria.hasBooktype()) {
+			q.setParameter("type", criteria.getBooktype());
+		}			
 		// detail status
 		if (criteria.hasDetailstatus()) {
 			q.setParameter("detailstatus", criteria.getDetailstatus());
@@ -402,11 +517,19 @@ public class SearchServiceImpl implements SearchService {
 
 		}		
 		
+		// type
+		if (criteria.hasBooktype()) {
+			ParameterExpression<Long> param = cb.parameter(Long.class,
+					"type");
+			whereclause.add(cb.equal(bookroot.<Long> get("type"), param));
+
+		}		
+		
 		// detail status
 		if (criteria.hasDetailstatus()) {
 			ParameterExpression<Long> param = cb.parameter(Long.class,
 					"detailstatus");
-			whereclause.add(cb.equal(bookroot.<Long> get("status"), param));
+			whereclause.add(cb.equal(bookroot.<Long> get("detailstatus"), param));
 
 		}			
 		

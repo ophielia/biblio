@@ -1,6 +1,7 @@
 package meg.biblio.catalog.web.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import meg.biblio.catalog.db.dao.BookDao;
@@ -12,7 +13,8 @@ public class BookListModel implements Serializable {
 
 	private BookSearchCriteria criteria;
 	private List<BookDao> books;
-
+	
+	
 	public BookListModel(BookSearchCriteria criteria) {
 		super();
 		this.criteria = criteria;
@@ -32,7 +34,13 @@ public class BookListModel implements Serializable {
 
 	public void setBooks(List<BookDao> books) {
 		this.books = books;
+		if (this.books!=null && this.books.size()>0) {
+			// initialize checked list
+		}		
 	}
+	
+	
+
 
 	/** Setters on criteria object **/
 	public String getKeyword() {
@@ -67,11 +75,11 @@ public class BookListModel implements Serializable {
 		criteria.setTitle(title);
 	}
 
-	public String getShelfclasskey() {
+	public Long getShelfclasskey() {
 		return criteria.getShelfclasskey();
 	}
 
-	public void setShelfclasskey(String shelfclasskey) {
+	public void setShelfclasskey(Long shelfclasskey) {
 		criteria.setShelfclasskey(shelfclasskey);
 	}
 
@@ -81,6 +89,30 @@ public class BookListModel implements Serializable {
 
 	public void setPublisher(String publisherentry) {
 		criteria.setPublisher(publisherentry);
+	}
+
+	public Long getStatus() {
+		return criteria.getStatus();
+	}
+
+	public void setStatus(Long status) {
+		criteria.setStatus(status);
+	}
+
+	public Long getDetailstatus() {
+		return criteria.getDetailstatus();
+	}
+
+	public void setDetailstatus(Long detailstatus) {
+		criteria.setDetailstatus(detailstatus);
+	}
+
+	public Long getBooktype() {
+		return criteria.getBooktype();
+	}
+
+	public void setBooktype(Long booktype) {
+		criteria.setBooktype(booktype);
 	}
 
 	public long getOrderby() {
@@ -98,5 +130,7 @@ public class BookListModel implements Serializable {
 	public void setOrderbydir(long orderbydir) {
 		criteria.setOrderbydir(orderbydir);
 	}
+
+	
 
 }

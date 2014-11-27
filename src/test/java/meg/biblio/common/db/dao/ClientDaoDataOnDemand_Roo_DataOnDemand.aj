@@ -29,8 +29,32 @@ privileged aspect ClientDaoDataOnDemand_Roo_DataOnDemand {
     
     public ClientDao ClientDaoDataOnDemand.getNewTransientClientDao(int index) {
         ClientDao obj = new ClientDao();
+        setClassifyimplementation(obj, index);
+        setImagepath(obj, index);
+        setImportfileconfig(obj, index);
+        setImportmapconfig(obj, index);
         setName(obj, index);
         return obj;
+    }
+    
+    public void ClientDaoDataOnDemand.setClassifyimplementation(ClientDao obj, int index) {
+        String classifyimplementation = "classifyimplementation_" + index;
+        obj.setClassifyimplementation(classifyimplementation);
+    }
+    
+    public void ClientDaoDataOnDemand.setImagepath(ClientDao obj, int index) {
+        String imagepath = "imagepath_" + index;
+        obj.setImagepath(imagepath);
+    }
+    
+    public void ClientDaoDataOnDemand.setImportfileconfig(ClientDao obj, int index) {
+        String importfileconfig = "importfileconfig_" + index;
+        obj.setImportfileconfig(importfileconfig);
+    }
+    
+    public void ClientDaoDataOnDemand.setImportmapconfig(ClientDao obj, int index) {
+        String importmapconfig = "importmapconfig_" + index;
+        obj.setImportmapconfig(importmapconfig);
     }
     
     public void ClientDaoDataOnDemand.setName(ClientDao obj, int index) {

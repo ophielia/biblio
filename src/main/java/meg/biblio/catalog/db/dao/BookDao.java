@@ -1,13 +1,10 @@
 package meg.biblio.catalog.db.dao;
 import meg.biblio.catalog.db.FoundWordsDao;
-
 import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.jpa.entity.RooJpaEntity;
 import org.springframework.roo.addon.tostring.RooToString;
-
 import java.util.Date;
 import java.util.List;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.FetchType;
@@ -76,6 +73,7 @@ private Long shelfclass;
 private Boolean shelfclassverified;
 private Date createdon;
 private String clientbookid;
+private Long clientbookidsort;
 @OneToMany(mappedBy = "book",cascade = CascadeType.ALL, fetch=FetchType.LAZY)
 private List<FoundWordsDao> foundwords;
 @Transient
@@ -127,5 +125,20 @@ private Boolean textchange=new Boolean(false);
 			return illustratorlist.toString();
 		}
 		return "";
+	}
+
+	public void setClientbookid(String clientbookid) {
+        this.clientbookid = clientbookid;
+        setClientbookidsort(clientbookid);
+    }
+	
+	public void setClientbookidsort(String clientbid) {
+		if (clientbid!=null) {
+			if (clientbid.matches("^[0-9]+$")) {
+				// only numbers - save in sort field
+				Long longclientid = new Long(clientbid);
+				setClientbookidsort(longclientid);
+			}
+		}
 	}
 }

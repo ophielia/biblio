@@ -14,4 +14,13 @@ public class ClientDao {
 	
 	@NotNull
 	private String name;
+	
+	private String importmapconfig;
+	
+	private String importfileconfig;
+	
+	private String classifyimplementation;
+	
+	private String imagepath;
 }
+

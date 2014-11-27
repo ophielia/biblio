@@ -1192,7 +1192,7 @@ public class CatalogServiceImpl implements CatalogService {
 		}
 	}
 	
-	private boolean reindex=true;
+	private boolean reindex=false;
 	@Scheduled(fixedRate = 60000)
 	private void reindexBooks() {
 		if (reindex) {

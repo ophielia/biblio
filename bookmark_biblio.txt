@@ -4,20 +4,20 @@ UseCase16 - booksearch 3 full text indexing
 					   19	Dashboard stats - books in catalog, checked out, removed from circulation, without details, without classification
 
 
-admin search - search by classification, status, detail status, title, author, publisher
-done - back end -  classification, status, detail status, title, author, publisher
-back end -  booktype
-sort by headers
-update status, classification by checkbox
-display, same as user search
-new controller - detailsearch
-new jsp - adminsearch
 
-for later - limit of results, pagination
+admin search - make shelfclass select nice - 
+	show passed key
+	put select option on top
+	make sure "select" shows.... on page load- move to widget
 
-dashboard - total in catalog, breakout by status
-SSI breakoutByBookField - returns HashMap - field, sum, receives field as parameter	
-	
+
+
+
+dashboard - total in catalog, breakout by status - fancy stuff later on
+make controller
+make jsp
+
+
 
 add language to indexing
 
@@ -27,19 +27,17 @@ add language to indexing
 
 ---- begin commit changes ----
 
-done - first step controller
-done - resultlist page - search by keyword, title, author, illustrator, publisher
-done - resultlist page - display shelfclass title (image) authors, illustrators, publishers, bookid
-done - add sortby box
-not now - add shelfclass to sortby
-nevermind - sort by clicks on headers
-not now - add illustrator to backend
-done - classification together with other book detail info....
-done - begin front end for search
-done - add on change resubmit to sortby box.
-done - results.jsp - get rid of unused javascript
-done - change Edit to Display or show - using polite label
-nevermind - make author search into author / illustrator search
+done - back end -  classification, status, detail status, title, author, publisher
+done - back end -  booktypedone - display, same as user search
+done - new controller - detailsearch
+done - new jsp - adminsearch
+done - getting clients up and running - make implementations look at dao
+done - admin search - search by classification, status, detail status, title, author, publisher
+done - sort by headers
+skipping - update status, classification by checkbox
+done - copy jsps out of way of crazy updates
+done - SSI breakoutByBookField - returns HashMap - field, sum, receives field as parameter	
+done - cast difficulty for bookid as number....	
 
 
 ---- end commit changes ----
@@ -59,7 +57,19 @@ done - add "switch" in case keyword is set
 done - test for keyword and author together
 done - add order by.... order by keyword count (persistance) desc for keyword (default) otherwise default is datecreated desc.
 done - think about sum query by count, than sum - to pull up books which contain both keywords
-
+done - first step controller
+done - resultlist page - search by keyword, title, author, illustrator, publisher
+done - resultlist page - display shelfclass title (image) authors, illustrators, publishers, bookid
+done - add sortby box
+not now - add shelfclass to sortby
+nevermind - sort by clicks on headers
+not now - add illustrator to backend
+done - classification together with other book detail info....
+done - begin front end for search
+done - add on change resubmit to sortby box.
+done - results.jsp - get rid of unused javascript
+done - change Edit to Display or show - using polite label
+nevermind - make author search into author / illustrator search
 
 ---- end branch changes ----
 
@@ -190,4 +200,9 @@ assignBookDetails - graceful handling of exception
 
 4. usersort of books with ASC and DESC in selectkeys.
 
+5. details fill in - add language in assign details!  don't want to use nl!!
+
+6. not needed - handled programatically - with sql.later - client setting for uses numbers for ids - to be enforced in validation, and used for sorting in  SSI
+
+7. for later - limit of results, pagination 
 ******* USE CASE MASTER ******

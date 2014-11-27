@@ -37,6 +37,7 @@ privileged aspect BookDaoDataOnDemand_Roo_DataOnDemand {
     public BookDao BookDaoDataOnDemand.getNewTransientBookDao(int index) {
         BookDao obj = new BookDao();
         setClientbookid(obj, index);
+        setClientbookidsort(obj, index);
         setClientid(obj, index);
         setCreatedon(obj, index);
         setDescription(obj, index);
@@ -56,6 +57,11 @@ privileged aspect BookDaoDataOnDemand_Roo_DataOnDemand {
     public void BookDaoDataOnDemand.setClientbookid(BookDao obj, int index) {
         String clientbookid = "clientbookid_" + index;
         obj.setClientbookid(clientbookid);
+    }
+    
+    public void BookDaoDataOnDemand.setClientbookidsort(BookDao obj, int index) {
+        Long clientbookidsort = new Integer(index).longValue();
+        obj.setClientbookidsort(clientbookidsort);
     }
     
     public void BookDaoDataOnDemand.setClientid(BookDao obj, int index) {

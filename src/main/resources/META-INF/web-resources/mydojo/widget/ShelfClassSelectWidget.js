@@ -29,6 +29,8 @@ define([
         // and we want to have a default avatar, just in case
         imagedefault: require.toUrl("/biblio/resources/mydojo/widget/images/blank.png"),
 
+        dropListArrow: require.toUrl("/biblio/resources/mydojo/widget/images/downarrow.png"),
+        
         //passed json text
         jsontext: "",
 
@@ -49,7 +51,6 @@ define([
 		    // Get a DOM node reference for the root of our widget
 		    var domNode = this.domNode;
 
-
 		    // Run any parent postCreate processes - can be done at any point
 		    this.inherited(arguments);
 
@@ -60,11 +61,10 @@ define([
 			// fill in current display
 			 this._setDisplayIdAttr(this.displayId);
 			 
-		   // change the name of the button
-		     this.showListNode.innerText=this.changebuttontext;
 		     // don't want to see the list filling up
 		     style.set(this.selectlist,"display","none");
 
+		     style.set(this.currentTextNode,"display","inline");
 			 // fill the select list
 			 arrayUtil.forEach(data,function(shelfdata){
 				 var divnode = domConstruct.create("div", {
@@ -95,7 +95,7 @@ define([
 		    this.own(
 		    		 //query("#shelfClassSelectListId").on("click",lang.hitch(this,"_setDisplayFromEvent",event)),
 				     on(this.selectlist, mouse.leave, lang.hitch(this, "_hideSelect")),
-				     on(this.showListNode, "click", lang.hitch(this, "_showSelect"))
+				     on(this.dropList, "click", lang.hitch(this, "_showSelect"))
 				     );
 		        /*on(domNode, mouse.enter, lang.hitch(this, "_changeBackground", this.mouseBackgroundColor)),
 		        on(domNode, mouse.leave, lang.hitch(this, "_changeBackground", this.baseBackgroundColor))*/
@@ -117,8 +117,9 @@ define([
 				if (object.imagedisplay) {
 					hasimage = true;
 					this.currentImageNode.src = object.imagedisplay;
+					style.set(this.currentImageNode,"display","inline");
 				} else {
-					// MM fill in!!imagenode.src = "/biblio
+					style.set(this.currentImageNode,"display","none");
 				}
 
 				// set shelfinfo
@@ -126,7 +127,7 @@ define([
 						+ object.description;
 
 				// set shelftext
-				this.currentTextNode.innerText = object.textdisplay;
+				this.currentTextNode.innerText = object.description;
 
 				// set input
 				updatenode.value = object.key;

@@ -8,8 +8,10 @@ xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
-    
-    <spring:message code="label_book_search" var="searchtitle"/>
+ 
+<link rel="stylesheet" href="/biblio/resources/mydojo/widget/css/ShelfClassWidget.css" media="screen"></link>
+<link rel="stylesheet" href="/biblio/resources/mydojo/widget/css/ShelfClassSelectWidget.css" media="screen"></link>   
+    <spring:message code="menu_adminsearch" var="searchtitle"/>
     <h1>${searchtitle}</h1>
 
 <spring:message code="label_book_searchkeyword" htmlEscape="false" var="lkeyword"/>    
@@ -21,32 +23,55 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <spring:message code="label_book_clientbookid" htmlEscape="false" var="lclientbookid"/>    
 <spring:message code="label_book_classification" htmlEscape="false" var="lshelfclass"/>    
 <spring:message code="label_book_status" htmlEscape="false" var="lstatus"/>    
+<spring:message code="label_book_detailstatus" htmlEscape="false" var="ldetailstatus"/>    
+<spring:message code="label_book_btype" htmlEscape="false" var="lbooktype"/>    
 <spring:message code="label_book_information" htmlEscape="false" var="linfo"/>    
 <spring:message code="entity_display" htmlEscape="false" var="ldisplay"/>    
+<spring:message code="select_emptyoption" htmlEscape="false" var="lemptyoption"/>    
 
 <spring:message code="button_sortby" htmlEscape="false" var="lsortby"/>    
 
-<spring:url value="/search" var="actionurl"/>
+<spring:url value="/admin/search" var="actionurl"/>
 <script type="text/javascript">
  require([
           'dojo/dom',"dojo/on","dijit/TooltipDialog", "dijit/popup",
           'dojo/domReady!'
       ], function (dom,on,TooltipDialog,popup) {
 	 
-);
-	  	});
+	function getIndex(prefix, text) {
+			// gets a substring of the text, starting at the char after the length of the prefix
+			var stripped = text.substr(prefix.length);
+			return stripped;
+		}
 
-	   	form = dojo.byId("resultlist");
-	   	var sortsel  = dojo.byId("orderbyselect");
-	   	on(sortsel, "change", function(event){
-	   	   // submit the form
-	   	   form.submit;
-	   	});
-	   	
-	   	
-	   		
+		// wire up sort buttons
+		dojo.query("th[id^='aSort']").forEach(function(node) {
+			var id = node.id;
+
+			on(dojo.byId(id), 'click', function(event) {
+				clickedid = event.currentTarget.id;
+				sortaction = getIndex('aSort', clickedid);
+				var form = dojo.byId('resultlist');
+				form.action = "${actionurl}?sort=" + sortaction;
+				form.submit();
+			});
+		});
+
 	});
- </script>
+ 
+ <c:set var="shelfclass" value="${classHash[bookModel.shelfclass]}" />
+ require(
+		  ["mydojo/widget/ShelfClassSelectWidget","dojo/dom", "dojo/domReady!"],
+		    function( ShelfClassSelectWidget,dom){
+	        	
+	        	var classiContainer = dom.byId("imageselectbox");
+	        	
+	          
+	        	// Create our widget and place it
+	            var widget = new ShelfClassSelectWidget({displayId:'0',jsontext:'${classJson}',
+	            	changebuttontext:"v",updatenodename:"shelfclasskey"}).placeAt(classiContainer);
+		}); 
+</script>
 
 
 <form:form action="${actionurl}" id="resultlist" method="PUT" modelAttribute="bookListModel">
@@ -75,64 +100,106 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 						<form:input path="publisher" type="text"></form:input>
 					</td>
 				</tr>
+				<tr>
+					<td>
+						${lshelfclass}
+					</td>
+					<td>
+						${lstatus}
+					</td>
+					<td>${ldetailstatus}
+					</td>		
+					<td>${lbooktype}
+					</td>
+					
+				</tr>					
+				<tr>
+					<td>
+						<!--<form:select path="shelfclasskey">
+							<form:option value="" label="${lemptyoption}" />
+							<form:options items="${classList}" itemValue="key"
+								itemLabel="textdisplay" />
+						</form:select>-->
+							<form:input path="shelfclasskey" type="hidden"></form:input>
+							<!--  use this var to get the id of the currently selected classification -->
+							<span id="imageselectbox"></span>
+					</td>
+					<td>
+						<form:select path="status">
+							<form:option value="" label="${lemptyoption}" />
+							<c:forEach items="${statusLkup}" var="tmp" >
+   								<form:option value="${tmp.key}"  label="${tmp.value}"/>
+							</c:forEach>
+						</form:select>
+					</td>
+										<td><form:select path="detailstatus">
+							<form:option value="" label="${lemptyoption}" />
+							<c:forEach items="${detailstatusLkup}" var="tmp" >
+   								<form:option value="${tmp.key}"  label="${tmp.value}"/>
+							</c:forEach>
+						</form:select>
+					</td>
+										
+					<td>										<form:select path="booktype">
+							<form:option value="" label="${lemptyoption}" />
+							<c:forEach items="${booktypeLkup}" var="tmp" >
+   								<form:option value="${tmp.key}"  label="${tmp.value}"/>
+							</c:forEach>
+						</form:select>
+					</td>
+
+				</tr>				
 			</tbody>
 </table>
 		<spring:message code="button_search" htmlEscape="false" var="search_button"/>
         <input id="searchbutton" type="submit" value="${search_button}"/>
        <br />
-       <hr />
-       <br />
-		<span style="float: right"> ${lsortby}: <form:select
-				path="orderby" id="orderbyselect">
-				<option id="" label="- - Select - - " />
-				<c:forEach var="sortitem" items="${sortlist}">
-					<form:option value="${sortitem.value}" label="${sortitem.display}" />
-				</c:forEach>
-			</form:select>
-		</span>
+
 		<TABLE>
-		<thead>
+		<thead>		
+		
 		
 				<tr >
-			<th>(image)</th>
-			<th>${ltitle}</th>
-			<th>${lauthor} / <br />${lillustrator} </th>
-			<th>${lpublisher}</th>
-			<th>${linfo}</th>
+			<th id="aSort6">${lclientbookid}</th>
+			<th id="aSort3">${ltitle}</th>
+			<th id="aSort4">${lauthor} / <br />${lillustrator} </th>
+			<th id="aSort7">${lbooktype}</th>
+			<th id="aSort8">${lstatus}</th>
+			<th id="aSort9">${ldetailstatus}</th>
+			<th id="aSort5">${lshelfclass}</th>
 			<th></th>
-		</tr>
+		</tr>	 			
 		</thead>
 		<tbody>
 		
- <c:forEach var="book" items="${bookListModel.books}" varStatus="expstatus">
- 			<tr>
- 			
-			<td>(image)</td>
-			<td>${book.title}</td>
-			<td>${book.authorsAsString} / <br />${book.illustratorsAsString}</td>
-			<td>${book.publisher.name}</td>
-			<td>
-				<c:set var="shelfclass" value="${classHash[book.shelfclass]}" /> 
-				<c:choose>
-				<c:when test="${ not empty shelfclass.imagedisplay}">
-				<img id="shelfimg" src="${shelfclass.imagedisplay}" width="50x"
-				 />
-				</c:when>
-				<c:otherwise>
+ <c:forEach var="book" items="${bookListModel.books}" varStatus="bookstatus">
+					<tr>
+						<td>${book.clientbookid}</td>
+						<td>${book.title}</td>
+						<td>${book.authorsAsString}/ <br />${book.illustratorsAsString}</td>
+						<td>${booktypeLkup[book.type]}</td>
+						<td>${statusLkup[book.status]}</td>
+						<td>${detailstatusLkup[book.detailstatus]}</td>
+						<td><c:set var="shelfclass"
+								value="${classHash[book.shelfclass]}" /> <c:choose>
+								<c:when test="${ not empty shelfclass.imagedisplay}">
+									<img id="shelfimg" src="${shelfclass.imagedisplay}" width="50x" />
+								</c:when>
+								<c:otherwise>
 				${shelfclass.textdisplay}
 				</c:otherwise>
-				</c:choose>
-				<br />
-	 			${lclientbookid}:${book.clientbookid} / <br />
-	 			${lstatus}:${statusLkup[book.status]} 
-	 		</td> 			
- 			<td>
-			<spring:url value="/books/display/${book.id}" var="editurl"/>
-			<a href="${editurl}">${ldisplay}</a>
-			</td>
+							</c:choose></td>
+						<td><spring:url value="/books/display/${book.id}"
+								var="editurl" /> <a href="${editurl}">${ldisplay}</a> <c:if
+								test="${book.detailstatus == 3}">
+								<spring:url value="/books/choosedetails/${book.id}"
+									var="chooseurl" />
+								<br />
+								<a href="${chooseurl}">Choose Detail</a>
+							</c:if></td>
 
- 			</tr>
- </c:forEach>		
+					</tr>
+				</c:forEach>		
 		</tbody>
 		</TABLE>        
 </form:form>

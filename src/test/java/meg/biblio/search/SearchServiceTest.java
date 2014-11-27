@@ -1,6 +1,7 @@
 package meg.biblio.search;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import meg.biblio.catalog.db.ArtistRepository;
@@ -215,4 +216,32 @@ public class SearchServiceTest {
 		Assert.assertNotNull(foundbooks);
 		
 	}
+	
+	@Test 
+	public void testSortByBookIdCriteria() {
+		BookSearchCriteria criteria = new BookSearchCriteria();
+		criteria.setClientid(1L);
+		criteria.setOrderby(BookSearchCriteria.OrderBy.BOOKID);
+		List<BookDao> foundbooks = searchService.findBooksForCriteria(criteria, 1L);
+		Assert.assertNotNull(foundbooks);
+		
+	}	
+	
+	@Test 
+	public void testBreakoutMethod() {
+		long breakoutfield = SearchService.Breakoutfield.STATUS;
+		HashMap<Long,Long> results= searchService.breakoutByBookField(breakoutfield, 1L);
+		Assert.assertNotNull(results);
+		
+	}	
+	
+	@Test 
+	public void testCountMethod() {
+		Long results= searchService.getBookCount(1L);
+		Assert.assertNotNull(results);
+		
+	}		
+	
+	
+	
 	}

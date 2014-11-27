@@ -65,7 +65,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <spring:message code="label_book_status" htmlEscape="false" var="lstatus"/>
 <spring:message code="label_book_classification" htmlEscape="false" var="lclassification"/>
 <spring:message code="label_book_classificationverified" htmlEscape="false" var="lclassverif"/>
-<spring:message code="label_book_bookid" htmlEscape="false" var="lclientbookid"/>
+<spring:message code="label_book_clientbookid" htmlEscape="false" var="lclientbookid"/>
 
 
 
@@ -95,9 +95,9 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <thead>
 <tr>
 <td></td>
-<td>${ltitle}</td>
+<td>${ltitle}(${llanguage})</td>
 <td>${lauthor}</td>
-<td>${lpublisher} / <br /> ${lpublisher}</td>
+<td>${lpublisher} / <br /> ${lpublished}</td>
 <td>${ldescription}</td>
 <td></td>
 </tr>
@@ -107,7 +107,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <c:forEach items="${foundDetails}" var="detail">
 <tr>
 <td><img src="${detail.imagelink}" /></td>
-<td>${detail.title}</td>
+<td>${detail.title}(${detail.language})</td>
 <td>${detail.authors}</td>
 <td>${detail.publisher}<br />${detail.publishyear}</td>
 <td>${detail.description}</td>

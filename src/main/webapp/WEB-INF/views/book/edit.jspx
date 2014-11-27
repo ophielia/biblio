@@ -28,7 +28,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <spring:message code="label_book_status" htmlEscape="false" var="lstatus"/>
 <spring:message code="label_book_classification" htmlEscape="false" var="lclassification"/>
 <spring:message code="label_book_classificationverified" htmlEscape="false" var="lclassverif"/>
-<spring:message code="label_book_bookid" htmlEscape="false" var="lclientbookid"/>
+<spring:message code="label_book_clientbookid" htmlEscape="false" var="lclientbookid"/>
 <spring:message code="label_book_verified" htmlEscape="false" var="lvfd"/>
 <spring:message code="label_book_notverified" htmlEscape="false" var="lnvfd"/>
 
@@ -109,7 +109,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 	<c:if test="${bookModel.shelfclassverified}">
 	<c:set var="showver" value="" />
 	</c:if>
-	<input type="text" id="shelfchange" value=""></input><br />
+	<input type="hidden" id="shelfchange" value=""></input><br />
 	${lclassification}	
 	<c:if test="${not empty bookModel.shelfclass}">
 	(${showver})</c:if>: 
@@ -117,14 +117,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 	
 	<!--  use this var to get the id of the currently selected classification -->
 	<span id="imageselectbox"></span>
-	
-<!-- <span>
-	<img id="shelfimg" src="${shelfclass.imagedisplay}" width="50x" style="margin-bottom:-10px"/>
-	<span id="shelftext" style="display: none;">${shelfclass.textdisplay}</span>
-	<span id="shelfinfo" style="display: none; position: absolute; padding: 5px; margin-top: 5px; background: white;">${shelfclass.textdisplay}:${shelfclass.description}</span>
-    <button id="changebutton">Wipe block in</button>
-	<div id="classlist" style="position:absolute;display:none"></div>
-	</span> -->	
+
 	
 	
 	

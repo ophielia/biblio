@@ -1,27 +1,28 @@
 package meg.biblio.common;
 
 import meg.biblio.catalog.Classifier;
+import meg.biblio.common.db.ClientRepository;
+import meg.biblio.common.db.dao.ClientDao;
 import meg.tools.imp.FileConfig;
 import meg.tools.imp.MapConfig;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
 public class ClientServiceImpl implements ClientService {
 
+	@Autowired
+	ClientRepository clientRepo;
+	
     @Value("${biblio.defaultclient}")
     private Long defaultkey;
 
 
-	@Value("${biblio.import.mapconfig}")
-	private String mapconfig;
 
-	@Value("${biblio.import.fileconfig}")
-	private String fileconfig;  
 	
-	@Value("${biblio.classify.implementation}")
-	private String classifierclass;  	
+	
     
 	@Override
 	public Long getCurrentClientKey() {
@@ -31,12 +32,17 @@ public class ClientServiceImpl implements ClientService {
 
 	@Override
 	public Classifier getClassifierForClient(Long clientkey) throws ClassNotFoundException, InstantiationException, IllegalAccessException{
+		ClientDao client = getClientForKey(clientkey);
+		String classifierclass = client.getClassifyimplementation();
+		
 		// currently the property value - later to read from db
 		Class clazz = Class.forName(classifierclass);
 		return (Classifier) clazz.newInstance();
 	}
 
 	public FileConfig getFileConfigForClient(Long clientkey) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+		ClientDao client = getClientForKey(clientkey);
+		String fileconfig = client.getImportfileconfig();
 		// no real client key (yet) so just use defaults
 		Class clazz = Class.forName(fileconfig);
 		return (FileConfig) clazz.newInstance();
@@ -44,9 +50,16 @@ public class ClientServiceImpl implements ClientService {
 	}
 
 	public MapConfig getMapConfigForClient(Long clientkey) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+		ClientDao client = getClientForKey(clientkey);
+		String mapconfig = client.getImportmapconfig();
+		
 		Class clazz = Class.forName(mapconfig);
 		return (MapConfig) clazz.newInstance();
 	
+	}
+	
+	public ClientDao getClientForKey(Long key) {
+		return clientRepo.findOne(key);
 	}
 
 }

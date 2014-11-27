@@ -137,8 +137,12 @@ privileged aspect BookDao_Roo_JavaBean {
         return this.clientbookid;
     }
     
-    public void BookDao.setClientbookid(String clientbookid) {
-        this.clientbookid = clientbookid;
+    public Long BookDao.getClientbookidsort() {
+        return this.clientbookidsort;
+    }
+    
+    public void BookDao.setClientbookidsort(Long clientbookidsort) {
+        this.clientbookidsort = clientbookidsort;
     }
     
     public List<FoundWordsDao> BookDao.getFoundwords() {

@@ -30,7 +30,7 @@
   <script type="text/javascript">var djConfig = {parseOnLoad: false,packages: [
                                                                	            { name: "dojo", location: "//yandex.st/dojo/1.9.1/dojo" },
                                                             	            { name: "mydojo", location: "/biblio/resources/mydojo" }
-                                                            	        ], isDebug: false, locale: '${fn:toLowerCase(userLocale)}'};</script>
+                                                            	        ], isDebug: true, locale: '${fn:toLowerCase(userLocale)}'};</script>
 
   <script src="${dojo_url}" type="text/javascript"><!-- required for FF3 and Opera --></script>
   <script src="${spring_url}" type="text/javascript"><!-- /required for FF3 and Opera --></script>
