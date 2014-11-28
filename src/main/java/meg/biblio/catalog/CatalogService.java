@@ -69,6 +69,10 @@ public interface CatalogService {
 
 	List<ClassificationDao> getShelfClassList(Long clientkey, String lang);
 
+	void assignShelfClassToBooks(Long shelfclassUpdate, List<Long> toupdate);
+
+	void assignStatusToBooks(Long statusupdate, List<Long> toupdate);
+
 
 
 }

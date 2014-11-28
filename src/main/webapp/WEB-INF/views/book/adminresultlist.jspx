@@ -19,6 +19,8 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <spring:message code="label_book_author" htmlEscape="false" var="lauthor"/>    
 <spring:message code="label_book_illustrator" htmlEscape="false" var="lillustrator"/>    
 <spring:message code="label_book_publisher" htmlEscape="false" var="lpublisher"/>    
+<spring:message code="action_updateclass" htmlEscape="false" var="lscupdate"/>    
+<spring:message code="action_updatestatus" htmlEscape="false" var="lupdstatus"/>    
 
 <spring:message code="label_book_clientbookid" htmlEscape="false" var="lclientbookid"/>    
 <spring:message code="label_book_classification" htmlEscape="false" var="lshelfclass"/>    
@@ -28,6 +30,8 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <spring:message code="label_book_information" htmlEscape="false" var="linfo"/>    
 <spring:message code="entity_display" htmlEscape="false" var="ldisplay"/>    
 <spring:message code="select_emptyoption" htmlEscape="false" var="lemptyoption"/>    
+<spring:message code="field_invalid" arguments="${lstatus}" htmlEscape="false" var="missingstatus"/>    
+<spring:message code="field_invalid" arguments="${lshelfclass}" htmlEscape="false" var="missingshelfclass"/> 
 
 <spring:message code="button_sortby" htmlEscape="false" var="lsortby"/>    
 
@@ -57,9 +61,37 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 			});
 		});
 
+		form = dojo.byId("resultlist");
+	   	on(form, "input#updateStatus:click", function(event){
+	   	   if (this.id="updateStatus") {
+	   		checkselect = dojo.byId("statusUpdate");
+	   		if (checkselect.value == "") {
+	   			alert("${missingstatus}");
+		   		event.preventDefault();
+		   		event.stopPropagation();	   			
+	   		}
+	   	   }
+	   	});
+	   	
+	   	
+	   	form = dojo.byId("resultlist");
+	   	on(form, "input#shelfclassUpdate:click", function(event){
+	   	   if (this.id="shelfclassUpdate") {
+	   		checkselect = dojo.byId("shelfclassentry");
+	   		if (checkselect.value == "") {
+	   			alert("${missingshelfclass}");
+		   		event.preventDefault();
+		   		event.stopPropagation();	   			
+	   		}
+	   	   }
+	   	});
+		
+		
+		
 	});
  
- <c:set var="shelfclass" value="${classHash[bookModel.shelfclass]}" />
+ <c:set var="shelfclass" value="${classHash[bookListModel.criteria.shelfclasskey]}" />
+
  require(
 		  ["mydojo/widget/ShelfClassSelectWidget","dojo/dom", "dojo/domReady!"],
 		    function( ShelfClassSelectWidget,dom){
@@ -68,7 +100,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 	        	
 	          
 	        	// Create our widget and place it
-	            var widget = new ShelfClassSelectWidget({displayId:'0',jsontext:'${classJson}',
+	            var widget = new ShelfClassSelectWidget({displayId:'${shelfclass.id}',jsontext:'${classJson}',
 	            	changebuttontext:"v",updatenodename:"shelfclasskey"}).placeAt(classiContainer);
 		}); 
 </script>
@@ -115,11 +147,6 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 				</tr>					
 				<tr>
 					<td>
-						<!--<form:select path="shelfclasskey">
-							<form:option value="" label="${lemptyoption}" />
-							<form:options items="${classList}" itemValue="key"
-								itemLabel="textdisplay" />
-						</form:select>-->
 							<form:input path="shelfclasskey" type="hidden"></form:input>
 							<!--  use this var to get the id of the currently selected classification -->
 							<span id="imageselectbox"></span>
@@ -154,12 +181,31 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 		<spring:message code="button_search" htmlEscape="false" var="search_button"/>
         <input id="searchbutton" type="submit" value="${search_button}"/>
        <br />
+<hr />
+<br />
+<form:errors cssClass="errors" path="statusUpdate" />
+	<form:select path="statusUpdate">
+		<form:option value="" label="${lemptyoption}" />
+		<c:forEach items="${statusLkup}" var="tmp" >
+						<form:option value="${tmp.key}"  label="${tmp.value}"/>
+		</c:forEach>
+	</form:select>	 
+<input id="updateStatus" type="submit" name="updatestatus" value="${lupdstatus}"/>
+<span style="float:right"> 
+	<form:select path="shelfclassUpdate" id="shelfclassentry">
+	<option id="" label="- - Select - - " />
+	<c:forEach var="tmp" items="${classHash}">
+	<form:option value="${tmp.key}" label="${tmp.value.description}" />
+	</c:forEach>
+	</form:select>
+	<input id="shelfclassUpdate" name="updateshelfclass" type="submit" value="${lscupdate}"/>   
+</span>
 
 		<TABLE>
 		<thead>		
 		
 		
-				<tr >
+				<tr ><th></th>
 			<th id="aSort6">${lclientbookid}</th>
 			<th id="aSort3">${ltitle}</th>
 			<th id="aSort4">${lauthor} / <br />${lillustrator} </th>
@@ -173,7 +219,8 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 		<tbody>
 		
  <c:forEach var="book" items="${bookListModel.books}" varStatus="bookstatus">
-					<tr>
+					<tr><td><form:checkbox path="checked[${bookstatus.index}]"  />
+					<form:input path="idref[${bookstatus.index}]" value="${book.id}" type="hidden"></form:input></td>
 						<td>${book.clientbookid}</td>
 						<td>${book.title}</td>
 						<td>${book.authorsAsString}/ <br />${book.illustratorsAsString}</td>

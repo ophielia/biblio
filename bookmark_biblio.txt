@@ -1,21 +1,23 @@
 UseCase16 - booksearch 3 full text indexing
 					   2 search (title, author, keyword, publisher, shelfclass) 
+					   17	edit book
 					   18	Admin search - list by status.... (Checked out, shelved, removed from circulation)
 					   19	Dashboard stats - books in catalog, checked out, removed from circulation, without details, without classification
 
 
 
 admin search - make shelfclass select nice - 
-	show passed key
+done  -	widget - show passed key
 	put select option on top
 	make sure "select" shows.... on page load- move to widget
+	plus - toggle for showtext
+	plus - toggle for add empty select
+	
+
+17 edit classification, status, book type, language
 
 
 
-
-dashboard - total in catalog, breakout by status - fancy stuff later on
-make controller
-make jsp
 
 
 
@@ -38,6 +40,9 @@ skipping - update status, classification by checkbox
 done - copy jsps out of way of crazy updates
 done - SSI breakoutByBookField - returns HashMap - field, sum, receives field as parameter	
 done - cast difficulty for bookid as number....	
+done - dashboard - total in catalog, breakout by status - fancy stuff later on
+done - make controller
+done - make jsp
 
 
 ---- end commit changes ----
@@ -205,4 +210,6 @@ assignBookDetails - graceful handling of exception
 6. not needed - handled programatically - with sql.later - client setting for uses numbers for ids - to be enforced in validation, and used for sorting in  SSI
 
 7. for later - limit of results, pagination 
+
+8. think about it - clientbookid not necessary if using bar codes.  (use clientbookid instead)
 ******* USE CASE MASTER ******

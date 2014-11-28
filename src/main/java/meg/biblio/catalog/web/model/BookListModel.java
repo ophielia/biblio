@@ -13,8 +13,13 @@ public class BookListModel implements Serializable {
 
 	private BookSearchCriteria criteria;
 	private List<BookDao> books;
+	private List<Boolean> checked;
+	private Long statusUpdate;
+	private Long shelfclassUpdate;
+
+	private List<Long> idref;
 	
-	
+
 	public BookListModel(BookSearchCriteria criteria) {
 		super();
 		this.criteria = criteria;
@@ -36,11 +41,37 @@ public class BookListModel implements Serializable {
 		this.books = books;
 		if (this.books!=null && this.books.size()>0) {
 			// initialize checked list
+			createCheckedAndIdSlots(this.books.size());
 		}		
 	}
 	
 	
 
+	public List<Boolean> getChecked() {
+		return checked;
+	}
+
+	public void setChecked(List<Boolean> checked) {
+		this.checked = checked;
+	}
+	
+	
+
+	public Long getStatusUpdate() {
+		return statusUpdate;
+	}
+
+	public void setStatusUpdate(Long statusUpdate) {
+		this.statusUpdate = statusUpdate;
+	}
+
+	public Long getShelfclassUpdate() {
+		return shelfclassUpdate;
+	}
+
+	public void setShelfclassUpdate(Long shelfclassUpdate) {
+		this.shelfclassUpdate = shelfclassUpdate;
+	}
 
 	/** Setters on criteria object **/
 	public String getKeyword() {
@@ -131,6 +162,35 @@ public class BookListModel implements Serializable {
 		criteria.setOrderbydir(orderbydir);
 	}
 
-	
+	private void createCheckedAndIdSlots(int size) {
+		checked = new ArrayList<Boolean>();
+		idref = new ArrayList<Long>();
+		for (int i=0;i<size;i++) {
+			checked.add(false);
+			idref.add(0L);
+		}
+		
+	}
+	public List<Long> getIdref() {
+		return idref;
+	}
 
+	public void setIdref(List<Long> idref) {
+		this.idref = idref;
+	}	
+	
+	public List<Long> getCheckedBookIds() {
+		// make new empty list 
+		List<Long> checkedexp = new ArrayList<Long>();
+			// go through checked list
+			for (int i=0;i<checked.size();i++) {
+				// if checked is true, add expenseDao at same slot to checkedlist
+				Boolean test = checked.get(i);
+				if (test!=null && test) {
+					checkedexp.add(idref.get(i));
+				}
+			}
+		// return checked list
+		return checkedexp;
+	}	
 }

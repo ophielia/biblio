@@ -97,6 +97,50 @@ public class BookAdminSearchController {
 	
 	}
 	
+	@RequestMapping(method = RequestMethod.PUT, params = "updateshelfclass",produces = "text/html")
+	public String updateShelfClass(@ModelAttribute("bookListModel") BookListModel model,Model uiModel,HttpServletRequest request) {
+		Long clientkey = clientService.getCurrentClientKey();
+		BookSearchCriteria criteria = model.getCriteria();
+		HttpSession session = request.getSession();
+		session.setAttribute(sessioncriteria,criteria);
+		
+		
+		// get books to update
+		List<Long> toupdate = model.getCheckedBookIds();
+		
+		// update books
+		catalogService.assignShelfClassToBooks(model.getShelfclassUpdate(),toupdate);
+		
+		// retrieve and set list
+		List<BookDao> list = searchService.findBooksForCriteria(criteria, clientkey);
+		model.setBooks(list);		
+		// return
+		return "book/admin/resultlist";
+	}	
+	
+	@RequestMapping(method = RequestMethod.PUT, params = "updatestatus",produces = "text/html")
+	public String updateStatus(@ModelAttribute("bookListModel") BookListModel model,Model uiModel,HttpServletRequest request) {
+		Long clientkey = clientService.getCurrentClientKey();
+		BookSearchCriteria criteria = model.getCriteria();
+		HttpSession session = request.getSession();
+		session.setAttribute(sessioncriteria,criteria);
+		
+		
+		// get books to update
+		List<Long> toupdate = model.getCheckedBookIds();
+		
+		// update books
+		catalogService.assignStatusToBooks(model.getStatusUpdate(),toupdate);
+		
+		// retrieve and set list
+		List<BookDao> list = searchService.findBooksForCriteria(criteria, clientkey);
+		model.setBooks(list);		
+		// return
+		return "book/admin/resultlist";
+	}		
+	
+	
+	
 	@InitBinder
 	public void initBinder(WebDataBinder binder) {
 	    binder.setAutoGrowCollectionLimit(100024);

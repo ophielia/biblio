@@ -1,5 +1,7 @@
 package meg.biblio.common;
 
+import javax.servlet.http.HttpServletRequest;
+
 import meg.biblio.catalog.Classifier;
 import meg.biblio.common.db.ClientRepository;
 import meg.biblio.common.db.dao.ClientDao;
@@ -60,6 +62,13 @@ public class ClientServiceImpl implements ClientService {
 	
 	public ClientDao getClientForKey(Long key) {
 		return clientRepo.findOne(key);
+	}
+
+	@Override
+	public ClientDao getCurrentClient(HttpServletRequest httpServletRequest) {
+		Long clientkey = defaultkey;
+		ClientDao client = clientRepo.findOne(clientkey);
+		return client;
 	}
 
 }

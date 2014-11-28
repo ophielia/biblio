@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:form="urn:jsptagdir:/WEB-INF/tags/form" xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <form:update id="fu_meg_biblio_common_db_dao_ClientDao" modelAttribute="clientDao" path="/client" versionField="Version" z="h7hbZFr2uukev7RLqhH0OR6FCCE=">
+        <field:input field="name" id="c_meg_biblio_common_db_dao_ClientDao_name" required="true" z="j6++cRQMQ363Um5Cxi7PxjXXpvo="/>
+        <field:input field="importmapconfig" id="c_meg_biblio_common_db_dao_ClientDao_importmapconfig" z="0S1SUDy+GBup01yrhkF1J2TO24w="/>
+        <field:input field="importfileconfig" id="c_meg_biblio_common_db_dao_ClientDao_importfileconfig" z="kkF6EqimFenoghNe8CNZiRMjD90="/>
+        <field:input field="classifyimplementation" id="c_meg_biblio_common_db_dao_ClientDao_classifyimplementation" z="Ysk7R/ELugjksWLMb8RIN/kHMbQ="/>
+        <field:input field="imagepath" id="c_meg_biblio_common_db_dao_ClientDao_imagepath" z="p3enelUoiylb/8RIIAe6W2Tig14="/>
+    </form:update>
+</div>

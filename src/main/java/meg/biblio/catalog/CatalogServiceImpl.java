@@ -1192,6 +1192,48 @@ public class CatalogServiceImpl implements CatalogService {
 		}
 	}
 	
+	@Override
+	public void assignShelfClassToBooks(Long shelfclassUpdate,
+			List<Long> toupdate) {
+		List<BookDao> books = bookRepo.findAll(toupdate);
+		List<BookDao> tosave = new ArrayList<BookDao>();
+		if (books!=null) {
+			for (BookDao book:books) {
+				book.setShelfclass(shelfclassUpdate);
+				tosave.add(book);
+			}
+		}
+		if (tosave.size()>0) {
+			bookRepo.save(tosave);
+		}
+		
+	}
+	
+
+	@Override
+	public void assignStatusToBooks(Long statusUpdate, List<Long> toupdate) {
+		List<BookDao> books = bookRepo.findAll(toupdate);
+		List<BookDao> tosave = new ArrayList<BookDao>();
+		if (books!=null) {
+			for (BookDao book:books) {
+				book.setStatus(statusUpdate);
+				tosave.add(book);
+			}
+		}
+		if (tosave.size()>0) {
+			bookRepo.save(tosave);
+		}
+		
+	}	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	private boolean reindex=false;
 	@Scheduled(fixedRate = 60000)
 	private void reindexBooks() {
@@ -1206,6 +1248,9 @@ public class CatalogServiceImpl implements CatalogService {
 			reindex=false;
 		}
 	}
+
+
+
 }
 
 /*
