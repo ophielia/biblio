@@ -20,15 +20,6 @@ still open widget - pass in empty select text
 
 ---- begin commit changes ----
 
-done - admin search - make shelfclass select nice - 
-done  -	widget - show passed key
-done - 	put select option on top
-done - 	make sure "select" shows.... on page load- move to widget
-done -	plus - toggle for showtext
-done -	plus - toggle for add empty select
-	
-
-done - 17 edit classification, status, book type, language
 
 
 ---- end commit changes ----
@@ -75,6 +66,14 @@ done - cast difficulty for bookid as number....
 done - dashboard - total in catalog, breakout by status - fancy stuff later on
 done - make controller
 done - make jsp
+done - admin search - make shelfclass select nice - 
+done  -	widget - show passed key
+done - 	put select option on top
+done - 	make sure "select" shows.... on page load- move to widget
+done -	plus - toggle for showtext
+done -	plus - toggle for add empty select
+done - 17 edit classification, status, book type, language
+
 
 ---- end branch changes ----
 
