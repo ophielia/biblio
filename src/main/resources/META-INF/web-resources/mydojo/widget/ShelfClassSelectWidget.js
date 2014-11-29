@@ -23,7 +23,11 @@ define([
         // Our template - important!
         templateString: template,
 
-    	changebuttontext: "Change",
+    	showtext: false,
+    	
+    	emptyselecttext: "Select",
+    	
+    	showemptyselect:false,
 
         // Using require.toUrl, we can get a path to our AuthorWidget's space
         // and we want to have a default avatar, just in case
@@ -56,6 +60,10 @@ define([
 
 		     // fill the memory store
 			 var data = JSON.parse(this.jsontext);
+			 if (this.showemptyselect) {
+				 object = {"clientid":1,"description":" Select ","id":0,"imagedisplay":null,"key":0,"language":"en","textdisplay":"","version":0};
+				 data.unshift(object);
+			 }
 			 this.memorystore = new dojo.store.Memory({data: data, idProperty:"id"});
 
 			// fill in current display
@@ -127,7 +135,12 @@ define([
 						+ object.description;
 
 				// set shelftext
-				this.currentTextNode.innerText = object.description;
+				if (this.showtext) {
+					this.currentTextNode.innerText = object.description;	
+				} else {
+					this.currentTextNode.innerText = "";
+				}
+				
 
 				// set input
 				updatenode.value = object.key;

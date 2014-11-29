@@ -17,6 +17,7 @@ public interface CatalogService {
 	String booktypelkup = "booktype";
 	String bookstatuslkup = "bookstatus";
 	String detailstatuslkup = "detailstatus";
+	String languagelkup = "language";
 
 	BookModel createCatalogEntryFromBookModel(Long clientkey, BookModel model);
 
@@ -40,7 +41,7 @@ public interface CatalogService {
 
 	public BookDao saveBook(BookDao book);
 	
-	public final static  class LocationStatus {
+	public final static  class Status {
 		public static final long CHECKEDOUT = 1;
 		public static final long SHELVED = 2;
 		public static final long LOSTBYLENDER = 3;
@@ -63,6 +64,8 @@ public interface CatalogService {
 		public static final long MULTIDETAILSFOUND = 3;
 		public static final long DETAILFOUND = 4;
 	}
+	
+	
 
 	HashMap<Long, ClassificationDao> getShelfClassHash(Long clientkey,
 			String lang);
@@ -72,6 +75,8 @@ public interface CatalogService {
 	void assignShelfClassToBooks(Long shelfclassUpdate, List<Long> toupdate);
 
 	void assignStatusToBooks(Long statusupdate, List<Long> toupdate);
+
+	BookModel updateCatalogEntryFromBookModel(Long clientkey, BookModel model);
 
 
 

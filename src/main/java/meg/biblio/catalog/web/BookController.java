@@ -126,6 +126,29 @@ public class BookController {
     	uiModel.addAttribute("bookModel",model);
 
     	return "book/edit";
+    }    
+    
+    @RequestMapping(value="/edit/{id}", method = RequestMethod.POST, produces = "text/html")
+    public String saveEditBook(@ModelAttribute("bookModel") BookModel bookModel,@PathVariable("id") Long id, Model uiModel, HttpServletRequest httpServletRequest) {
+    	Locale locale = httpServletRequest.getLocale();
+    	Long clientkey = clientService.getCurrentClientKey();
+    	String lang = locale.getLanguage();
+
+    	// only making a few changes. load the model from the database, and copy changes into database model (from passed model)
+    	if (id!=null) {
+    		BookModel model = catalogService.loadBookModel(id);	
+    		model.setType(bookModel.getType());
+    		model.setShelfclass(bookModel.getShelfclass());
+    		model.setStatus(bookModel.getStatus());
+    		model.setLanguage(bookModel.getLanguage());
+    		BookModel book = catalogService.updateCatalogEntryFromBookModel(clientkey,model);
+    		uiModel.addAttribute("bookModel", book);
+    	} else {
+    		uiModel.addAttribute("bookModel", bookModel);	
+    	}
+
+ 
+        return "book/show";
     }     
     
     @RequestMapping(value="/choosedetails/{id}", method = RequestMethod.GET, produces = "text/html")
@@ -214,6 +237,16 @@ public class BookController {
     	return booktypedisps; 
     }   
     
+    @ModelAttribute("langLkup")
+    public HashMap<String,String> getLanguageLkup(HttpServletRequest httpServletRequest) {
+    	Locale locale = httpServletRequest.getLocale();
+    	String lang = locale.getLanguage();
+    	
+    	HashMap<String, String> langdisps = keyService
+    			.getStringDisplayHashForKey(CatalogService.languagelkup, lang);
+    	return langdisps; 
+    }   
+        
     @ModelAttribute("detailstatusLkup")
     public HashMap<Long,String> getDetailStatusLkup(HttpServletRequest httpServletRequest) {
     	Locale locale = httpServletRequest.getLocale();

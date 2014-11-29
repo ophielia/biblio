@@ -81,75 +81,75 @@ public class BookModel  implements Serializable {
 
 	// *** getters and setters for book object ***//
 	public void setClientid(Long clientid) {
-		this.book.setClientid(clientid);
+		if (clientid!=null) this.book.setClientid(clientid);
 	}
 
 	public void setTitle(String title) {
-		this.book.setTitle(title);
+		if (title!=null) this.book.setTitle(title);
 	}
 
 	public void setAuthors(List<ArtistDao> authors) {
-		this.book.setAuthors(authors);
+		if (authors!=null) this.book.setAuthors(authors);
 	}
 
 	public void setIllustrators(List<ArtistDao> illustrators) {
-		this.book.setIllustrators(illustrators);
+		if (illustrators!=null) this.book.setIllustrators(illustrators);
 	}
 
 	public void setSubjects(List<SubjectDao> subjects) {
-		this.book.setSubjects(subjects);
+		if (subjects!=null) this.book.setSubjects(subjects);
 	}
 
 	public void setPublisherkey(PublisherDao publisherkey) {
-		this.book.setPublisher(publisherkey);
+		if (publisherkey!=null) this.book.setPublisher(publisherkey);
 	}
 
 	public void setPublishyear(Long publishyear) {
-		this.book.setPublishyear(publishyear);
+		if (publishyear!=null) this.book.setPublishyear(publishyear);
 	}
 
 	public void setIsbn10(String isbn10) {
-		this.book.setIsbn10(isbn10);
+		if (isbn10!=null) this.book.setIsbn10(isbn10);
 	}
 
 	public void setIsbn13(String isbn13) {
-		this.book.setIsbn13(isbn13);
+		if (isbn13!=null) this.book.setIsbn13(isbn13);
 	}
 
 	public void setLanguage(String language) {
-		this.book.setLanguage(language);
+		if (language!=null) this.book.setLanguage(language);
 	}
 
 	public void setType(Long type) {
-		this.book.setType(type);
+		if (type!=null) this.book.setType(type);
 	}
 
 	public void setDescription(String description) {
-		this.book.setDescription(description);
+		if (description!=null) this.book.setDescription(description);
 	}
 
 	public void setStatus(Long status) {
-		this.book.setStatus(status);
+		if (status!=null) this.book.setStatus(status);
 	}
 
 	public void setDetailstatus(Long detailstatus) {
-		this.book.setDetailstatus(detailstatus);
+		if (detailstatus!=null) this.book.setDetailstatus(detailstatus);
 	}
 
 	public void setShelfclass(Long shelfclass) {
-		this.book.setShelfclass(shelfclass);
+		if (shelfclass!=null) this.book.setShelfclass(shelfclass);
 	}
 
 	public void setShelfclassverified(Boolean shelfclassverified) {
-		this.book.setShelfclassverified(shelfclassverified);
+		if (shelfclassverified!=null) this.book.setShelfclassverified(shelfclassverified);
 	}
 
 	public void setCreatedon(Date createdon) {
-		this.book.setCreatedon(createdon);
+		if (createdon!=null) this.book.setCreatedon(createdon);
 	}
 
 	public void setClientbookid(String clientbookid) {
-		this.book.setClientbookid(clientbookid);
+		if (clientbookid!=null) this.book.setClientbookid(clientbookid);
 	}
 
 	public Long getBookid() {

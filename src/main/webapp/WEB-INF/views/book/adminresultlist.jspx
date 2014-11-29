@@ -28,7 +28,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <spring:message code="label_book_detailstatus" htmlEscape="false" var="ldetailstatus"/>    
 <spring:message code="label_book_btype" htmlEscape="false" var="lbooktype"/>    
 <spring:message code="label_book_information" htmlEscape="false" var="linfo"/>    
-<spring:message code="entity_display" htmlEscape="false" var="ldisplay"/>    
+<spring:message code="entity_edit" htmlEscape="false" var="ledit"/>    
 <spring:message code="select_emptyoption" htmlEscape="false" var="lemptyoption"/>    
 <spring:message code="field_invalid" arguments="${lstatus}" htmlEscape="false" var="missingstatus"/>    
 <spring:message code="field_invalid" arguments="${lshelfclass}" htmlEscape="false" var="missingshelfclass"/> 
@@ -101,7 +101,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 	          
 	        	// Create our widget and place it
 	            var widget = new ShelfClassSelectWidget({displayId:'${shelfclass.id}',jsontext:'${classJson}',
-	            	changebuttontext:"v",updatenodename:"shelfclasskey"}).placeAt(classiContainer);
+	            	showtext: true,updatenodename:"shelfclasskey"}).placeAt(classiContainer);
 		}); 
 </script>
 
@@ -236,8 +236,8 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 				${shelfclass.textdisplay}
 				</c:otherwise>
 							</c:choose></td>
-						<td><spring:url value="/books/display/${book.id}"
-								var="editurl" /> <a href="${editurl}">${ldisplay}</a> <c:if
+						<td><spring:url value="/books/edit/${book.id}"
+								var="editurl" /> <a href="${editurl}">${ledit}</a> <c:if
 								test="${book.detailstatus == 3}">
 								<spring:url value="/books/choosedetails/${book.id}"
 									var="chooseurl" />

@@ -6,43 +6,29 @@ UseCase16 - booksearch 3 full text indexing
 
 
 
-admin search - make shelfclass select nice - 
-done  -	widget - show passed key
-	put select option on top
-	make sure "select" shows.... on page load- move to widget
-	plus - toggle for showtext
-	plus - toggle for add empty select
-	
-
-17 edit classification, status, book type, language
 
 
 
 
+beginning users - for master - security setup (roo command)
 
 
+5 min tasks (ha!! :-)
 add language to indexing
-
-
-
+still open widget - pass in empty select text
 
 
 ---- begin commit changes ----
 
-done - back end -  classification, status, detail status, title, author, publisher
-done - back end -  booktypedone - display, same as user search
-done - new controller - detailsearch
-done - new jsp - adminsearch
-done - getting clients up and running - make implementations look at dao
-done - admin search - search by classification, status, detail status, title, author, publisher
-done - sort by headers
-skipping - update status, classification by checkbox
-done - copy jsps out of way of crazy updates
-done - SSI breakoutByBookField - returns HashMap - field, sum, receives field as parameter	
-done - cast difficulty for bookid as number....	
-done - dashboard - total in catalog, breakout by status - fancy stuff later on
-done - make controller
-done - make jsp
+done - admin search - make shelfclass select nice - 
+done  -	widget - show passed key
+done - 	put select option on top
+done - 	make sure "select" shows.... on page load- move to widget
+done -	plus - toggle for showtext
+done -	plus - toggle for add empty select
+	
+
+done - 17 edit classification, status, book type, language
 
 
 ---- end commit changes ----
@@ -75,6 +61,20 @@ done - add on change resubmit to sortby box.
 done - results.jsp - get rid of unused javascript
 done - change Edit to Display or show - using polite label
 nevermind - make author search into author / illustrator search
+done - back end -  classification, status, detail status, title, author, publisher
+done - back end -  booktypedone - display, same as user search
+done - new controller - detailsearch
+done - new jsp - adminsearch
+done - getting clients up and running - make implementations look at dao
+done - admin search - search by classification, status, detail status, title, author, publisher
+done - sort by headers
+skipping - update status, classification by checkbox
+done - copy jsps out of way of crazy updates
+done - SSI breakoutByBookField - returns HashMap - field, sum, receives field as parameter	
+done - cast difficulty for bookid as number....	
+done - dashboard - total in catalog, breakout by status - fancy stuff later on
+done - make controller
+done - make jsp
 
 ---- end branch changes ----
 

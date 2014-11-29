@@ -44,4 +44,21 @@ public class SelectKeyServiceImpl implements SelectKeyService {
 		return values;
 	}
 
+	@Override
+	public HashMap<String, String> getStringDisplayHashForKey(
+			String key, String lang) {
+		// lookup values for key, in language
+		List<SelectValueDao> values = getSelectValuesForKey(key, lang);
+		// put found values in hashmap
+		if (values != null) {
+			HashMap<String, String> map = new HashMap<String, String>();
+			for (SelectValueDao sv : values) {
+				map.put(sv.getValue(), sv.getDisplay());
+			}
+			// return hashmap
+			return map;
+		}
+		return null;
+	}
+
 }

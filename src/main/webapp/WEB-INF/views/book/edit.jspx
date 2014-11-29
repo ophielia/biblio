@@ -38,26 +38,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <spring:message code="entity_show" arguments="${lbook}" htmlEscape="false" var="pagetitle"/>
 
 <script type="text/javascript">
- require([
-          'dojo/dom',"dojo/on","dojo/dom-construct","dojo/dom-style",
-          'dojo/domReady!'
-      ], function (dom,on,domConstruct,domStyle) {
-	 
 
-/*
- * 
-	on(dojo.byId("shelfimg"), 'mouseover', function(event) {
-		// get index of clicked button
-		dojo.style(dojo.byId('shelfinfo'), "display", "block");
-	});
-	
-	on(dojo.byId("shelfimg"), 'mouseout', function(event) {
-		// get index of clicked button
-		dojo.style(dojo.byId('shelfinfo'), "display", "none");
-	});		
- */
-
-	});
  
  <c:set var="shelfclass" value="${classHash[bookModel.shelfclass]}" />
  require(
@@ -67,17 +48,19 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 	        	var classiContainer = dom.byId("imageselectbox");
 	          
 	        	// Create our widget and place it
-	            var widget = new ShelfClassSelectWidget({displayId:${shelfclass.id},jsontext:'${classJson}',
-	            	changebuttontext:"Change",updatenodename:"shelfchange"}).placeAt(classiContainer);
+	            var widget = new ShelfClassSelectWidget({displayId:'${shelfclass.id}',jsontext:'${classJson}',
+	            	updatenodename:"shelfclass", showemptyselect:true}).placeAt(classiContainer);
 		});
  
  
 </script>
 
 
+<spring:url value="/books/edit/${bookModel.bookid}" var="actionurl"/>
 
 <h1>${pagetitle}</h1>
 
+<form:form action="${actionurl}" id="editbook" method="POST" modelAttribute="bookModel">
 <div style="width:60%;float:left">
 	<div>
 	${ltitle}: ${bookModel.title}
@@ -101,7 +84,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <div style="background-color: #C2C2A3;width: 35%;float: right;border: 1px dotted grey;padding: 5px;margin: 10px;">
 <!-- accent box -->
 	<div>
-	${lclientbookid}: ${bookModel.clientbookid}
+	${lclientbookid}: ${bookModel.clientbookid}<form:input type="hidden" path="bookid"></form:input>
 	</div>
 	
 	<div>
@@ -109,7 +92,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 	<c:if test="${bookModel.shelfclassverified}">
 	<c:set var="showver" value="" />
 	</c:if>
-	<input type="hidden" id="shelfchange" value=""></input><br />
+	<form:input type="hidden" path="shelfclass"></form:input><br />
 	${lclassification}	
 	<c:if test="${not empty bookModel.shelfclass}">
 	(${showver})</c:if>: 
@@ -125,19 +108,38 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 
 	
 	<div>
-	${lstatus}: ${statusLkup[bookModel.status]}
+	${lstatus}:
+							<form:select path="status">
+							<c:forEach items="${statusLkup}" var="tmp" >
+   								<form:option value="${tmp.key}"  label="${tmp.value}"/>
+							</c:forEach>
+						</form:select>
 	</div>
+	<div>
+	${lbooktype}:
+							<form:select path="type">
+							<c:forEach items="${typeLkup}" var="tmp" >
+   								<form:option value="${tmp.key}"  label="${tmp.value}"/>
+							</c:forEach>
+						</form:select>
+	</div>	
+	<div>
+	${llanguage}:
+							<form:select path="language">
+							<c:forEach items="${langLkup}" var="tmp" >
+   								<form:option value="${tmp.key}"  label="${tmp.value}"/>
+							</c:forEach>
+						</form:select>
+	</div>		
 	
 	
 </div>
 <div style="width:100%;clear:both;padding-top:25px">
 <c:if test="${bookModel.detailstatus!=null}">${ldetailstatus}: ${detailstatusLkup[bookModel.detailstatus]} | </c:if>
-<c:if test="${bookModel.language!=null}">${llanguage}: ${bookModel.language} | </c:if>
-<c:if test="${bookModel.type!=null}">${lbooktype}: ${typeLkup[bookModel.type]} | </c:if>
 <c:if test="${bookModel.isbn10!=null}">${lisbn10}: ${bookModel.isbn10} | </c:if>
 <c:if test="${bookModel.isbn13!=null}">${lisbn13}: ${bookModel.isbn13} | </c:if>
 </div>
+<input id="save" name="save" type="submit" value="${bsave}"/> 
 
-
-
+</form:form>
 </div>

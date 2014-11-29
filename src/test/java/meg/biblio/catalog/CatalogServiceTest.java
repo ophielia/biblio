@@ -528,6 +528,28 @@ public class CatalogServiceTest {
 		Assert.assertEquals("Martin", name.getLastname());
 	}
 
+	@Test
+	public void testUpdateBook() {
+		// load testpubid
+		BookModel model = catalogService.loadBookModel(pubtestid);
+		
+		// change classification, booktype, status, and language
+		model.setShelfclass(5L);
+		model.setType(CatalogService.BookType.FOREIGNLANGUAGE);
+		model.setLanguage("EN");
+		model.setStatus(CatalogService.Status.CHECKEDOUT);
+
+		// server call
+		model = catalogService.updateCatalogEntryFromBookModel(1L, model);
+		
+		// ensure that changes are shown
+		Assert.assertNotNull(model);
+		Assert.assertEquals(new Long(CatalogService.BookType.FOREIGNLANGUAGE), model.getType());
+		Assert.assertEquals(new Long(CatalogService.Status.CHECKEDOUT), model.getStatus());
+		Assert.assertEquals("EN", model.getLanguage());
+		Assert.assertEquals(new Long(5), model.getShelfclass());
+		
+	}
 	/*
 	 * @Test public void testFindPublisherByName() { // find publisher
 	 * "newJonestest" PublisherDao testpub =

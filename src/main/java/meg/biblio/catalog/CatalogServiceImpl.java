@@ -651,7 +651,7 @@ public class CatalogServiceImpl implements CatalogService {
 		book.setClientid(clientkey);
 
 		// add default entries for status, detail status, type
-		book.setStatus(LocationStatus.PROCESSING);
+		book.setStatus(Status.PROCESSING);
 		book.setDetailstatus(DetailStatus.NODETAIL);
 		book.setType(BookType.UNKNOWN);
 		book.setCreatedon(new Date());
@@ -1247,6 +1247,22 @@ public class CatalogServiceImpl implements CatalogService {
 			}
 			reindex=false;
 		}
+	}
+
+	@Override
+	public BookModel updateCatalogEntryFromBookModel(Long clientkey,
+			BookModel model) {
+		// get book
+		BookDao book = model.getBook();
+		book.setClientid(clientkey);
+		
+		// if book is not null, save it
+		if (book!=null) {
+			book = saveBook(book);
+		}
+		
+		BookModel toreturn = loadBookModel(book.getId());
+		return toreturn;
 	}
 
 
