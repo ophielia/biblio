@@ -32,6 +32,7 @@ public class ClientServiceImpl implements ClientService {
 		return defaultkey;
 	}
 
+	
 	@Override
 	public Classifier getClassifierForClient(Long clientkey) throws ClassNotFoundException, InstantiationException, IllegalAccessException{
 		ClientDao client = getClientForKey(clientkey);
@@ -60,6 +61,7 @@ public class ClientServiceImpl implements ClientService {
 	
 	}
 	
+	@Override
 	public ClientDao getClientForKey(Long key) {
 		return clientRepo.findOne(key);
 	}

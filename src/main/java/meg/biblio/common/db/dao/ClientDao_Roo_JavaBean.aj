@@ -3,7 +3,9 @@
 
 package meg.biblio.common.db.dao;
 
+import java.util.List;
 import meg.biblio.common.db.dao.ClientDao;
+import meg.biblio.common.db.dao.UserLoginDao;
 
 privileged aspect ClientDao_Roo_JavaBean {
     
@@ -45,6 +47,14 @@ privileged aspect ClientDao_Roo_JavaBean {
     
     public void ClientDao.setImagepath(String imagepath) {
         this.imagepath = imagepath;
+    }
+    
+    public List<UserLoginDao> ClientDao.getUsers() {
+        return this.users;
+    }
+    
+    public void ClientDao.setUsers(List<UserLoginDao> users) {
+        this.users = users;
     }
     
 }

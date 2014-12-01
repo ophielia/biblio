@@ -31,10 +31,10 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <tbody>
 <c:forEach items="${users}" var="user">
 <tr>
-<td>${user.title}</td>
-<td>${user.title}</td>
+<td>${user.username}</td>
+<td>${roleLkup[user.role.rolename]}</td>
 <td>
-<spring:url value="/userlogin/update/    !!!!!!! ?form" var="editurl"/>
+<spring:url value="/userlogins/update/${user.id}?form" var="editurl"/>
 <a href="${editurl}">${ledit}</a>
 </td>
 </tr>
@@ -45,7 +45,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 
 </table>
 
-<spring:url value="/userlogin/create?form" var="createurl"/>
+<spring:url value="/userlogins/create?form" var="createurl"/>
 <a href="${createurl}">${lcreate}</a>
 </div>
 

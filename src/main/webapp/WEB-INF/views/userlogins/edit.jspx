@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page" 
+xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" 
+xmlns:c="http://java.sun.com/jsp/jstl/core" 
+xmlns:spring="http://www.springframework.org/tags" 
+xmlns:form="http://www.springframework.org/tags/form" 
+xmlns:fmt="http://java.sun.com/jsp/jstl/fmt" 
+xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+
+<spring:message code="label_login" htmlEscape="false" var="llogin"/>    
+<spring:message code="global_menu_new" arguments="${llogin}" htmlEscape="false" var="pagetitle"/>
+<spring:message code="label_login_passwordverify" htmlEscape="false" var="lpasswordverify"/>
+<spring:message code="label_login_rolename" htmlEscape="false" var="lrolename"/>
+<spring:message code="label_login_textpassword" htmlEscape="false" var="ltextpassword"/>
+<spring:message code="label_login_username" htmlEscape="false" var="lusername"/>
+
+<spring:message code="button_save" htmlEscape="false" var="bsave"/>
+<spring:message code="button_cancel" htmlEscape="false" var="bcancel"/>
+<spring:message code="button_changepassword" htmlEscape="false" var="bchange"/>
+<spring:message code="button_cancelpasswdchange" htmlEscape="false" var="bpwdcancel"/>
+
+<script type="text/javascript">
+ require([
+          'dojo/dom',"dojo/on","dojo/dom-construct","dojo/dom-style",
+          'dojo/domReady!'
+      ], function (dom,on,domConstruct,style) {
+
+		function toggleShowPass(show) {
+			if (show) {
+				// reveal the password element
+				style.set("passelements","display","inline");
+
+				// hide change password
+				style.set("changepass","display","none");				
+			} else {
+				// clear the fields
+				var pwdfld = dojo.byId("textpassword");
+				pwdfld.value="";
+				var pwdvfy = dojo.byId("passwordverify");
+				pwdvfy.value="";
+				
+				// hide the element
+				style.set("passelements","display","none");
+				
+				// show change password
+				style.set("changepass","display","inline");
+
+			}
+		}
+		
+	 	var showpass=false;
+	 	toggleShowPass(showpass);
+	 	
+		// wire up change password
+		on(dojo.byId("changepass"), 'click', function(event) {
+			showpass=!showpass;
+			toggleShowPass(showpass);
+		});
+		on(dojo.byId("cancelpass"), 'click', function(event) {
+			showpass=!showpass;
+			toggleShowPass(showpass);
+		});		
+		
+
+	});
+</script>
+
+<spring:url value="/userlogins/update/${userLoginDao.id}" var="actionurl"/>
+
+<h1>${pagetitle}</h1>
+
+<form:form action="${actionurl}" id="editlogin" method="POST" modelAttribute="userLoginDao">
+<div>
+<form:errors id="username_errors" class="errors" path="username" /> 
+${lusername}:<form:input path="username" type="text" ></form:input><form:input path="clientkey" type="hidden" ></form:input>
+<a id="changepass">${bchange}</a>
+</div>
+<span id="passelements">
+<div>
+<form:errors id="textpassword_errors" class="errors" path="textpassword" /> 
+${ltextpassword}:<form:input path="textpassword" type="text" ></form:input>
+<a id="cancelpass">${bpwdcancel}</a>
+</div>
+<div>
+<form:errors id="passwordverify_errors" class="errors" path="passwordverify" /> 
+${lpasswordverify}:<form:input path="passwordverify" type="text" ></form:input>
+</div>
+</span>
+<div>
+<form:errors id="rolename_errors" class="errors" path="rolename" /> 
+${lrolename}:						<form:select path="rolename">
+							<c:forEach items="${roleLkup}" var="tmp" >
+   								<form:option value="${tmp.key}"  label="${tmp.value}"/>
+							</c:forEach>
+						</form:select>
+</div>
+
+	<input id="save" name="save" type="submit" value="${bsave}"/> 
+	<input id="cancel" name="cancel" type="submit" value="${bcancel}"/> 
+</form:form>
+
+</div>

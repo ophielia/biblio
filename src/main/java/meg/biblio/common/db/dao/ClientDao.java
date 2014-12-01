@@ -1,4 +1,9 @@
 package meg.biblio.common.db.dao;
+import java.util.List;
+
+import javax.persistence.CascadeType;
+import javax.persistence.FetchType;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
@@ -22,5 +27,8 @@ public class ClientDao {
 	private String classifyimplementation;
 	
 	private String imagepath;
+	
+	@OneToMany(mappedBy = "client",cascade = CascadeType.ALL, fetch=FetchType.LAZY)
+	private List<UserLoginDao> users;
 }
 
