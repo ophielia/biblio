@@ -7,9 +7,15 @@ Part 1 - Making classes, teachers and students - no lending for now
 
 
 ----> display page - add ability to add students
-backend 
-front end
-tests
+also - delete a class (deletes teacher, unattaches students)
+done - addstudent backend and test skeletons are done
+done - write tests, addnew and remove
+done - make tests green, addnew and remove
+
+test, and implement assignStudentToClass
+
+begin work on front end
+
 
 add validations to classes 
 

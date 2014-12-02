@@ -16,4 +16,10 @@ public interface LendingService {
 
 	ClassModel loadClassModelById(Long id);
 
+	ClassModel addNewStudentToClass(String name, Long sectionkey,
+			SchoolGroupDao sgroup, Long clientkey);
+
+	ClassModel removeStudentsFromClass(List<Long> removelist,
+			SchoolGroupDao schoolgroup, Long clientid);
+
 }
