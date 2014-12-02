@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import meg.biblio.catalog.web.ClientController;
 import meg.biblio.common.db.ClientRepository;
+import meg.biblio.common.db.LoginRepository;
 import meg.biblio.common.db.dao.ClientDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
@@ -23,6 +24,9 @@ privileged aspect ClientController_Roo_Controller {
     
     @Autowired
     ClientRepository ClientController.clientRepository;
+    
+    @Autowired
+    LoginRepository ClientController.loginRepository;
     
     @RequestMapping(method = RequestMethod.POST, produces = "text/html")
     public String ClientController.create(@Valid ClientDao clientDao, BindingResult bindingResult, Model uiModel, HttpServletRequest httpServletRequest) {
@@ -91,6 +95,7 @@ privileged aspect ClientController_Roo_Controller {
     
     void ClientController.populateEditForm(Model uiModel, ClientDao clientDao) {
         uiModel.addAttribute("clientDao", clientDao);
+        uiModel.addAttribute("userlogindaos", loginRepository.findAll());
     }
     
     String ClientController.encodeUrlPathSegment(String pathSegment, HttpServletRequest httpServletRequest) {

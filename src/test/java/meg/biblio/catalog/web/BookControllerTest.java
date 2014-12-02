@@ -95,7 +95,7 @@ public class BookControllerTest {
 
     	when(bookService.getAllBooks()).thenReturn(new ArrayList<BookDao>());
     	when(bookService.createCatalogEntryFromBookModel(any(Long.class),any(BookModel.class))).thenReturn(returnmodel);
-    	when(clientService.getCurrentClientKey()).thenReturn(1L);
+    	when(clientService.getCurrentClientKey(null)).thenReturn(1L);
 
         this.mockMvc.perform(post("/books")
         		.accept(MediaType.TEXT_HTML)

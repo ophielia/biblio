@@ -50,8 +50,8 @@ public class LoginController {
 	UserLoginValidator userloginValidator;
 
 	@RequestMapping(value = "/create",params = "form", produces = "text/html")
-	public String createForm(Model uiModel) {
-		Long clientkey = clientService.getCurrentClientKey();
+	public String createForm(Model uiModel,HttpServletRequest request) {
+		Long clientkey = clientService.getCurrentClientKey(request);
 		populateEditForm(uiModel, new UserLoginDao(), clientkey, null);
 		return "userlogins/create";
 	}
@@ -60,7 +60,7 @@ public class LoginController {
 	public String create(@ModelAttribute("userLoginDao") UserLoginDao userlogin,
 			BindingResult bindingResult, Model uiModel,
 			HttpServletRequest httpServletRequest) {
-		Long clientkey = clientService.getCurrentClientKey();
+		Long clientkey = clientService.getCurrentClientKey(httpServletRequest);
 		userloginValidator.validate(userlogin, bindingResult);
 
 		if (bindingResult.hasErrors()) {
@@ -96,7 +96,7 @@ public class LoginController {
 	@RequestMapping(produces = "text/html")
 	public String list(Model uiModel, HttpServletRequest httpServletRequest)  {
 		// get client key
-		Long clientkey = clientService.getCurrentClientKey();
+		Long clientkey = clientService.getCurrentClientKey(httpServletRequest);
 		// get users for client
 		List<UserLoginDao> users = accountService.getUsersForClient(clientkey);
 		// put in model
@@ -108,8 +108,8 @@ public class LoginController {
 
 
 	@RequestMapping(value = "/update/{id}", method = RequestMethod.GET,params = "form", produces = "text/html")
-	public String updateForm(@PathVariable("id") Long id, Model uiModel) {
-		Long clientkey = clientService.getCurrentClientKey();
+	public String updateForm(@PathVariable("id") Long id, Model uiModel,HttpServletRequest request) {
+		Long clientkey = clientService.getCurrentClientKey(request);
 		// does userlogin belong to client
 		// get client
 		ClientDao client = clientService.getClientForKey(clientkey);
@@ -131,7 +131,7 @@ public class LoginController {
 			@ModelAttribute("userLoginDao") UserLoginDao userlogin,
 			Model uiModel, BindingResult bindingResult,
 			HttpServletRequest httpServletRequest) {
-		Long clientkey = clientService.getCurrentClientKey();
+		Long clientkey = clientService.getCurrentClientKey(httpServletRequest);
 		// does userlogin belong to client
 		// get client
 		ClientDao client = clientService.getClientForKey(clientkey);

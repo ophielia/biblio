@@ -38,7 +38,7 @@ public class UploadController {
 	public String create(@Valid BookImportModel bookImportModel, BindingResult bindingResult, Model uiModel,
 	       @RequestParam("content") CommonsMultipartFile content,
 	       HttpServletRequest httpServletRequest) {
-		Long clientkey = clientService.getCurrentClientKey();
+		Long clientkey = clientService.getCurrentClientKey(httpServletRequest);
 		String filestr = "";
 	   byte[] file = content.getBytes();
 	   filestr = new String(file);

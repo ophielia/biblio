@@ -48,11 +48,7 @@ public class BookController {
 	@Autowired
 	BookModelValidator bookValidator;
 	
-	@ModelAttribute("booklist")
-	public List<BookDao> quickShowList(HttpServletRequest request) {
-		List<BookDao> books = catalogService.getAllBooks();
-		return books;
-	}
+
 	
     @RequestMapping(params = "form",method = RequestMethod.GET, produces = "text/html")
     public String createBookEntryForm(Model uiModel, HttpServletRequest httpServletRequest) {
@@ -67,7 +63,7 @@ public class BookController {
     
     @RequestMapping(method = RequestMethod.POST, produces = "text/html")
     public String createBookEntry(BookModel model,  Model uiModel,BindingResult bindingResult, HttpServletRequest httpServletRequest) {
-    	Long clientkey = clientService.getCurrentClientKey();
+    	Long clientkey = clientService.getCurrentClientKey(httpServletRequest);
     	Locale locale = httpServletRequest.getLocale();
     	String lang = locale.getLanguage();
     	bookValidator.validateSimpleEntry(model, bindingResult);
@@ -131,7 +127,7 @@ public class BookController {
     @RequestMapping(value="/edit/{id}", method = RequestMethod.POST, produces = "text/html")
     public String saveEditBook(@ModelAttribute("bookModel") BookModel bookModel,@PathVariable("id") Long id, Model uiModel, HttpServletRequest httpServletRequest) {
     	Locale locale = httpServletRequest.getLocale();
-    	Long clientkey = clientService.getCurrentClientKey();
+    	Long clientkey = clientService.getCurrentClientKey(httpServletRequest);
     	String lang = locale.getLanguage();
 
     	// only making a few changes. load the model from the database, and copy changes into database model (from passed model)
@@ -186,17 +182,13 @@ public class BookController {
     	// redirect to show book
     	return "redirect:/books/display/" + bookid;
     }      
-    
-    @RequestMapping(method = RequestMethod.GET, produces = "text/html")
-    public String showBookList(Model uiModel, HttpServletRequest httpServletRequest) {
-    	return "book/list";
-    }  
+ 
     
     @ModelAttribute("classHash")
     public HashMap<Long,ClassificationDao> getClassificationInfo(HttpServletRequest httpServletRequest) {
     	Locale locale = httpServletRequest.getLocale();
     	String lang = locale.getLanguage();
-    	Long clientkey = clientService.getCurrentClientKey();
+    	Long clientkey = clientService.getCurrentClientKey(httpServletRequest);
     	
     	HashMap<Long,ClassificationDao> shelfclasses =catalogService.getShelfClassHash(clientkey,lang);
     			
@@ -207,7 +199,7 @@ public class BookController {
     public String getClassificationInfoAsJson(HttpServletRequest httpServletRequest) {
     	Locale locale = httpServletRequest.getLocale();
     	String lang = locale.getLanguage();
-    	Long clientkey = clientService.getCurrentClientKey();
+    	Long clientkey = clientService.getCurrentClientKey(httpServletRequest);
     	
     	List<ClassificationDao> shelfclasses =catalogService.getShelfClassList(clientkey,lang);
     	

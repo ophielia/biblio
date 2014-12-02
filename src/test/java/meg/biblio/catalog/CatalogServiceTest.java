@@ -3,6 +3,8 @@ package meg.biblio.catalog;
 import java.util.ArrayList;
 import java.util.List;
 
+import meg.biblio.catalog.CatalogService;
+import meg.biblio.catalog.CatalogServiceImpl;
 import meg.biblio.catalog.db.ArtistRepository;
 import meg.biblio.catalog.db.BookRepository;
 import meg.biblio.catalog.db.FoundWordsDao;

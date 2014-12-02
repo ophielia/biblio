@@ -27,7 +27,7 @@ public class ClientServiceImpl implements ClientService {
 	
     
 	@Override
-	public Long getCurrentClientKey() {
+	public Long getCurrentClientKey(HttpServletRequest httpServletRequest) {
 		// returns default coded in properties. For development, or single user systems
 		return defaultkey;
 	}

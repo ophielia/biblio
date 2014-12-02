@@ -1,33 +1,48 @@
-Master - implement security - login and roles
+Branch - Classes USE CASE - 4	Checkout for class
+			   5	Return for class
+			   9	Year clear for new classes
+Part 1 - Making classes, teachers and students - no lending for now
 
 
 
 
+----> display page - add ability to add students
+backend 
+front end
+tests
+
+add validations to classes 
 
 
 
-need validator for password match!!!
-in LS create - read role from created object - user only if empty
-make update page
-authentication failing - check why
-try login page
+in process - page - class list - with add class showing teacher name, student count, display link
+in process - display page is really display/edit with - add student function, clear student list function, change teacher
+
+
+???  list of unattached students - students to mark as inactive? and teachers??
+??? page approve class lists - which sets unattached students to inactive???
+approach for deleting a class - deletes teacher, unattaches students
+
+
+
+
 
 5 min tasks (ha!! :-)
 add language to indexing
 still open widget - pass in empty select text
-
+lock down site....
+?? where does cancel go??  handling??
+fill in new client service from request
 
 ---- begin commit changes ----
 
-done - beginning users - for master - security setup (roo command)
-done - map relation between UserLogin and Role daos.
-done - add client id to userlogin
-done - run tests
-done - run tests again
-done - mock up query for jpa.xml
-done - copy from user service begun
-done - fix repository queries
-done - begin looking at / copying code from moo UserController
+done - create new class list		   
+done - structure - LendingService
+done - make  SchoolGroupController
+done - relationship student -> class	
+done - class list, new class page
+
+
 
 ---- end commit changes ----
 
@@ -191,6 +206,23 @@ done -	plus - toggle for showtext
 done -	plus - toggle for add empty select
 done - 17 edit classification, status, book type, language
 
+** MASTER SECURITY **
+
+done - beginning users - for master - security setup (roo command)
+done - map relation between UserLogin and Role daos.
+done - add client id to userlogin
+done - run tests
+done - run tests again
+done - mock up query for jpa.xml
+done - copy from user service begun
+done - fix repository queries
+done - begin looking at / copying code from moo UserController
+done - need validator for password match!!!
+done - in LS create - read role from created object - user only if empty
+done - make update page
+done - authentication failing - check why
+done - try login page
+
 
 ----- end complete history ----
 
@@ -202,6 +234,7 @@ not now - usecase 16.5 artist name handling in general not done - needs handling
 puzzle - how to insert a validator into controller test - basically, just do a different test to test Validator.  Stand alone test.
 createCatalogEntryFromBookModel - graceful handling of exception calling google books api
 assignBookDetails - graceful handling of exception
+superadmin - wear hat.... (for client)
 
 ******* NOTES ******
 

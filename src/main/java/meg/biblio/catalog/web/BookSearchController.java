@@ -51,7 +51,7 @@ public class BookSearchController {
     
 	@RequestMapping(produces = "text/html")
     public String showList(@ModelAttribute("bookListModel") BookListModel model,Model uiModel,HttpServletRequest request) {
-		Long clientkey = clientService.getCurrentClientKey();
+		Long clientkey = clientService.getCurrentClientKey(request);
 		BookSearchCriteria criteria = model.getCriteria();
 		HttpSession session = request.getSession();
 		session.setAttribute(sessioncriteria,criteria);
@@ -62,7 +62,7 @@ public class BookSearchController {
 	
 	@RequestMapping(method = RequestMethod.PUT, produces = "text/html")
 	public String searchCatalog(@ModelAttribute("bookListModel") BookListModel model,Model uiModel,HttpServletRequest request) {
-		Long clientkey = clientService.getCurrentClientKey();
+		Long clientkey = clientService.getCurrentClientKey(request);
 		BookSearchCriteria criteria = model.getCriteria();
 		HttpSession session = request.getSession();
 		session.setAttribute(sessioncriteria,criteria);
@@ -75,7 +75,7 @@ public class BookSearchController {
 	
 	@RequestMapping(method = RequestMethod.PUT,params="sort" ,produces = "text/html")
 	public String sortBooks(@RequestParam("sort") Long sorttype,@ModelAttribute("bookListModel") BookListModel model,Model uiModel,HttpServletRequest request) {
-		Long clientkey = clientService.getCurrentClientKey();
+		Long clientkey = clientService.getCurrentClientKey(request);
 		BookSearchCriteria criteria = model.getCriteria();
 		if (sorttype!=null) {
 			criteria.setOrderby(sorttype);	
@@ -102,7 +102,7 @@ public class BookSearchController {
 
 	@ModelAttribute("bookListModel")
 	public BookListModel populateBookList(HttpServletRequest request) {
-		Long clientkey = clientService.getCurrentClientKey();
+		Long clientkey = clientService.getCurrentClientKey(request);
 		
 		HttpSession session = request.getSession();
 		BookSearchCriteria criteria = (BookSearchCriteria) session.getAttribute(sessioncriteria);
@@ -139,7 +139,7 @@ public class BookSearchController {
     public HashMap<Long,ClassificationDao> getClassificationInfo(HttpServletRequest httpServletRequest) {
     	Locale locale = httpServletRequest.getLocale();
     	String lang = locale.getLanguage();
-    	Long clientkey = clientService.getCurrentClientKey();
+    	Long clientkey = clientService.getCurrentClientKey(httpServletRequest);
     	
     	HashMap<Long,ClassificationDao> shelfclasses =catalogService.getShelfClassHash(clientkey,lang);
     			

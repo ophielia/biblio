@@ -18,6 +18,7 @@
 				<li><moo:menulink label="menu_dashboard" url="/dashboard" /></li>
 				<li><moo:menulink label="menu_adminsearch" url="/admin/search" /></li>
 				<li><moo:menulink label="menu_loginlist" url="/userlogins" /></li>
+				<li><moo:menulink label="menu_classlist" url="/classes" /></li>
 				
 				
 			</ul></li>
