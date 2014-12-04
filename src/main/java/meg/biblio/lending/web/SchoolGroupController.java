@@ -11,8 +11,9 @@ import meg.biblio.catalog.db.dao.ClassificationDao;
 import meg.biblio.common.ClientService;
 import meg.biblio.common.SelectKeyService;
 import meg.biblio.common.db.dao.ClientDao;
-import meg.biblio.lending.LendingService;
+import meg.biblio.lending.ClassManagementService;
 import meg.biblio.lending.db.dao.SchoolGroupDao;
+import meg.biblio.lending.db.dao.StudentDao;
 import meg.biblio.lending.web.model.ClassModel;
 import meg.biblio.lending.web.validator.ClassModelValidator;
 
@@ -20,6 +21,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,7 +37,7 @@ public class SchoolGroupController {
 
 	
 	@Autowired
-	LendingService lendingService;
+	ClassManagementService lendingService;
 	
 	
 	@Autowired
@@ -98,9 +101,15 @@ public class SchoolGroupController {
     public String showEditClassForm(@PathVariable("id") Long id, Model uiModel, HttpServletRequest httpServletRequest) {
     	Locale locale = httpServletRequest.getLocale();
     	String lang = locale.getLanguage();
-
+    	ClientDao client = clientService.getCurrentClient(httpServletRequest);
     	// load ClassModel
     	ClassModel sclass = lendingService.loadClassModelById(id);
+
+    	
+    	// add list of unassigned students to model
+    	List<StudentDao> unassigned = lendingService.getUnassignedStudents(client.getId());
+    	sclass.setUnassignedstudents(unassigned);
+    	
     	
     	// put classmodel in model
     	uiModel.addAttribute("classModel",sclass);
@@ -134,7 +143,85 @@ public class SchoolGroupController {
 		 */
 		return null;
 	}
+    
+    @RequestMapping(value="/display/{id}", params="addnew",method = RequestMethod.POST, produces = "text/html")
+	public String addNewStudent(@ModelAttribute("classModel") ClassModel classModel,@PathVariable("id") Long id, Model uiModel, HttpServletRequest httpServletRequest) {
+		Locale locale = httpServletRequest.getLocale();
+		Long clientkey = clientService.getCurrentClientKey(httpServletRequest);
+		String lang = locale.getLanguage();
+	
+		// validation
+		// MM todo - validate that name has been filled in
+		
+		// save student
+		ClassModel start = lendingService.loadClassModelById(id);
+		ClassModel model = lendingService.addNewStudentToClass(classModel.getStudentname(), classModel.getStudentsection(), start.getSchoolGroup(), clientkey);
 
+    	// add list of unassigned students to model
+    	List<StudentDao> unassigned = lendingService.getUnassignedStudents(clientkey);
+    	classModel.setUnassignedstudents(unassigned);
+    	
+    	// put classmodel in model
+    	uiModel.addAttribute("classModel",classModel);
+    	
+    	// return edit view
+    	return "schoolgroups/edit";
+	}   
+    
+    @RequestMapping(value="/display/{id}", params="addstudents",method = RequestMethod.POST, produces = "text/html")
+	public String assignStudents(@ModelAttribute("classModel") ClassModel classModel,@PathVariable("id") Long id, Model uiModel, HttpServletRequest httpServletRequest) {
+		Locale locale = httpServletRequest.getLocale();
+		Long clientkey = clientService.getCurrentClientKey(httpServletRequest);
+		String lang = locale.getLanguage();
+	
+		// get selected students
+		List<Long> idstoadd=classModel.getSelectedUnassignedIds();
+		
+		// assign students
+		ClassModel start = lendingService.loadClassModelById(id);
+		ClassModel model = lendingService.assignStudentsToClass(idstoadd, start.getSchoolGroup(), clientkey);
+				
+    	// add list of unassigned students to model
+    	List<StudentDao> unassigned = lendingService.getUnassignedStudents(clientkey);
+    	model.setUnassignedstudents(unassigned);	
+
+    	// put classmodel in model
+    	uiModel.addAttribute("classModel",model);
+    	
+    	// return edit view
+    	return "schoolgroups/edit";
+	}     
+
+    
+    @RequestMapping(value="/display/{id}", params="removestudents",method = RequestMethod.POST, produces = "text/html")
+	public String removeStudents(@ModelAttribute("classModel") ClassModel classModel,@PathVariable("id") Long id, Model uiModel, HttpServletRequest httpServletRequest) {
+		Locale locale = httpServletRequest.getLocale();
+		Long clientkey = clientService.getCurrentClientKey(httpServletRequest);
+		String lang = locale.getLanguage();
+	
+		// get selected students
+		List<Long> idstoremove=classModel.getSelectedIdsToRemove();
+		
+		// assign students
+		ClassModel start = lendingService.loadClassModelById(id);
+		ClassModel model = lendingService.removeStudentsFromClass(idstoremove, start.getSchoolGroup(), clientkey);
+				
+    	// add list of unassigned students to model
+    	List<StudentDao> unassigned = lendingService.getUnassignedStudents(clientkey);
+    	model.setUnassignedstudents(unassigned);	
+
+    	// put classmodel in model
+    	uiModel.addAttribute("classModel",model);
+    	
+    	// return edit view
+    	return "schoolgroups/edit";
+	}    
+    
+	@InitBinder
+	public void initBinder(WebDataBinder binder) {
+	    binder.setAutoGrowCollectionLimit(100024);
+	}
+	
     @ModelAttribute("classJson")
     public String getClassificationInfoAsJson(HttpServletRequest httpServletRequest) {
     	/**
@@ -161,6 +248,16 @@ public class SchoolGroupController {
     			.getDisplayHashForKey(CatalogService.detailstatuslkup, lang);
     	return booktypedisps; 
     }  
+    
+    @ModelAttribute("sectionLkup")
+    public HashMap<Long,String> getSectionLkup(HttpServletRequest httpServletRequest) {
+    	Locale locale = httpServletRequest.getLocale();
+    	String lang = locale.getLanguage();
+    	
+    	HashMap<Long, String> booktypedisps = keyService
+    			.getDisplayHashForKey(ClassManagementService.sectionLkup, lang);
+    	return booktypedisps; 
+    }     
     
 	@ModelAttribute("clientname") 
 	public String getClientName(HttpServletRequest httpServletRequest) {

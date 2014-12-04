@@ -16,6 +16,8 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 
 <spring:message code="label_class_classof" htmlEscape="false" var="lclassof"/>
 <spring:message code="label_class_studentpl" htmlEscape="false" var="lstudents"/>
+<spring:message code="label_class_studentname" htmlEscape="false" var="lname"/>
+<spring:message code="label_class_section" htmlEscape="false" var="lsection"/>
 
 <spring:message code="button_save" htmlEscape="false" var="bsave"/>
 <spring:message code="button_cancel" htmlEscape="false" var="bcancel"/>
@@ -28,43 +30,53 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
           'dojo/domReady!'
       ], function (dom,on,domConstruct,style) {
 
-		function toggleShowPass(show) {
-			if (show) {
-				// reveal the password element
-				style.set("passelements","display","inline");
-
-				// hide change password
-				style.set("changepass","display","none");				
-			} else {
-				// clear the fields
-				var pwdfld = dojo.byId("textpassword");
-				pwdfld.value="";
-				var pwdvfy = dojo.byId("passwordverify");
-				pwdvfy.value="";
-				
-				// hide the element
-				style.set("passelements","display","none");
-				
-				// show change password
-				style.set("changepass","display","inline");
-
-			}
-		}
-		
-	 	var showpass=false;
-	 	toggleShowPass(showpass);
+	 	function showNewStudentEntry(show) {
+	 		var display = show?"inline":"none";
+	 		style.set("newstudententry","display",display);
+	 	}
 	 	
-		// wire up change password
-		on(dojo.byId("changepass"), 'click', function(event) {
-			showpass=!showpass;
-			toggleShowPass(showpass);
+	 	function showClassList(show) {
+	 		var display = show?"inline":"none";
+	 		style.set("classlist","display",display);
+	 	}
+	 	
+	 	function showExistingStudentAdd(show) {
+	 		var display = show?"inline":"none";
+	 		style.set("unassignedlist","display",display);
+	 	}
+	 	
+	 	
+	 	function showRemoveStudents(show) {
+	 		var display = show?"inline":"none";
+	 		style.set("toremove","display",display);
+	 	}
+	 	
+
+		// wire up add new student
+		on(dojo.byId("addnew"), 'click', function(event) {
+			
+			showNewStudentEntry(true);
+			showClassList(false);
+			showExistingStudentAdd(false);
+			showRemoveStudents(false);
 		});
-		on(dojo.byId("cancelpass"), 'click', function(event) {
-			showpass=!showpass;
-			toggleShowPass(showpass);
+		
+		on(dojo.byId("unassignedsel"), 'click', function(event) {
+			
+			showNewStudentEntry(false);
+			showClassList(false);
+			showExistingStudentAdd(true);
+			showRemoveStudents(false);
 		});		
 		
-
+		on(dojo.byId("removesel"), 'click', function(event) {
+			
+			showNewStudentEntry(false);
+			showClassList(false);
+			showExistingStudentAdd(false);
+			showRemoveStudents(true);
+		});		
+		
 	});
 </script>
 
@@ -75,17 +87,21 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <c:if test="${newlycreated}">
 <div>${msgsuccess}</div>
 </c:if>
-<spring:url value="/schoolgroups/display/${classModel.classid}" var="actionurl"/>
+<spring:url value="/classes/display/${classModel.classid}" var="actionurl"/>
 <form:form action="${actionurl}" id="editclass" method="POST" modelAttribute="classModel">
 <h2>${lclassof} ${classModel.teacher.firstname} ${classModel.teacher.lastname}</h2>
-
-<hr />
+<span style="float:right">
+<span style="margin-left:10px" id="addnew">Add New Student</span>
+<span style="margin-left:10px" id="unassignedsel">Add Existing Students</span>
+<span style="margin-left:10px" id="removesel">Remove Students From Class</span>
+</span>
+<hr style="clear:both"/>
 <h3>${lstudents}</h3>
-<table>
+<table id="classlist">
 <thead>
 <tr>
-<td>Name</td>
-<td>Section</td>
+<td>${lname}</td>
+<td>${lsection}</td>
 <td></td>
 </tr>
 </thead>
@@ -93,7 +109,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <c:forEach items="${classModel.students}" var="tmp" >
 <tr>
 <td>${tmp.firstname} ${tmp.lastname}</td>
-<td>${tmp.sectionkey}</td>
+<td>${sectionLkup[tmp.sectionkey]}</td>
 <td></td>
 </tr>
 </c:forEach>
@@ -102,7 +118,71 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 
 </table>
 
-	<input id="save" name="save" type="submit" value="${bsave}"/> 
+<div id="newstudententry" style="display:none">
+${lname} <form:input path="studentname"></form:input>  
+${lsection} 
+<form:select path="studentsection">
+	<c:forEach items="${sectionLkup}" var="tmp" >
+					<form:option value="${tmp.key}"  label="${tmp.value}"/>
+	</c:forEach>
+</form:select>
+<br />
+	<input id="save" name="addnew" type="submit" value="${bsave}"/> 
+</div>
+
+<div id="unassignedlist" style="display:none">
+<table >
+<thead>
+<tr>
+<td></td>
+<td>${lname}</td>
+<td>${lsection}</td>
+<td></td>
+</tr>
+</thead>
+<tbody>
+<c:forEach items="${classModel.unassignedstudents}" var="tmp"  varStatus="stdtstatus">
+<tr>
+<td><form:checkbox path="checked[${stdtstatus.index}]"  />
+					<form:input path="idref[${stdtstatus.index}]" value="${tmp.id}" type="hidden"></form:input></td>
+<td>${tmp.firstname} ${tmp.lastname}</td>
+<td>${sectionLkup[tmp.sectionkey]}</td>
+<td></td>
+</tr>
+</c:forEach>
+</tbody>
+</table>
+
+	<input id="save" name="addstudents" type="submit" value="${bsave}"/> 
+</div>
+
+<div id="toremove" style="display:none">
+<table >
+<thead>
+<tr>
+<td></td>
+<td>${lname}</td>
+<td>${lsection}</td>
+<td></td>
+</tr>
+</thead>
+<tbody>
+<c:forEach items="${classModel.students}" var="tmp"  varStatus="stdtstatus">
+<tr>
+<td><form:checkbox path="trchecked[${stdtstatus.index}]"  />
+					<form:input path="tridref[${stdtstatus.index}]" value="${tmp.id}" type="hidden"></form:input></td>
+<td>${tmp.firstname} ${tmp.lastname}</td>
+<td>${sectionLkup[tmp.sectionkey]}</td>
+<td></td>
+</tr>
+</c:forEach>
+</tbody>
+</table>
+
+	<input id="save" name="removestudents" type="submit" value="${bsave}"/> 
+</div>
+
+
 </form:form>
 
 </div>

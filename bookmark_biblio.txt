@@ -8,14 +8,13 @@ Part 1 - Making classes, teachers and students - no lending for now
 
 ----> display page - add ability to add students
 also - delete a class (deletes teacher, unattaches students)
-done - addstudent backend and test skeletons are done
-done - write tests, addnew and remove
-done - make tests green, addnew and remove
 
-test, and implement assignStudentToClass
 
 begin work on front end
-
+validations - SGC, addNewStudent
+edit class page - add edit student, cancel for  different entries, appropriate text for submit buttons
+edit class page - appropriate sorting....
+classlist page - add delete class
 
 add validations to classes 
 
@@ -47,7 +46,12 @@ done - structure - LendingService
 done - make  SchoolGroupController
 done - relationship student -> class	
 done - class list, new class page
-
+done - addstudent backend and test skeletons are done
+done - write tests, addnew and remove
+done - make tests green, addnew and remove
+done - test, and implement assignStudentToClass
+done - test written
+done - implement assignStudentsToClass
 
 
 ---- end commit changes ----

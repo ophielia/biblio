@@ -11,6 +11,8 @@ public class ClassModel {
 
 	private SchoolGroupDao schoolgroup;
 
+	private List<StudentDao> unassignedstudents;
+	
 	private String teachername;
 
 	private String teacheremail;
@@ -18,10 +20,22 @@ public class ClassModel {
 	private String studentname;
 
 	private Long studentsection;
+	
+	private List<Long> idref;
+	private List<Boolean> checked;
+
+	private List<Long> tridref;
+	private List<Boolean> trchecked;
 
 	public ClassModel(SchoolGroupDao schoolgroup) {
 		super();
 		this.schoolgroup = schoolgroup;
+		if (schoolgroup!=null) {
+			if (schoolgroup.getStudents()!=null) {
+				createCheckedAndIdSlotsForRemove(schoolgroup.getStudents().size());		
+			}
+		}
+		
 	}
 
 	public ClassModel() {
@@ -36,6 +50,11 @@ public class ClassModel {
 
 	public void setSchoolGroup(SchoolGroupDao schoolgroup) {
 		this.schoolgroup = schoolgroup;
+		if (schoolgroup!=null) {
+			if (schoolgroup.getStudents()!=null) {
+				createCheckedAndIdSlotsForRemove(schoolgroup.getStudents().size());		
+			}
+		}
 	}
 
 	public TeacherDao getTeacher() {
@@ -47,6 +66,53 @@ public class ClassModel {
 			return this.schoolgroup.getStudents();
 		}
 		return new ArrayList<StudentDao>();
+	}
+
+	
+	public List<StudentDao> getUnassignedstudents() {
+		return unassignedstudents;
+	}
+
+	public void setUnassignedstudents(List<StudentDao> unassignedstudents) {
+		this.unassignedstudents = unassignedstudents;
+		if (this.unassignedstudents!=null && this.unassignedstudents.size()>0) {
+			// initialize checked list
+			createCheckedAndIdSlotsForUnassigned(this.unassignedstudents.size());
+		}	
+	}
+
+	public List<Long> getIdref() {
+		return idref;
+	}
+
+	public void setIdref(List<Long> idref) {
+		this.idref = idref;
+	}
+
+	public List<Boolean> getChecked() {
+		return checked;
+	}
+
+	public void setChecked(List<Boolean> checked) {
+		this.checked = checked;
+	}
+
+	
+	
+	public List<Long> getTridref() {
+		return tridref;
+	}
+
+	public void setTridref(List<Long> tridref) {
+		this.tridref = tridref;
+	}
+
+	public List<Boolean> getTrchecked() {
+		return trchecked;
+	}
+
+	public void setTrchecked(List<Boolean> trchecked) {
+		this.trchecked = trchecked;
 	}
 
 	/** getters and setters - fields **/
@@ -100,5 +166,55 @@ public class ClassModel {
 		}
 		return null;
 	}
+	
+	private void createCheckedAndIdSlotsForUnassigned(int size) {
+		checked = new ArrayList<Boolean>();
+		idref = new ArrayList<Long>();
+		for (int i=0;i<size;i++) {
+			checked.add(false);
+			idref.add(0L);
+		}
+		
+	}
+	
+	public List<Long> getSelectedUnassignedIds() {
+		// make new empty list 
+		List<Long> checkedids = new ArrayList<Long>();
+			// go through checked list
+			for (int i=0;i<checked.size();i++) {
+				// if checked is true, add expenseDao at same slot to checkedlist
+				Boolean test = checked.get(i);
+				if (test!=null && test) {
+					checkedids.add(idref.get(i));
+				}
+			}
+		// return checked list
+		return checkedids;
+	}	
+	
+	private void createCheckedAndIdSlotsForRemove(int size) {
+		trchecked = new ArrayList<Boolean>();
+		tridref = new ArrayList<Long>();
+		for (int i=0;i<size;i++) {
+			trchecked.add(false);
+			tridref.add(0L);
+		}
+		
+	}
+	
+	public List<Long> getSelectedIdsToRemove() {
+		// make new empty list 
+		List<Long> checkedids = new ArrayList<Long>();
+			// go through checked list
+			for (int i=0;i<trchecked.size();i++) {
+				// if checked is true, add expenseDao at same slot to checkedlist
+				Boolean test = trchecked.get(i);
+				if (test!=null && test) {
+					checkedids.add(tridref.get(i));
+				}
+			}
+		// return checked list
+		return checkedids;
+	}		
 
 }

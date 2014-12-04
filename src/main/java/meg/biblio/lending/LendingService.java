@@ -8,18 +8,5 @@ import meg.biblio.lending.web.model.ClassModel;
 
 public interface LendingService {
 
-	ClassModel createClassFromClassModel(ClassModel model, Long clientkey);
-
-	Integer getSchoolYearBeginForDate(Date time);
-
-	List<SchoolGroupDao> getClassesForClient(Long clientkey);
-
-	ClassModel loadClassModelById(Long id);
-
-	ClassModel addNewStudentToClass(String name, Long sectionkey,
-			SchoolGroupDao sgroup, Long clientkey);
-
-	ClassModel removeStudentsFromClass(List<Long> removelist,
-			SchoolGroupDao schoolgroup, Long clientid);
 
 }
