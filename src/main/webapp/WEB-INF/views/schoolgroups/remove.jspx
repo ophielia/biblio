@@ -5,51 +5,70 @@ xmlns:c="http://java.sun.com/jsp/jstl/core"
 xmlns:spring="http://www.springframework.org/tags" 
 xmlns:form="http://www.springframework.org/tags/form" 
 xmlns:fmt="http://java.sun.com/jsp/jstl/fmt" 
+xmlns:fn="http://java.sun.com/jsp/jstl/functions" 
 xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
-    
+
+
 <spring:message code="label_class" htmlEscape="false" var="lclass"/>
-<spring:message code="label_classpl" htmlEscape="false" var="lclasses"/>
-<spring:message code="global_menu_listof"  arguments="${lclasses}" htmlEscape="false" var="ltitle"/>
-<spring:message code="label_class_studentcount" htmlEscape="false" var="lstudentcount"/>
-<spring:message code="label_class_teacher" htmlEscape="false" var="lteacher"/>
-<spring:message code="entity_edit" htmlEscape="false" var="ledit"/>
-<spring:message code="entity_deletenoargs" htmlEscape="false" var="ldelete"/>
-<spring:message code="entity_create" arguments="${lclass}" htmlEscape="false" var="lcreate"/>
+<spring:message code="entity_show" arguments="${lclass}" htmlEscape="false" var="pagetitle"/>
+<spring:message code="message_successcreated" htmlEscape="false" var="msgsuccess"/>
+<spring:message code="message_nostudents" htmlEscape="false" var="msgnostudents"/>
+
+<spring:message code="label_class_classof" htmlEscape="false" var="lclassof"/>
+<spring:message code="label_class_studentpl" htmlEscape="false" var="lstudents"/>
+<spring:message code="label_class_studentname" htmlEscape="false" var="lname"/>
+<spring:message code="label_class_section" htmlEscape="false" var="lsection"/>
+
+<spring:message code="action_class_newstudent" htmlEscape="false" var="anewstudent"/>
+<spring:message code="action_class_existingstudent" htmlEscape="false" var="aexiststudent"/>
+<spring:message code="action_class_removestudents" htmlEscape="false" var="aremovestudent"/>
 
 
-<h1>${ltitle} - ${clientname}</h1>
+
+<spring:message code="button_save" htmlEscape="false" var="bsave"/>
+<spring:message code="button_cancel" htmlEscape="false" var="bcancel"/>
+<spring:message code="button_changepassword" htmlEscape="false" var="bchange"/>
+<spring:message code="button_cancelpasswdchange" htmlEscape="false" var="bpwdcancel"/>
 
 
-<table>
+
+
+
+<h1>${pagetitle}</h1>
+
+
+<spring:url value="/classes/remove" var="actionurl"/>
+<form:form action="${actionurl}" id="removestudents" method="POST" modelAttribute="classModel">
+
+<div id="unassignedlist">
+<table >
 <thead>
 <tr>
-<td>${lteacher}</td>
-<td>${lstudentcount}</td>
+<td></td>
+<td>${lname}</td>
+<td>${lsection}</td>
 <td></td>
 </tr>
 </thead>
 <tbody>
-<c:forEach items="${listofclasses}" var="sclass">
+<c:forEach items="${classModel.unassignedstudents}" var="tmp"  varStatus="stdtstatus">
 <tr>
-<td>${sclass.teacher.firstname} ${sclass.teacher.lastname} </td>
-<td>${sclass.classcount}</td>
-<td>
-<spring:url value="/classes/delete/${sclass.id}?form" var="deleteurl"/>
-<spring:url value="/classes/display/${sclass.id}?form" var="editurl"/>
-<a href="${editurl}">${ledit}</a> <a href="${deleteurl}">${ldelete}</a>  
-</td>
+<td><form:checkbox path="checked[${stdtstatus.index}]"  />
+					<form:input path="idref[${stdtstatus.index}]" value="${tmp.id}" type="hidden"></form:input></td>
+<td>${tmp.firstname} ${tmp.lastname}</td>
+<td>${sectionLkup[tmp.sectionkey]}</td>
+<td></td>
 </tr>
 </c:forEach>
-
-
 </tbody>
-
 </table>
 
-<spring:url value="/classes/create?form" var="createurl"/>
-<a href="${createurl}">${lcreate}</a>
+	<input id="save" name="toremove" type="submit" value="${aremovestudent}"/> 
 </div>
 
 
+</form:form>
+
+</div>

@@ -20,6 +20,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <spring:message code="label_class_studentpl" htmlEscape="false" var="lstudents"/>
 <spring:message code="label_class_studentname" htmlEscape="false" var="lname"/>
 <spring:message code="label_class_section" htmlEscape="false" var="lsection"/>
+<spring:message code="label_class_overview" htmlEscape="false" var="loverview"/>
 
 <spring:message code="action_class_newstudent" htmlEscape="false" var="anewstudent"/>
 <spring:message code="action_class_existingstudent" htmlEscape="false" var="aexiststudent"/>
@@ -31,6 +32,11 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <spring:message code="button_cancel" htmlEscape="false" var="bcancel"/>
 <spring:message code="button_changepassword" htmlEscape="false" var="bchange"/>
 <spring:message code="button_cancelpasswdchange" htmlEscape="false" var="bpwdcancel"/>
+
+
+<spring:url value="/classes/display/${classModel.classid}" var="actionurl"/>
+<spring:url value="/classes" var="overviewurl"/>
+<form:form action="${actionurl}" id="editclass" method="POST" modelAttribute="classModel">
 
 <script type="text/javascript">
  require([
@@ -113,7 +119,14 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 					showDefaultSections();	
 		   		}
 		   	   });
-						   	
+			
+	   	<c:set var="classModelErrors"><form:errors path="*"/></c:set>
+	   	<c:if test="${not empty classModelErrors}">
+		showNewStudentEntry(true);
+		showClassList(false);
+		showExistingStudentAdd(false);
+		showRemoveStudents(false);
+	   	</c:if>	   	
 					
 	});
 </script>
@@ -125,9 +138,8 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <c:if test="${newlycreated}">
 <div>${msgsuccess}</div>
 </c:if>
-<spring:url value="/classes/display/${classModel.classid}" var="actionurl"/>
-<form:form action="${actionurl}" id="editclass" method="POST" modelAttribute="classModel">
 <h2>${lclassof} ${classModel.teacher.firstname} ${classModel.teacher.lastname}</h2>
+<span> <a href="${overviewurl}">${loverview}</a></span>
 <span style="float:right">
 <span style="margin-left:10px" id="addnew">${anewstudent}</span>
 <span style="margin-left:10px" id="unassignedsel">${aexiststudent}</span>
@@ -163,7 +175,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 </table>
 
 <div id="newstudententry" style="display:none">
-${lname} <form:input path="studentname"></form:input>  
+${lname} <form:errors id="studentname_errors" class="errors" path="studentname" /><form:input path="studentname"></form:input>  
 ${lsection} 
 <form:select path="studentsection">
 	<c:forEach items="${sectionSelect}" var="tmp" >
