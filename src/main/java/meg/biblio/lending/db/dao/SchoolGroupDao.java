@@ -25,7 +25,7 @@ public class SchoolGroupDao {
 	@OneToOne( fetch=FetchType.EAGER)
 	private TeacherDao teacher;
 	
-	@OneToMany(mappedBy = "schoolgroup",cascade = CascadeType.ALL, fetch=FetchType.EAGER)
+	@OneToMany(mappedBy = "schoolgroup",cascade = CascadeType.PERSIST, fetch=FetchType.EAGER)
 	@OrderBy("firstname asc,sectionkey asc")
 	private List<StudentDao> students;
 	

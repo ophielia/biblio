@@ -16,6 +16,7 @@ public interface ClassManagementService {
 	} 
 	
 	public static final String sectionLkup = "grades";
+	public static final String sectionSelect = "gradesSelect";
 	
 	ClassModel createClassFromClassModel(ClassModel model, Long clientkey);
 
@@ -25,7 +26,7 @@ public interface ClassManagementService {
 
 	ClassModel loadClassModelById(Long id);
 
-	ClassModel addNewStudentToClass(String name, Long sectionkey,
+	StudentDao addNewStudentToClass(String name, Long sectionkey,
 			SchoolGroupDao sgroup, Long clientkey);
 
 	ClassModel removeStudentsFromClass(List<Long> removelist,
@@ -38,6 +39,16 @@ public interface ClassManagementService {
 			String lastname, Long section);
 
 	List<StudentDao> getUnassignedStudents(Long clientid);
+
+	ClassModel loadClassModelForStudent(Long studentid);
+
+	void deleteClass(Long classid, Long clientid);
+
+	void moveAllStudentsToNextSection(Long clientid);
+
+	void clearStudentListsForClient(Long clientid);
+
+	void setStudentsAsInactive(List<Long> inactivelist, Long clientid);
 
 
 }

@@ -28,7 +28,7 @@ public class ClientDao {
 	
 	private String imagepath;
 	
-	@OneToMany(mappedBy = "client",cascade = CascadeType.ALL, fetch=FetchType.LAZY)
+	@OneToMany(mappedBy = "client",cascade = CascadeType.PERSIST, fetch=FetchType.LAZY)
 	private List<UserLoginDao> users;
 }
 

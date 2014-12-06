@@ -13,5 +13,17 @@
         <put-attribute name="body" value="/WEB-INF/views/schoolgroups/list.jspx"/>
     </definition>
     
+    <definition extends="default" name="schoolgroups/settings">
+        <put-attribute name="body" value="/WEB-INF/views/schoolgroups/settings.jspx"/>
+    </definition>    
+    
+    <definition extends="default" name="schoolgroups/remove">
+        <put-attribute name="body" value="/WEB-INF/views/schoolgroups/remove.jspx"/>
+    </definition>    
+    
+    <definition extends="default" name="schoolgroups/editstudent">
+        <put-attribute name="body" value="/WEB-INF/views/schoolgroups/editstudent.jspx"/>
+    </definition>    
+    
    
 </tiles-definitions>

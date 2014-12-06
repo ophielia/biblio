@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page" 
+xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" 
+xmlns:c="http://java.sun.com/jsp/jstl/core" 
+xmlns:spring="http://www.springframework.org/tags" 
+xmlns:form="http://www.springframework.org/tags/form" 
+xmlns:fmt="http://java.sun.com/jsp/jstl/fmt" 
+xmlns:fn="http://java.sun.com/jsp/jstl/functions" 
+xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+
+<spring:message code="label_class_management" htmlEscape="false" var="pagetitle"/>
+<spring:message code="action_class_increment" htmlEscape="false" var="aincrement"/>
+<spring:message code="action_class_clearlists" htmlEscape="false" var="aclearlists"/>
+<spring:message code="action_class_removestudents" htmlEscape="false" var="aremovestudents"/>
+<spring:message code="message_class_increment" htmlEscape="false" var="mincrement"/>
+<spring:message code="message_class_clearlists" htmlEscape="false" var="mclearlists"/>
+<spring:message code="message_class_removestudents" htmlEscape="false" var="mremovestudents"/>
+
+
+<h1>${pagetitle}</h1>
+
+<spring:url value="/classes/manage" var="actionurl"/>
+<form:form action="${actionurl}" id="editclass" method="POST" >
+
+<div>
+<span><input id="save" name="increment" type="submit" value="${aincrement}"/> </span>
+<span> ${mincrement}</span>
+</div>
+
+<div>
+<span><input id="save" name="clearlists" type="submit" value="${aclearlists}"/> </span>
+<span> ${mclearlists}</span>
+</div>
+
+<div>
+<span><input id="save" name="toremove" type="submit" value="${aremovestudents}"/> </span>
+<span> ${mremovestudents}</span>
+</div>
+</form:form>
+
+</div>

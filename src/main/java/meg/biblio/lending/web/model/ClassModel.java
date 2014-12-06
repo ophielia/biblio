@@ -18,6 +18,10 @@ public class ClassModel {
 	private String teacheremail;
 
 	private String studentname;
+	
+	private String studentfirstname;
+
+	private Long studentid;
 
 	private Long studentsection;
 	
@@ -140,6 +144,23 @@ public class ClassModel {
 		this.studentname = studentname;
 	}
 
+	
+	public String getStudentfirstname() {
+		return studentfirstname;
+	}
+
+	public void setStudentfirstname(String studentfirstname) {
+		this.studentfirstname = studentfirstname;
+	}
+
+	public Long getStudentid() {
+		return studentid;
+	}
+
+	public void setStudentid(Long studentid) {
+		this.studentid = studentid;
+	}
+
 	public Long getStudentsection() {
 		return studentsection;
 	}
@@ -215,6 +236,19 @@ public class ClassModel {
 			}
 		// return checked list
 		return checkedids;
+	}
+
+	public void setStudentInModel(Long studentid) {
+// find student in list
+		for (StudentDao student:getStudents()) {
+			if (student.getId().longValue()==studentid.longValue()) {
+				// set studentname, studentfirstname, sectionkey and id in model
+				setStudentfirstname(student.getFirstname());
+				setStudentname(student.getLastname());
+				setStudentsection(student.getSectionkey());
+				setStudentid(student.getId());
+			}
+		}
 	}		
 
 }

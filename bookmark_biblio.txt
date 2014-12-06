@@ -4,32 +4,15 @@ Branch - Classes USE CASE - 4	Checkout for class
 Part 1 - Making classes, teachers and students - no lending for now
 
 
+-----> remove students - make page....
+fill in controller
+fill in page
 
-
-----> display page - add ability to add students
-also - delete a class (deletes teacher, unattaches students)
-
-
-begin work on front end
-validations - SGC, addNewStudent
-edit class page - add edit student, cancel for  different entries, appropriate text for submit buttons
-edit class page - appropriate sorting....
-classlist page - add delete class
 
 add validations to classes 
+validations - SGC, addNewStudent
 
-
-
-in process - page - class list - with add class showing teacher name, student count, display link
-in process - display page is really display/edit with - add student function, clear student list function, change teacher
-
-
-???  list of unattached students - students to mark as inactive? and teachers??
-??? page approve class lists - which sets unattached students to inactive???
-approach for deleting a class - deletes teacher, unattaches students
-
-
-
+check cancel throughout
 
 
 5 min tasks (ha!! :-)
@@ -40,6 +23,27 @@ lock down site....
 fill in new client service from request
 
 ---- begin commit changes ----
+
+done - edit class page - 	cancel for  different entries, 
+done - edit class page - 	appropriate text for submit buttons
+done - edit class page - appropriate sorting....
+done - page - class list - with add class showing teacher name, student count, display link
+done - display page is really display/edit with - add student function, clear student list function, change teacher
+done -  display page - add ability to add students
+done - also - delete a class (deletes teacher, unattaches students)
+done - begin work on front end for classes
+done - edit class page - add edit student,
+done - fix messages - edit, and appropriate title
+done - add save function!!  (cancel....) 
+done - classlist page - add delete class
+
+
+---- end commit changes ----
+
+
+
+----- begin branch changes ----
+
 
 done - create new class list		   
 done - structure - LendingService
@@ -52,14 +56,6 @@ done - make tests green, addnew and remove
 done - test, and implement assignStudentToClass
 done - test written
 done - implement assignStudentsToClass
-
-
----- end commit changes ----
-
-
-
------ begin branch changes ----
-
 
 
 ---- end branch changes ----
