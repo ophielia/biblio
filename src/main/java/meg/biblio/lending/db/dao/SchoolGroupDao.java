@@ -40,4 +40,10 @@ public class SchoolGroupDao {
 		}
 		return 0;
 	}
+
+
+	public String getSchoolyeardisplay() {
+		String display = schoolyearbegin + " / " + schoolyearend;
+		return display;
+	}
 }

@@ -77,4 +77,17 @@ public class PersonDao {
 		}
 		return list;
 	}
+	
+
+	public String getFulldisplayname() {
+		StringBuffer display = new StringBuffer();
+		if (getFirstname()!=null) {
+			display.append(getFirstname()).append(" ");
+		}
+		if (getLastname()!=null) {
+			display.append(getLastname());
+		}
+		String returnstr = display.toString().trim();
+		return returnstr;
+	}	
 }

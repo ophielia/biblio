@@ -57,4 +57,20 @@ privileged aspect ClientDao_Roo_JavaBean {
         this.users = users;
     }
     
+    public Integer ClientDao.getStudentcheckouttime() {
+        return this.studentcheckouttime;
+    }
+    
+    public void ClientDao.setStudentcheckouttime(Integer studentcheckouttime) {
+        this.studentcheckouttime = studentcheckouttime;
+    }
+    
+    public Integer ClientDao.getTeachercheckouttime() {
+        return this.teachercheckouttime;
+    }
+    
+    public void ClientDao.setTeachercheckouttime(Integer teachercheckouttime) {
+        this.teachercheckouttime = teachercheckouttime;
+    }
+    
 }

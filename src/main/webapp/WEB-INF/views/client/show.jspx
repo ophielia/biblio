@@ -8,5 +8,7 @@
         <field:display field="importfileconfig" id="s_meg_biblio_common_db_dao_ClientDao_importfileconfig" object="${clientdao}" z="EfpvOEeHaTsPz+igwK6AQNLmrbk="/>
         <field:display field="classifyimplementation" id="s_meg_biblio_common_db_dao_ClientDao_classifyimplementation" object="${clientdao}" z="BqhZjzHmtuHSmStY1J8B7yXubpo="/>
         <field:display field="imagepath" id="s_meg_biblio_common_db_dao_ClientDao_imagepath" object="${clientdao}" z="WB8xPTUtvFKC5IgVtbzF7Xiamfk="/>
+        <field:display field="studentcheckouttime" id="s_meg_biblio_common_db_dao_ClientDao_studentcheckouttime" object="${clientdao}" z="LNhHN5nUqgU6buqsxsnqkF3CO/0="/>
+        <field:display field="teachercheckouttime" id="s_meg_biblio_common_db_dao_ClientDao_teachercheckouttime" object="${clientdao}" z="aR12WQrZdKjrwDT9WDNeDAVuuuw="/>
     </page:show>
 </div>

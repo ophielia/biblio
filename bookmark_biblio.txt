@@ -1,9 +1,61 @@
-Branch - Classes USE CASE - 4	Checkout for class
-			   5	Return for class
-			   9	Year clear for new classes
-Part 1 - Making classes, teachers and students - no lending for now
+Branch - lending USECASES 	4	   Checkout for class
+							5	   Return for class
+							7	   Printouts for day
+
+Immediate Roadmap
+in checkout and return book tests - check dates (with strings??)
+	
+
+	
+	begin work on sqls
 
 
+Checkout
+    Lending model
+           School group
+           Students
+           Borrowerid
+           Borrower object
+           Bookid 
+           Book object
+           Toreturnlist 
+           Loan record id
+           Orderby
+
+   Lendingvalidator
+           User isn't beyond checkout limit
+           Book is findable
+           Book is already checkedout???
+
+
+   Lending service
+            Checkout book bookid, borrowerid, client id 
+            Return book - loanrecordid, clientid
+            passedcheckoutlimit userid
+
+
+
+  Lending search service
+          Lendingsearchcriteria
+                  Type- checked out, returned, overdue
+                  Checkedouton date
+                  Returnedon date
+                  For class schoolgroup
+                  Checkedoutto teacher or student or both
+
+          Loanrecorddisplay. Name first name book title author shelf class checkout date due date overdue flag teachername is student, bookid, personid, loanrecordid
+           Loanhistorydisplay. Name, firstname, title, author, shelf class, checkedot, due date, return date, overdue flag, teachername, school year, isstudent,bookid,personid,loanhistoryid
+
+
+
+Class checkout page
+Class return page
+Summary page
+Overdue book list
+Checked out book list
+
+
+NOTE - don't delete teachers - set to inactive!! used in loanhistory...
 
 
 
@@ -17,12 +69,9 @@ check cancel throughout class page
 
 ---- begin commit changes ----
 
-
-done - fill in controller
-done - fill in page
-done - also - general nav improvements - class overview from class pages, and class management page
-done - add validations to classes 
-done - validations - SGC, addNewStudent
+done - 	test/implement lendBook
+done - 	test/implement returnBook
+done - run once without transaction to insert test data - for checkout - returns, we're on our own!!
 
 
 ---- end commit changes ----
@@ -32,29 +81,7 @@ done - validations - SGC, addNewStudent
 ----- begin branch changes ----
 
 
-done - create new class list		   
-done - structure - LendingService
-done - make  SchoolGroupController
-done - relationship student -> class	
-done - class list, new class page
-done - addstudent backend and test skeletons are done
-done - write tests, addnew and remove
-done - make tests green, addnew and remove
-done - test, and implement assignStudentToClass
-done - test written
-done - implement assignStudentsToClass
-done - edit class page - 	cancel for  different entries, 
-done - edit class page - 	appropriate text for submit buttons
-done - edit class page - appropriate sorting....
-done - page - class list - with add class showing teacher name, student count, display link
-done - display page is really display/edit with - add student function, clear student list function, change teacher
-done -  display page - add ability to add students
-done - also - delete a class (deletes teacher, unattaches students)
-done - begin work on front end for classes
-done - edit class page - add edit student,
-done - fix messages - edit, and appropriate title
-done - add save function!!  (cancel....) 
-done - classlist page - add delete class
+
 
 ---- end branch changes ----
 
@@ -227,7 +254,36 @@ done - make update page
 done - authentication failing - check why
 done - try login page
 
+**** CLASSES ****
 
+done - create new class list		   
+done - structure - LendingService
+done - make  SchoolGroupController
+done - relationship student -> class	
+done - class list, new class page
+done - addstudent backend and test skeletons are done
+done - write tests, addnew and remove
+done - make tests green, addnew and remove
+done - test, and implement assignStudentToClass
+done - test written
+done - implement assignStudentsToClass
+done - edit class page - 	cancel for  different entries, 
+done - edit class page - 	appropriate text for submit buttons
+done - edit class page - appropriate sorting....
+done - page - class list - with add class showing teacher name, student count, display link
+done - display page is really display/edit with - add student function, clear student list function, change teacher
+done -  display page - add ability to add students
+done - also - delete a class (deletes teacher, unattaches students)
+done - begin work on front end for classes
+done - edit class page - add edit student,
+done - fix messages - edit, and appropriate title
+done - add save function!!  (cancel....) 
+done - classlist page - add delete class
+done - fill in controller
+done - fill in page
+done - also - general nav improvements - class overview from class pages, and class management page
+done - add validations to classes 
+done - validations - SGC, addNewStudent
 ----- end complete history ----
 
 ******* LATER DEVPT ******

@@ -34,6 +34,8 @@ privileged aspect ClientDaoDataOnDemand_Roo_DataOnDemand {
         setImportfileconfig(obj, index);
         setImportmapconfig(obj, index);
         setName(obj, index);
+        setStudentcheckouttime(obj, index);
+        setTeachercheckouttime(obj, index);
         return obj;
     }
     
@@ -60,6 +62,16 @@ privileged aspect ClientDaoDataOnDemand_Roo_DataOnDemand {
     public void ClientDaoDataOnDemand.setName(ClientDao obj, int index) {
         String name = "name_" + index;
         obj.setName(name);
+    }
+    
+    public void ClientDaoDataOnDemand.setStudentcheckouttime(ClientDao obj, int index) {
+        Integer studentcheckouttime = new Integer(index);
+        obj.setStudentcheckouttime(studentcheckouttime);
+    }
+    
+    public void ClientDaoDataOnDemand.setTeachercheckouttime(ClientDao obj, int index) {
+        Integer teachercheckouttime = new Integer(index);
+        obj.setTeachercheckouttime(teachercheckouttime);
     }
     
     public ClientDao ClientDaoDataOnDemand.getSpecificClientDao(int index) {

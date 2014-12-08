@@ -9,6 +9,8 @@
         <field:input field="classifyimplementation" id="c_meg_biblio_common_db_dao_ClientDao_classifyimplementation" z="Ysk7R/ELugjksWLMb8RIN/kHMbQ="/>
         <field:input field="imagepath" id="c_meg_biblio_common_db_dao_ClientDao_imagepath" z="p3enelUoiylb/8RIIAe6W2Tig14="/>
         <field:simple field="users" id="c_meg_biblio_common_db_dao_ClientDao_users" messageCode="entity_reference_not_managed" messageCodeAttribute="User Login Dao" z="b6CHY9OmnviUMFThc3ixl5d2MJo="/>
+        <field:input field="studentcheckouttime" id="c_meg_biblio_common_db_dao_ClientDao_studentcheckouttime" validationMessageCode="field_invalid_integer" z="YCnGiaW28Q1l/JAB6oazmhoin7g="/>
+        <field:input field="teachercheckouttime" id="c_meg_biblio_common_db_dao_ClientDao_teachercheckouttime" validationMessageCode="field_invalid_integer" z="mIvbiYG1P3nEMBqcUhTCSuibY+k="/>
     </form:create>
     <form:dependency dependencies="${dependencies}" id="d_meg_biblio_common_db_dao_ClientDao" render="${not empty dependencies}" z="OwI62yfU4B0oekp3l8B94MMTsmY="/>
 </div>

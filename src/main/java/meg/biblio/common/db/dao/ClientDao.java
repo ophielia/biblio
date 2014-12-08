@@ -30,5 +30,9 @@ public class ClientDao {
 	
 	@OneToMany(mappedBy = "client",cascade = CascadeType.PERSIST, fetch=FetchType.LAZY)
 	private List<UserLoginDao> users;
+	
+	private Integer studentcheckouttime;
+	
+	private Integer teachercheckouttime;
 }
 
