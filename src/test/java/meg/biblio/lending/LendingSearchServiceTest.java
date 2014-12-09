@@ -1,5 +1,6 @@
 package meg.biblio.lending;
 
+import java.util.Date;
 import java.util.List;
 
 import junit.framework.Assert;
@@ -50,5 +51,27 @@ public class LendingSearchServiceTest {
 		
 		// found something??
 		Assert.assertNotNull(results2);		
+	}
+	
+	@Test
+	public void testCriteriaMethods() {
+		LendingSearchCriteria criteria = new LendingSearchCriteria();
+		Long clientid = 1L;
+		
+		// nothing will be returned - just checking that the sql is generated properly and runnable
+		// criteria - checkedouton, forschoolgroup, lenttotype(Student),overdueonly
+		criteria.setCheckedouton(new Date());
+		criteria.setSchoolgroup(2L);
+		criteria.setLentToType(LendingSearchCriteria.LentToType.STUDENT);
+		criteria.setOverdueOnly(true);
+
+		// service call
+		List<LoanRecordDisplay> results = lendingSearchService.findLoanRecordsByCriteria(criteria, clientid);
+		List<LoanHistoryDisplay> histresults = lendingSearchService.findLoanHistoryByCriteria(criteria, clientid);
+
+		// history only - returnedon, overdueonly
+		criteria = new LendingSearchCriteria();
+		criteria.setReturnedon(new Date());
+		criteria.setOverdueOnly(true);
 	}
 }

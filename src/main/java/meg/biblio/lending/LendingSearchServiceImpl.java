@@ -2,7 +2,6 @@ package meg.biblio.lending;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -13,42 +12,30 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Join;
-import javax.persistence.criteria.JoinType;
-import javax.persistence.criteria.ListJoin;
-import javax.persistence.criteria.Order;
 import javax.persistence.criteria.ParameterExpression;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import meg.biblio.catalog.CatalogService;
-import meg.biblio.catalog.db.FoundWordsDao;
-import meg.biblio.catalog.db.dao.ArtistDao;
 import meg.biblio.catalog.db.dao.BookDao;
-import meg.biblio.catalog.db.dao.PublisherDao;
-import meg.biblio.search.BookSearchCriteria;
 import meg.biblio.lending.db.dao.LoanHistoryDao;
 import meg.biblio.lending.db.dao.LoanRecordDao;
 import meg.biblio.lending.db.dao.PersonDao;
 import meg.biblio.lending.db.dao.SchoolGroupDao;
-import meg.biblio.lending.db.dao.TeacherDao;
 import meg.biblio.lending.web.model.LoanHistoryDisplay;
 import meg.biblio.lending.web.model.LoanRecordDisplay;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class LendingSearchServiceImpl implements LendingSearchService {
 
+	@PersistenceContext
+	private EntityManager em;
 
-    @PersistenceContext
-    private EntityManager em;
-    
-    @Autowired
-    private CatalogService catalogService;
-
-    
+	@Autowired
+	private CatalogService catalogService;
 
 	@Override
 	public List<LoanRecordDisplay> findLoanRecordsByCriteria(
@@ -70,7 +57,9 @@ public class LendingSearchServiceImpl implements LendingSearchService {
 		c.select(cb.tuple(book, person, loanrec, sgroup.<Long> get("id")));
 
 		// add predicate
-		List<Predicate> whereclause = new ArrayList<Predicate>();
+		List<Predicate> whereclause = getPredicatesForCriteria(criteria, cb,
+				book, person, sgroup, loanrec, null,
+				LendingSearchCriteria.SearchType.CHECKEDOUT);
 
 		// putting where clause together
 		c.where(cb.and(whereclause.toArray(new Predicate[whereclause.size()])));
@@ -79,7 +68,8 @@ public class LendingSearchServiceImpl implements LendingSearchService {
 		TypedQuery<Tuple> q = em.createQuery(c);
 
 		// adding parameters
-
+		setParametersInQuery(criteria, q, clientid, LendingSearchCriteria.SearchType.CHECKEDOUT);
+		
 		// running query
 		List<Tuple> results = q.getResultList();
 		List<LoanRecordDisplay> toreturn = new ArrayList<LoanRecordDisplay>();
@@ -98,7 +88,7 @@ public class LendingSearchServiceImpl implements LendingSearchService {
 		return toreturn;
 
 	}
-	
+
 	@Override
 	public List<LoanHistoryDisplay> findLoanHistoryByCriteria(
 			LendingSearchCriteria criteria, Long clientid) {
@@ -108,8 +98,6 @@ public class LendingSearchServiceImpl implements LendingSearchService {
 		// put together joins
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Tuple> c = cb.createTupleQuery();
-		// CriteriaQuery<LoanRecordDisplay> c =
-		// cb.createQuery(LoanRecordDisplay.class);
 		Root<LoanHistoryDao> loanrec = c.from(LoanHistoryDao.class);
 		Join<LoanHistoryDao, BookDao> book = loanrec.join("book");
 		Join<LoanHistoryDao, PersonDao> person = loanrec.join("borrower");
@@ -119,7 +107,9 @@ public class LendingSearchServiceImpl implements LendingSearchService {
 		c.select(cb.tuple(book, person, loanrec, sgroup.<Long> get("id")));
 
 		// add predicate
-		List<Predicate> whereclause = new ArrayList<Predicate>();
+		List<Predicate> whereclause = getPredicatesForCriteria(criteria, cb,
+				book, person, sgroup, null, loanrec,
+				LendingSearchCriteria.SearchType.RETURNED);
 
 		// putting where clause together
 		c.where(cb.and(whereclause.toArray(new Predicate[whereclause.size()])));
@@ -128,6 +118,7 @@ public class LendingSearchServiceImpl implements LendingSearchService {
 		TypedQuery<Tuple> q = em.createQuery(c);
 
 		// adding parameters
+		setParametersInQuery(criteria, q, clientid,LendingSearchCriteria.SearchType.RETURNED);
 
 		// running query
 		List<Tuple> results = q.getResultList();
@@ -139,259 +130,119 @@ public class LendingSearchServiceImpl implements LendingSearchService {
 			PersonDao personres = (PersonDao) t.get(1);
 			LoanHistoryDao lrec = (LoanHistoryDao) t.get(2);
 			Long classid = (Long) t.get(3);
-			LoanHistoryDisplay display = new LoanHistoryDisplay(lrec, personres,
-					bookres, classid);
+			LoanHistoryDisplay display = new LoanHistoryDisplay(lrec,
+					personres, bookres, classid);
 			toreturn.add(display);
 		}
 
 		return toreturn;
 
 	}
-	
-	
-	
-	private List<BookDao> model(BookSearchCriteria criteria, Long clientid) {
-		
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<BookDao> c = cb.createQuery(BookDao.class);
-		Root<BookDao> bookroot = c.from(BookDao.class);
-		c.select(bookroot);
-
-	
-		if (criteria != null) {
-			
-			
-			// get where clause
-			Expression sortexpr = null;
-			List<Predicate> whereclause = getPredicatesForCriteria(criteria,cb,bookroot,sortexpr);
-			
-			// adding where clause
-			c.where(cb.and(whereclause.toArray(new Predicate[whereclause.size()])));
-			
-			// adding orderby
-			long orderdir=criteria.getOrderbydir();
-			List<Expression> exprlist = new ArrayList<Expression>();
-			if (sortexpr==null) {
-				if (criteria.getOrderby()==BookSearchCriteria.OrderBy.AUTHOR) {
-					Join<BookDao, ArtistDao> authorjoin = bookroot.join("authors");
-					sortexpr=authorjoin.get("lastname");
-				} else if (criteria.getOrderby()==BookSearchCriteria.OrderBy.DATEADDED) {
-					sortexpr=bookroot.get("createdon");
-				} else if (criteria.getOrderby()==BookSearchCriteria.OrderBy.TITLE) {
-					sortexpr=bookroot.get("title");
-				} else if (criteria.getOrderby()==BookSearchCriteria.OrderBy.SHELFCLASS) {
-					sortexpr=bookroot.get("shelfclass");
-				} else if (criteria.getOrderby()==BookSearchCriteria.OrderBy.BOOKID) {
-					exprlist.add(bookroot.get("clientbookidsort"));
-					sortexpr=bookroot.get("clientbookid");
-				} else if (criteria.getOrderby()==BookSearchCriteria.OrderBy.BOOKTYPE) {
-					sortexpr=bookroot.get("type");
-				} else if (criteria.getOrderby()==BookSearchCriteria.OrderBy.STATUS) {
-					sortexpr=bookroot.get("status");
-				} else if (criteria.getOrderby()==BookSearchCriteria.OrderBy.DETAILSTATUS) {
-					sortexpr=bookroot.get("detailstatus");
-				} else  {
-					// default
-					sortexpr=bookroot.get("title");
-				}  
-			} 
-			exprlist.add(sortexpr);
-			List<Order> orderlist = new ArrayList<Order>();
-			if (orderdir==BookSearchCriteria.OrderByDir.ASC) {
-				for (Expression order:exprlist) {
-					orderlist.add(cb.asc(order));
-				}
-			} else {
-				for (Expression order:exprlist) {
-					orderlist.add(cb.desc(order));
-				}
-			}
-			c.orderBy(orderlist);
-			// creating the query
-			TypedQuery<BookDao> q = em.createQuery(c);
-
-			// setting the parameters
-			setParametersInQuery(criteria,q, clientid);
-			
-			return q.getResultList();
-
-		}
-
-		return null;
-	}	
-
-
-
-	
-	private void setParametersInQuery(BookSearchCriteria criteria, TypedQuery q, Long clientid) {
-		// always add clientid
-		q.setParameter("clientid", clientid);
-
-		// title
-		if (criteria.hasTitle()) {
-			q.setParameter("title", "%"
-					+ criteria.getTitle().toLowerCase().trim() + "%");
-		}
-		// shelf class
-		if (criteria.hasShelfclasskey()) {
-			q.setParameter("shelfclass", criteria.getShelfclasskey());
-		}
-		// status
-		if (criteria.hasStatus()) {
-			q.setParameter("status", criteria.getStatus());
-		}	
-		// status
-		if (criteria.hasBooktype()) {
-			q.setParameter("type", criteria.getBooktype());
-		}			
-		// detail status
-		if (criteria.hasDetailstatus()) {
-			q.setParameter("detailstatus", criteria.getDetailstatus());
-		}	
-		// author
-		if (criteria.hasAuthor()) {
-			ArtistDao tomatch = catalogService.textToArtistName(criteria
-					.getAuthor());
-			// where firstname = firstname and middlename = middlename and
-			// lastname = lastname
-			// together with likes and to lower
-			// lastname
-			if (tomatch.hasLastname()) {
-				q.setParameter("alastname", "%"
-						+ tomatch.getLastname().toLowerCase().trim() + "%");
-			}
-			// middlename
-			if (tomatch.hasMiddlename()) {
-				q.setParameter("amiddlename", "%"
-						+ tomatch.getMiddlename().toLowerCase().trim() + "%");				
-			}
-			// firstname
-			if (tomatch.hasFirstname()) {
-				q.setParameter("afirstname", "%"
-						+ tomatch.getFirstname().toLowerCase().trim() + "%");				
-
-			}
-		}	
-		// publisher
-		if (criteria.hasPublisher()) {
-			q.setParameter("publisher",  "%"
-						+ criteria.getPublisher().toLowerCase().trim() + "%");	
-		}
-
-	}
 
 	private List<Predicate> getPredicatesForCriteria(
-			BookSearchCriteria criteria, CriteriaBuilder cb, Root<BookDao> bookroot, Expression sortexpr) {
+			LendingSearchCriteria criteria, CriteriaBuilder cb, Join book,
+			Join person, Join sgroup, Root loanrec, Root loanhist,
+			Long searchtype) {
 		// put together where clause
 		List<Predicate> whereclause = new ArrayList<Predicate>();
 
 		// making space for parameters
 		// always add client id
-		ParameterExpression<Long> clientparam = cb.parameter(Long.class, "clientid");
-		whereclause.add(cb.equal(bookroot.<Long> get("clientid"), clientparam));
+		ParameterExpression<Long> clientparam = cb.parameter(Long.class,
+				"clientid");
+		whereclause.add(cb.equal(person.<Long> get("client").get("id"), clientparam));
 
-		// title
-		if (criteria.hasTitle()) {
-			ParameterExpression<String> param = cb.parameter(String.class,
-					"title");
-			whereclause
-					.add(cb.like(cb.lower(bookroot.<String> get("title")), param));
-
-		}
-		// shelfclass
-		if (criteria.hasShelfclasskey()) {
-			ParameterExpression<Long> param = cb.parameter(Long.class,
-					"shelfclass");
-			whereclause.add(cb.equal(bookroot.<Long> get("shelfclass"), param));
-
-		}
-		
-		// status
-		if (criteria.hasStatus()) {
-			ParameterExpression<Long> param = cb.parameter(Long.class,
-					"status");
-			whereclause.add(cb.equal(bookroot.<Long> get("status"), param));
-
-		}		
-		
-		// type
-		if (criteria.hasBooktype()) {
-			ParameterExpression<Long> param = cb.parameter(Long.class,
-					"type");
-			whereclause.add(cb.equal(bookroot.<Long> get("type"), param));
-
-		}		
-		
-		// detail status
-		if (criteria.hasDetailstatus()) {
-			ParameterExpression<Long> param = cb.parameter(Long.class,
-					"detailstatus");
-			whereclause.add(cb.equal(bookroot.<Long> get("detailstatus"), param));
-
-		}			
-		
-		// author
-		if (criteria.hasAuthor()) {
-			Join<BookDao, ArtistDao> authorjoin = bookroot.join("authors");
-			ArtistDao tomatch = catalogService.textToArtistName(criteria
-					.getAuthor());
-			// where firstname = firstname and middlename = middlename and
-			// lastname = lastname
-			// together with likes and to lower
-			// lastname
-			if (tomatch.hasLastname()) {
-				ParameterExpression<String> param = cb.parameter(String.class,
-						"alastname");
-				Expression<String> path = authorjoin.get("lastname");
-				Expression<String> lower = cb.lower(path);
-				Predicate predicate = cb.like(lower, param);
-				whereclause.add(predicate);
-			}
-			// middlename
-			if (tomatch.hasMiddlename()) {
-				ParameterExpression<String> param = cb.parameter(String.class,
-						"amiddlename");
-				Expression<String> path = authorjoin.get("middlename");
-				Expression<String> lower = cb.lower(path);
-				Predicate predicate = cb.like(lower, param);
-				whereclause.add(predicate);
-			}
-			// firstname
-			if (tomatch.hasFirstname()) {
-				ParameterExpression<String> param = cb.parameter(String.class,
-						"afirstname");
-				Expression<String> path = authorjoin.get("firstname");
-				Expression<String> lower = cb.lower(path);
-				Predicate predicate = cb.like(lower, param);
-				whereclause.add(predicate);
-			}
-			
-			// check sort
-			if (criteria.getOrderby()==BookSearchCriteria.OrderBy.AUTHOR) {
-				sortexpr = authorjoin.get("lastname");
+		// do checkedouton
+		if (criteria.getCheckedouton() != null) {
+			if (searchtype == LendingSearchCriteria.SearchType.CHECKEDOUT) {
+				ParameterExpression<Date> param = cb.parameter(Date.class,
+						"checkoutdate");
+				whereclause.add(cb.equal(
+						loanrec.<Date> get("checkoutdate"), param));
+			} else {
+				ParameterExpression<Date> param = cb.parameter(Date.class,
+						"checkoutdate");
+				whereclause.add(cb.equal(loanhist.<Date> get("checkedout"),
+						param));
 			}
 		}
-		// publisher
-		if (criteria.hasPublisher()) {
-			Join<BookDao, PublisherDao> publishjoin = bookroot
-					.join("publisher");
 
-			ParameterExpression<String> param = cb.parameter(String.class,
-					"publisher");
-			Expression<String> path = publishjoin.get("name");
-			Expression<String> lower = cb.lower(path);
-			Predicate predicate = cb.like(lower, param);
-			whereclause.add(predicate);
+		// do returned on
+		if (criteria.getReturnedon() != null) {
+			if (searchtype == LendingSearchCriteria.SearchType.RETURNED) {
+				ParameterExpression<Date> param = cb.parameter(Date.class,
+						"returned");
+				whereclause
+						.add(cb.equal(loanhist.<Date> get("returned"), param));
+			}
 		}
 
+		// do forschoolgroup
+		if (criteria.getSchoolgroup() != null) {
+			ParameterExpression<Long> param = cb.parameter(Long.class,
+					"schoolgroupid");
+			whereclause.add(cb.equal(
+					person.<Long> get("schoolgroup").get("id"), param));
+		}
+
+		// to lentto
+		if (criteria.getLentToType() != null) {
+			String comparison = "";
+			if (criteria.getLentToType() == LendingSearchCriteria.LentToType.TEACHER) {
+				comparison = "TeacherDao";
+			} else if (criteria.getLentToType() == LendingSearchCriteria.LentToType.STUDENT) {
+				comparison = "StudentDao";
+			}
+			if (comparison.length() > 0) {
+				whereclause.add(cb.equal(person.<String> get("psn_type"),
+						comparison));
+
+			}
+		}
+
+		// to overdue only
+		if (criteria.getOverdueOnly() != null && criteria.getOverdueOnly()) {
+			if (searchtype == LendingSearchCriteria.SearchType.CHECKEDOUT) {
+				Expression<java.util.Date> today = cb
+						.literal(new java.util.Date());
+				whereclause.add(cb.lessThan(loanrec.<Date> get("duedate"),
+						today));
+
+			} else {
+				whereclause.add(cb.lessThan(loanhist.<Date> get("duedate"),
+						loanhist.<Date> get("returned")));
+
+			}
+		}
 		return whereclause;
 	}
 
+	private void setParametersInQuery(LendingSearchCriteria criteria,
+			TypedQuery q, Long clientid, Long searchtype) {
+		// always add clientid
+		q.setParameter("clientid", clientid);
 
-	
-	
-	
-	
-	
+		// do checkedouton
+		if (criteria.getCheckedouton() != null) {
+			q.setParameter("checkoutdate", criteria.getCheckedouton());
+		}
+
+		// do returned on
+		if (criteria.getReturnedon() != null) {
+			if (searchtype == LendingSearchCriteria.SearchType.RETURNED) {
+				q.setParameter("returned", criteria.getReturnedon());
+			}
+		}
+
+		// do forschoolgroup
+		if (criteria.getSchoolgroup() != null) {
+			q.setParameter("schoolgroupid", criteria.getSchoolgroup());
+		}
+
+		// to lentto - no parameter
+
+		// to overdue only - no parameter
+
+	}
+
 }
-

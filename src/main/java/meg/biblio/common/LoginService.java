@@ -2,6 +2,7 @@ package meg.biblio.common;
 
 import java.util.List;
 
+import meg.biblio.common.db.dao.ClientDao;
 import meg.biblio.common.db.dao.UserLoginDao;
 
 public interface LoginService {
@@ -22,4 +23,5 @@ public interface LoginService {
 
 	List<UserLoginDao> getUsersForClient(Long clientkey);
 
+	ClientDao getClientForUsername(String username);
 }

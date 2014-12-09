@@ -2,6 +2,7 @@ package meg.biblio.lending;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import meg.biblio.catalog.db.BookRepository;
 import meg.biblio.catalog.db.dao.BookDao;
@@ -16,6 +17,7 @@ import meg.biblio.lending.db.dao.PersonDao;
 import meg.biblio.lending.db.dao.SchoolGroupDao;
 import meg.biblio.lending.db.dao.StudentDao;
 import meg.biblio.lending.db.dao.TeacherDao;
+import meg.biblio.lending.web.model.LoanRecordDisplay;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -128,11 +130,12 @@ public class LendingServiceImpl implements LendingService {
 		}
 return null;
 	}
-	
-	/**
-	 *  Checkout book bookid, borrowerid, client id 
-            Return book - loanrecordid, clientid
-            passedcheckoutlimit userid
-	 */
+
+	@Override
+	public List<LoanRecordDisplay> getCheckedOutBooksForClass(Object classid) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 
 }

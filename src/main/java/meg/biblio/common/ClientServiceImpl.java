@@ -1,5 +1,7 @@
 package meg.biblio.common;
 
+import java.security.Principal;
+
 import javax.servlet.http.HttpServletRequest;
 
 import meg.biblio.catalog.Classifier;
@@ -21,7 +23,8 @@ public class ClientServiceImpl implements ClientService {
     @Value("${biblio.defaultclient}")
     private Long defaultkey;
 
-
+@Autowired
+LoginService loginService;
 
 
 
@@ -78,6 +81,15 @@ public class ClientServiceImpl implements ClientService {
 	public ClientDao getCurrentClient(HttpServletRequest httpServletRequest) {
 		Long clientkey = defaultkey;
 		ClientDao client = clientRepo.findOne(clientkey);
+		return client;
+	}
+
+
+	@Override
+	public ClientDao getCurrentClient(Principal principal) {
+		String username = principal.getName();
+		ClientDao client = loginService.getClientForUsername(username); 
+		
 		return client;
 	}
 

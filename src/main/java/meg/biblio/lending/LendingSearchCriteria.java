@@ -20,7 +20,6 @@ public class LendingSearchCriteria {
 	private Long forschoolgroup;
 	private Long lentToType;
 	private Boolean overdueonly;
-	private Boolean currentyearonly;
 	private Long clientid;
 	
 	
@@ -54,12 +53,7 @@ public class LendingSearchCriteria {
 	public void setOverdueOnly(Boolean overdueonly) {
 		this.overdueonly = overdueonly;
 	}
-	public Boolean getCurrentyearOnly() {
-		return currentyearonly;
-	}
-	public void setCurrentyearOnly(Boolean currentyearonly) {
-		this.currentyearonly = currentyearonly;
-	}
+
 	public Long getClientid() {
 		return clientid;
 	}

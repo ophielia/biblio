@@ -1,5 +1,7 @@
 package meg.biblio.common;
 
+import java.security.Principal;
+
 import javax.servlet.http.HttpServletRequest;
 
 import meg.biblio.catalog.Classifier;
@@ -18,6 +20,8 @@ public interface ClientService {
 	public MapConfig getMapConfigForClient(Long clientkey) throws ClassNotFoundException, InstantiationException, IllegalAccessException;
 
 	public ClientDao getCurrentClient(HttpServletRequest httpServletRequest);
+	
+	public ClientDao getCurrentClient(Principal principal);
 
 	ClientDao getClientForKey(Long key);
 }
