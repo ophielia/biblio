@@ -19,12 +19,8 @@ privileged aspect SchoolGroupDao_Roo_JavaBean {
         this.client = client;
     }
     
-    public TeacherDao SchoolGroupDao.getTeacher() {
-        return this.teacher;
-    }
-    
-    public void SchoolGroupDao.setTeacher(TeacherDao teacher) {
-        this.teacher = teacher;
+    public List<TeacherDao> SchoolGroupDao.getTeacherlist() {
+        return this.teacherlist;
     }
     
     public List<StudentDao> SchoolGroupDao.getStudents() {

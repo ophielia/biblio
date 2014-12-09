@@ -13,7 +13,6 @@ public class StudentDao extends PersonDao {
 	private Boolean active;
 	private Long sectionkey;
 	
-	@ManyToOne
-	private SchoolGroupDao schoolgroup;
+
 	
 }

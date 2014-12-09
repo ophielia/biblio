@@ -5,6 +5,7 @@ package meg.biblio.lending.db.dao;
 
 import meg.biblio.common.db.dao.ClientDao;
 import meg.biblio.lending.db.dao.PersonDao;
+import meg.biblio.lending.db.dao.SchoolGroupDao;
 
 privileged aspect PersonDao_Roo_JavaBean {
     
@@ -30,6 +31,22 @@ privileged aspect PersonDao_Roo_JavaBean {
     
     public void PersonDao.setClient(ClientDao client) {
         this.client = client;
+    }
+    
+    public SchoolGroupDao PersonDao.getSchoolgroup() {
+        return this.schoolgroup;
+    }
+    
+    public void PersonDao.setSchoolgroup(SchoolGroupDao schoolgroup) {
+        this.schoolgroup = schoolgroup;
+    }
+    
+    public String PersonDao.getPsn_type() {
+        return this.psn_type;
+    }
+    
+    public void PersonDao.setPsn_type(String psn_type) {
+        this.psn_type = psn_type;
     }
     
 }

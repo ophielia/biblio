@@ -3,7 +3,6 @@
 
 package meg.biblio.lending.db.dao;
 
-import meg.biblio.lending.db.dao.SchoolGroupDao;
 import meg.biblio.lending.db.dao.StudentDao;
 
 privileged aspect StudentDao_Roo_JavaBean {
@@ -22,14 +21,6 @@ privileged aspect StudentDao_Roo_JavaBean {
     
     public void StudentDao.setSectionkey(Long sectionkey) {
         this.sectionkey = sectionkey;
-    }
-    
-    public SchoolGroupDao StudentDao.getSchoolgroup() {
-        return this.schoolgroup;
-    }
-    
-    public void StudentDao.setSchoolgroup(SchoolGroupDao schoolgroup) {
-        this.schoolgroup = schoolgroup;
     }
     
 }

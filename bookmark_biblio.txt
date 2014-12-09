@@ -4,10 +4,14 @@ Branch - lending USECASES 	4	   Checkout for class
 
 Immediate Roadmap
 in checkout and return book tests - check dates (with strings??)
-	
 
-	
-	begin work on sqls
+begin work on sqls
+done - 	then - LendingSearchService, Lending display objects, LendingSearchCriteria
+add Where clause to LSS
+
+-- for querying type --- in person, define type @Column(name="ENTITY_TYPE",insertable=false,updatable=false)
+-- puzzle - multiple authors doesn't lead to multiple lines....
+
 
 
 Checkout
@@ -29,8 +33,8 @@ Checkout
 
 
    Lending service
-            Checkout book bookid, borrowerid, client id 
-            Return book - loanrecordid, clientid
+            done - Checkout book bookid, borrowerid, client id 
+            done - Return book - loanrecordid, clientid
             passedcheckoutlimit userid
 
 
@@ -72,6 +76,10 @@ check cancel throughout class page
 done - 	test/implement lendBook
 done - 	test/implement returnBook
 done - run once without transaction to insert test data - for checkout - returns, we're on our own!!
+done - create LendingRecordDisplay
+done - create sql LendingRecordDisplay 
+done - create LendingSearchCriteria
+done - trouble with authors and books - multiple authors will produce multiple lines for loan record.  Solve this by making it into a tuple - lrd, book.then postprocess query results adding book to lrd.  ugly, but no more time for this!!!add isteacher to sql, LRD
 
 
 ---- end commit changes ----

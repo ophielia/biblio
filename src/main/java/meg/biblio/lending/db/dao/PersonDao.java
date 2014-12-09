@@ -3,8 +3,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -21,17 +23,22 @@ import org.springframework.roo.addon.tostring.RooToString;
 @Table(name="person")
 @DiscriminatorColumn(name="PSN_TYPE")
 public class PersonDao {
-	
+
 	@NotNull
 	private String firstname;
-	
+
 	@NotNull
 	private String lastname;
 
 	@OneToOne(cascade = CascadeType.ALL, fetch=FetchType.EAGER)
 	private ClientDao client;
-	
-	
+
+	@ManyToOne
+	protected SchoolGroupDao schoolgroup;
+
+	@Column(name="PSN_TYPE", insertable=false, updatable=false)
+	private String psn_type;
+
 	public void fillInName(String text) {
 		if (text != null) {
 			if (text.contains(",")) {
@@ -77,7 +84,7 @@ public class PersonDao {
 		}
 		return list;
 	}
-	
+
 
 	public String getFulldisplayname() {
 		StringBuffer display = new StringBuffer();
@@ -89,5 +96,5 @@ public class PersonDao {
 		}
 		String returnstr = display.toString().trim();
 		return returnstr;
-	}	
+	}
 }

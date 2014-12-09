@@ -14,7 +14,5 @@ public class TeacherDao extends PersonDao {
 	
 	private String email;
 	
-	@OneToOne( fetch=FetchType.LAZY)
-	private SchoolGroupDao schoolgroup;
 
 }

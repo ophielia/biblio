@@ -47,16 +47,26 @@ public class LendingServiceImpl implements LendingService {
 		BookDao book= bookRepo.findOne(bookid);
 		PersonDao person = personRepo.findOne(borrowerid);
 		
+		Integer schoolyear = 0;
 		boolean isteacher = true;
 		if (person instanceof StudentDao) {
 			isteacher=false;
+			StudentDao st = (StudentDao)person;
+			SchoolGroupDao sg = st.getSchoolgroup();
+			schoolyear = sg.getSchoolyearbegin();
+		} else if (person instanceof TeacherDao) {
+			TeacherDao st = (TeacherDao)person;
+			SchoolGroupDao sg = st.getSchoolgroup();
+			schoolyear = sg.getSchoolyearbegin();
 		}
+		
 		// make new loan record
 		LoanRecordDao loanrec = new LoanRecordDao();
 		// insert objects
 		loanrec.setBorrower(person);
 		loanrec.setBook(book);
 		loanrec.setClient(client);
+		loanrec.setSchoolyear(schoolyear);
 		
 		// insert dates - checkedout and due
 		Integer checkoutdays = isteacher?client.getTeachercheckouttime():client.getStudentcheckouttime();
@@ -91,6 +101,7 @@ public class LendingServiceImpl implements LendingService {
 			lhistory.setBorrower(lrecord.getBorrower());
 			lhistory.setCheckedout(lrecord.getCheckoutdate());
 			lhistory.setDuedate(lrecord.getDuedate());
+			lhistory.setSchoolyear(lrecord.getSchoolyear());
 			// set teacher if this is a student
 			if (lrecord.getBorrower() instanceof StudentDao) {
 				// fill in class information (want to know how it was when checkedout / returned - may be different teacher next year)
@@ -98,7 +109,7 @@ public class LendingServiceImpl implements LendingService {
 				SchoolGroupDao sgroup = student.getSchoolgroup();
 				TeacherDao teacher = sgroup.getTeacher();
 				lhistory.setTeachername(teacher.getFulldisplayname());
-				lhistory.setSchoolyear(sgroup.getSchoolyeardisplay());
+				
 			}
 			
 			// fill in return date

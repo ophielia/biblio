@@ -37,5 +37,7 @@ public class LoanRecordDao {
 	@Temporal(TemporalType.DATE)
 	@DateTimeFormat(style = "M-")
 	private Date duedate;
+	
+	private Integer schoolyear;
 
 }

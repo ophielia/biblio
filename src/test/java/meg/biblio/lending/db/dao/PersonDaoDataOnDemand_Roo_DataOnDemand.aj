@@ -14,6 +14,7 @@ import meg.biblio.common.db.dao.ClientDaoDataOnDemand;
 import meg.biblio.lending.db.PersonRepository;
 import meg.biblio.lending.db.dao.PersonDao;
 import meg.biblio.lending.db.dao.PersonDaoDataOnDemand;
+import meg.biblio.lending.db.dao.SchoolGroupDaoDataOnDemand;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -27,6 +28,9 @@ privileged aspect PersonDaoDataOnDemand_Roo_DataOnDemand {
     
     @Autowired
     ClientDaoDataOnDemand PersonDaoDataOnDemand.clientDaoDataOnDemand;
+    
+    @Autowired
+    SchoolGroupDaoDataOnDemand PersonDaoDataOnDemand.schoolGroupDaoDataOnDemand;
     
     @Autowired
     PersonRepository PersonDaoDataOnDemand.personRepository;

@@ -51,4 +51,12 @@ privileged aspect LoanRecordDao_Roo_JavaBean {
         this.duedate = duedate;
     }
     
+    public Integer LoanRecordDao.getSchoolyear() {
+        return this.schoolyear;
+    }
+    
+    public void LoanRecordDao.setSchoolyear(Integer schoolyear) {
+        this.schoolyear = schoolyear;
+    }
+    
 }

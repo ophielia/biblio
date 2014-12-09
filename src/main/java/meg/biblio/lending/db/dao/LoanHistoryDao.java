@@ -44,5 +44,5 @@ public class LoanHistoryDao {
 
 	private String teachername;
 
-	private String schoolyear;
+	private Integer schoolyear;
 }

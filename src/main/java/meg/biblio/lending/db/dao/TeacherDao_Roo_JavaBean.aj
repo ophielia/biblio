@@ -3,7 +3,6 @@
 
 package meg.biblio.lending.db.dao;
 
-import meg.biblio.lending.db.dao.SchoolGroupDao;
 import meg.biblio.lending.db.dao.TeacherDao;
 
 privileged aspect TeacherDao_Roo_JavaBean {
@@ -14,14 +13,6 @@ privileged aspect TeacherDao_Roo_JavaBean {
     
     public void TeacherDao.setEmail(String email) {
         this.email = email;
-    }
-    
-    public SchoolGroupDao TeacherDao.getSchoolgroup() {
-        return this.schoolgroup;
-    }
-    
-    public void TeacherDao.setSchoolgroup(SchoolGroupDao schoolgroup) {
-        this.schoolgroup = schoolgroup;
     }
     
 }

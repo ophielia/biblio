@@ -68,7 +68,7 @@ privileged aspect LoanHistoryDaoDataOnDemand_Roo_DataOnDemand {
     }
     
     public void LoanHistoryDaoDataOnDemand.setSchoolyear(LoanHistoryDao obj, int index) {
-        String schoolyear = "schoolyear_" + index;
+        Integer schoolyear = new Integer(index);
         obj.setSchoolyear(schoolyear);
     }
     
