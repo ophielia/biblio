@@ -37,10 +37,17 @@ privileged aspect TeacherDaoDataOnDemand_Roo_DataOnDemand {
     
     public TeacherDao TeacherDaoDataOnDemand.getNewTransientTeacherDao(int index) {
         TeacherDao obj = new TeacherDao();
+        setActive(obj, index);
         setEmail(obj, index);
         setFirstname(obj, index);
         setLastname(obj, index);
+        setPsn_type(obj, index);
         return obj;
+    }
+    
+    public void TeacherDaoDataOnDemand.setActive(TeacherDao obj, int index) {
+        Boolean active = Boolean.TRUE;
+        obj.setActive(active);
     }
     
     public void TeacherDaoDataOnDemand.setEmail(TeacherDao obj, int index) {
@@ -56,6 +63,11 @@ privileged aspect TeacherDaoDataOnDemand_Roo_DataOnDemand {
     public void TeacherDaoDataOnDemand.setLastname(TeacherDao obj, int index) {
         String lastname = "lastname_" + index;
         obj.setLastname(lastname);
+    }
+    
+    public void TeacherDaoDataOnDemand.setPsn_type(TeacherDao obj, int index) {
+        String psn_type = "psn_type_" + index;
+        obj.setPsn_type(psn_type);
     }
     
     public TeacherDao TeacherDaoDataOnDemand.getSpecificTeacherDao(int index) {

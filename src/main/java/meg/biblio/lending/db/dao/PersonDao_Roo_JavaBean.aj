@@ -41,6 +41,14 @@ privileged aspect PersonDao_Roo_JavaBean {
         this.schoolgroup = schoolgroup;
     }
     
+    public Boolean PersonDao.getActive() {
+        return this.active;
+    }
+    
+    public void PersonDao.setActive(Boolean active) {
+        this.active = active;
+    }
+    
     public String PersonDao.getPsn_type() {
         return this.psn_type;
     }

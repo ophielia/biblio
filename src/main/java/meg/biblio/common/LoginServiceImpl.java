@@ -154,7 +154,13 @@ public class LoginServiceImpl implements LoginService {
 
 	@Override
 	public ClientDao getClientForUsername(String username) {
-		// TODO Auto-generated method stub
+		if (username!=null) {
+			List<UserLoginDao> users = accountRepository.findUsersByName(username.toLowerCase());
+			if (users!=null && users.size()>0) {
+				UserLoginDao user = users.get(0);
+				return user.getClient();
+			}
+		}
 		return null;
 	}
 

@@ -37,9 +37,16 @@ privileged aspect PersonDaoDataOnDemand_Roo_DataOnDemand {
     
     public PersonDao PersonDaoDataOnDemand.getNewTransientPersonDao(int index) {
         PersonDao obj = new PersonDao();
+        setActive(obj, index);
         setFirstname(obj, index);
         setLastname(obj, index);
+        setPsn_type(obj, index);
         return obj;
+    }
+    
+    public void PersonDaoDataOnDemand.setActive(PersonDao obj, int index) {
+        Boolean active = Boolean.TRUE;
+        obj.setActive(active);
     }
     
     public void PersonDaoDataOnDemand.setFirstname(PersonDao obj, int index) {
@@ -50,6 +57,11 @@ privileged aspect PersonDaoDataOnDemand_Roo_DataOnDemand {
     public void PersonDaoDataOnDemand.setLastname(PersonDao obj, int index) {
         String lastname = "lastname_" + index;
         obj.setLastname(lastname);
+    }
+    
+    public void PersonDaoDataOnDemand.setPsn_type(PersonDao obj, int index) {
+        String psn_type = "psn_type_" + index;
+        obj.setPsn_type(psn_type);
     }
     
     public PersonDao PersonDaoDataOnDemand.getSpecificPersonDao(int index) {

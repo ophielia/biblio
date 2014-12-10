@@ -33,9 +33,11 @@ public class PersonDao {
 	@OneToOne(cascade = CascadeType.ALL, fetch=FetchType.EAGER)
 	private ClientDao client;
 
-	@ManyToOne
+	@ManyToOne(fetch=FetchType.EAGER)
 	protected SchoolGroupDao schoolgroup;
 
+	private Boolean active;
+	
 	@Column(name="PSN_TYPE", insertable=false, updatable=false)
 	private String psn_type;
 

@@ -7,14 +7,6 @@ import meg.biblio.lending.db.dao.StudentDao;
 
 privileged aspect StudentDao_Roo_JavaBean {
     
-    public Boolean StudentDao.getActive() {
-        return this.active;
-    }
-    
-    public void StudentDao.setActive(Boolean active) {
-        this.active = active;
-    }
-    
     public Long StudentDao.getSectionkey() {
         return this.sectionkey;
     }

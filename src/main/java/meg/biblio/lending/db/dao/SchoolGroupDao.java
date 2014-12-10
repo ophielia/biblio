@@ -58,7 +58,11 @@ public class SchoolGroupDao {
 	}
 
 	public TeacherDao getTeacher() {
-		return teacher;
+        if (this.teacherlist!=null && this.teacherlist.size()>0) {
+        	TeacherDao teacher = teacherlist.get(0);
+        	return teacher;
+        }
+        return null;
 	}
 
 

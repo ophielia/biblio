@@ -13,7 +13,7 @@ import meg.biblio.lending.ClassManagementService;
 import meg.biblio.lending.LendingService;
 import meg.biblio.lending.db.dao.SchoolGroupDao;
 import meg.biblio.lending.db.dao.StudentDao;
-import meg.biblio.lending.web.model.ClassInfo;
+import meg.biblio.lending.db.dao.TeacherDao;
 import meg.biblio.lending.web.model.LendingModel;
 import meg.biblio.lending.web.model.LoanRecordDisplay;
 import meg.biblio.lending.web.validator.LendingModelValidator;
@@ -58,7 +58,7 @@ public class LendingController {
 				model.setClassid(sgroup.getId());
 			}
 			// set classinfo in model
-			HashMap<Long,ClassInfo> classinfo = getClassInfo(clientid);
+			HashMap<Long,TeacherDao> classinfo = getClassInfo(clientid);
 			populateClassInfo(classinfo,uiModel);			
 		}
 		
@@ -129,7 +129,7 @@ public class LendingController {
 				model.setClassid(sgroup.getId());
 			}
 			// set classinfo in model
-			HashMap<Long,ClassInfo> classinfo = getClassInfo(clientid);
+			HashMap<Long,TeacherDao> classinfo = getClassInfo(clientid);
 			populateClassInfo(classinfo,uiModel);
 		}
 		
@@ -186,6 +186,8 @@ public class LendingController {
 		// checkout the book
 		lendingService.checkoutBook(bookid, model.getBorrowerId(), clientid);
 
+		// put checkout list for user and limit reached into model
+		List<LoanRecordDisplay> checkedoutforuser = lendingService.getCheckedOutBooksForUser(model.getBorrowerId(), clientid);
 		// to checkout success page
 		return null;
 	}
@@ -195,14 +197,14 @@ public class LendingController {
 
 	}
 	
-	private void populateClassInfo(HashMap<Long, ClassInfo> classinfo,
+	private void populateClassInfo(HashMap<Long, TeacherDao> classinfo,
 			Model uiModel) {
 		uiModel.addAttribute("classInfo", classinfo);
 		
 	}
 
-	public HashMap<Long,ClassInfo> getClassInfo(Long clientid) {
-		HashMap<Long,ClassInfo> classinfo  = classService.getClassInfoForClient(clientid);
+	public HashMap<Long,TeacherDao> getClassInfo(Long clientid) {
+		HashMap<Long,TeacherDao> classinfo  = classService.getTeacherByClassForClient(clientid);
 		return classinfo;
 	}
 

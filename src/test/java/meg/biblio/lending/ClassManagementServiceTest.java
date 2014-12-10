@@ -5,6 +5,8 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
+import meg.biblio.common.ClientService;
+import meg.biblio.common.db.dao.ClientDao;
 import meg.biblio.lending.db.SchoolGroupRepository;
 import meg.biblio.lending.db.StudentRepository;
 import meg.biblio.lending.db.TeacherRepository;
@@ -29,7 +31,10 @@ import org.springframework.transaction.annotation.Transactional;
 public class ClassManagementServiceTest {
 
 	@Autowired
-	ClassManagementService lendingService;
+	ClientService clientService;
+
+	@Autowired
+	ClassManagementService classService;
 
 	@Autowired
 	SchoolGroupRepository sgroupRepo;
@@ -56,8 +61,8 @@ public class ClassManagementServiceTest {
 		classmod.fillInTeacherFromEntry();
 
 		// service call
-		ClassModel result = lendingService.createClassFromClassModel(classmod,
-				1L);
+		ClassModel result = classService
+				.createClassFromClassModel(classmod, 1L);
 		testclassid = result.getClassid();
 	}
 
@@ -72,8 +77,8 @@ public class ClassManagementServiceTest {
 		classmod.fillInTeacherFromEntry();
 
 		// service call
-		ClassModel result = lendingService.createClassFromClassModel(classmod,
-				1L);
+		ClassModel result = classService
+				.createClassFromClassModel(classmod, 1L);
 		// assert - teacher created with id and client, class created with id
 		// and client
 		Assert.assertNotNull(result);
@@ -101,14 +106,14 @@ public class ClassManagementServiceTest {
 		ClassModel model = new ClassModel(sgroup);
 		model.setTeachername("willy wonka");
 		model.fillInTeacherFromEntry();
-		model = lendingService.createClassFromClassModel(model, 1L);
+		model = classService.createClassFromClassModel(model, 1L);
 
 		// service call
-		lendingService.addNewStudentToClass("keli skalicky", 1L,
+		classService.addNewStudentToClass("keli skalicky", 1L,
 				model.getSchoolGroup(), 1L);
 
 		// load classmodel
-		ClassModel test = lendingService.loadClassModelById(model.getClassid());
+		ClassModel test = classService.loadClassModelById(model.getClassid());
 
 		// ensure that: model not null, at least one student in class
 		Assert.assertNotNull(test);
@@ -139,28 +144,28 @@ public class ClassManagementServiceTest {
 		ClassModel model = new ClassModel(sgroup);
 		model.setTeachername("willy wonka");
 		model.fillInTeacherFromEntry();
-		model = lendingService.createClassFromClassModel(model, 1L);
+		model = classService.createClassFromClassModel(model, 1L);
 		Long classid = model.getClassid();
-		lendingService.addNewStudentToClass("keli skalicky", 1L,
+		classService.addNewStudentToClass("keli skalicky", 1L,
 				model.getSchoolGroup(), 1L);
-		lendingService.addNewStudentToClass("björn straube", 1L,
+		classService.addNewStudentToClass("björn straube", 1L,
 				model.getSchoolGroup(), 1L);
-		lendingService.addNewStudentToClass("allison noinvite", 1L,
+		classService.addNewStudentToClass("allison noinvite", 1L,
 				model.getSchoolGroup(), 1L);
 
 		// load test, and make list of ids to be removed(2)
 		// first two will be removed
-		ClassModel test = lendingService.loadClassModelById(classid);
+		ClassModel test = classService.loadClassModelById(classid);
 		List<Long> toremove = new ArrayList<Long>();
 		List<StudentDao> students = test.getStudents();
 		toremove.add(students.get(0).getId());
 		toremove.add(students.get(1).getId());
 
 		// service call
-		test = lendingService.removeStudentsFromClass(toremove,
+		test = classService.removeStudentsFromClass(toremove,
 				test.getSchoolGroup(), 1L);
 		// reload class
-		ClassModel results = lendingService.loadClassModelById(classid);
+		ClassModel results = classService.loadClassModelById(classid);
 		// assertions - classmodel not null, students not null, students size 1
 		Assert.assertNotNull(results);
 		Assert.assertNotNull(results.getStudents());
@@ -189,26 +194,26 @@ public class ClassManagementServiceTest {
 		// test for september 1970 - result should be 1970
 		cal.set(Calendar.YEAR, 1970);
 		cal.set(Calendar.MONTH, Calendar.SEPTEMBER);
-		Integer beginyear = lendingService.getSchoolYearBeginForDate(cal
+		Integer beginyear = classService.getSchoolYearBeginForDate(cal
 				.getTime());
 		Assert.assertEquals(new Integer(1970), beginyear);
 
 		// test for december 1970 - result should be 1970
 		cal.set(Calendar.YEAR, 1970);
 		cal.set(Calendar.MONTH, Calendar.DECEMBER);
-		beginyear = lendingService.getSchoolYearBeginForDate(cal.getTime());
+		beginyear = classService.getSchoolYearBeginForDate(cal.getTime());
 		Assert.assertEquals(new Integer(1970), beginyear);
 
 		// test for july 1970 - result should be 1970
 		cal.set(Calendar.YEAR, 1970);
 		cal.set(Calendar.MONTH, Calendar.JULY);
-		beginyear = lendingService.getSchoolYearBeginForDate(cal.getTime());
+		beginyear = classService.getSchoolYearBeginForDate(cal.getTime());
 		Assert.assertEquals(new Integer(1970), beginyear);
 
 		// test for july 1970 - result should be 1969
 		cal.set(Calendar.YEAR, 1970);
 		cal.set(Calendar.MONTH, Calendar.MARCH);
-		beginyear = lendingService.getSchoolYearBeginForDate(cal.getTime());
+		beginyear = classService.getSchoolYearBeginForDate(cal.getTime());
 		Assert.assertEquals(new Integer(1969), beginyear);
 
 	}
@@ -217,11 +222,11 @@ public class ClassManagementServiceTest {
 	public void testEditStudent() {
 		SchoolGroupDao sgroup = sgroupRepo.findOne(testclassid);
 		// create student for class
-		StudentDao student = lendingService.addNewStudentToClass(
-				"george booth", 1L, sgroup, sgroup.getClient().getId());
+		StudentDao student = classService.addNewStudentToClass("george booth",
+				1L, sgroup, sgroup.getClient().getId());
 		long studentid = student.getId();
 		// service call
-		lendingService.editStudent(sgroup.getClient().getId(), student.getId(),
+		classService.editStudent(sgroup.getClient().getId(), student.getId(),
 				"charles", "schulz", 2L);
 
 		// reload student
@@ -243,13 +248,13 @@ public class ClassManagementServiceTest {
 		SchoolGroupDao dummyone = sgroupRepo.findOne(testclassid);
 		Long dummyoneclient = dummyone.getClient().getId();
 		// add students to class
-		lendingService.addNewStudentToClass("keli skalicky", 1L, dummyone,
+		classService.addNewStudentToClass("keli skalicky", 1L, dummyone,
 				dummyoneclient);
-		lendingService.addNewStudentToClass("björn straube", dummyoneclient,
+		classService.addNewStudentToClass("björn straube", dummyoneclient,
 				dummyone, 1L);
-		lendingService.addNewStudentToClass("allison noinvite", dummyoneclient,
+		classService.addNewStudentToClass("allison noinvite", dummyoneclient,
 				dummyone, 1L);
-		ClassModel test = lendingService.loadClassModelById(dummyone.getId());
+		ClassModel test = classService.loadClassModelById(dummyone.getId());
 
 		// get ids
 		List<StudentDao> students = test.getStudents();
@@ -258,7 +263,7 @@ public class ClassManagementServiceTest {
 			studentids.add(student.getId());
 		}
 		// remove students from class
-		test = lendingService.removeStudentsFromClass(studentids, dummyone,
+		test = classService.removeStudentsFromClass(studentids, dummyone,
 				dummyoneclient);
 
 		// now, add these students to another dummy class
@@ -266,12 +271,12 @@ public class ClassManagementServiceTest {
 		ClassModel model = new ClassModel(sgroup);
 		model.setTeachername("pete repeat");
 		model.fillInTeacherFromEntry();
-		model = lendingService.createClassFromClassModel(model, 1L);
+		model = classService.createClassFromClassModel(model, 1L);
 
 		// service call
-		ClassModel resultclass = lendingService.assignStudentsToClass(
-				studentids, model.getSchoolGroup(), model.getSchoolGroup()
-						.getClient().getId());
+		ClassModel resultclass = classService.assignStudentsToClass(studentids,
+				model.getSchoolGroup(), model.getSchoolGroup().getClient()
+						.getId());
 
 		// repo call to get students for another dummy class
 		List<StudentDao> results = studentRepo.findActiveStudentsForClass(
@@ -291,17 +296,17 @@ public class ClassManagementServiceTest {
 		ClassModel model = new ClassModel(sgroup);
 		model.setTeachername("darth vader");
 		model.fillInTeacherFromEntry();
-		model = lendingService.createClassFromClassModel(model, 1L);
+		model = classService.createClassFromClassModel(model, 1L);
 
 		// add students to class - "luke skywalker, obi wan, princess leia"
-		lendingService.addNewStudentToClass("luke skywalker", 1L,
+		classService.addNewStudentToClass("luke skywalker", 1L,
 				model.getSchoolGroup(), 1L);
-		lendingService.addNewStudentToClass("obi wan", 1L,
+		classService.addNewStudentToClass("obi wan", 1L,
 				model.getSchoolGroup(), 1L);
-		lendingService.addNewStudentToClass("princess leia", 1L,
+		classService.addNewStudentToClass("princess leia", 1L,
 				model.getSchoolGroup(), 1L);
-		lendingService.loadClassModelById(model.getClassid());
-		ClassModel test = lendingService.loadClassModelById(model.getClassid());
+		classService.loadClassModelById(model.getClassid());
+		ClassModel test = classService.loadClassModelById(model.getClassid());
 
 		// save class
 		Long classid = test.getClassid();
@@ -309,7 +314,7 @@ public class ClassManagementServiceTest {
 		Long teacherid = test.getTeacher().getId();
 
 		// service call
-		lendingService.deleteClass(classid, 1L);
+		classService.deleteClass(classid, 1L);
 
 		// Assert - class not found, teacher not found, students in unassigned
 		// list
@@ -332,34 +337,34 @@ public class ClassManagementServiceTest {
 		ClassModel model = new ClassModel(sgroup);
 		model.setTeachername("darth vader");
 		model.fillInTeacherFromEntry();
-		model = lendingService.createClassFromClassModel(model, 1L);
+		model = classService.createClassFromClassModel(model, 1L);
 		// testing - set sgroup beginyear to 1977
 		SchoolGroupDao updateyear = sgroupRepo.findOne(model.getClassid());
 		updateyear.setSchoolyearbegin(1977);
 		updateyear.setSchoolyearend(1978);
 		sgroupRepo.save(updateyear);
-		model = lendingService.loadClassModelById(model.getClassid());
+		model = classService.loadClassModelById(model.getClassid());
 
 		// add students to class - "luke skywalker, obi wan, princess leia"
-		StudentDao luke = lendingService.addNewStudentToClass("luke skywalker",
+		StudentDao luke = classService.addNewStudentToClass("luke skywalker",
 				1L, model.getSchoolGroup(), 1L);
-		StudentDao obiwan = lendingService.addNewStudentToClass("obi wan", 1L,
+		StudentDao obiwan = classService.addNewStudentToClass("obi wan", 1L,
 				model.getSchoolGroup(), 1L);
-		StudentDao leia = lendingService.addNewStudentToClass("princess leia",
+		StudentDao leia = classService.addNewStudentToClass("princess leia",
 				2L, model.getSchoolGroup(), 1L);
-		StudentDao hansolo = lendingService.addNewStudentToClass("han solo",
-				3L, model.getSchoolGroup(), 1L);
+		StudentDao hansolo = classService.addNewStudentToClass("han solo", 3L,
+				model.getSchoolGroup(), 1L);
 
 		// just for testing, remove hansolo from class
 		List<Long> removeids = new ArrayList<Long>();
 		removeids.add(hansolo.getId());
-		lendingService.removeStudentsFromClass(removeids,
-				model.getSchoolGroup(), 1L);
+		classService.removeStudentsFromClass(removeids, model.getSchoolGroup(),
+				1L);
 
-		ClassModel test = lendingService.loadClassModelById(model.getClassid());
+		ClassModel test = classService.loadClassModelById(model.getClassid());
 
 		// service call
-		lendingService.moveAllStudentsToNextSection(1L);
+		classService.moveAllStudentsToNextSection(1L);
 
 		// Assert students are in next section
 		StudentDao result = studentRepo.findOne(luke.getId());
@@ -372,7 +377,7 @@ public class ClassManagementServiceTest {
 		Assert.assertEquals(new Long(4), result.getSectionkey());
 
 		// now - assert that class is updated
-		model = lendingService.loadClassModelById(model.getClassid());
+		model = classService.loadClassModelById(model.getClassid());
 		Assert.assertNotEquals(new Integer(1977), model.getSchoolGroup()
 				.getSchoolyearbegin());
 	}
@@ -384,26 +389,26 @@ public class ClassManagementServiceTest {
 		ClassModel model = new ClassModel(sgroup);
 		model.setTeachername("big bird");
 		model.fillInTeacherFromEntry();
-		model = lendingService.createClassFromClassModel(model, 1L);
+		model = classService.createClassFromClassModel(model, 1L);
 
 		// add students to class -
-		StudentDao luke = lendingService.addNewStudentToClass("mr ernie", 1L,
+		StudentDao luke = classService.addNewStudentToClass("mr ernie", 1L,
 				model.getSchoolGroup(), 1L);
-		StudentDao obiwan = lendingService.addNewStudentToClass("mr bert", 1L,
+		StudentDao obiwan = classService.addNewStudentToClass("mr bert", 1L,
 				model.getSchoolGroup(), 1L);
-		StudentDao leia = lendingService.addNewStudentToClass("the grouch", 2L,
+		StudentDao leia = classService.addNewStudentToClass("the grouch", 2L,
 				model.getSchoolGroup(), 1L);
-		StudentDao hansolo = lendingService.addNewStudentToClass("the count",
-				3L, model.getSchoolGroup(), 1L);
+		StudentDao hansolo = classService.addNewStudentToClass("the count", 3L,
+				model.getSchoolGroup(), 1L);
 
 		// gather info
 		Long classid = model.getClassid();
 
 		// service call
-		lendingService.clearStudentListsForClient(1L);
+		classService.clearStudentListsForClient(1L);
 
 		// Assert - all classes for client have no students
-		List<SchoolGroupDao> classes = lendingService.getClassesForClient(1L);
+		List<SchoolGroupDao> classes = classService.getClassesForClient(1L);
 		for (SchoolGroupDao sclass : classes) {
 			Assert.assertNull(sclass.getStudents());
 		}
@@ -426,18 +431,18 @@ public class ClassManagementServiceTest {
 		ClassModel model = new ClassModel(sgroup);
 		model.setTeachername("harry potter");
 		model.fillInTeacherFromEntry();
-		model = lendingService.createClassFromClassModel(model, 1L);
+		model = classService.createClassFromClassModel(model, 1L);
 
 		// add students to class -
-		StudentDao luke = lendingService.addNewStudentToClass(
-				"hermione granger", 1L, model.getSchoolGroup(), 1L);
-		StudentDao obiwan = lendingService.addNewStudentToClass("ron weasley",
+		StudentDao luke = classService.addNewStudentToClass("hermione granger",
 				1L, model.getSchoolGroup(), 1L);
-		StudentDao leia = lendingService.addNewStudentToClass("draco malfoy",
-				2L, model.getSchoolGroup(), 1L);
-		StudentDao hansolo = lendingService.addNewStudentToClass(
+		StudentDao obiwan = classService.addNewStudentToClass("ron weasley",
+				1L, model.getSchoolGroup(), 1L);
+		StudentDao leia = classService.addNewStudentToClass("draco malfoy", 2L,
+				model.getSchoolGroup(), 1L);
+		StudentDao hansolo = classService.addNewStudentToClass(
 				"neville longbottom", 3L, model.getSchoolGroup(), 1L);
-		model = lendingService.loadClassModelById(model.getClassid());
+		model = classService.loadClassModelById(model.getClassid());
 
 		// gather info
 		Long classid = model.getClassid();
@@ -448,15 +453,65 @@ public class ClassManagementServiceTest {
 		studentids.add(hansolo.getId());
 
 		// remove students from class
-		lendingService.removeStudentsFromClass(studentids,
+		classService.removeStudentsFromClass(studentids,
 				model.getSchoolGroup(), 1L);
 
 		// service call
-		lendingService.setStudentsAsInactive(studentids, 1L);
+		classService.setStudentsAsInactive(studentids, 1L);
 		// Assert - all students are inactive
 		List<StudentDao> students = studentRepo.findAll(studentids);
 		for (StudentDao st : students) {
 			Assert.assertTrue(!st.getActive());
+		}
+	}
+
+	@Test
+	public void testStudentsForClass() {
+		// create dummy class, and three students
+		SchoolGroupDao sgroup = new SchoolGroupDao();
+		ClassModel model = new ClassModel(sgroup);
+		model.setTeachername("george booth");
+		model.fillInTeacherFromEntry();
+		model = classService.createClassFromClassModel(model, 1L);
+
+		// add students to class -
+		StudentDao luke = classService.addNewStudentToClass("hermione granger",
+				1L, model.getSchoolGroup(), 1L);
+		StudentDao obiwan = classService.addNewStudentToClass("ron weasley",
+				1L, model.getSchoolGroup(), 1L);
+		StudentDao leia = classService.addNewStudentToClass("draco malfoy", 2L,
+				model.getSchoolGroup(), 1L);
+		StudentDao hansolo = classService.addNewStudentToClass(
+				"neville longbottom", 3L, model.getSchoolGroup(), 1L);
+		model = classService.loadClassModelById(model.getClassid());
+
+		// service call
+		List<StudentDao> students = classService.getStudentsForClass(
+				model.getClassid(), 1L);
+
+		// should be not null, and size should be 3
+		Assert.assertNotNull(students);
+		Assert.assertEquals(4, students.size());
+	}
+
+	@Test
+	public void testGetClassInfo() {
+		ClientDao client = clientService.getClientForKey(1L);
+		// get all schoolgroups for client
+		List<SchoolGroupDao> schoolgroups = sgroupRepo
+				.findSchoolGroupByClient(client);
+		// count them
+		int comparison = schoolgroups.size();
+		// service call
+		HashMap<Long, TeacherDao> results = classService
+				.getTeacherByClassForClient(1L);
+		// ensure that equals number of schoolgroups
+		Assert.assertNotNull(results);
+		Assert.assertEquals(comparison, results.size());
+
+		// ensure that every key in map has non-null object
+		for (Long key : results.keySet()) {
+			Assert.assertNotNull(results.get(key));
 		}
 	}
 }

@@ -69,7 +69,7 @@ public class LendingSearchServiceImpl implements LendingSearchService {
 
 		// adding parameters
 		setParametersInQuery(criteria, q, clientid, LendingSearchCriteria.SearchType.CHECKEDOUT);
-		
+
 		// running query
 		List<Tuple> results = q.getResultList();
 		List<LoanRecordDisplay> toreturn = new ArrayList<LoanRecordDisplay>();
@@ -185,6 +185,14 @@ public class LendingSearchServiceImpl implements LendingSearchService {
 					person.<Long> get("schoolgroup").get("id"), param));
 		}
 
+		// do borrowerid
+		if (criteria.getBorrowerid() != null) {
+			ParameterExpression<Long> param = cb.parameter(Long.class,
+					"borrowerid");
+			whereclause.add(cb.equal(
+					person.<Long>get("id"), param));
+		}
+
 		// to lentto
 		if (criteria.getLentToType() != null) {
 			String comparison = "";
@@ -237,6 +245,11 @@ public class LendingSearchServiceImpl implements LendingSearchService {
 		// do forschoolgroup
 		if (criteria.getSchoolgroup() != null) {
 			q.setParameter("schoolgroupid", criteria.getSchoolgroup());
+		}
+
+		// do forschoolgroup
+		if (criteria.getBorrowerid() != null) {
+			q.setParameter("borrowerid", criteria.getBorrowerid());
 		}
 
 		// to lentto - no parameter

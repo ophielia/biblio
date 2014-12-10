@@ -137,5 +137,12 @@ return null;
 		return null;
 	}
 
+	@Override
+	public List<LoanRecordDisplay> getCheckedOutBooksForUser(Long borrowerId,
+			Long clientid) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 
 }

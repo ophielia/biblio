@@ -8,21 +8,22 @@ public class LendingSearchCriteria {
 		public final static Long CHECKEDOUT=1L;
 		public final static Long RETURNED=2L;
 	}
-	
+
 	public final static class LentToType {
 		public final static Long TEACHER=1L;
 		public final static Long STUDENT=2L;
 		public final static Long BOTH=3L;
 	}
-	
+
 	private Date checkedouton;
 	private Date returnedon;
 	private Long forschoolgroup;
 	private Long lentToType;
 	private Boolean overdueonly;
 	private Long clientid;
-	
-	
+	private Long borrowerid;
+
+
 	public Date getCheckedouton() {
 		return checkedouton;
 	}
@@ -61,7 +62,12 @@ public class LendingSearchCriteria {
 		this.clientid = clientid;
 	}
 
-	
-	
+	public Long getBorrowerid() {
+		return borrowerid;
+	}
+	public void setBorrowerid(Long Borrowborroweridrid) {
+		this.borrowerid = borrowerid;
+	}
+
 
 }

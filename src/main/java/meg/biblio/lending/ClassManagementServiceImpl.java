@@ -14,7 +14,6 @@ import meg.biblio.lending.db.TeacherRepository;
 import meg.biblio.lending.db.dao.SchoolGroupDao;
 import meg.biblio.lending.db.dao.StudentDao;
 import meg.biblio.lending.db.dao.TeacherDao;
-import meg.biblio.lending.web.model.ClassInfo;
 import meg.biblio.lending.web.model.ClassModel;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,7 +54,7 @@ public class ClassManagementServiceImpl implements ClassManagementService {
 		// set client in teacher and class
 		sgroup.setClient(client);
 		teacher.setClient(client);
-
+		teacher.setActive(true);
 		// save teacher, and reset in class
 		teacher = teacherRepo.save(teacher);
 		sgroup.setTeacher(teacher);
@@ -68,6 +67,10 @@ public class ClassManagementServiceImpl implements ClassManagementService {
 		// persist
 		sgroup = sgroupRepo.save(sgroup);
 
+		// save class in teacher
+		teacher.setSchoolgroup(sgroup);
+		teacherRepo.save(teacher);
+		
 		// reload model
 		ClassModel newclass = loadClassModelById(sgroup.getId());
 		// return reloaded model
@@ -81,8 +84,7 @@ public class ClassManagementServiceImpl implements ClassManagementService {
 
 		if (schoolgroup != null) {
 			// get active student list
-			List<StudentDao> students = studentRepo.findActiveStudentsForClass(
-					schoolgroup, schoolgroup.getClient(),new Sort(Sort.Direction.ASC, "sectionkey").and(new Sort(Sort.Direction.ASC, "firstname")));
+			List<StudentDao> students = getStudentsForClass(schoolgroup,schoolgroup.getClient());
 			schoolgroup.setStudents(students);
 		}
 
@@ -298,6 +300,7 @@ public class ClassManagementServiceImpl implements ClassManagementService {
 				// delete teacher - set null in class
 				TeacherDao teacher = sgroup.getTeacher();
 				teacher.setClient(null);
+				teacher.setActive(false);
 				sgroup.setTeacher(null);
 				
 				// unassign students - set null in class
@@ -317,7 +320,6 @@ public class ClassManagementServiceImpl implements ClassManagementService {
 				
 				// delete class and teacher
 				sgroupRepo.delete(sgroup);
-				teacherRepo.delete(teacher);
 			}
 		}
 	}
@@ -382,16 +384,58 @@ public class ClassManagementServiceImpl implements ClassManagementService {
 	}
 
 	@Override
-	public List<StudentDao> getStudentsForClass(Object classid, Long clientid) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<StudentDao> getStudentsForClass(Long classid, Long clientid) {
+		// get client id
+		ClientDao client = clientService.getClientForKey(clientid);
+		
+		// get sgroupid
+		SchoolGroupDao sgroup = sgroupRepo.findOne(classid);
+		
+		if (sgroup.getClient().getId().longValue() == clientid.longValue()) {
+			// get students			
+			List<StudentDao> students = getStudentsForClass(sgroup,client);
+					return students;
+		}
+
+		
+		// return students
+		return new ArrayList<StudentDao>();
 	}
 
+
 	@Override
-	public HashMap<Long, ClassInfo> getClassInfoForClient(Long clientid) {
-		// TODO Auto-generated method stub
-		return null;
+	public HashMap<Long, TeacherDao> getTeacherByClassForClient(Long clientid) {
+		// get Client
+		ClientDao client = clientService.getClientForKey(clientid);
+		// make result hash
+		 HashMap<Long, TeacherDao> info = new  HashMap<Long, TeacherDao>();
+		 
+		 // get teachers
+		 List<TeacherDao> teachers = teacherRepo.findActiveTeachersForClient(client);
+		 
+		 // put into hash
+		 for (TeacherDao teacher:teachers) {
+			 // key is schoolgroupid, value is teacher object
+			 Long schoolgroupid = teacher.getSchoolgroup().getId();
+			 info.put(schoolgroupid,teacher);
+		 }
+		return info;
 	}
 	
 
+	
+	
+	
+	private List<StudentDao> getStudentsForClass(SchoolGroupDao sgroup,ClientDao client) {
+		if (sgroup.getClient().getId().longValue() == client.getId().longValue()) {
+			// get students			
+			List<StudentDao> students = studentRepo.findActiveStudentsForClass(sgroup, client, new Sort(Sort.Direction.ASC, "sectionkey").and(new Sort(Sort.Direction.ASC, "firstname")));
+					return students;
+		}
+
+		
+		// return students
+		return new ArrayList<StudentDao>();		
+	}
+	
 }

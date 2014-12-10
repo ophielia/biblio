@@ -2,6 +2,7 @@ package meg.biblio.common;
 
 import junit.framework.Assert;
 import meg.biblio.common.db.RoleRepository;
+import meg.biblio.common.db.dao.ClientDao;
 import meg.biblio.common.db.dao.RoleDao;
 import meg.biblio.common.db.dao.UserLoginDao;
 
@@ -118,5 +119,15 @@ import org.springframework.transaction.annotation.Transactional;
 			match = service.oldPasswordMatches("george", testid);
 			// Assert return value is false
 			Assert.assertFalse(match);
+		}
+		
+		@Test
+		public void testGetClientForUsername() {
+			// service call for ("predefined@email.com") (defined during init)
+			ClientDao client = service.getClientForUsername("predefined@email.com");
+			
+			// assert not null, and id = 1
+			Assert.assertNotNull(client);
+			Assert.assertEquals(new Long(1),client.getId());
 		}
 	}

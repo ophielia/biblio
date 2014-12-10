@@ -40,6 +40,7 @@ privileged aspect StudentDaoDataOnDemand_Roo_DataOnDemand {
         setActive(obj, index);
         setFirstname(obj, index);
         setLastname(obj, index);
+        setPsn_type(obj, index);
         setSectionkey(obj, index);
         return obj;
     }
@@ -57,6 +58,11 @@ privileged aspect StudentDaoDataOnDemand_Roo_DataOnDemand {
     public void StudentDaoDataOnDemand.setLastname(StudentDao obj, int index) {
         String lastname = "lastname_" + index;
         obj.setLastname(lastname);
+    }
+    
+    public void StudentDaoDataOnDemand.setPsn_type(StudentDao obj, int index) {
+        String psn_type = "psn_type_" + index;
+        obj.setPsn_type(psn_type);
     }
     
     public void StudentDaoDataOnDemand.setSectionkey(StudentDao obj, int index) {

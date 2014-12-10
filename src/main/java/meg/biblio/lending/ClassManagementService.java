@@ -6,7 +6,7 @@ import java.util.List;
 
 import meg.biblio.lending.db.dao.SchoolGroupDao;
 import meg.biblio.lending.db.dao.StudentDao;
-import meg.biblio.lending.web.model.ClassInfo;
+import meg.biblio.lending.db.dao.TeacherDao;
 import meg.biblio.lending.web.model.ClassModel;
 
 public interface ClassManagementService {
@@ -52,9 +52,9 @@ public interface ClassManagementService {
 
 	void setStudentsAsInactive(List<Long> inactivelist, Long clientid);
 
-	List<StudentDao> getStudentsForClass(Object classid, Long clientid);
+	List<StudentDao> getStudentsForClass(Long classid, Long clientid);
 
-	HashMap<Long, ClassInfo> getClassInfoForClient(Long clientid);
+	HashMap<Long, TeacherDao> getTeacherByClassForClient(Long clientid);
 
 
 }

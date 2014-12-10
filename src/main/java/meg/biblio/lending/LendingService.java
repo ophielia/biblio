@@ -17,5 +17,8 @@ public interface LendingService {
 
 	List<LoanRecordDisplay> getCheckedOutBooksForClass(Object classid);
 
+	List<LoanRecordDisplay> getCheckedOutBooksForUser(Long borrowerId,
+			Long clientid);
+
 
 }
