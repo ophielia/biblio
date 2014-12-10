@@ -30,6 +30,10 @@ public class LendingServiceImpl implements LendingService {
 	@Autowired
 	ClientService clientService;
 	
+
+	@Autowired
+	LendingSearchService lendingSearch;
+	
 	@Autowired
 	BookRepository bookRepo;
 	
@@ -132,16 +136,28 @@ return null;
 	}
 
 	@Override
-	public List<LoanRecordDisplay> getCheckedOutBooksForClass(Object classid) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<LoanRecordDisplay> getCheckedOutBooksForClass(Long classid, Long clientid) {
+		// build criteria
+		LendingSearchCriteria criteria = new LendingSearchCriteria();
+		criteria.setSchoolgroup(classid);
+
+		// search for loan records
+		List<LoanRecordDisplay> checkedout = lendingSearch.findLoanRecordsByCriteria(criteria, clientid);
+		// return list
+		return checkedout;
 	}
 
 	@Override
 	public List<LoanRecordDisplay> getCheckedOutBooksForUser(Long borrowerId,
 			Long clientid) {
-		// TODO Auto-generated method stub
-		return null;
+		// build criteria
+		LendingSearchCriteria criteria = new LendingSearchCriteria();
+		criteria.setBorrowerid(borrowerId);
+
+		// search for loan records
+		List<LoanRecordDisplay> checkedout = lendingSearch.findLoanRecordsByCriteria(criteria, clientid);
+		// return list
+		return checkedout;
 	}
 
 

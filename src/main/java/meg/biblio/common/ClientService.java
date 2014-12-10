@@ -24,4 +24,6 @@ public interface ClientService {
 	public ClientDao getCurrentClient(Principal principal);
 
 	ClientDao getClientForKey(Long key);
+
+	public Long getTestClientId();
 }

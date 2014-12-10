@@ -65,7 +65,7 @@ public class LendingSearchCriteria {
 	public Long getBorrowerid() {
 		return borrowerid;
 	}
-	public void setBorrowerid(Long Borrowborroweridrid) {
+	public void setBorrowerid(Long borrowerid) {
 		this.borrowerid = borrowerid;
 	}
 

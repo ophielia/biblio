@@ -6,10 +6,7 @@ Immediate Roadmap
 in checkout and return book tests - check dates (with strings??)
 
 test and implement new backend methods....
-CMSI - getStudentsForClass test / implement / test
-LSI - getCheckedOutBooksForClass test / implement / test
-LoginSI - getClientForUsername test / implementt / test
-CMSI getClassInfoForClient test / implement / test
+
 
 begin putting together pages, and wiring to controller
 
@@ -73,12 +70,8 @@ check cancel throughout class page
 
 ---- begin commit changes ----
 
-done - begin work on sqls
-done - 	then - LendingSearchService, Lending display objects, LendingSearchCriteria
-done - add Where clause to LSS
-done - mockup of controller to flesh out LS calls
-done - -- for querying type --- in person, define type @Column(name="ENTITY_TYPE",insertable=false,updatable=false)
-done - -- puzzle - multiple authors doesn't lead to multiple lines....
+done -	LSI - getCheckedOutBooksForClass test / implement / test
+done - 	LSI - getCheckedOutBooksForUser test / implement / test
 
 
 ---- end commit changes ----
@@ -94,6 +87,15 @@ done - create LendingRecordDisplay
 done - create sql LendingRecordDisplay 
 done - create LendingSearchCriteria
 done - trouble with authors and books - multiple authors will produce multiple lines for loan record.  Solve this by making it into a tuple - lrd, book.then postprocess query results adding book to lrd.  ugly, but no more time for this!!!add isteacher to sql, LRD
+done - begin work on sqls
+done - 	then - LendingSearchService, Lending display objects, LendingSearchCriteria
+done - add Where clause to LSS
+done - mockup of controller to flesh out LS calls
+done - -- for querying type --- in person, define type @Column(name="ENTITY_TYPE",insertable=false,updatable=false)
+done - -- puzzle - multiple authors doesn't lead to multiple lines....
+done -   	CMSI - getStudentsForClass test / implement / test
+done -	LoginSI - getClientForUsername test / implementt / test
+done -	CMSI getClassInfoForClient test / implement / test
 
 
 

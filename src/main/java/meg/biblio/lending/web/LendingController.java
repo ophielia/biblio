@@ -64,7 +64,7 @@ public class LendingController {
 		
 		// get list of checkedout books for the currentclass
 		List<LoanRecordDisplay> checkedout = lendingService
-				.getCheckedOutBooksForClass(model.getClassid());
+				.getCheckedOutBooksForClass(model.getClassid(), clientid);
 		model.setCheckedOutList(checkedout);
 
 		populateLendingModel(model, uiModel);
@@ -76,13 +76,14 @@ public class LendingController {
 	public String changeReturnClass(LendingModel model, Model uiModel,
 			HttpServletRequest httpServletRequest, Principal principal) {
 		ClientDao client = clientService.getCurrentClient(principal);
+		Long clientid = client.getId();
 		// pathparam to be set with PathParam
 		Long classid = 1L;
 		// set new classid in model
 		model.setClassid(classid);
 		// get list of checkedout books for the new class
 		List<LoanRecordDisplay> checkedout = lendingService
-				.getCheckedOutBooksForClass(model.getClassid());
+				.getCheckedOutBooksForClass(model.getClassid(), clientid);
 		model.setCheckedOutList(checkedout);
 
 		populateLendingModel(model, uiModel);
@@ -103,7 +104,7 @@ public class LendingController {
 
 		// repopulate checkedout list
 		List<LoanRecordDisplay> checkedout = lendingService
-				.getCheckedOutBooksForClass(model.getClassid());
+				.getCheckedOutBooksForClass(model.getClassid(), clientid);
 		model.setCheckedOutList(checkedout);
 
 		populateLendingModel(model, uiModel);

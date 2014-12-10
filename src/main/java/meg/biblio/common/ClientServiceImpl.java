@@ -93,4 +93,11 @@ LoginService loginService;
 		return client;
 	}
 
+
+	@Override
+	public Long getTestClientId() {
+		// make strong for live....
+		return 1L;
+	}
+
 }
