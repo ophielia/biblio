@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page" 
+xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" 
+xmlns:c="http://java.sun.com/jsp/jstl/core" 
+xmlns:spring="http://www.springframework.org/tags" 
+xmlns:form="http://www.springframework.org/tags/form" 
+xmlns:fmt="http://java.sun.com/jsp/jstl/fmt" 
+xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    
+<spring:message code="label_classpl" htmlEscape="false" var="lclasses"/>
+<spring:message code="global_menu_listof"  arguments="${lclasses}" htmlEscape="false" var="ltitle"/>
+
+
+
+<h1>Summary of Checked Out Books</h1>
+<br></br>
+<table>
+<thead>
+<tr>
+<td>Borrower</td>
+<td>Class</td>
+<td>Title</td>
+<td>Author</td>
+<td>Checked Out</td>
+<td>Due Date</td>
+
+</tr>
+</thead>
+<tbody>
+<c:forEach items="${checkedoutbooks}" var="checkedout">
+<tr>
+<td>${checkedout.borrowerfn} ${checkedout.borrowerln} </td>
+<td>${checkedout.borrowerfn} ${checkedout.borrowerln} </td>
+<td>${checkedout.booktitle} </td>
+<td>${checkedout.author} </td>
+<td>${checkedout.checkedout} </td>
+<td>${checkedout.duedate} </td>
+
+</tr>
+</c:forEach>
+
+
+</tbody>
+
+</table>
+
+
+</div>
+
+

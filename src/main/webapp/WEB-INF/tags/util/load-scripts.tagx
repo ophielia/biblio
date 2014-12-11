@@ -5,6 +5,7 @@
   <spring:theme code="styleSheet" var="roo_css" />
   <spring:url value="/${roo_css}" var="roo_css_url" />
   <spring:url value="/resources/styles/hmenu.css" var="hmenu_css_url" />
+  <spring:url value="/resources/styles/mystandard.css" var="mycss" />
 
   
     <spring:url value="http://yandex.st/dojo/1.9.1/dojo/dojo.js" var="dojo_url" />
@@ -19,6 +20,7 @@
   <link rel="stylesheet" type="text/css" href="${tundra_url}" />
   <link rel="stylesheet" type="text/css" media="screen" href="${roo_css_url}" />
    <link rel="stylesheet" type="text/css" media="screen" href="${hmenu_css_url}" />
+   <link rel="stylesheet" type="text/css" media="screen" href="${mycss}" />
   <link rel="SHORTCUT ICON" href="${favicon}" />
 
   <!-- Get the user local from the page context (it was set by Spring MVC's locale resolver) -->

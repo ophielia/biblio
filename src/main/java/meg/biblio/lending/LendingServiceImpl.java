@@ -160,5 +160,42 @@ return null;
 		return checkedout;
 	}
 
+	@Override
+	public int getLendLimitForBorrower(Long borrowerId, Long clientid) {
+		// get client
+		ClientDao client = clientService.getClientForKey(clientid);
+		// get borrower
+		PersonDao person = personRepo.findOne(borrowerId);
+		boolean isteacher = (person!=null && person instanceof TeacherDao) ;
+		
+		if (isteacher) {
+			return client.getTeacherCOLimit().intValue();
+		}
+		return client.getStudentCOLimit();
+	}
+
+	@Override
+	public List<LoanRecordDisplay> getOverdueBooksForClient(Long clientid) {
+		// build criteria
+		LendingSearchCriteria criteria = new LendingSearchCriteria();
+		criteria.setOverdueOnly(true);
+		
+		// search for loan records
+		List<LoanRecordDisplay> overdue = lendingSearch.findLoanRecordsByCriteria(criteria, clientid);
+		// return list
+		return overdue;
+	}
+
+	@Override
+	public List<LoanRecordDisplay> getCheckedOutBooksForClient(Long clientid) {
+		// build criteria
+		LendingSearchCriteria criteria = new LendingSearchCriteria();
+		
+		// search for loan records
+		List<LoanRecordDisplay> checkedout = lendingSearch.findLoanRecordsByCriteria(criteria, clientid);
+		// return list
+		return checkedout;
+	}
+
 
 }

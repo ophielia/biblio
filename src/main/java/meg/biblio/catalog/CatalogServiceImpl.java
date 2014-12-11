@@ -27,6 +27,7 @@ import meg.biblio.catalog.db.dao.SubjectDao;
 import meg.biblio.catalog.web.model.BookModel;
 import meg.biblio.common.ClientService;
 import meg.biblio.common.SelectKeyService;
+import meg.biblio.common.db.dao.ClientDao;
 import meg.biblio.search.SearchService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -474,7 +475,6 @@ public class CatalogServiceImpl implements CatalogService {
 					String searchid = detail.getSearchserviceid();
 
 					// query for volumeinfo
-					Volumes volumes = null;
 					final Books books = new Books.Builder(
 							GoogleNetHttpTransport.newTrustedTransport(),
 							jsonFactory, null)
@@ -1263,6 +1263,17 @@ public class CatalogServiceImpl implements CatalogService {
 		
 		BookModel toreturn = loadBookModel(book.getId());
 		return toreturn;
+	}
+
+	@Override
+	public BookDao findBookByClientBookId(String bookid, ClientDao client) {
+		// call repository
+		List<BookDao> books = bookRepo.findBookByClientAssignedId(bookid.trim(), client.getId());
+		// return results
+		if (books!=null && books.size()>0) {
+			return books.get(0);
+		}
+		return null;
 	}
 
 

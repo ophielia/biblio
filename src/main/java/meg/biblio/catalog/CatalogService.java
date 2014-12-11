@@ -11,6 +11,7 @@ import meg.biblio.catalog.db.dao.ClassificationDao;
 import meg.biblio.catalog.db.dao.FoundDetailsDao;
 import meg.biblio.catalog.db.dao.PublisherDao;
 import meg.biblio.catalog.web.model.BookModel;
+import meg.biblio.common.db.dao.ClientDao;
 
 public interface CatalogService {
 
@@ -77,6 +78,8 @@ public interface CatalogService {
 	void assignStatusToBooks(Long statusupdate, List<Long> toupdate);
 
 	BookModel updateCatalogEntryFromBookModel(Long clientkey, BookModel model);
+
+	 BookDao findBookByClientBookId(String bookid, ClientDao client) ;
 
 
 

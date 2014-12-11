@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page" 
+xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" 
+xmlns:c="http://java.sun.com/jsp/jstl/core" 
+xmlns:spring="http://www.springframework.org/tags" 
+xmlns:form="http://www.springframework.org/tags/form" 
+xmlns:fmt="http://java.sun.com/jsp/jstl/fmt" 
+xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    
+<spring:message code="label_classpl" htmlEscape="false" var="lclasses"/>
+<spring:message code="global_menu_listof"  arguments="${lclasses}" htmlEscape="false" var="ltitle"/>
+
+<style>
+</style>
+
+<spring:url value="/lending/return" var="studentactionurl"/>
+<script type="text/javascript">
+ require([
+          'dojo/dom',"dojo/on","dijit/TooltipDialog", "dijit/popup",
+          'dojo/domReady!'
+      ], function (dom,on,TooltipDialog,popup) {
+	 
+	 	function getIndex(prefix,text) {
+			// gets a substring of the text, starting at the char after the length of the prefix
+			var stripped = text.substr(prefix.length);
+			return stripped;
+		} 
+
+	   	
+		// wire up sort buttons
+		dojo.query(".selectspan").forEach(function(node) {
+			var id = node.id;
+
+			on(dojo.byId(id), 'click', function(event) {
+				clickedid = event.currentTarget.id;
+				classid = getIndex('selCl', clickedid);
+		  		  var form = dojo.byId('classlist');
+		  		  form.action = "${studentactionurl}/selectclass/" + classid;
+		  		  form.method="post";
+		  		  form.submit();
+			});
+		});	   	
+	   	
+
+	   	form = dojo.byId("classlist");
+	   	on(form, "input[id^='rtn']:click", function(event){
+      	  //alert('yippee');
+	   		clickedid = event.srcElement.id;
+  		  brid = getIndex('rtn',clickedid);
+  		  var form = dojo.byId('classlist');
+  		  form.action = "${studentactionurl}/" + brid;
+  		  form.method="post";
+  		  form.submit();
+	   	});
+	   	
+	   	
+
+	   	
+
+    	
+    	
+	});
+ </script>
+
+<h1>RETuRN</h1>
+<br></br>
+<div  style="text-align: center;" >
+<c:forEach items="${lendingModel.classinfo}" var="tchr">
+<c:set var="selectclass" value="selectspan" />
+<c:if test="${tchr.key eq lendingModel.classid}">
+<c:set var="selectclass" value="selectspanactive" />
+</c:if>
+<span class="${selectclass}" id="selCl${tchr.key}">Class of ${tchr.value.firstname}</span>
+</c:forEach>
+
+</div>
+<spring:url value="/lending/checkout" var="actionurl"/>
+<form:form action="${actionurl}" id="classlist" method="GET" modelAttribute="lendingModel">
+
+<table>
+<thead>
+<tr>
+<td>Name</td>
+<td>Title</td>
+<td>Author</td>
+
+<td></td>
+</tr>
+</thead>
+<tbody>
+<c:forEach items="${lendingModel.checkedOutList}" var="checkedout">
+<tr>
+<td>${checkedout.borrowerfn} ${checkedout.borrowerln} </td>
+<td>${checkedout.booktitle} </td>
+<td>${checkedout.author} </td>
+
+<td><input id="rtn${checkedout.loanrecordid}" type="submit" value="return" /></td>
+</tr>
+</c:forEach>
+
+
+</tbody>
+
+</table>
+<spring:url value="/lending/checkout" var="checkouturl"/>
+<div style="float:right"><a class="linkbutton" href="${checkouturl }">Go To Checkout</a></div>
+<div style="clear:both">  </div>
+</form:form>
+
+</div>
+
+

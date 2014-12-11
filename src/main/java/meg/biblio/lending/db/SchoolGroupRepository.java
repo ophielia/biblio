@@ -2,7 +2,6 @@ package meg.biblio.lending.db;
 import java.util.List;
 
 import meg.biblio.common.db.dao.ClientDao;
-import meg.biblio.common.db.dao.UserLoginDao;
 import meg.biblio.lending.db.dao.SchoolGroupDao;
 
 import org.springframework.data.jpa.repository.Query;

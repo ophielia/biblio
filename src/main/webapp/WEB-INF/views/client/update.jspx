@@ -11,5 +11,7 @@
         <field:simple field="users" id="c_meg_biblio_common_db_dao_ClientDao_users" messageCode="entity_reference_not_managed" messageCodeAttribute="User Login Dao" z="b6CHY9OmnviUMFThc3ixl5d2MJo="/>
         <field:input field="studentcheckouttime" id="c_meg_biblio_common_db_dao_ClientDao_studentcheckouttime" validationMessageCode="field_invalid_integer" z="YCnGiaW28Q1l/JAB6oazmhoin7g="/>
         <field:input field="teachercheckouttime" id="c_meg_biblio_common_db_dao_ClientDao_teachercheckouttime" validationMessageCode="field_invalid_integer" z="mIvbiYG1P3nEMBqcUhTCSuibY+k="/>
+        <field:input field="studentCOLimit" id="c_meg_biblio_common_db_dao_ClientDao_studentCOLimit" validationMessageCode="field_invalid_integer" z="JfKf2kYy5SAO7ze5Ekk05S+tvlY="/>
+        <field:input field="teacherCOLimit" id="c_meg_biblio_common_db_dao_ClientDao_teacherCOLimit" validationMessageCode="field_invalid_integer" z="RBKEEV01O2qzIsiAPbidLkUDa7U="/>
     </form:update>
 </div>

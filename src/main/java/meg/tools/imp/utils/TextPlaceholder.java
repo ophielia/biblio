@@ -4,7 +4,7 @@ import java.util.Hashtable;
 
 public class TextPlaceholder implements Placeholder {
 
-	Hashtable hash = new Hashtable();
+	Hashtable<String, Object> hash = new Hashtable<String, Object>();
 
 	public void setField(int i, Object field) {
 		String key = "field" + i;

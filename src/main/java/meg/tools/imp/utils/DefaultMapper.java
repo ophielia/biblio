@@ -38,9 +38,9 @@ public class DefaultMapper implements Mapper {
 		// for each field mapping, set field
 		if (mappings != null) {
 			// put object methods in map
-			Class objectclass = mapped.getClass();
+			Class<? extends Object> objectclass = mapped.getClass();
 			Method[] methods = objectclass.getMethods();
-			Hashtable methodmap = new Hashtable();
+			Hashtable<String, Method> methodmap = new Hashtable<String, Method>();
 			for (int i = 0; i < methods.length; i++) {
 				methodmap.put(methods[i].getName(), methods[i]);
 			}
@@ -65,10 +65,10 @@ public class DefaultMapper implements Mapper {
 	 * @param methods
 	 */
 	private void setFieldInObject(Object mapped, Placeholder placeholder,
-			FieldMapping field, Hashtable methods) {
+			FieldMapping field, Hashtable<String, Method> methods) {
 		// get setter method
 		String methodname = field.getSetterMethod();
-		Method method = (Method) methods.get(methodname);
+		Method method = methods.get(methodname);
 
 		// determine parameter type
 		Class[] types = method.getParameterTypes();

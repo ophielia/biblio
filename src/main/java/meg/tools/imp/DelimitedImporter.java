@@ -13,7 +13,6 @@ import meg.tools.imp.utils.AbstractImporter;
 import meg.tools.imp.utils.FieldFormat;
 import meg.tools.imp.utils.Placeholder;
 import meg.tools.imp.utils.TextPlaceholder;
-import meg.tools.imp.utils.FieldFormat.Type;
 
 
 public class DelimitedImporter extends AbstractImporter {

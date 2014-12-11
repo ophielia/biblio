@@ -34,7 +34,9 @@ privileged aspect ClientDaoDataOnDemand_Roo_DataOnDemand {
         setImportfileconfig(obj, index);
         setImportmapconfig(obj, index);
         setName(obj, index);
+        setStudentCOLimit(obj, index);
         setStudentcheckouttime(obj, index);
+        setTeacherCOLimit(obj, index);
         setTeachercheckouttime(obj, index);
         return obj;
     }
@@ -64,9 +66,19 @@ privileged aspect ClientDaoDataOnDemand_Roo_DataOnDemand {
         obj.setName(name);
     }
     
+    public void ClientDaoDataOnDemand.setStudentCOLimit(ClientDao obj, int index) {
+        Integer studentCOLimit = new Integer(index);
+        obj.setStudentCOLimit(studentCOLimit);
+    }
+    
     public void ClientDaoDataOnDemand.setStudentcheckouttime(ClientDao obj, int index) {
         Integer studentcheckouttime = new Integer(index);
         obj.setStudentcheckouttime(studentcheckouttime);
+    }
+    
+    public void ClientDaoDataOnDemand.setTeacherCOLimit(ClientDao obj, int index) {
+        Integer teacherCOLimit = new Integer(index);
+        obj.setTeacherCOLimit(teacherCOLimit);
     }
     
     public void ClientDaoDataOnDemand.setTeachercheckouttime(ClientDao obj, int index) {

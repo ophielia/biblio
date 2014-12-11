@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page" 
+xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" 
+xmlns:c="http://java.sun.com/jsp/jstl/core" 
+xmlns:spring="http://www.springframework.org/tags" 
+xmlns:form="http://www.springframework.org/tags/form" 
+xmlns:fmt="http://java.sun.com/jsp/jstl/fmt" 
+xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    
+<spring:message code="label_classpl" htmlEscape="false" var="lclasses"/>
+<spring:message code="global_menu_listof"  arguments="${lclasses}" htmlEscape="false" var="ltitle"/>
+
+
+<spring:url value="/lending/checkout" var="studentactionurl"/>
+
+<h1>${ltitle}</h1>
+<br></br>
+
+<spring:url value="/lending/selectbook" var="actionurl"/>
+
+<h2>${lendingModel.book.title} checked out 
+for ${lendingModel.borrowerfn} ${lendingModel.borrowerln}</h2>
+
+<c:if test="${!lendingModel.borrowerReachedLimit}" >
+<spring:url value="/lending/selectbook" var="morecheckouturl"/>
+<a href="${morecheckouturl }" >Select another book for ${lendingModel.borrowerfn} ${lendingModel.borrowerln}</a>
+</c:if>
+<spring:url value="/lending/checkout" var="continueurl"/>
+<a href="${continueurl}" >Continue Class Checkout</a>
+
+
+</div>
+
+

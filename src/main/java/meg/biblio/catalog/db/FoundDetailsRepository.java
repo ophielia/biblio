@@ -2,7 +2,6 @@ package meg.biblio.catalog.db;
 import java.util.List;
 
 import meg.biblio.catalog.db.dao.FoundDetailsDao;
-import meg.biblio.catalog.db.dao.PublisherDao;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

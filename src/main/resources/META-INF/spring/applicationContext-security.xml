@@ -29,9 +29,9 @@
         	            default-target-url="/dashboard" />
         <logout logout-url="/resources/j_spring_security_logout" />
         <!-- Configure these elements to secure URIs in your application -->
-        <intercept-url pattern="/choices/**" access="hasRole('ROLE_ADMIN')" />
-        <intercept-url pattern="/member/**" access="isAuthenticated()" />
-        <intercept-url pattern="/resources/**" access="permitAll" />
+        	<intercept-url pattern="/choices/**" access="hasRole('ROLE_ADMIN')" />
+        <intercept-url pattern="/lending/**" access="isAuthenticated()" />
+        	<intercept-url pattern="/resources/**" access="permitAll" />
         <intercept-url pattern="/login/**" access="permitAll" />
         <intercept-url pattern="/**" access="permitAll" />
     </http>

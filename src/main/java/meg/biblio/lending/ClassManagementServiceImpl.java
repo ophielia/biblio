@@ -15,6 +15,7 @@ import meg.biblio.lending.db.dao.SchoolGroupDao;
 import meg.biblio.lending.db.dao.StudentDao;
 import meg.biblio.lending.db.dao.TeacherDao;
 import meg.biblio.lending.web.model.ClassModel;
+import meg.biblio.lending.web.model.TeacherInfo;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -86,6 +87,8 @@ public class ClassManagementServiceImpl implements ClassManagementService {
 			// get active student list
 			List<StudentDao> students = getStudentsForClass(schoolgroup,schoolgroup.getClient());
 			schoolgroup.setStudents(students);
+			List<TeacherDao> teachers = teacherRepo.findActiveTeachersForClientAndClass(schoolgroup.getClient(), schoolgroup);
+			schoolgroup.setTeacherlist(teachers);
 		}
 
 		ClassModel loadclass = new ClassModel(schoolgroup);
@@ -267,7 +270,16 @@ public class ClassManagementServiceImpl implements ClassManagementService {
 	public List<SchoolGroupDao> getClassesForClient(Long clientkey) {
 		ClientDao client = clientService.getClientForKey(clientkey);
 	
-		return sgroupRepo.findSchoolGroupByClient(client);
+		List<SchoolGroupDao> classes =  sgroupRepo.findSchoolGroupByClient(client);
+		
+		for (SchoolGroupDao sclass:classes) {
+			List<TeacherDao> teachers = teacherRepo.findActiveTeachersForClientAndClass(client,sclass);
+			sclass.setTeacherlist(teachers);
+			List<StudentDao> students = getStudentsForClass(sclass,client);
+			sclass.setStudents(students);
+			
+		}
+		return classes;
 	}
 
 	@Override
@@ -404,11 +416,11 @@ public class ClassManagementServiceImpl implements ClassManagementService {
 
 
 	@Override
-	public HashMap<Long, TeacherDao> getTeacherByClassForClient(Long clientid) {
+	public HashMap<Long,TeacherInfo> getTeacherByClassForClient(Long clientid) {
 		// get Client
 		ClientDao client = clientService.getClientForKey(clientid);
 		// make result hash
-		 HashMap<Long, TeacherDao> info = new  HashMap<Long, TeacherDao>();
+		 HashMap<Long, TeacherInfo> info = new  HashMap<Long, TeacherInfo>();
 		 
 		 // get teachers
 		 List<TeacherDao> teachers = teacherRepo.findActiveTeachersForClient(client);
@@ -417,7 +429,8 @@ public class ClassManagementServiceImpl implements ClassManagementService {
 		 for (TeacherDao teacher:teachers) {
 			 // key is schoolgroupid, value is teacher object
 			 Long schoolgroupid = teacher.getSchoolgroup().getId();
-			 info.put(schoolgroupid,teacher);
+			 TeacherInfo tinfo = new TeacherInfo(teacher);
+			 info.put(schoolgroupid,tinfo);
 		 }
 		return info;
 	}

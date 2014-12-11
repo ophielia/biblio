@@ -63,6 +63,10 @@ public class LoanRecordDisplay {
 		return this.book.getTitle();
 	}
 
+	public String getBookclientid() {
+		return this.book.getClientbookid();
+	}
+
 
 	public String getAuthor() {
 		return this.book.getAuthorsAsString();

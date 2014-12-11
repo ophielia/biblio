@@ -12,6 +12,7 @@ import meg.biblio.catalog.db.dao.ArtistDao;
 import meg.biblio.catalog.db.dao.BookDao;
 import meg.biblio.catalog.db.dao.PublisherDao;
 import meg.biblio.common.ClientService;
+import meg.biblio.common.db.ClientRepository;
 import meg.biblio.common.db.dao.ClientDao;
 import meg.biblio.lending.db.LoanHistoryRepository;
 import meg.biblio.lending.db.LoanRecordRepository;
@@ -20,6 +21,7 @@ import meg.biblio.lending.db.dao.LoanRecordDao;
 import meg.biblio.lending.db.dao.PersonDao;
 import meg.biblio.lending.db.dao.SchoolGroupDao;
 import meg.biblio.lending.db.dao.StudentDao;
+import meg.biblio.lending.db.dao.TeacherDao;
 import meg.biblio.lending.web.model.ClassModel;
 import meg.biblio.lending.web.model.LoanRecordDisplay;
 import meg.biblio.search.BookSearchCriteria;
@@ -50,6 +52,8 @@ public class LendingServiceTest {
 	@Autowired
 	BookRepository bookRepo;
 	@Autowired
+	ClientRepository clientRepo;	
+	@Autowired
 	LoanRecordRepository lrRepo;
 	@Autowired
 	LoanHistoryRepository lhRepo;	
@@ -60,9 +64,9 @@ public class LendingServiceTest {
 	private Long classid;
 	private Long student1id;
 	private Long student2id;
-	private Long clientid;
 	private Long student3id;
-	
+	private Long student4id;
+	private Long clientid;
 	@Before
 	public void initData() {
 		// create books to checkout and return
@@ -104,6 +108,7 @@ public class LendingServiceTest {
 		student3id = leia.getId();
 		StudentDao hansolo = classService.addNewStudentToClass(
 				"neville longbottom", 3L, model.getSchoolGroup(), 1L);
+		student4id = hansolo.getId();
 		model = classService.loadClassModelById(model.getClassid());	
 		classid = model.getClassid();
 	}
@@ -258,4 +263,82 @@ public class LendingServiceTest {
 		Assert.assertTrue(bookids.contains(bookid3));
 		Assert.assertTrue(bookids.contains(bookid2));
 	}	
+	
+	@Test
+	public void testLendingLimit() {
+		// set lending limits for client
+		ClientDao client = clientService.getClientForKey(clientid);
+		client.setStudentCOLimit(1);
+		client.setTeacherCOLimit(50);
+		clientRepo.save(client);
+		// get teacher for schoolgroup
+		ClassModel cmodel = classService.loadClassModelById(classid);
+		TeacherDao teacher = cmodel.getTeacher();
+		// get student for schoolgroup
+		List<StudentDao> students = cmodel.getStudents();
+		StudentDao student = students.get(0);
+		
+		// service call - teacher
+		int limit = lendingService.getLendLimitForBorrower(teacher.getId(), clientid);
+		
+		// should be 50
+		Assert.assertEquals(50,limit);
+		
+		// service call - student
+		limit = lendingService.getLendLimitForBorrower(student.getId(), clientid);
+		
+		// should be 1
+		Assert.assertEquals(1,limit);
+	}
+	
+	@Test
+	public void testGetOverdue() {
+		// make one overdue book - checkout book and then fiddle with db.
+		LoanRecordDao makeoverdue = lendingService.checkoutBook(bookid3, student3id, clientid);
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.YEAR,-1);
+		Date fiddledate = cal.getTime();
+		makeoverdue.setDuedate(fiddledate);
+		makeoverdue.setCheckoutdate(fiddledate);
+		lrRepo.save(makeoverdue);
+		Long lrid = makeoverdue.getId();
+		
+		// get overdue list
+		List<LoanRecordDisplay> results = lendingService.getOverdueBooksForClient(clientid);
+
+		// ensure that size >0 and student/ book appear at leas once in list
+		Assert.assertNotNull(results);
+		Assert.assertTrue(results.size()>0);
+		boolean lrfound = false;
+		for (LoanRecordDisplay lr:results) {
+			if (lr.getLoanrecordid().longValue()==lrid.longValue()) {
+				lrfound = true;
+				break;
+			}
+		}
+		Assert.assertTrue(lrfound);
+	}	
+	
+	@Test
+	public void testGetCheckedOutForClient() {
+		// make one overdue book - checkout book and then fiddle with db.
+		LoanRecordDao makeoverdue = lendingService.checkoutBook(bookid1, student4id, clientid);
+		Long lrid = makeoverdue.getId();
+		
+		// get overdue list
+		List<LoanRecordDisplay> results = lendingService.getCheckedOutBooksForClient(clientid);
+
+		// ensure that size >0 and student/ book appear at leas once in list
+		Assert.assertNotNull(results);
+		Assert.assertTrue(results.size()>0);
+		boolean lrfound = false;
+		for (LoanRecordDisplay lr:results) {
+			if (lr.getLoanrecordid().longValue()==lrid.longValue()) {
+				lrfound = true;
+				break;
+			}
+		}
+		Assert.assertTrue(lrfound);
+	}		
+		
 }

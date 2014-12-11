@@ -3,7 +3,6 @@ import java.util.List;
 
 import meg.biblio.common.db.dao.ClientDao;
 import meg.biblio.lending.db.dao.LoanHistoryDao;
-import meg.biblio.lending.db.dao.LoanRecordDao;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

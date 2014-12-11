@@ -73,4 +73,20 @@ privileged aspect ClientDao_Roo_JavaBean {
         this.teachercheckouttime = teachercheckouttime;
     }
     
+    public Integer ClientDao.getStudentCOLimit() {
+        return this.studentCOLimit;
+    }
+    
+    public void ClientDao.setStudentCOLimit(Integer studentCOLimit) {
+        this.studentCOLimit = studentCOLimit;
+    }
+    
+    public Integer ClientDao.getTeacherCOLimit() {
+        return this.teacherCOLimit;
+    }
+    
+    public void ClientDao.setTeacherCOLimit(Integer teacherCOLimit) {
+        this.teacherCOLimit = teacherCOLimit;
+    }
+    
 }

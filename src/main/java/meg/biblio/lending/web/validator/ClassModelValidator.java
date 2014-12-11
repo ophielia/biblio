@@ -4,7 +4,6 @@ import meg.biblio.lending.web.model.ClassModel;
 
 import org.springframework.stereotype.Component;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.ValidationUtils;
 
 @Component
 public class ClassModelValidator {

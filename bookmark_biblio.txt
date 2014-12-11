@@ -3,61 +3,14 @@ Branch - lending USECASES 	4	   Checkout for class
 							7	   Printouts for day
 
 Immediate Roadmap
-in checkout and return book tests - check dates (with strings??)
 
-test and implement new backend methods....
-
-
-begin putting together pages, and wiring to controller
-
-
-Checkout
-    Lending model
-           School group
-           Students
-           Borrowerid
-           Borrower object
-           Bookid 
-           Book object
-           Toreturnlist 
-           Loan record id
-           Orderby
-
-   Lendingvalidator
-           User isn't beyond checkout limit
-           Book is findable
-           Book is already checkedout???
-
-
-   Lending service
-            done - Checkout book bookid, borrowerid, client id 
-            done - Return book - loanrecordid, clientid
-            passedcheckoutlimit userid
-
-
-
-  Lending search service
-          Lendingsearchcriteria
-                  Type- checked out, returned, overdue
-                  Checkedouton date
-                  Returnedon date
-                  For class schoolgroup
-                  Checkedoutto teacher or student or both
-
-          Loanrecorddisplay. Name first name book title author shelf class checkout date due date overdue flag teachername is student, bookid, personid, loanrecordid
-           Loanhistorydisplay. Name, firstname, title, author, shelf class, checkedot, due date, return date, overdue flag, teachername, school year, isstudent,bookid,personid,loanhistoryid
-
-
-
-Class checkout page
-Class return page
-Summary page
-Overdue book list
-Checked out book list
-
-
-NOTE - don't delete teachers - set to inactive!! used in loanhistory...
-
+clear book / bookid after checkout
+clear bookid after book is found
+validations - borrower, book
+messages for checkout / remove checkout confirmation page
+make the pages polite (and bilingual)
+oh- update status of book upon checkout and return
+add checkout for teacher
 
 
 
@@ -67,12 +20,22 @@ still open widget - pass in empty select text
 lock down site....
 fill in new client service from request  - principal
 check cancel throughout class page
+plus, REALLY long sessions
 
 ---- begin commit changes ----
 
-done -	LSI - getCheckedOutBooksForClass test / implement / test
-done - 	LSI - getCheckedOutBooksForUser test / implement / test
-
+done - test and implement new backend methods....
+done - begin putting together pages, and wiring to controller
+done - beginning - front end. first pass ugly - blasting through pages, and then prettify
+done - checkout page - works
+done - select student - works
+done - select book - works
+done - confirm checkout - (remove later, but) works
+done - checkout - works
+done - return pages
+done - first pass checkedout
+done - first pass overdue summary
+done -  graceful exit when session has timed out
 
 ---- end commit changes ----
 
@@ -96,6 +59,12 @@ done - -- puzzle - multiple authors doesn't lead to multiple lines....
 done -   	CMSI - getStudentsForClass test / implement / test
 done -	LoginSI - getClientForUsername test / implementt / test
 done -	CMSI getClassInfoForClient test / implement / test
+done -	LSI - getCheckedOutBooksForClass test / implement / test
+done - 	LSI - getCheckedOutBooksForUser test / implement / test
+done - NOTE - don't delete teachers - set to inactive!! used in loanhistory...
+done - 	LSI getAllCheckedOutForClient
+done - 	LSI getAllOverdueForClient
+done - 	LSI getLendingLimitForUser
 
 
 
@@ -331,4 +300,8 @@ superadmin - wear hat.... (for client)
 7. for later - limit of results, pagination 
 
 8. think about it - clientbookid not necessary if using bar codes.  (use clientbookid instead)
+
+9. at some point -- different checkout modules.  Making by class, with barcode - possibly by student? (like the grand mareschale??)
+
+
 ******* USE CASE MASTER ******

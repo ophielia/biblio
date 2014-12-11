@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServletRequest;
 import meg.biblio.catalog.CatalogService;
 import meg.biblio.catalog.CatalogServiceImpl;
 import meg.biblio.catalog.db.dao.ArtistDao;
-import meg.biblio.catalog.db.dao.BookDao;
 import meg.biblio.catalog.db.dao.ClassificationDao;
 import meg.biblio.catalog.db.dao.FoundDetailsDao;
 import meg.biblio.catalog.web.model.BookModel;

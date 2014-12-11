@@ -1,12 +1,9 @@
 package meg.biblio.lending;
 
-import java.util.Date;
 import java.util.List;
 
 import meg.biblio.lending.db.dao.LoanHistoryDao;
 import meg.biblio.lending.db.dao.LoanRecordDao;
-import meg.biblio.lending.db.dao.SchoolGroupDao;
-import meg.biblio.lending.web.model.ClassModel;
 import meg.biblio.lending.web.model.LoanRecordDisplay;
 
 public interface LendingService {
@@ -19,6 +16,12 @@ public interface LendingService {
 
 	List<LoanRecordDisplay> getCheckedOutBooksForUser(Long borrowerId,
 			Long clientid);
+
+	int getLendLimitForBorrower(Long borrowerId, Long clientid);
+
+	List<LoanRecordDisplay> getOverdueBooksForClient(Long id);
+
+	List<LoanRecordDisplay> getCheckedOutBooksForClient(Long id);
 
 
 }

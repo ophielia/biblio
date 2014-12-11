@@ -1,0 +1,31 @@
+.selectspan {
+display: inline-block;
+overflow: hidden;
+padding: 5px;
+color: #e7e5e5;
+margin-left: 20px;
+margin-right: 20px;
+background-color: #A2BA77;
+} 
+
+
+.selectspanactive {
+display: inline-block;
+overflow: hidden;
+padding: 5px;
+color: #e7e5e5;
+margin-left: 20px;
+margin-right: 20px;
+background-color: #648C1D;
+}
+   
+.linkbutton a {
+display: inline-block;
+overflow: hidden;
+padding: 5px;
+color: #e7e5e5;
+margin-left: 20px;
+margin-right: 20px;
+background-color: #648C1D;
+text-decoration: none;
+}  

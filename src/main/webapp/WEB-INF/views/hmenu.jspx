@@ -12,6 +12,14 @@
 			<ul>
 				<li><moo:menulink label="menu_createbook" url="/books?form" /></li>
 			</ul></li>
+		<li><moo:menulink label="menu_lending" url="/lending/checkout" />
+			<ul>
+				<li><moo:menulink label="menu_lending_checkoutbyclass" url="/lending/checkout" /></li>
+				<li><moo:menulink label="menu_lending_returnbyclass" url="/lending/return" /></li>
+				<li><moo:menulink label="menu_lending_summaryforclasses" url="#" /></li>
+				<li><moo:menulink label="menu_lending_alloverdue" url="/lending/overdue/all" /></li>
+				<li><moo:menulink label="menu_lending_allcheckedout" url="/lending/checkout/all" /></li>
+			</ul></li>
 		<li><moo:menulink label="menu_admin" url="#" />
 			<ul>
 				<li><moo:menulink label="menu_import" url="/import?form" /></li>
@@ -24,14 +32,7 @@
 				
 			</ul></li>
 			
-		<li><moo:menulink label="menu_superadmin" url="#" />
-			<ul>
-				<li><moo:menulink label="menu_createclient" url="/client?form" /></li>
-				<li><moo:menulink label="menu_listclient" url="/client" /></li>
-				
-				
-			</ul></li>			
-			
+		<li><moo:menulink label="menu_login" url="/login" /></li>		
         
 	</ul>
 

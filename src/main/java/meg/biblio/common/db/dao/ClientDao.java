@@ -34,5 +34,9 @@ public class ClientDao {
 	private Integer studentcheckouttime;
 	
 	private Integer teachercheckouttime;
+	
+	private Integer studentCOLimit;
+	
+	private Integer teacherCOLimit;
 }
 

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 2.1//EN" "http://tiles.apache.org/dtds/tiles-config_2_1.dtd">
+<tiles-definitions>
+    <definition extends="default" name="lending/return">
+        <put-attribute name="body" value="/WEB-INF/views/lending/return.jspx"/>
+    </definition>
+    
+    <definition extends="default" name="lending/checkout">
+        <put-attribute name="body" value="/WEB-INF/views/lending/checkout.jspx"/>
+    </definition>    
+
+    
+       <definition extends="default" name="lending/selectbook">
+        <put-attribute name="body" value="/WEB-INF/views/lending/selectbook.jspx"/>
+    </definition>  
+    
+        
+       <definition extends="default" name="lending/confirmcheckout">
+        <put-attribute name="body" value="/WEB-INF/views/lending/confirmcheckout.jspx"/>
+    </definition>  
+    
+        
+       <definition extends="default" name="lending/checkoutsuccess">
+        <put-attribute name="body" value="/WEB-INF/views/lending/checkoutsuccess.jspx"/>
+    </definition>    
+    
+             <definition extends="default" name="lending/checkoutsummary">
+        <put-attribute name="body" value="/WEB-INF/views/lending/checkoutsummary.jspx"/>
+    </definition>  
+    
+             <definition extends="default" name="lending/overduesummary">
+        <put-attribute name="body" value="/WEB-INF/views/lending/overduesummary.jspx"/>
+    </definition>     
+</tiles-definitions>

@@ -178,7 +178,7 @@ public class ImportManager {
 		results.put(Results.totalerrorssize,errorssize);
 		results.put(Results.duplicatesize,new Integer(duplicates));
 		results.put(Results.noidsize,new Integer(noid));
-		results.put(Results.notitlesize,new Integer(noid));
+		results.put(Results.notitlesize,new Integer(notitle));
 		
 		return results;
 	}
