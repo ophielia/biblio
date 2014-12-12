@@ -1276,6 +1276,21 @@ public class CatalogServiceImpl implements CatalogService {
 		return null;
 	}
 
+	@Override
+	public BookDao updateBookStatus(Long bookid, long status) {
+		// get book
+		BookDao book = bookRepo.findOne(bookid);
+		
+		// set status
+		book.setStatus(new Long(status));
+		
+		// save book
+		book = bookRepo.save(book);
+		
+		// return book
+		return book;
+	}
+
 
 
 }

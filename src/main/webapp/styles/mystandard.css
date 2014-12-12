@@ -29,3 +29,25 @@ margin-right: 20px;
 background-color: #648C1D;
 text-decoration: none;
 }  
+
+a.linkbutton  {
+display: inline-block;
+overflow: hidden;
+padding: 5px;
+color: #e7e5e5;
+margin-left: 10px;
+margin-right: 10px;
+background-color: #648C1D;
+text-decoration: none;
+}  
+
+a.linkbutton:visited  {
+display: inline-block;
+overflow: hidden;
+padding: 5px;
+color: #e7e5e5;
+margin-left: 10px;
+margin-right: 10px;
+background-color: #648C1D;
+text-decoration: none;
+}  

@@ -38,7 +38,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <td>
 <spring:url value="/classes/delete/${sclass.id}?form" var="deleteurl"/>
 <spring:url value="/classes/display/${sclass.id}?form" var="editurl"/>
-<a href="${editurl}">${ledit}</a> <a href="${deleteurl}">${ldelete}</a>  
+<a href="${editurl}" class="linkbutton">${ledit}</a> <a href="${deleteurl}" class="linkbutton">${ldelete}</a>  
 </td>
 </tr>
 </c:forEach>
@@ -49,7 +49,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 </table>
 
 <spring:url value="/classes/create?form" var="createurl"/>
-<a href="${createurl}">${lcreate}</a>
+<a href="${createurl}" class="linkbutton">${lcreate}</a>
 </div>
 
 

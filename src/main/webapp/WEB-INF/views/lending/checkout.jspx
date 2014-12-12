@@ -10,7 +10,14 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
     <jsp:output omit-xml-declaration="yes"/>
     
 <spring:message code="label_classpl" htmlEscape="false" var="lclasses"/>
-<spring:message code="global_menu_listof"  arguments="${lclasses}" htmlEscape="false" var="ltitle"/>
+<spring:message code="label_lending_checkoutforclass"  htmlEscape="false" var="ltitle"/>
+
+<spring:message code="label_lending_firstname" htmlEscape="false" var="lfirstname"/>
+<spring:message code="label_lending_lastname" htmlEscape="false" var="llastname"/>
+<spring:message code="label_lending_section" htmlEscape="false" var="lsection"/>
+<spring:message code="action_lending_checkout" htmlEscape="false" var="bcheckout"/>
+
+
 
 <style>
 .selectspan {
@@ -94,7 +101,9 @@ background-color: #648C1D;
 <c:if test="${tchr.key eq lendingModel.classid}">
 <c:set var="selectclass" value="selectspanactive" />
 </c:if>
-<span class="${selectclass}" id="selCl${tchr.key}">Class of ${tchr.value.firstname}</span>
+
+<spring:message code="label_lending_classteachername" arguments="${tchr.value.firstname}" htmlEscape="false" var="lclassteachername"/>
+<span class="${selectclass}" id="selCl${tchr.key}">${lclassteachername}</span>
 </c:forEach>
 
 </div>
@@ -104,9 +113,9 @@ background-color: #648C1D;
 <table>
 <thead>
 <tr>
-<td>Firstname</td>
-<td>Lastname</td>
-<td>Section</td>
+<td>${lfirstname}</td>
+<td>${llastname}</td>
+<td>${lsection }</td>
 
 <td></td>
 </tr>
@@ -120,7 +129,7 @@ background-color: #648C1D;
 
 <spring:url value="/classes/delete/${sclass.id}?form" var="deleteurl"/>
 <spring:url value="/classes/display/${sclass.id}?form" var="editurl"/>
-<td><input id="co${student.id}" type="submit" value="checkout" /></td>
+<td><input id="co${student.id}" type="submit" value="${bcheckout}" /></td>
 </tr>
 </c:forEach>
 

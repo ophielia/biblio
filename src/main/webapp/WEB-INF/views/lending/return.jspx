@@ -10,10 +10,13 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
     <jsp:output omit-xml-declaration="yes"/>
     
 <spring:message code="label_classpl" htmlEscape="false" var="lclasses"/>
-<spring:message code="global_menu_listof"  arguments="${lclasses}" htmlEscape="false" var="ltitle"/>
+<spring:message code="label_lending_returnforclass"  htmlEscape="false" var="ltitle"/>
+<spring:message code="label_lending_name" htmlEscape="false" var="lname"/>
+<spring:message code="label_lending_title" htmlEscape="false" var="lbooktitle"/>
+<spring:message code="label_lending_author" htmlEscape="false" var="lauthor"/>
+<spring:message code="action_lending_return" htmlEscape="false" var="breturn"/>
+<spring:message code="action_lending_gotocheckout" htmlEscape="false" var="bgtcheckout"/>
 
-<style>
-</style>
 
 <spring:url value="/lending/return" var="studentactionurl"/>
 <script type="text/javascript">
@@ -55,16 +58,10 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
   		  form.submit();
 	   	});
 	   	
-	   	
-
-	   	
-
-    	
-    	
 	});
  </script>
 
-<h1>RETuRN</h1>
+<h1>${ltitle}</h1>
 <br></br>
 <div  style="text-align: center;" >
 <c:forEach items="${lendingModel.classinfo}" var="tchr">
@@ -72,7 +69,8 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <c:if test="${tchr.key eq lendingModel.classid}">
 <c:set var="selectclass" value="selectspanactive" />
 </c:if>
-<span class="${selectclass}" id="selCl${tchr.key}">Class of ${tchr.value.firstname}</span>
+<spring:message code="label_lending_classteachername" arguments="${tchr.value.firstname}" htmlEscape="false" var="lclassteachername"/>
+<span class="${selectclass}" id="selCl${tchr.key}">${lclassteachername}</span>
 </c:forEach>
 
 </div>
@@ -82,9 +80,9 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <table>
 <thead>
 <tr>
-<td>Name</td>
-<td>Title</td>
-<td>Author</td>
+<td>${lname }</td>
+<td>${lbooktitle }</td>
+<td>${lauthor }</td>
 
 <td></td>
 </tr>
@@ -96,7 +94,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <td>${checkedout.booktitle} </td>
 <td>${checkedout.author} </td>
 
-<td><input id="rtn${checkedout.loanrecordid}" type="submit" value="return" /></td>
+<td><input id="rtn${checkedout.loanrecordid}" type="submit" value="${breturn}" /></td>
 </tr>
 </c:forEach>
 
@@ -105,7 +103,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 
 </table>
 <spring:url value="/lending/checkout" var="checkouturl"/>
-<div style="float:right"><a class="linkbutton" href="${checkouturl }">Go To Checkout</a></div>
+<div style="float:right"><a class="linkbutton" href="${checkouturl }">${bgtcheckout}</a></div>
 <div style="clear:both">  </div>
 </form:form>
 

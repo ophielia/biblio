@@ -4,13 +4,15 @@ Branch - lending USECASES 	4	   Checkout for class
 
 Immediate Roadmap
 
-clear book / bookid after checkout
-clear bookid after book is found
 validations - borrower, book
 messages for checkout / remove checkout confirmation page
 make the pages polite (and bilingual)
-oh- update status of book upon checkout and return
+	checkoutsuccess.jspx
+	confirmcheckout.jspx
+	overduesummary.jspx
+	selectbook.jspx
 add checkout for teacher
+linkbutton around...
 
 
 
@@ -24,18 +26,12 @@ plus, REALLY long sessions
 
 ---- begin commit changes ----
 
-done - test and implement new backend methods....
-done - begin putting together pages, and wiring to controller
-done - beginning - front end. first pass ugly - blasting through pages, and then prettify
-done - checkout page - works
-done - select student - works
-done - select book - works
-done - confirm checkout - (remove later, but) works
-done - checkout - works
-done - return pages
-done - first pass checkedout
-done - first pass overdue summary
-done -  graceful exit when session has timed out
+done - oh- update status of book upon checkout and return
+done - clear book / bookid after checkout
+done - clear bookid after book is found
+done - checkout polite
+done - checkoutsummary.jspx polite
+done - return.jspx polite
 
 ---- end commit changes ----
 
@@ -65,6 +61,18 @@ done - NOTE - don't delete teachers - set to inactive!! used in loanhistory...
 done - 	LSI getAllCheckedOutForClient
 done - 	LSI getAllOverdueForClient
 done - 	LSI getLendingLimitForUser
+done - test and implement new backend methods....
+done - begin putting together pages, and wiring to controller
+done - beginning - front end. first pass ugly - blasting through pages, and then prettify
+done - checkout page - works
+done - select student - works
+done - select book - works
+done - confirm checkout - (remove later, but) works
+done - checkout - works
+done - return pages
+done - first pass checkedout
+done - first pass overdue summary
+done -  graceful exit when session has timed out
 
 
 

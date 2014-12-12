@@ -28,7 +28,7 @@ for ${lendingModel.borrowerfn} ${lendingModel.borrowerln}</h2>
 <a href="${morecheckouturl }" >Select another book for ${lendingModel.borrowerfn} ${lendingModel.borrowerln}</a>
 </c:if>
 <spring:url value="/lending/checkout" var="continueurl"/>
-<a href="${continueurl}" >Continue Class Checkout</a>
+<a href="${continueurl}" class="linkbutton">Continue Class Checkout</a>
 
 
 </div>

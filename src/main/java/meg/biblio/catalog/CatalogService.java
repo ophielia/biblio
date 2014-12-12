@@ -81,6 +81,8 @@ public interface CatalogService {
 
 	 BookDao findBookByClientBookId(String bookid, ClientDao client) ;
 
+	BookDao updateBookStatus(Long id, long checkedout);
+
 
 
 }

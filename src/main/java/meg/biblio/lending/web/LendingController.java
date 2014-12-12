@@ -65,16 +65,20 @@ public class LendingController {
 			model.setClientid(clientid);
 		}
 		if (model.getClassid()==null) {
-			// set classinfo in model
+			if (model.getClassinfo()==null) {
+				// set classinfo in model
 			HashMap<Long,TeacherInfo> classinfo = getClassInfo(clientid);
 			model.setClassInfo(classinfo);
-			// set to first classid
-			List<SchoolGroupDao> classes = classService.getClassesForClient(clientid);
-			if (classes!=null && classes.size()>0) {
-				SchoolGroupDao sgroup = classes.get(0);
-				model.setClassid(sgroup.getId());
-			}
+			} 
 
+			Long classid = 0L;
+			if (model.getClassinfo()!=null) {
+				for (Long id:model.getClassinfo().keySet()) {
+					classid = id;
+					break;
+				}
+				model.setClassid(classid);
+			}
 		}
 
 		// get list of checkedout books for the currentclass
@@ -139,15 +143,19 @@ public class LendingController {
 			model.setClientid(clientid);
 		}
 		if (model.getClassid()==null) {
-			// set classinfo in uimodel
+			if (model.getClassinfo()==null) {
+				// set classinfo in model
 			HashMap<Long,TeacherInfo> classinfo = getClassInfo(clientid);
 			model.setClassInfo(classinfo);
-			
-			// set to first classid
-			List<SchoolGroupDao> classes = classService.getClassesForClient(clientid);
-			if (classes!=null && classes.size()>0) {
-				SchoolGroupDao sgroup = classes.get(0);
-				model.setClassid(sgroup.getId());
+			} 
+
+			Long classid = 0L;
+			if (model.getClassinfo()!=null) {
+				for (Long id:model.getClassinfo().keySet()) {
+					classid = id;
+					break;
+				}
+				model.setClassid(classid);
 			}
 		}
 
@@ -206,7 +214,7 @@ public class LendingController {
 		// put book in model
 		BookDao book = catalogService.findBookByClientBookId(bookid,client);
 		model.setBook(book);
-		
+		model.setBookid(null);
 		populateLendingModel(model, uiModel);
 
 		// to checkout success page
@@ -233,6 +241,10 @@ public class LendingController {
 		// when removing checkout success page
 		// put title and borrower name directly into uiModel
 		
+		// clear book info from model
+		model.setBook(null);
+		model.setBookid(null);
+		
 		// to checkout success page
 		return "lending/checkoutsuccess";
 	}
@@ -247,6 +259,15 @@ public class LendingController {
 		List<LoanRecordDisplay> checkedout = lendingService.getCheckedOutBooksForClient(client.getId());
 		// put list directly in uiModel
 		uiModel.addAttribute("checkedoutbooks",checkedout);
+		// get classinfo from model
+		HashMap<Long,TeacherInfo> classinfo = model.getClassinfo();
+		if (classinfo == null) {
+			classinfo = getClassInfo(client.getId());
+			model.setClassInfo(classinfo);
+		}
+		
+		uiModel.addAttribute("classInfo",model.getClassinfo());
+		
 		// to all checked out for client page
 		return "lending/checkoutsummary";
 		}
@@ -259,6 +280,15 @@ public class LendingController {
 		List<LoanRecordDisplay> overdue = lendingService.getOverdueBooksForClient(client.getId());
 		// put list directly in uiModel
 		uiModel.addAttribute("overduebooks",overdue);
+		// get classinfo from model
+		HashMap<Long,TeacherInfo> classinfo = model.getClassinfo();
+		if (classinfo == null) {
+			classinfo = getClassInfo(client.getId());
+			model.setClassInfo(classinfo);
+		}
+		
+		uiModel.addAttribute("classInfo",model.getClassinfo());
+		
 		// to all overdue out for client page
 		return "lending/overduesummary";
 		}

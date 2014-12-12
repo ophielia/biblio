@@ -44,7 +44,7 @@ public class LoanRecordDisplay {
 	}
 
 
-	public Long getClasssid() {
+	public Long getClassid() {
 		return classid;
 	}
 
