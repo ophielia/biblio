@@ -9,26 +9,55 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
     
-<spring:message code="label_classpl" htmlEscape="false" var="lclasses"/>
-<spring:message code="global_menu_listof"  arguments="${lclasses}" htmlEscape="false" var="ltitle"/>
+<spring:message code="label_lending_chkoutsuccess" htmlEscape="false" var="ltitle"/>
 
+<spring:message code="label_lending_borrower" htmlEscape="false" var="lborrower"/>
+<spring:message code="label_lending_class" htmlEscape="false" var="lclass"/>
+<spring:message code="label_lending_booktitle" htmlEscape="false" var="lbooktitle"/>
+<spring:message code="label_lending_author" htmlEscape="false" var="lauthor"/>
+<spring:message code="label_lending_checkedout" htmlEscape="false" var="lcheckedout"/>
+<spring:message code="label_lending_duedate" htmlEscape="false" var="lduedate"/>
+<spring:message code="label_lendingcheckedoutfor"  arguments="${lendingModel.borrowerfn},${lendingModel.borrowerln}" htmlEscape="false" var="msgcheckedoutfor"/>
+<spring:message code="action_lending_moreforborrower"  arguments="${lendingModel.borrowerfn},${lendingModel.borrowerln}" htmlEscape="false" var="bmorebooks"/>
+<spring:message code="action_lending_continueclassckout"  arguments="${lclasses}" htmlEscape="false" var="bcontinue"/>
 
 <spring:url value="/lending/checkout" var="studentactionurl"/>
 
 <h1>${ltitle}</h1>
 <br></br>
 
-<spring:url value="/lending/selectbook" var="actionurl"/>
-
-<h2>${lendingModel.book.title} checked out 
-for ${lendingModel.borrowerfn} ${lendingModel.borrowerln}</h2>
-
+<h2>${msgcheckedoutfor}</h2>
+<table>
+<thead>
+<tr>
+<td>${lborrower}</td>
+<td>${lclass}</td>
+<td>${lbooktitle}</td>
+<td>${lauthor}</td>
+<td>${lcheckedout}</td>
+<td>${lduedate}</td>
+</tr>
+</thead>
+<tbody>
+<c:forEach items="${lendingModel.borrowerCheckedOut}" var="checkedout">
+<tr>
+<td>${checkedout.borrowerfn} ${checkedout.borrowerln} </td>
+<td>${classInfo[checkedout.classid].firstname}</td>
+<td>${checkedout.booktitle} </td>
+<td>${checkedout.author} </td>
+<td>${checkedout.checkedout} </td>
+<td>${checkedout.duedate} </td>
+</tr>
+</c:forEach>
+</tbody>
+</table>
+<br />
 <c:if test="${!lendingModel.borrowerReachedLimit}" >
 <spring:url value="/lending/selectbook" var="morecheckouturl"/>
-<a href="${morecheckouturl }" >Select another book for ${lendingModel.borrowerfn} ${lendingModel.borrowerln}</a>
+<a href="${morecheckouturl }" class="linkbutton">${bmorebooks}</a>
 </c:if>
 <spring:url value="/lending/checkout" var="continueurl"/>
-<a href="${continueurl}" class="linkbutton">Continue Class Checkout</a>
+<a href="${continueurl}" class="linkbutton">${bcontinue}</a>
 
 
 </div>

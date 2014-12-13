@@ -59,12 +59,24 @@ public class LendingModel {
 
 	public void setBorrowerId(Long personid, List<StudentDao> studentList) {
 		this.borrowerid = personid;
+		boolean foundinstudents=false;
 		for (StudentDao student:studentList) {
 			if (student.getId().longValue()==borrowerid.longValue()) {
 				this.borrowerfn = student.getFirstname();
 				this.borrowerln = student.getLastname();
+				foundinstudents = true;
 			}
 		}
+		if (!foundinstudents) {
+			// check teacher
+			TeacherInfo info = classinfo.get(classid);
+			if (info!=null && info.getId().longValue()==personid.longValue()) {
+				this.borrowerfn = info.getFirstname();
+				this.borrowerln = info.getLastname();
+				
+			}
+		}
+		
 	}
 
 	

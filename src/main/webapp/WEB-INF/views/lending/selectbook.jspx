@@ -9,9 +9,10 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
     
-<spring:message code="label_classpl" htmlEscape="false" var="lclasses"/>
-<spring:message code="global_menu_listof"  arguments="${lclasses}" htmlEscape="false" var="ltitle"/>
-
+<spring:message code="label_lendingselectbookfor"  arguments="${lendingModel.borrowerfn},${lendingModel.borrowerln}" htmlEscape="false" var="mselectfor"/>
+<spring:message code="label_lendingselectbook"  htmlEscape="false" var="ltitle"/>
+<spring:message code="label_lending_bookid"  htmlEscape="false" var="lbookid"/>
+<spring:message code="action_lending_select"  htmlEscape="false" var="bselect"/>
 
 <spring:url value="/lending/checkout" var="studentactionurl"/>
 
@@ -21,11 +22,11 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <spring:url value="/lending/checkout/selectbook" var="actionurl"/>
 <form:form action="${actionurl}" id="classlist" method="POST" modelAttribute="lendingModel">
 
-<h2>Select book for ${lendingModel.borrowerfn} ${lendingModel.borrowerln}</h2>
+<h2>${mselectfor}</h2>
+<form:errors id="errors" class="errors" path="*" /> 
+${lbookid}: <form:input path="bookid"></form:input> <br/><br/><br/>
 
-Book Id: <form:input path="bookid"></form:input> <br/>
-
-<input id="select" name="select" type="submit" value="Select"/> 
+<input id="select" name="select" type="submit" value="${bselect}"/> 
 </form:form>
 
 </div>

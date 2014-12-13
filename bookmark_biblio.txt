@@ -4,16 +4,10 @@ Branch - lending USECASES 	4	   Checkout for class
 
 Immediate Roadmap
 
-validations - borrower, book
-messages for checkout / remove checkout confirmation page
-make the pages polite (and bilingual)
-	checkoutsuccess.jspx
-	confirmcheckout.jspx
-	overduesummary.jspx
-	selectbook.jspx
-add checkout for teacher
-linkbutton around...
 
+
+	
+BEGIN FO!!! :-)  YE-HOOO!!
 
 
 5 min tasks (ha!! :-)
@@ -26,12 +20,15 @@ plus, REALLY long sessions
 
 ---- begin commit changes ----
 
-done - oh- update status of book upon checkout and return
-done - clear book / bookid after checkout
-done - clear bookid after book is found
-done - checkout polite
-done - checkoutsummary.jspx polite
-done - return.jspx polite
+done - checkoutsuccess.jspx
+(don't do) - confirmcheckout.jspx
+done - overduesummary.jspx
+done - messages for checkout / remove checkout confirmation page
+done - linkbutton around...
+done - selectbook.jspx
+done - make the pages polite (and bilingual)
+done - validations - borrower, book
+done - add checkout for teacher
 
 ---- end commit changes ----
 
@@ -73,6 +70,12 @@ done - return pages
 done - first pass checkedout
 done - first pass overdue summary
 done -  graceful exit when session has timed out
+done - oh- update status of book upon checkout and return
+done - clear book / bookid after checkout
+done - clear bookid after book is found
+done - checkout polite
+done - checkoutsummary.jspx polite
+done - return.jspx polite
 
 
 
@@ -311,5 +314,5 @@ superadmin - wear hat.... (for client)
 
 9. at some point -- different checkout modules.  Making by class, with barcode - possibly by student? (like the grand mareschale??)
 
-
+10. somewhat quick - filter (with select buttons, like for class, or in a select) in return page - show class only, student only, or all
 ******* USE CASE MASTER ******
