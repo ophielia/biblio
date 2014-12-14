@@ -2,6 +2,7 @@ package meg.biblio.lending;
 
 import java.util.List;
 
+import meg.biblio.common.report.OverdueBookReport;
 import meg.biblio.lending.db.dao.LoanHistoryDao;
 import meg.biblio.lending.db.dao.LoanRecordDao;
 import meg.biblio.lending.web.model.LoanRecordDisplay;
@@ -22,6 +23,8 @@ public interface LendingService {
 	List<LoanRecordDisplay> getOverdueBooksForClient(Long id);
 
 	List<LoanRecordDisplay> getCheckedOutBooksForClient(Long id);
+
+	OverdueBookReport assembleOverdueBookReport(Long clientid);
 
 
 }

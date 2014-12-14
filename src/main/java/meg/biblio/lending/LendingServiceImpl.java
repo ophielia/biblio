@@ -9,6 +9,7 @@ import meg.biblio.catalog.db.BookRepository;
 import meg.biblio.catalog.db.dao.BookDao;
 import meg.biblio.common.ClientService;
 import meg.biblio.common.db.dao.ClientDao;
+import meg.biblio.common.report.OverdueBookReport;
 import meg.biblio.lending.db.LoanHistoryRepository;
 import meg.biblio.lending.db.LoanRecordRepository;
 import meg.biblio.lending.db.PersonRepository;
@@ -213,6 +214,19 @@ public class LendingServiceImpl implements LendingService {
 				.findLoanRecordsByCriteria(criteria, clientid);
 		// return list
 		return checkedout;
+	}
+	
+	@Override
+	public OverdueBookReport assembleOverdueBookReport(Long clientid) {
+		ClientDao client = clientService.getClientForKey(clientid);
+		OverdueBookReport obr = new OverdueBookReport();
+		obr.setRundate(new Date());
+		obr.setClientname(client.getName());
+		
+		List<LoanRecordDisplay> overdue =  getOverdueBooksForClient(clientid);
+		obr.setBooklist(overdue);
+		
+		return obr;
 	}
 
 }

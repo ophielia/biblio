@@ -3,11 +3,10 @@ Branch - lending USECASES 	4	   Checkout for class
 							7	   Printouts for day
 
 Immediate Roadmap
-
-
-
-	
-BEGIN FO!!! :-)  YE-HOOO!!
+--->  BEGIN FO!!! :-)  YE-HOOO!!
+good solution started with FO, and JAXB. POC  done
+	get xsls and generated into correct spots.
+	flesh out overdue report
 
 
 5 min tasks (ha!! :-)
