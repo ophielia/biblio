@@ -103,7 +103,7 @@ public class LoanRecordDisplay {
 		return today.after(getDuedate());
 	}
 
-	@XmlElement(name = "lastname_teacher")
+	@XmlElement(name = "firstname_teacher")
 	public String getTeacherfirstname() {
 		if (teacherinfo != null && teacherinfo.getFirstname() != null) {
 			return teacherinfo.getFirstname();

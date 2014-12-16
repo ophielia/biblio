@@ -1,6 +1,13 @@
 package meg.biblio.lending;
 
+import java.io.IOException;
 import java.util.List;
+
+import javax.servlet.ServletContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.transform.TransformerException;
+
+import org.apache.fop.apps.FOPException;
 
 import meg.biblio.common.report.OverdueBookReport;
 import meg.biblio.lending.db.dao.LoanHistoryDao;
@@ -25,6 +32,8 @@ public interface LendingService {
 	List<LoanRecordDisplay> getCheckedOutBooksForClient(Long id);
 
 	OverdueBookReport assembleOverdueBookReport(Long clientid);
+
+	String generateOverdueNotices(ServletContext servletContext, Long id) throws FOPException, JAXBException, TransformerException, IOException;
 
 
 }

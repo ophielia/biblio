@@ -6,11 +6,16 @@ import java.io.IOException;
 import javax.xml.bind.JAXBException;
 import javax.xml.transform.TransformerException;
 
+import meg.biblio.common.report.OverdueBookReport;
+import meg.biblio.lending.LendingService;
+
 import org.apache.fop.apps.FOPException;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResourceLoader;
+import org.springframework.mock.web.MockServletContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +27,9 @@ public class ReportGeneratorTest {
 
 	@Autowired
 	ReportGenerator rGen;
+	
+	@Autowired
+	LendingService lendingService;
 
 	@Test
 	public void testGetCurrentClientKeyDefault() {
@@ -44,8 +52,11 @@ public class ReportGeneratorTest {
 
 	@Test
 	public void testTogether() throws JAXBException, FOPException, TransformerException, IOException {
-		rGen.putThemTogether(1L);
-
+		OverdueBookReport obr = lendingService.assembleOverdueBookReport(1L);
+		String transformpath = "c:/Users/Margaret/Documents/workspace/biblio/src/main/resources/META-INF/web-resources/transform/table-en.xsl";
+		String outputpath = "C:/Temp/";
+		rGen.putThemTogether(transformpath, outputpath, obr);
+		Assert.assertEquals(1L,1L);
 	}
 	
 	@Test

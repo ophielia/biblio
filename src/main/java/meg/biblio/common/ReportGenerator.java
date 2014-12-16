@@ -9,6 +9,7 @@ import java.io.OutputStream;
 import java.io.StringWriter;
 import java.util.List;
 
+import javax.servlet.ServletContext;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -35,10 +36,19 @@ import org.apache.fop.apps.Fop;
 import org.apache.fop.apps.FopFactory;
 import org.apache.fop.apps.MimeConstants;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.DefaultResourceLoader;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ReportGenerator {
+
+	public static final class Transform {
+		public static final String OVERDUE="overduenotices"; 
+		
+	}
 
 	@Autowired
 	LendingService lendingService;
@@ -49,6 +59,9 @@ public class ReportGenerator {
 	private FopFactory fopFactory = FopFactory.newInstance();
 	private TransformerFactory tFactory = TransformerFactory.newInstance();
 
+    @Value("${biblio.report.transformsrc}")
+    private String transformdir;
+	
 	public void HelloWorld() throws IOException, TransformerException {
 		BookDao book = new BookDao();
 		book.setTitle("beep");;
@@ -113,29 +126,30 @@ public class ReportGenerator {
 		
 		}
 
-public void putThemTogether(Long clientid) throws FOPException, JAXBException, TransformerException, IOException {
-	OutputStream out = new BufferedOutputStream(new FileOutputStream(new File("C:/Temp/togetherfile.pdf")));
+public String putThemTogether(String xslfilename,String outputpath, OverdueBookReport obr) throws FOPException, JAXBException, TransformerException, IOException {
+	String outputfilename = outputpath + "togetherfile.pdf";
+	
+	//OutputStream out = new BufferedOutputStream(new FileOutputStream(new File("C:/Temp/togetherfile.pdf")));
+	OutputStream out = new BufferedOutputStream(new FileOutputStream(new File(outputfilename)));
 	try {
 	
 	Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, out);
-	OverdueBookReport obr = lendingService.assembleOverdueBookReport(clientid);
 	JAXBContext context = JAXBContext.newInstance(OverdueBookReport.class);
 	JAXBSource source = new JAXBSource(context,obr);
 	
 	//Setup Transformer
-	Source xsltSrc = new StreamSource(new File("C:/Temp/clientname2fo.xsl"));
+	Source xsltSrc = new StreamSource(new File(xslfilename));
 	Transformer transformer = tFactory.newTransformer(xsltSrc);
 	
 	//Make sure the XSL transformation's result is piped through to FOP
 	Result res = new SAXResult(fop.getDefaultHandler());
-
-	
 
 	//Start the transformation and rendering process
 	transformer.transform(source, res);
 	} finally {
 		   out.close();
 	}
+	return outputfilename;
 }
 	
 	public void generateOverdueReport(Long clientid) throws JAXBException {

@@ -1,11 +1,15 @@
 package meg.biblio.lending.web;
 
+import java.io.IOException;
 import java.security.Principal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
+import javax.xml.bind.JAXBException;
+import javax.xml.transform.TransformerException;
 
 import meg.biblio.catalog.CatalogService;
 import meg.biblio.catalog.db.dao.BookDao;
@@ -20,6 +24,7 @@ import meg.biblio.lending.web.model.LoanRecordDisplay;
 import meg.biblio.lending.web.model.TeacherInfo;
 import meg.biblio.lending.web.validator.LendingModelValidator;
 
+import org.apache.fop.apps.FOPException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -35,6 +40,9 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 @Controller
 public class LendingController {
 
+	@Autowired 
+	private ServletContext servletContext;
+	
 	@Autowired
 	LendingService lendingService;
 
@@ -312,6 +320,47 @@ public class LendingController {
 		// to all overdue out for client page
 		return "lending/overduesummary";
 		}
+	
+	@RequestMapping(value="/overdue/all",params="print",method = RequestMethod.POST, produces = "text/html")
+	public String printOverdueNotice(LendingModel model, Model uiModel,
+				HttpServletRequest httpServletRequest, Principal principal) {
+			ClientDao client = clientService.getCurrentClient(principal);
+		String path = null;
+		
+		try {
+			path = lendingService.generateOverdueNotices(servletContext,client.getId());
+		} catch (FOPException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JAXBException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (TransformerException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+			
+			// redirect to path
+		
+			// get list
+		List<LoanRecordDisplay> overdue = lendingService.getOverdueBooksForClient(client.getId());
+		// put list directly in uiModel
+		uiModel.addAttribute("overduebooks",overdue);
+		// get classinfo from model
+		HashMap<Long,TeacherInfo> classinfo = model.getClassinfo();
+		if (classinfo == null) {
+			classinfo = getClassInfo(client.getId());
+			model.setClassInfo(classinfo);
+		}
+		
+		uiModel.addAttribute("classInfo",model.getClassinfo());
+		
+		// to all overdue out for client page
+		return "lending/overduesummary";
+		}	
 
 	private void populateLendingModel(LendingModel model, Model uiModel) {
 		uiModel.addAttribute("lendingModel", model);

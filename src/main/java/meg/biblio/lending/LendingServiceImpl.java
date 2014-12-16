@@ -1,13 +1,21 @@
 package meg.biblio.lending;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+
+import javax.servlet.ServletContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.transform.TransformerException;
 
 import meg.biblio.catalog.CatalogService;
 import meg.biblio.catalog.db.BookRepository;
 import meg.biblio.catalog.db.dao.BookDao;
 import meg.biblio.common.ClientService;
+import meg.biblio.common.ReportGenerator;
 import meg.biblio.common.db.dao.ClientDao;
 import meg.biblio.common.report.OverdueBookReport;
 import meg.biblio.lending.db.LoanHistoryRepository;
@@ -20,8 +28,13 @@ import meg.biblio.lending.db.dao.SchoolGroupDao;
 import meg.biblio.lending.db.dao.StudentDao;
 import meg.biblio.lending.db.dao.TeacherDao;
 import meg.biblio.lending.web.model.LoanRecordDisplay;
+import meg.biblio.lending.web.model.TeacherInfo;
 
+import org.apache.fop.apps.FOPException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,6 +47,9 @@ public class LendingServiceImpl implements LendingService {
 
 	@Autowired
 	CatalogService catalogService;
+	
+	@Autowired
+	ClassManagementService classService;	
 
 	@Autowired
 	LendingSearchService lendingSearch;
@@ -49,6 +65,12 @@ public class LendingServiceImpl implements LendingService {
 
 	@Autowired
 	LoanHistoryRepository lhRepo;
+	
+	@Autowired
+	ReportGenerator rGen;
+	
+	@Autowired
+	ApplicationContext appContext;
 
 	@Override
 	public LoanRecordDao checkoutBook(Long bookid, Long borrowerid,
@@ -224,9 +246,30 @@ public class LendingServiceImpl implements LendingService {
 		obr.setClientname(client.getName());
 		
 		List<LoanRecordDisplay> overdue =  getOverdueBooksForClient(clientid);
+		// fill in teacherinfo
+		HashMap<Long,TeacherInfo> teacherInfo = classService.getTeacherByClassForClient(client.getId());
+		for (LoanRecordDisplay lr:overdue) {
+			lr.setTeacherInfo(teacherInfo);
+		}
 		obr.setBooklist(overdue);
 		
 		return obr;
+	}
+
+	@Override
+	public String generateOverdueNotices(ServletContext servletContext, Long id) throws FOPException, JAXBException, TransformerException, IOException {
+		OverdueBookReport obr = assembleOverdueBookReport(1L);
+		String transformpath =servletContext.getRealPath("/WEB-INF/classes/META-INF/web-resources/transform/" + ReportGenerator.Transform.OVERDUE + "-en.xsl");
+		
+		//FileSystemResource resource = new FileSystemResource("/resources/transform/clientname2fo.xsl");
+/*		Resource resource = 
+		          appContext.getResource("classpath:/resources/transform/clientname2fo.xsl");
+		String test = resource.getFilename();
+		File test2 = resource.getFile();*/
+		//String transformpath = "c:/Users/Margaret/Documents/workspace/biblio/src/main/resources/META-INF/web-resources/transform/clientname2fo.xsl";
+		String outputpath = "C:/Temp/";
+		String filename = rGen.putThemTogether(transformpath, outputpath, obr);
+		return filename;
 	}
 
 }
