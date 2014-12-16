@@ -56,5 +56,7 @@ public interface ClassManagementService {
 
 	HashMap<Long,TeacherInfo> getTeacherByClassForClient(Long clientid);
 
+	SchoolGroupDao getClassForClient(Long classid, Long clientid);
+
 
 }

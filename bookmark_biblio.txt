@@ -4,9 +4,16 @@ Branch - lending USECASES 	4	   Checkout for class
 
 Immediate Roadmap
 --->  BEGIN FO!!! :-)  YE-HOOO!!
-good solution started with FO, and JAXB. POC  done
-	get xsls and generated into correct spots.
-	flesh out overdue report
+get generated into correct spots.
+
+create java TotalSummaryReport
+begin work on report xsl
+
+will need language and client switches on templates
+also - generating method for reportnames - client, namebase, timestamp
+
+teachername not showing up in loanhistory
+
 
 
 5 min tasks (ha!! :-)
@@ -19,16 +26,7 @@ plus, REALLY long sessions
 
 ---- begin commit changes ----
 
-done - checkoutsuccess.jspx
-(don't do) - confirmcheckout.jspx
-done - overduesummary.jspx
-done - messages for checkout / remove checkout confirmation page
-done - linkbutton around...
-done - selectbook.jspx
-done - make the pages polite (and bilingual)
-done - validations - borrower, book
-done - add checkout for teacher
-
+done - create java ClassSummaryReport
 ---- end commit changes ----
 
 
@@ -75,7 +73,18 @@ done - clear bookid after book is found
 done - checkout polite
 done - checkoutsummary.jspx polite
 done - return.jspx polite
-
+done - checkoutsuccess.jspx
+(don't do) - confirmcheckout.jspx
+done - overduesummary.jspx
+done - messages for checkout / remove checkout confirmation page
+done - linkbutton around...
+done - selectbook.jspx
+done - make the pages polite (and bilingual)
+done - validations - borrower, book
+done - add checkout for teacher
+done  - good solution started with FO, and JAXB. POC  done
+done - 	get xsls into correct spots.
+done - 	flesh out overdue report
 
 
 ---- end branch changes ----

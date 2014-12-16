@@ -7,6 +7,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.StringWriter;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.ServletContext;
@@ -27,6 +29,7 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
 import meg.biblio.catalog.db.dao.BookDao;
+import meg.biblio.common.report.ClassSummaryReport;
 import meg.biblio.common.report.OverdueBookReport;
 import meg.biblio.lending.LendingService;
 import meg.biblio.lending.web.model.LoanRecordDisplay;
@@ -62,7 +65,7 @@ public class ReportGenerator {
     @Value("${biblio.report.transformsrc}")
     private String transformdir;
 	
-	public void HelloWorld() throws IOException, TransformerException {
+	public void testHelloWorld() throws IOException, TransformerException {
 		BookDao book = new BookDao();
 		book.setTitle("beep");;
 
@@ -105,7 +108,7 @@ public class ReportGenerator {
 	}
 
 
-	public void makeAnXml(Long clientid) throws JAXBException {
+	public void testMakeAnXml(Long clientid) throws JAXBException {
 		List<LoanRecordDisplay> list = lendingService.getOverdueBooksForClient(clientid);
 
 		// get first from list
@@ -126,7 +129,7 @@ public class ReportGenerator {
 		
 		}
 
-public String putThemTogether(String xslfilename,String outputpath, OverdueBookReport obr) throws FOPException, JAXBException, TransformerException, IOException {
+public String generateOverdueNoticeReport(String xslfilename,String outputpath, OverdueBookReport obr) throws FOPException, JAXBException, TransformerException, IOException {
 	String outputfilename = outputpath + "togetherfile.pdf";
 	
 	//OutputStream out = new BufferedOutputStream(new FileOutputStream(new File("C:/Temp/togetherfile.pdf")));
@@ -152,32 +155,64 @@ public String putThemTogether(String xslfilename,String outputpath, OverdueBookR
 	return outputfilename;
 }
 	
-	public void generateOverdueReport(Long clientid) throws JAXBException {
-		OverdueBookReport obr = lendingService.assembleOverdueBookReport(clientid);
+public void testMakeAnClassSummaryXml(Long clientid) throws JAXBException {
+	Calendar cal = Calendar.getInstance();
+	cal.set(Calendar.MONTH,Calendar.DECEMBER);
+	cal.set(Calendar.DAY_OF_MONTH, 1);
+	
+	ClassSummaryReport summary = lendingService.assembleClassSummaryReport(22042L, cal.getTime(), 1L);
+	
+	JAXBContext context = JAXBContext.newInstance(ClassSummaryReport.class);
+	Marshaller m = context.createMarshaller();
+	m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+	
+	m.marshal(summary, new File("C:/Temp/csr.xml"));
+		
+	}
 
-		JAXBContext context = JAXBContext.newInstance(OverdueBookReport.class);
-		Marshaller m = context.createMarshaller();
-		m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-		
-		m.marshal(obr, new File("C:/Temp/obr.xml"));
-		
-		
-		}
+public void developXSL() throws IOException, TransformerException {
+	BookDao book = new BookDao();
+	book.setTitle("beep");;
+
+	// Step 2: Set up output stream.
+	// Note: Using BufferedOutputStream for performance reasons (helpful with FileOutputStreams).
+	OutputStream out = new BufferedOutputStream(new FileOutputStream(new File("C:/Temp/myfile.pdf")));
+
+	try {
 
 
-	public String noFo(long clientid) throws JAXBException, TransformerException {
-		OverdueBookReport obr = lendingService.assembleOverdueBookReport(clientid);
-		JAXBContext context = JAXBContext.newInstance(OverdueBookReport.class);
-		JAXBSource source = new JAXBSource(context,obr);
-		
+	  //Setup FOP
+		Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, out);
+
 		//Setup Transformer
-		Source xsltSrc = new StreamSource(new File("C:/Temp/clientnameNoFo.xsl"));
+		Source xsltSrc = new StreamSource(new File("C:/Temp/csr-en.xsl"));
 		Transformer transformer = tFactory.newTransformer(xsltSrc);
-		
+
 		//Make sure the XSL transformation's result is piped through to FOP
-		StreamResult result=new StreamResult(new StringWriter());
-		  transformer.transform(source,result);
-		  String xmlString=result.getWriter().toString();
-		  return xmlString;
-	}	
+		Result res = new SAXResult(fop.getDefaultHandler());
+
+		//Setup input
+		Source src = new StreamSource(new File("C:/Temp/csr-base.xml"));
+
+
+		//Start the transformation and rendering process
+		transformer.transform(src, res);
+
+	} catch (FOPException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	} catch (TransformerConfigurationException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	} finally {
+	    //Clean-up
+	    out.close();
+	}
+
+
+}
+	
+
+
+	
 }

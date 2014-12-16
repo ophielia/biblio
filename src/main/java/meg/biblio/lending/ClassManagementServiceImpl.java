@@ -283,6 +283,24 @@ public class ClassManagementServiceImpl implements ClassManagementService {
 	}
 
 	@Override
+	public SchoolGroupDao getClassForClient(Long classid, Long clientid) {
+		ClientDao client = clientService.getClientForKey(clientid);
+		
+		List<SchoolGroupDao> classes =  sgroupRepo.findSchoolGroupByClient(client);
+		
+		for (SchoolGroupDao sclass:classes) {
+			if (sclass.getId().longValue()==classid.longValue() ) {
+				List<TeacherDao> teachers = teacherRepo.findActiveTeachersForClientAndClass(client,sclass);
+				sclass.setTeacherlist(teachers);
+				List<StudentDao> students = getStudentsForClass(sclass,client);
+				sclass.setStudents(students);
+				return sclass;
+			}
+		}
+		return null;
+	}
+
+	@Override
 	public List<StudentDao> getUnassignedStudents(Long clientid) {
 		ClientDao client = clientService.getClientForKey(clientid);
 

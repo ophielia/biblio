@@ -17,6 +17,7 @@ import meg.biblio.catalog.db.dao.BookDao;
 import meg.biblio.common.ClientService;
 import meg.biblio.common.ReportGenerator;
 import meg.biblio.common.db.dao.ClientDao;
+import meg.biblio.common.report.ClassSummaryReport;
 import meg.biblio.common.report.OverdueBookReport;
 import meg.biblio.lending.db.LoanHistoryRepository;
 import meg.biblio.lending.db.LoanRecordRepository;
@@ -27,11 +28,14 @@ import meg.biblio.lending.db.dao.PersonDao;
 import meg.biblio.lending.db.dao.SchoolGroupDao;
 import meg.biblio.lending.db.dao.StudentDao;
 import meg.biblio.lending.db.dao.TeacherDao;
+import meg.biblio.lending.web.LendingController;
+import meg.biblio.lending.web.model.LoanHistoryDisplay;
 import meg.biblio.lending.web.model.LoanRecordDisplay;
 import meg.biblio.lending.web.model.TeacherInfo;
 
 import org.apache.fop.apps.FOPException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
@@ -71,6 +75,9 @@ public class LendingServiceImpl implements LendingService {
 	
 	@Autowired
 	ApplicationContext appContext;
+	
+    @Value("${biblio.report.outputdir}")
+    private String reportdir;
 
 	@Override
 	public LoanRecordDao checkoutBook(Long bookid, Long borrowerid,
@@ -267,9 +274,49 @@ public class LendingServiceImpl implements LendingService {
 		String test = resource.getFilename();
 		File test2 = resource.getFile();*/
 		//String transformpath = "c:/Users/Margaret/Documents/workspace/biblio/src/main/resources/META-INF/web-resources/transform/clientname2fo.xsl";
-		String outputpath = "C:/Temp/";
-		String filename = rGen.putThemTogether(transformpath, outputpath, obr);
+		String outputpath = this.reportdir;
+		String filename = rGen.generateOverdueNoticeReport(transformpath, outputpath, obr);
 		return filename;
+	}
+
+	@Override
+	public ClassSummaryReport assembleClassSummaryReport(Long classid, Date date, Long clientid) {
+		// get client
+		ClientDao client = clientService.getClientForKey(clientid);
+		// get schoolgroup
+		SchoolGroupDao sg = classService.getClassForClient(classid,clientid);
+		
+		// create ClassSummaryReport from schoolgroup
+		ClassSummaryReport summaryreport = new ClassSummaryReport(sg);
+		
+		// fill in rundate, client
+		summaryreport.setClientname(client.getName());
+		summaryreport.setRundate(date);
+		
+		// fill in lists...
+		// 		checkedout on date
+		LendingSearchCriteria criteria = new LendingSearchCriteria();
+		criteria.setSchoolgroup(classid);
+		criteria.setCheckedouton(date);
+		List<LoanRecordDisplay> checkedout = lendingSearch.findLoanRecordsByCriteria(criteria, clientid);
+		summaryreport.setCheckedoutlist(checkedout);
+
+		// 		overdue on date
+		criteria.setCheckedouton(null);
+		criteria.setSchoolgroup(classid);
+		criteria.setOverdueOnly(true);
+		List<LoanRecordDisplay> overdue = lendingSearch.findLoanRecordsByCriteria(criteria, clientid);
+		summaryreport.setOverduelist(overdue);
+		
+		// 		returned on date
+		criteria.setOverdueOnly(null);
+		criteria.setSchoolgroup(classid);
+		criteria.setReturnedon(date);
+		List<LoanHistoryDisplay> returned = lendingSearch.findLoanHistoryByCriteria(criteria, clientid);
+		summaryreport.setReturnedlist(returned);
+		
+		
+		return summaryreport;
 	}
 
 }

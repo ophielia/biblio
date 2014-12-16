@@ -56,6 +56,7 @@
     </fo:table-cell>
         <fo:table-cell>
           <fo:block><xsl:value-of select="booktitle"/></fo:block>
+           <fo:block><xsl:value-of select="bookauthor"/></fo:block>
     </fo:table-cell>
         <fo:table-cell>
           <fo:block><xsl:variable name="dt" select="checkedout"/><xsl:value-of select="concat(
