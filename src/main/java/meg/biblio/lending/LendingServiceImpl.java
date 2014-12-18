@@ -1,21 +1,14 @@
 package meg.biblio.lending;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import javax.servlet.ServletContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.transform.TransformerException;
-
 import meg.biblio.catalog.CatalogService;
 import meg.biblio.catalog.db.BookRepository;
 import meg.biblio.catalog.db.dao.BookDao;
 import meg.biblio.common.ClientService;
-import meg.biblio.common.ReportGenerator;
 import meg.biblio.common.db.dao.ClientDao;
 import meg.biblio.common.report.ClassSummaryReport;
 import meg.biblio.common.report.OverdueBookReport;
@@ -28,17 +21,13 @@ import meg.biblio.lending.db.dao.PersonDao;
 import meg.biblio.lending.db.dao.SchoolGroupDao;
 import meg.biblio.lending.db.dao.StudentDao;
 import meg.biblio.lending.db.dao.TeacherDao;
-import meg.biblio.lending.web.LendingController;
 import meg.biblio.lending.web.model.LoanHistoryDisplay;
 import meg.biblio.lending.web.model.LoanRecordDisplay;
 import meg.biblio.lending.web.model.TeacherInfo;
 
-import org.apache.fop.apps.FOPException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -51,9 +40,9 @@ public class LendingServiceImpl implements LendingService {
 
 	@Autowired
 	CatalogService catalogService;
-	
+
 	@Autowired
-	ClassManagementService classService;	
+	ClassManagementService classService;
 
 	@Autowired
 	LendingSearchService lendingSearch;
@@ -69,19 +58,17 @@ public class LendingServiceImpl implements LendingService {
 
 	@Autowired
 	LoanHistoryRepository lhRepo;
-	
-	@Autowired
-	ReportGenerator rGen;
-	
+
+
 	@Autowired
 	ApplicationContext appContext;
-	
-    @Value("${biblio.report.outputdir}")
-    private String reportdir;
 
-    @Value("${biblio.report.transformdir}")
-    private String transformdir;
-    
+	@Value("${biblio.report.outputdir}")
+	private String reportdir;
+
+	@Value("${biblio.report.transformdir}")
+	private String transformdir;
+
 	@Override
 	public LoanRecordDao checkoutBook(Long bookid, Long borrowerid,
 			Long clientid) {
@@ -247,64 +234,72 @@ public class LendingServiceImpl implements LendingService {
 		// return list
 		return checkedout;
 	}
-	
+
 	@Override
 	public OverdueBookReport assembleOverdueBookReport(Long clientid) {
 		ClientDao client = clientService.getClientForKey(clientid);
 		OverdueBookReport obr = new OverdueBookReport();
 		obr.setRundate(new Date());
 		obr.setClientname(client.getName());
-		
-		List<LoanRecordDisplay> overdue =  getOverdueBooksForClient(clientid);
+
+		List<LoanRecordDisplay> overdue = getOverdueBooksForClient(clientid);
 		// fill in teacherinfo
-		HashMap<Long,TeacherInfo> teacherInfo = classService.getTeacherByClassForClient(client.getId());
-		for (LoanRecordDisplay lr:overdue) {
+		HashMap<Long, TeacherInfo> teacherInfo = classService
+				.getTeacherByClassForClient(client.getId());
+		for (LoanRecordDisplay lr : overdue) {
 			lr.setTeacherInfo(teacherInfo);
 		}
 		obr.setBooklist(overdue);
-		
+
 		return obr;
 	}
 
-
-
 	@Override
-	public ClassSummaryReport assembleClassSummaryReport(Long classid, Date date, Long clientid) {
+	public ClassSummaryReport assembleClassSummaryReport(Long classid,
+			Date date, Long clientid) {
 		// get client
 		ClientDao client = clientService.getClientForKey(clientid);
 		// get schoolgroup
-		SchoolGroupDao sg = classService.getClassForClient(classid,clientid);
-		
+		SchoolGroupDao sg = classService.getClassForClient(classid, clientid);
+
 		// create ClassSummaryReport from schoolgroup
 		ClassSummaryReport summaryreport = new ClassSummaryReport(sg);
-		
+
 		// fill in rundate, client
 		summaryreport.setClientname(client.getName());
 		summaryreport.setRundate(date);
-		
+
 		// fill in lists...
-		// 		checkedout on date
+		// checkedout on date
 		LendingSearchCriteria criteria = new LendingSearchCriteria();
 		criteria.setSchoolgroup(classid);
 		criteria.setCheckedouton(date);
-		List<LoanRecordDisplay> checkedout = lendingSearch.findLoanRecordsByCriteria(criteria, clientid);
+		List<LoanRecordDisplay> checkedout = lendingSearch
+				.findLoanRecordsByCriteria(criteria, clientid);
 		summaryreport.setCheckedoutlist(checkedout);
 
-		// 		overdue on date
+		// overdue on date
 		criteria.setCheckedouton(null);
 		criteria.setSchoolgroup(classid);
 		criteria.setOverdueOnly(true);
-		List<LoanRecordDisplay> overdue = lendingSearch.findLoanRecordsByCriteria(criteria, clientid);
+		List<LoanRecordDisplay> overdue = lendingSearch
+				.findLoanRecordsByCriteria(criteria, clientid);
+		// fill in teacherinfo
+		HashMap<Long, TeacherInfo> teacherInfo = classService
+				.getTeacherByClassForClient(client.getId());
+		for (LoanRecordDisplay lr : overdue) {
+			lr.setTeacherInfo(teacherInfo);
+		}
 		summaryreport.setOverduelist(overdue);
-		
-		// 		returned on date
+
+		// returned on date
 		criteria.setOverdueOnly(null);
 		criteria.setSchoolgroup(classid);
 		criteria.setReturnedon(date);
-		List<LoanHistoryDisplay> returned = lendingSearch.findLoanHistoryByCriteria(criteria, clientid);
+		List<LoanHistoryDisplay> returned = lendingSearch
+				.findLoanHistoryByCriteria(criteria, clientid);
 		summaryreport.setReturnedlist(returned);
-		
-		
+
 		return summaryreport;
 	}
 

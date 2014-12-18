@@ -321,49 +321,6 @@ public class LendingController {
 		return "lending/overduesummary";
 		}
 	
-	@RequestMapping(value="/overdue/all",params="print",method = RequestMethod.POST, produces = "text/html")
-	public String printOverdueNotice(LendingModel model, Model uiModel,
-				HttpServletRequest httpServletRequest, Principal principal) {
-			ClientDao client = clientService.getCurrentClient(principal);
-		String path = null;
-		Locale locale = httpServletRequest.getLocale();
-    	String lang = locale.getLanguage();
-    	
-		try {
-			path = lendingService.generateOverdueNotices(servletContext,lang,client.getId());
-			
-			return "redirect:" + path;
-		
-		} catch (FOPException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (JAXBException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (TransformerException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-			
-		// get list
-		List<LoanRecordDisplay> overdue = lendingService.getOverdueBooksForClient(client.getId());
-		// put list directly in uiModel
-		uiModel.addAttribute("overduebooks",overdue);
-		// get classinfo from model
-		HashMap<Long,TeacherInfo> classinfo = model.getClassinfo();
-		if (classinfo == null) {
-			classinfo = getClassInfo(client.getId());
-			model.setClassInfo(classinfo);
-		}
-		
-		uiModel.addAttribute("classInfo",model.getClassinfo());
-		
-		// to all overdue out for client page
-		return "lending/overduesummary";
-		}	
 
 	private void populateLendingModel(LendingModel model, Model uiModel) {
 		uiModel.addAttribute("lendingModel", model);

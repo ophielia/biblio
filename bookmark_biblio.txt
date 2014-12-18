@@ -3,14 +3,14 @@ Branch - lending USECASES 	4	   Checkout for class
 							7	   Printouts for day
 
 Immediate Roadmap
---->  BEGIN FO!!! :-)  YE-HOOO!!
 
 
-check login book section....
+add book - add publisher name
+for book without details - ability to change author / illustrator / publisher names - as well as isbn.
 
-teachername not showing up in loanhistory
 
 
+lendingcontroller
 
 
 5 min tasks (ha!! :-)
@@ -23,14 +23,9 @@ plus, REALLY long sessions
 
 ---- begin commit changes ----
 
-done - get generated into correct spots - not at all, actually! No thanks!!
-later - create java TotalSummaryReport
-done - begin work on report xsl 
-done - incorporate report into application
-done - make buttons for calling report by class
-done - will need language and client switches on templates
-nevermind - also - generating method for reportnames - client, namebase, timestamp
-done - create java ClassSummaryReport
+
+done - teachername not showing up in loanhistory
+done - booksearchcontroller, 
 
 ---- end commit changes ----
 
@@ -90,7 +85,14 @@ done - add checkout for teacher
 done  - good solution started with FO, and JAXB. POC  done
 done - 	get xsls into correct spots.
 done - 	flesh out overdue report
-
+done - get generated into correct spots - not at all, actually! No thanks!!
+later - create java TotalSummaryReport
+done - begin work on report xsl 
+done - incorporate report into application
+done - make buttons for calling report by class
+done - will need language and client switches on templates
+nevermind - also - generating method for reportnames - client, namebase, timestamp
+done - create java ClassSummaryReport
 
 ---- end branch changes ----
 

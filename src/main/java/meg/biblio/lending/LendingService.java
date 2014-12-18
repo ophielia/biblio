@@ -1,14 +1,7 @@
 package meg.biblio.lending;
 
-import java.io.IOException;
 import java.util.Date;
 import java.util.List;
-
-import javax.servlet.ServletContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.transform.TransformerException;
-
-import org.apache.fop.apps.FOPException;
 
 import meg.biblio.common.report.ClassSummaryReport;
 import meg.biblio.common.report.OverdueBookReport;

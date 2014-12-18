@@ -50,8 +50,9 @@ public class SchoolGroupController {
 
 
     @RequestMapping(method = RequestMethod.GET, produces = "text/html")
-	public String showClassList(Model uiModel, HttpServletRequest request) {
-    	Long clientkey = clientService.getCurrentClientKey(request);
+	public String showClassList(Model uiModel, HttpServletRequest request, Principal principal) {
+    	ClientDao client = clientService.getCurrentClient(principal);
+    	Long clientkey = client.getId();
 
 		List<SchoolGroupDao> classes = lendingService.getClassesForClient(clientkey);
     	uiModel.addAttribute("listofclasses",classes);
@@ -59,7 +60,7 @@ public class SchoolGroupController {
 	}
 
 	@RequestMapping(value="/create",params = "form",method = RequestMethod.GET, produces = "text/html")
-    public String createClassForm(Model uiModel, HttpServletRequest httpServletRequest) {
+    public String createClassForm(Model uiModel, HttpServletRequest httpServletRequest, Principal principal) {
     	// create empty book model
     	ClassModel model = new ClassModel();
     	// place in uiModel
@@ -69,8 +70,9 @@ public class SchoolGroupController {
     }
 
     @RequestMapping(value="/create",method = RequestMethod.POST, produces = "text/html")
-    public String createClass(ClassModel model,  Model uiModel,BindingResult bindingResult, HttpServletRequest httpServletRequest) {
-    	Long clientkey = clientService.getCurrentClientKey(httpServletRequest);
+    public String createClass(ClassModel model,  Model uiModel,BindingResult bindingResult, HttpServletRequest httpServletRequest, Principal principal) {
+    	ClientDao client = clientService.getCurrentClient(principal);
+    	Long clientkey = client.getId();
     	Locale locale = httpServletRequest.getLocale();
     	String lang = locale.getLanguage();
 
@@ -100,10 +102,10 @@ public class SchoolGroupController {
     }
 
     @RequestMapping(value="/editstudent/{id}", method = RequestMethod.GET, produces = "text/html")
-    public String showEditStudentForm(@PathVariable("id") Long studentid, Model uiModel, HttpServletRequest httpServletRequest) {
+    public String showEditStudentForm(@PathVariable("id") Long studentid, Model uiModel, HttpServletRequest httpServletRequest, Principal principal) {
     	Locale locale = httpServletRequest.getLocale();
     	String lang = locale.getLanguage();
-    	ClientDao client = clientService.getCurrentClient(httpServletRequest);
+    	ClientDao client = clientService.getCurrentClient(principal);
     	// load ClassModel
     	ClassModel sclass = lendingService.loadClassModelForStudent(studentid);
 
@@ -118,10 +120,10 @@ public class SchoolGroupController {
     	}
 
     @RequestMapping(value="/editstudent/{id}",  method = RequestMethod.POST, produces = "text/html")
-    public String saveEditStudent(@ModelAttribute("classModel") ClassModel classModel,@PathVariable("id") Long studentid, Model uiModel, BindingResult bindingResult,HttpServletRequest httpServletRequest) {
+    public String saveEditStudent(@ModelAttribute("classModel") ClassModel classModel,@PathVariable("id") Long studentid, Model uiModel, BindingResult bindingResult,HttpServletRequest httpServletRequest, Principal principal) {
     	Locale locale = httpServletRequest.getLocale();
     	String lang = locale.getLanguage();
-    	ClientDao client = clientService.getCurrentClient(httpServletRequest);
+    	ClientDao client = clientService.getCurrentClient(principal);
 
 		// validation
 		classValidator.validateNewStudentEntry(classModel, bindingResult);
@@ -156,10 +158,10 @@ public class SchoolGroupController {
     	}
 
     @RequestMapping(value="/editstudent/{id}", params="cancel", method = RequestMethod.POST, produces = "text/html")
-    public String cancelEditStudent(@ModelAttribute("classModel") ClassModel classModel,@PathVariable("id") Long studentid, Model uiModel, HttpServletRequest httpServletRequest) {
+    public String cancelEditStudent(@ModelAttribute("classModel") ClassModel classModel,@PathVariable("id") Long studentid, Model uiModel, HttpServletRequest httpServletRequest, Principal principal) {
     	Locale locale = httpServletRequest.getLocale();
     	String lang = locale.getLanguage();
-    	ClientDao client = clientService.getCurrentClient(httpServletRequest);
+    	ClientDao client = clientService.getCurrentClient(principal);
 
     	// load model
     	ClassModel sclass = lendingService.loadClassModelById(classModel.getClassid());
@@ -177,10 +179,10 @@ public class SchoolGroupController {
     	}
 
     @RequestMapping(value="/display/{id}", method = RequestMethod.GET, produces = "text/html")
-    public String showEditClassForm(@PathVariable("id") Long id, Model uiModel, HttpServletRequest httpServletRequest) {
+    public String showEditClassForm(@PathVariable("id") Long id, Model uiModel, HttpServletRequest httpServletRequest, Principal principal) {
     	Locale locale = httpServletRequest.getLocale();
     	String lang = locale.getLanguage();
-    	ClientDao client = clientService.getCurrentClient(httpServletRequest);
+    	ClientDao client = clientService.getCurrentClient(principal);
     	// load ClassModel
     	ClassModel sclass = lendingService.loadClassModelById(id);
 
@@ -199,9 +201,10 @@ public class SchoolGroupController {
 
 
     @RequestMapping(value="/display/{id}", method = RequestMethod.POST, produces = "text/html")
-	public String saveEditClass(@ModelAttribute("classModel") ClassModel bookModel,@PathVariable("id") Long id, Model uiModel, HttpServletRequest httpServletRequest) {
+	public String saveEditClass(@ModelAttribute("classModel") ClassModel bookModel,@PathVariable("id") Long id, Model uiModel, HttpServletRequest httpServletRequest, Principal principal) {
 		Locale locale = httpServletRequest.getLocale();
-		Long clientkey = clientService.getCurrentClientKey(httpServletRequest);
+    	ClientDao client = clientService.getCurrentClient(principal);
+    	Long clientkey = client.getId();
 		String lang = locale.getLanguage();
 
 
@@ -209,9 +212,10 @@ public class SchoolGroupController {
 	}
 
     @RequestMapping(value="/display/{id}", params="addnew",method = RequestMethod.POST, produces = "text/html")
-	public String addNewStudent(@ModelAttribute("classModel") ClassModel classModel,@PathVariable("id") Long id, BindingResult bindingResult,Model uiModel, HttpServletRequest httpServletRequest) {
+	public String addNewStudent(@ModelAttribute("classModel") ClassModel classModel,@PathVariable("id") Long id, BindingResult bindingResult,Model uiModel, HttpServletRequest httpServletRequest, Principal principal) {
 		Locale locale = httpServletRequest.getLocale();
-		Long clientkey = clientService.getCurrentClientKey(httpServletRequest);
+    	ClientDao client = clientService.getCurrentClient(principal);
+    	Long clientkey = client.getId();
 		String lang = locale.getLanguage();
 
 		ClassModel start = lendingService.loadClassModelById(id);
@@ -243,9 +247,10 @@ public class SchoolGroupController {
 	}
 
     @RequestMapping(value="/display/{id}", params="addstudents",method = RequestMethod.POST, produces = "text/html")
-	public String assignStudents(@ModelAttribute("classModel") ClassModel classModel,@PathVariable("id") Long id, Model uiModel, HttpServletRequest httpServletRequest) {
+	public String assignStudents(@ModelAttribute("classModel") ClassModel classModel,@PathVariable("id") Long id, Model uiModel, HttpServletRequest httpServletRequest, Principal principal) {
 		Locale locale = httpServletRequest.getLocale();
-		Long clientkey = clientService.getCurrentClientKey(httpServletRequest);
+    	ClientDao client = clientService.getCurrentClient(principal);
+    	Long clientkey = client.getId();
 		String lang = locale.getLanguage();
 
 		// get selected students
@@ -268,9 +273,10 @@ public class SchoolGroupController {
 
 
     @RequestMapping(value="/display/{id}", params="removestudents",method = RequestMethod.POST, produces = "text/html")
-	public String removeStudents(@ModelAttribute("classModel") ClassModel classModel,@PathVariable("id") Long id, Model uiModel, HttpServletRequest httpServletRequest) {
+	public String removeStudents(@ModelAttribute("classModel") ClassModel classModel,@PathVariable("id") Long id, Model uiModel, HttpServletRequest httpServletRequest, Principal principal) {
 		Locale locale = httpServletRequest.getLocale();
-		Long clientkey = clientService.getCurrentClientKey(httpServletRequest);
+    	ClientDao client = clientService.getCurrentClient(principal);
+    	Long clientkey = client.getId();
 		String lang = locale.getLanguage();
 
 		// get selected students
@@ -292,10 +298,10 @@ public class SchoolGroupController {
 	}
 
     @RequestMapping(value="/delete/{id}", method = RequestMethod.GET, produces = "text/html")
-    public String deleteClass(@PathVariable("id") Long id, Model uiModel, HttpServletRequest httpServletRequest) {
+    public String deleteClass(@PathVariable("id") Long id, Model uiModel, HttpServletRequest httpServletRequest, Principal principal) {
     	Locale locale = httpServletRequest.getLocale();
     	String lang = locale.getLanguage();
-    	ClientDao client = clientService.getCurrentClient(httpServletRequest);
+    	ClientDao client = clientService.getCurrentClient(principal);
 
     	lendingService.deleteClass(id, client.getId());
 
@@ -311,10 +317,10 @@ public class SchoolGroupController {
     	}
 
     @RequestMapping(value="/manage", params="increment", method = RequestMethod.POST, produces = "text/html")
-    public String incrementStudents( Model uiModel, HttpServletRequest httpServletRequest) {
+    public String incrementStudents( Model uiModel, HttpServletRequest httpServletRequest, Principal principal) {
     	Locale locale = httpServletRequest.getLocale();
     	String lang = locale.getLanguage();
-    	ClientDao client = clientService.getCurrentClient(httpServletRequest);
+    	ClientDao client = clientService.getCurrentClient(principal);
 
     	lendingService.moveAllStudentsToNextSection(client.getId());
 
@@ -324,10 +330,10 @@ public class SchoolGroupController {
     	}
 
     @RequestMapping(value="/manage", params="clearlists", method = RequestMethod.POST, produces = "text/html")
-    public String clearClassLists(Model uiModel, HttpServletRequest httpServletRequest) {
+    public String clearClassLists(Model uiModel, HttpServletRequest httpServletRequest, Principal principal) {
     	Locale locale = httpServletRequest.getLocale();
     	String lang = locale.getLanguage();
-    	ClientDao client = clientService.getCurrentClient(httpServletRequest);
+    	ClientDao client = clientService.getCurrentClient(principal);
 
 
     	lendingService.clearStudentListsForClient(client.getId());
@@ -343,7 +349,7 @@ public class SchoolGroupController {
 			HttpServletRequest httpServletRequest,Principal principal) {
 		Locale locale = httpServletRequest.getLocale();
 		String lang = locale.getLanguage();
-		ClientDao client = clientService.getCurrentClient(httpServletRequest);
+		ClientDao client = clientService.getCurrentClient(principal);
 
 		// add list of unassigned students to model
 		ClassModel model = new ClassModel();
@@ -359,10 +365,10 @@ public class SchoolGroupController {
 	}
 
     @RequestMapping(value="/remove", params="toremove", method = RequestMethod.POST, produces = "text/html")
-    public String removeStudentsFromSchool(@ModelAttribute("classModel") ClassModel classModel,Model uiModel, HttpServletRequest httpServletRequest) {
+    public String removeStudentsFromSchool(@ModelAttribute("classModel") ClassModel classModel,Model uiModel, HttpServletRequest httpServletRequest, Principal principal) {
     	Locale locale = httpServletRequest.getLocale();
     	String lang = locale.getLanguage();
-    	ClientDao client = clientService.getCurrentClient(httpServletRequest);
+    	ClientDao client = clientService.getCurrentClient(principal);
 
 		// get selected students
 		List<Long> idstoremove=classModel.getSelectedUnassignedIds();
@@ -410,8 +416,8 @@ public class SchoolGroupController {
     }
 
 	@ModelAttribute("clientname")
-	public String getClientName(HttpServletRequest httpServletRequest) {
-		ClientDao clientkey = clientService.getCurrentClient(httpServletRequest);
+	public String getClientName(HttpServletRequest httpServletRequest, Principal principal) {
+		ClientDao clientkey = clientService.getCurrentClient(principal);
 		return clientkey.getName();
 	}
 }
