@@ -4,15 +4,12 @@ Branch - lending USECASES 	4	   Checkout for class
 
 Immediate Roadmap
 --->  BEGIN FO!!! :-)  YE-HOOO!!
-get generated into correct spots.
 
-create java TotalSummaryReport
-begin work on report xsl
 
-will need language and client switches on templates
-also - generating method for reportnames - client, namebase, timestamp
+check login book section....
 
 teachername not showing up in loanhistory
+
 
 
 
@@ -26,7 +23,15 @@ plus, REALLY long sessions
 
 ---- begin commit changes ----
 
+done - get generated into correct spots - not at all, actually! No thanks!!
+later - create java TotalSummaryReport
+done - begin work on report xsl 
+done - incorporate report into application
+done - make buttons for calling report by class
+done - will need language and client switches on templates
+nevermind - also - generating method for reportnames - client, namebase, timestamp
 done - create java ClassSummaryReport
+
 ---- end commit changes ----
 
 
@@ -299,6 +304,7 @@ puzzle - how to insert a validator into controller test - basically, just do a d
 createCatalogEntryFromBookModel - graceful handling of exception calling google books api
 assignBookDetails - graceful handling of exception
 superadmin - wear hat.... (for client)
+LATER - ONE daily summary for all classes.  Handling of checkedout on reports run after date must include display and history....
 
 ******* NOTES ******
 

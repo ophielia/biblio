@@ -38,5 +38,9 @@ public class ClientDao {
 	private Integer studentCOLimit;
 	
 	private Integer teacherCOLimit;
+	
+	private String overduexslbase;
+	
+	private String classsummaryxslbase;
 }
 

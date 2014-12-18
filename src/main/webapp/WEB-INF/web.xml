@@ -18,6 +18,10 @@
         <param-value>classpath*:META-INF/spring/applicationContext*.xml</param-value>
     </context-param>
     
+    
+    
+    
+    
     <filter>
         <filter-name>CharacterEncodingFilter</filter-name>
         <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>

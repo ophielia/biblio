@@ -17,6 +17,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <spring:message code="label_lendingauthor" htmlEscape="false" var="lauthor"/>
 <spring:message code="label_lendingcheckedout" htmlEscape="false" var="lcheckedout"/>
 <spring:message code="label_lendingduedate" htmlEscape="false" var="lduedate"/>
+<spring:message code="action_lending_printoverdue" htmlEscape="false" var="bprint"/>
 
 
 
@@ -52,9 +53,9 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 </tbody>
 
 </table>
-<spring:url value="/lending/overdue/all" var="actionurl"/>
+<spring:url value="/pdfwrangler/overduenotices" var="actionurl" target="_blank"/>
 <form:form action="${actionurl}" id="classlist" method="POST" modelAttribute="lendingModel">
-<input type="submit" value="DO NOTICES" name="print"></input>
+<input type="submit" value="${bprint}" name="print"></input>
 </form:form>
 
 </div>

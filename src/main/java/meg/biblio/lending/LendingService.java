@@ -35,8 +35,7 @@ public interface LendingService {
 
 	OverdueBookReport assembleOverdueBookReport(Long clientid);
 
-	String generateOverdueNotices(ServletContext servletContext, Long id) throws FOPException, JAXBException, TransformerException, IOException;
-
 	ClassSummaryReport assembleClassSummaryReport(Long classid, Date date,
 			Long clientid);
+
 }

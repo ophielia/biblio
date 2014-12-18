@@ -45,6 +45,13 @@ import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
+
+/**
+ * THIS CLASS IS FOR DEVELOPMENT ONLY!!!
+ * 
+ * @author Margaret
+ *
+ */
 @Component
 public class ReportGenerator {
 
@@ -59,12 +66,73 @@ public class ReportGenerator {
 	@Autowired
 	ClientService clientService;
 	
+	
+    @Value("${biblio.report.outputwebdir}")
+    private String reportwebdir;
+	
 	private FopFactory fopFactory = FopFactory.newInstance();
 	private TransformerFactory tFactory = TransformerFactory.newInstance();
 
-    @Value("${biblio.report.transformsrc}")
-    private String transformdir;
 	
+	public String generateOverdueNoticeReport(String xslfilename,String outputpath, OverdueBookReport obr, Long clientid) throws FOPException, JAXBException, TransformerException, IOException {
+		long millis = new Date().getTime();
+		String reportname = clientid + "overdue" + millis + ".pdf";
+		
+		String outputfilename = outputpath + reportname;
+		
+		//OutputStream out = new BufferedOutputStream(new FileOutputStream(new File("C:/Temp/togetherfile.pdf")));
+		OutputStream out = new BufferedOutputStream(new FileOutputStream(new File(outputfilename)));
+		try {
+		
+		Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, out);
+		JAXBContext context = JAXBContext.newInstance(OverdueBookReport.class);
+		JAXBSource source = new JAXBSource(context,obr);
+		
+		//Setup Transformer
+		Source xsltSrc = new StreamSource(new File(xslfilename));
+		Transformer transformer = tFactory.newTransformer(xsltSrc);
+		
+		//Make sure the XSL transformation's result is piped through to FOP
+		Result res = new SAXResult(fop.getDefaultHandler());
+	
+		//Start the transformation and rendering process
+		transformer.transform(source, res);
+		} finally {
+			   out.close();
+		}
+		return reportwebdir + reportname;
+	}
+	
+	public String generateClassSummaryReport(String xslfilename,String outputpath, ClassSummaryReport csr, Long clientid) throws FOPException, JAXBException, TransformerException, IOException {
+		long millis = new Date().getTime();
+		String reportname = clientid + "classsummary" + millis + ".pdf";
+		
+		String outputfilename = outputpath + reportname;
+		
+		//OutputStream out = new BufferedOutputStream(new FileOutputStream(new File("C:/Temp/togetherfile.pdf")));
+		OutputStream out = new BufferedOutputStream(new FileOutputStream(new File(outputfilename)));
+		try {
+		
+		Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, out);
+		JAXBContext context = JAXBContext.newInstance(OverdueBookReport.class);
+		JAXBSource source = new JAXBSource(context,csr);
+		
+		//Setup Transformer
+		Source xsltSrc = new StreamSource(new File(xslfilename));
+		Transformer transformer = tFactory.newTransformer(xsltSrc);
+		
+		//Make sure the XSL transformation's result is piped through to FOP
+		Result res = new SAXResult(fop.getDefaultHandler());
+	
+		//Start the transformation and rendering process
+		transformer.transform(source, res);
+		} finally {
+			   out.close();
+		}
+		return outputfilename;
+	}	
+
+
 	public void testHelloWorld() throws IOException, TransformerException {
 		BookDao book = new BookDao();
 		book.setTitle("beep");;
@@ -129,38 +197,12 @@ public class ReportGenerator {
 		
 		}
 
-public String generateOverdueNoticeReport(String xslfilename,String outputpath, OverdueBookReport obr) throws FOPException, JAXBException, TransformerException, IOException {
-	String outputfilename = outputpath + "togetherfile.pdf";
-	
-	//OutputStream out = new BufferedOutputStream(new FileOutputStream(new File("C:/Temp/togetherfile.pdf")));
-	OutputStream out = new BufferedOutputStream(new FileOutputStream(new File(outputfilename)));
-	try {
-	
-	Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, out);
-	JAXBContext context = JAXBContext.newInstance(OverdueBookReport.class);
-	JAXBSource source = new JAXBSource(context,obr);
-	
-	//Setup Transformer
-	Source xsltSrc = new StreamSource(new File(xslfilename));
-	Transformer transformer = tFactory.newTransformer(xsltSrc);
-	
-	//Make sure the XSL transformation's result is piped through to FOP
-	Result res = new SAXResult(fop.getDefaultHandler());
-
-	//Start the transformation and rendering process
-	transformer.transform(source, res);
-	} finally {
-		   out.close();
-	}
-	return outputfilename;
-}
-	
 public void testMakeAnClassSummaryXml(Long clientid) throws JAXBException {
 	Calendar cal = Calendar.getInstance();
 	cal.set(Calendar.MONTH,Calendar.DECEMBER);
 	cal.set(Calendar.DAY_OF_MONTH, 1);
 	
-	ClassSummaryReport summary = lendingService.assembleClassSummaryReport(22042L, cal.getTime(), 1L);
+	ClassSummaryReport summary = lendingService.assembleClassSummaryReport(21486L, new Date(), 1L);
 	
 	JAXBContext context = JAXBContext.newInstance(ClassSummaryReport.class);
 	Marshaller m = context.createMarshaller();
@@ -171,8 +213,7 @@ public void testMakeAnClassSummaryXml(Long clientid) throws JAXBException {
 	}
 
 public void developXSL() throws IOException, TransformerException {
-	BookDao book = new BookDao();
-	book.setTitle("beep");;
+
 
 	// Step 2: Set up output stream.
 	// Note: Using BufferedOutputStream for performance reasons (helpful with FileOutputStreams).

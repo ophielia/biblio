@@ -50,6 +50,11 @@ public class LoanHistoryDisplay {
 	public Long getBookid() {
 		return this.book.getId();
 	}
+	
+	@XmlElement
+	public String getBookclientid() {
+		return this.book.getClientbookid();
+	}	
 
 	@XmlTransient
 	public Long getClasssid() {

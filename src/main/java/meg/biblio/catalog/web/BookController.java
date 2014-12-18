@@ -2,6 +2,7 @@ package meg.biblio.catalog.web;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.security.Principal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -17,6 +18,7 @@ import meg.biblio.catalog.web.model.BookModel;
 import meg.biblio.catalog.web.validator.BookModelValidator;
 import meg.biblio.common.ClientService;
 import meg.biblio.common.SelectKeyService;
+import meg.biblio.common.db.dao.ClientDao;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -50,7 +52,8 @@ public class BookController {
 
 	
     @RequestMapping(params = "form",method = RequestMethod.GET, produces = "text/html")
-    public String createBookEntryForm(Model uiModel, HttpServletRequest httpServletRequest) {
+    public String createBookEntryForm(Model uiModel, HttpServletRequest httpServletRequest, Principal principal) {
+    	
     	// create empty book model
     	BookModel model = new BookModel();
     	// place in uiModel
@@ -61,8 +64,9 @@ public class BookController {
     }
     
     @RequestMapping(method = RequestMethod.POST, produces = "text/html")
-    public String createBookEntry(BookModel model,  Model uiModel,BindingResult bindingResult, HttpServletRequest httpServletRequest) {
-    	Long clientkey = clientService.getCurrentClientKey(httpServletRequest);
+    public String createBookEntry(BookModel model,  Model uiModel,BindingResult bindingResult, HttpServletRequest httpServletRequest, Principal principal) {
+    	ClientDao client = clientService.getCurrentClient(principal);
+    	Long clientkey = client.getId();
     	Locale locale = httpServletRequest.getLocale();
     	String lang = locale.getLanguage();
     	bookValidator.validateSimpleEntry(model, bindingResult);
@@ -94,7 +98,7 @@ public class BookController {
     }    
     
     @RequestMapping(value="/display/{id}", method = RequestMethod.GET, produces = "text/html")
-    public String showBook(@PathVariable("id") Long id, Model uiModel, HttpServletRequest httpServletRequest) {
+    public String showBook(@PathVariable("id") Long id, Model uiModel, HttpServletRequest httpServletRequest, Principal principal) {
     	Locale locale = httpServletRequest.getLocale();
     	String lang = locale.getLanguage();
 
@@ -109,7 +113,7 @@ public class BookController {
     }   
     
     @RequestMapping(value="/edit/{id}", method = RequestMethod.GET, produces = "text/html")
-    public String showEditBookForm(@PathVariable("id") Long id, Model uiModel, HttpServletRequest httpServletRequest) {
+    public String showEditBookForm(@PathVariable("id") Long id, Model uiModel, HttpServletRequest httpServletRequest, Principal principal) {
     	Locale locale = httpServletRequest.getLocale();
     	String lang = locale.getLanguage();
 
@@ -124,9 +128,10 @@ public class BookController {
     }    
     
     @RequestMapping(value="/edit/{id}", method = RequestMethod.POST, produces = "text/html")
-    public String saveEditBook(@ModelAttribute("bookModel") BookModel bookModel,@PathVariable("id") Long id, Model uiModel, HttpServletRequest httpServletRequest) {
+    public String saveEditBook(@ModelAttribute("bookModel") BookModel bookModel,@PathVariable("id") Long id, Model uiModel, HttpServletRequest httpServletRequest, Principal principal) {
+    	ClientDao client = clientService.getCurrentClient(principal);
+    	Long clientkey = client.getId();
     	Locale locale = httpServletRequest.getLocale();
-    	Long clientkey = clientService.getCurrentClientKey(httpServletRequest);
     	String lang = locale.getLanguage();
 
     	// only making a few changes. load the model from the database, and copy changes into database model (from passed model)
@@ -147,7 +152,7 @@ public class BookController {
     }     
     
     @RequestMapping(value="/choosedetails/{id}", method = RequestMethod.GET, produces = "text/html")
-    public String showBookDetails(@PathVariable("id") Long id, Model uiModel, HttpServletRequest httpServletRequest) {
+    public String showBookDetails(@PathVariable("id") Long id, Model uiModel, HttpServletRequest httpServletRequest, Principal principal) {
     	Locale locale = httpServletRequest.getLocale();
     	String lang = locale.getLanguage();
 
@@ -166,7 +171,7 @@ public class BookController {
     }     
     
     @RequestMapping(value="/choosedetails", params={"detailid","bookid"} ,method = RequestMethod.POST, produces = "text/html")
-    public String assignBookDetails(@RequestParam("detailid") Long detailid, @RequestParam("bookid") Long bookid,Model uiModel, HttpServletRequest httpServletRequest) {
+    public String assignBookDetails(@RequestParam("detailid") Long detailid, @RequestParam("bookid") Long bookid,Model uiModel, HttpServletRequest httpServletRequest, Principal principal) {
     	// call catalog service
     	try {
 			catalogService.assignDetailToBook(detailid, bookid);
@@ -184,10 +189,11 @@ public class BookController {
  
     
     @ModelAttribute("classHash")
-    public HashMap<Long,ClassificationDao> getClassificationInfo(HttpServletRequest httpServletRequest) {
+    public HashMap<Long,ClassificationDao> getClassificationInfo(HttpServletRequest httpServletRequest, Principal principal) {
     	Locale locale = httpServletRequest.getLocale();
     	String lang = locale.getLanguage();
-    	Long clientkey = clientService.getCurrentClientKey(httpServletRequest);
+    	ClientDao client = clientService.getCurrentClient(principal);
+    	Long clientkey = client.getId();
     	
     	HashMap<Long,ClassificationDao> shelfclasses =catalogService.getShelfClassHash(clientkey,lang);
     			
@@ -195,10 +201,11 @@ public class BookController {
     }
     
     @ModelAttribute("classJson")
-    public String getClassificationInfoAsJson(HttpServletRequest httpServletRequest) {
+    public String getClassificationInfoAsJson(HttpServletRequest httpServletRequest, Principal principal) {
     	Locale locale = httpServletRequest.getLocale();
     	String lang = locale.getLanguage();
-    	Long clientkey = clientService.getCurrentClientKey(httpServletRequest);
+    	ClientDao client = clientService.getCurrentClient(principal);
+    	Long clientkey = client.getId();
     	
     	List<ClassificationDao> shelfclasses =catalogService.getShelfClassList(clientkey,lang);
     	

@@ -12,5 +12,7 @@
         <field:display field="teachercheckouttime" id="s_meg_biblio_common_db_dao_ClientDao_teachercheckouttime" object="${clientdao}" z="aR12WQrZdKjrwDT9WDNeDAVuuuw="/>
         <field:display field="studentCOLimit" id="s_meg_biblio_common_db_dao_ClientDao_studentCOLimit" object="${clientdao}" z="9XNC4LEgVpl9ILh6da7ETX3z5cM="/>
         <field:display field="teacherCOLimit" id="s_meg_biblio_common_db_dao_ClientDao_teacherCOLimit" object="${clientdao}" z="EgVfkJK+cHPog0FWI/BQ742vyZs="/>
+        <field:display field="overduexslbase" id="s_meg_biblio_common_db_dao_ClientDao_overduexslbase" object="${clientdao}" z="sv/2eDTli0ml5YuvRBZl7I30zlc="/>
+        <field:display field="classsummaryxslbase" id="s_meg_biblio_common_db_dao_ClientDao_classsummaryxslbase" object="${clientdao}" z="oVKZgex8/ELA67RqliKxDvnOhUQ="/>
     </page:show>
 </div>

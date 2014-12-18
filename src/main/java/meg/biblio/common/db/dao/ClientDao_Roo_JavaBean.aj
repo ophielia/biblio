@@ -89,4 +89,20 @@ privileged aspect ClientDao_Roo_JavaBean {
         this.teacherCOLimit = teacherCOLimit;
     }
     
+    public String ClientDao.getOverduexslbase() {
+        return this.overduexslbase;
+    }
+    
+    public void ClientDao.setOverduexslbase(String overduexslbase) {
+        this.overduexslbase = overduexslbase;
+    }
+    
+    public String ClientDao.getClasssummaryxslbase() {
+        return this.classsummaryxslbase;
+    }
+    
+    public void ClientDao.setClasssummaryxslbase(String classsummaryxslbase) {
+        this.classsummaryxslbase = classsummaryxslbase;
+    }
+    
 }

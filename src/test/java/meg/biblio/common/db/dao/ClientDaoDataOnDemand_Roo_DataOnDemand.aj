@@ -30,10 +30,12 @@ privileged aspect ClientDaoDataOnDemand_Roo_DataOnDemand {
     public ClientDao ClientDaoDataOnDemand.getNewTransientClientDao(int index) {
         ClientDao obj = new ClientDao();
         setClassifyimplementation(obj, index);
+        setClasssummaryxslbase(obj, index);
         setImagepath(obj, index);
         setImportfileconfig(obj, index);
         setImportmapconfig(obj, index);
         setName(obj, index);
+        setOverduexslbase(obj, index);
         setStudentCOLimit(obj, index);
         setStudentcheckouttime(obj, index);
         setTeacherCOLimit(obj, index);
@@ -44,6 +46,11 @@ privileged aspect ClientDaoDataOnDemand_Roo_DataOnDemand {
     public void ClientDaoDataOnDemand.setClassifyimplementation(ClientDao obj, int index) {
         String classifyimplementation = "classifyimplementation_" + index;
         obj.setClassifyimplementation(classifyimplementation);
+    }
+    
+    public void ClientDaoDataOnDemand.setClasssummaryxslbase(ClientDao obj, int index) {
+        String classsummaryxslbase = "classsummaryxslbase_" + index;
+        obj.setClasssummaryxslbase(classsummaryxslbase);
     }
     
     public void ClientDaoDataOnDemand.setImagepath(ClientDao obj, int index) {
@@ -64,6 +71,11 @@ privileged aspect ClientDaoDataOnDemand_Roo_DataOnDemand {
     public void ClientDaoDataOnDemand.setName(ClientDao obj, int index) {
         String name = "name_" + index;
         obj.setName(name);
+    }
+    
+    public void ClientDaoDataOnDemand.setOverduexslbase(ClientDao obj, int index) {
+        String overduexslbase = "overduexslbase_" + index;
+        obj.setOverduexslbase(overduexslbase);
     }
     
     public void ClientDaoDataOnDemand.setStudentCOLimit(ClientDao obj, int index) {

@@ -63,7 +63,7 @@ public class ReportGeneratorTest {
 		OverdueBookReport obr = lendingService.assembleOverdueBookReport(1L);
 		String transformpath = "c:/Users/Margaret/Documents/workspace/biblio/src/main/resources/META-INF/web-resources/transform/table-en.xsl";
 		String outputpath = "C:/Temp/";
-		rGen.generateOverdueNoticeReport(transformpath, outputpath, obr);
+		rGen.generateOverdueNoticeReport(transformpath, outputpath, obr,1L);
 		Assert.assertEquals(1L,1L);
 	}
 	

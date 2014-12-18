@@ -18,6 +18,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <spring:message code="action_lending_checkout" htmlEscape="false" var="bcheckout"/>
 <spring:message code="action_lending_checkoutforteacher" htmlEscape="false" var="bcheckoutforclass"/>
 <spring:message code="action_lending_gotoreturn" htmlEscape="false" var="bgotoreturn"/>
+<spring:message code="action_lending_printclasssummary" htmlEscape="false" var="bprint"/>
 
 
 
@@ -47,6 +48,7 @@ background-color: #648C1D;
 </style>
 
 <spring:url value="/lending/checkout" var="studentactionurl"/>
+<spring:url value="/pdfwrangler/classsummary" var="reporturl"/>
 <script type="text/javascript">
  require([
           'dojo/dom',"dojo/on","dijit/TooltipDialog", "dijit/popup",
@@ -59,7 +61,19 @@ background-color: #648C1D;
 			return stripped;
 		} 
 
-	   	
+	  
+	 	
+		on(dojo.byId("genreport"), 'click', function(event) {
+			clickedid = event.currentTarget.id;
+			classid = ${lendingModel.classid};
+	  		  var form = dojo.byId('classlist');
+	  		  form.action = "${reporturl}/" + classid;
+	  		  form.target="_blank";
+	  		  form.method="post";
+	  		  form.submit();
+		});
+	 	
+	 	
 		// wire up sort buttons
 		dojo.query(".selectspan").forEach(function(node) {
 			var id = node.id;
@@ -145,8 +159,10 @@ background-color: #648C1D;
 </tbody>
 
 </table>
+
 <spring:url value="/lending/return" var="returnurl"/>
 <div style="float:right"><a class="linkbutton" href="${returnurl }">${bgotoreturn}</a></div>
+<div style="float:right"><a id="genreport" class="linkbutton" href="#">${bprint}</a></div>
 <div style="clear:both">  </div>
 </form:form>
 

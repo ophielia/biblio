@@ -79,6 +79,9 @@ public class LendingServiceImpl implements LendingService {
     @Value("${biblio.report.outputdir}")
     private String reportdir;
 
+    @Value("${biblio.report.transformdir}")
+    private String transformdir;
+    
 	@Override
 	public LoanRecordDao checkoutBook(Long bookid, Long borrowerid,
 			Long clientid) {
@@ -263,21 +266,7 @@ public class LendingServiceImpl implements LendingService {
 		return obr;
 	}
 
-	@Override
-	public String generateOverdueNotices(ServletContext servletContext, Long id) throws FOPException, JAXBException, TransformerException, IOException {
-		OverdueBookReport obr = assembleOverdueBookReport(1L);
-		String transformpath =servletContext.getRealPath("/WEB-INF/classes/META-INF/web-resources/transform/" + ReportGenerator.Transform.OVERDUE + "-en.xsl");
-		
-		//FileSystemResource resource = new FileSystemResource("/resources/transform/clientname2fo.xsl");
-/*		Resource resource = 
-		          appContext.getResource("classpath:/resources/transform/clientname2fo.xsl");
-		String test = resource.getFilename();
-		File test2 = resource.getFile();*/
-		//String transformpath = "c:/Users/Margaret/Documents/workspace/biblio/src/main/resources/META-INF/web-resources/transform/clientname2fo.xsl";
-		String outputpath = this.reportdir;
-		String filename = rGen.generateOverdueNoticeReport(transformpath, outputpath, obr);
-		return filename;
-	}
+
 
 	@Override
 	public ClassSummaryReport assembleClassSummaryReport(Long classid, Date date, Long clientid) {

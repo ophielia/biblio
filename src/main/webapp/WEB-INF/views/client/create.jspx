@@ -13,6 +13,8 @@
         <field:input field="teachercheckouttime" id="c_meg_biblio_common_db_dao_ClientDao_teachercheckouttime" validationMessageCode="field_invalid_integer" z="mIvbiYG1P3nEMBqcUhTCSuibY+k="/>
         <field:input field="studentCOLimit" id="c_meg_biblio_common_db_dao_ClientDao_studentCOLimit" validationMessageCode="field_invalid_integer" z="JfKf2kYy5SAO7ze5Ekk05S+tvlY="/>
         <field:input field="teacherCOLimit" id="c_meg_biblio_common_db_dao_ClientDao_teacherCOLimit" validationMessageCode="field_invalid_integer" z="RBKEEV01O2qzIsiAPbidLkUDa7U="/>
+        <field:input field="overduexslbase" id="c_meg_biblio_common_db_dao_ClientDao_overduexslbase" z="i1Umu9oiSetzxyJxVJLc9aIREo0="/>
+        <field:input field="classsummaryxslbase" id="c_meg_biblio_common_db_dao_ClientDao_classsummaryxslbase" z="SEkp10E1EAMBajKCH7Qei0Wb5y4="/>
     </form:create>
     <form:dependency dependencies="${dependencies}" id="d_meg_biblio_common_db_dao_ClientDao" render="${not empty dependencies}" z="OwI62yfU4B0oekp3l8B94MMTsmY="/>
 </div>

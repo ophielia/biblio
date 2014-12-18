@@ -326,9 +326,14 @@ public class LendingController {
 				HttpServletRequest httpServletRequest, Principal principal) {
 			ClientDao client = clientService.getCurrentClient(principal);
 		String path = null;
-		
+		Locale locale = httpServletRequest.getLocale();
+    	String lang = locale.getLanguage();
+    	
 		try {
-			path = lendingService.generateOverdueNotices(servletContext,client.getId());
+			path = lendingService.generateOverdueNotices(servletContext,lang,client.getId());
+			
+			return "redirect:" + path;
+		
 		} catch (FOPException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -343,9 +348,7 @@ public class LendingController {
 			e.printStackTrace();
 		}
 			
-			// redirect to path
-		
-			// get list
+		// get list
 		List<LoanRecordDisplay> overdue = lendingService.getOverdueBooksForClient(client.getId());
 		// put list directly in uiModel
 		uiModel.addAttribute("overduebooks",overdue);

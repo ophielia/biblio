@@ -28,7 +28,20 @@
                       substring($dt, 1, 4)
                       )"/>. Please return it as soon as possible.
 
-            Date and Signature
+<fo:table  table-layout="fixed" >
+<fo:table-column column-width="140mm"/>
+<fo:table-column column-width="40mm"/>
+<fo:table-body >
+  <fo:table-row >
+    <fo:table-cell >
+     <fo:block text-align="left">Date</fo:block>
+    </fo:table-cell>    
+    <fo:table-cell text-align="left">
+	<fo:block text-align="left">Signature</fo:block>
+	</fo:table-cell>
+  </fo:table-row>
+</fo:table-body>
+</fo:table>
           </fo:block>
              </fo:block>
           </xsl:for-each>
