@@ -24,8 +24,6 @@ plus, REALLY long sessions
 ---- begin commit changes ----
 
 
-done - teachername not showing up in loanhistory
-done - booksearchcontroller, 
 
 ---- end commit changes ----
 
@@ -33,66 +31,8 @@ done - booksearchcontroller,
 
 ----- begin branch changes ----
 
-done - 	test/implement lendBook
-done - 	test/implement returnBook
-done - run once without transaction to insert test data - for checkout - returns, we're on our own!!
-done - create LendingRecordDisplay
-done - create sql LendingRecordDisplay 
-done - create LendingSearchCriteria
-done - trouble with authors and books - multiple authors will produce multiple lines for loan record.  Solve this by making it into a tuple - lrd, book.then postprocess query results adding book to lrd.  ugly, but no more time for this!!!add isteacher to sql, LRD
-done - begin work on sqls
-done - 	then - LendingSearchService, Lending display objects, LendingSearchCriteria
-done - add Where clause to LSS
-done - mockup of controller to flesh out LS calls
-done - -- for querying type --- in person, define type @Column(name="ENTITY_TYPE",insertable=false,updatable=false)
-done - -- puzzle - multiple authors doesn't lead to multiple lines....
-done -   	CMSI - getStudentsForClass test / implement / test
-done -	LoginSI - getClientForUsername test / implementt / test
-done -	CMSI getClassInfoForClient test / implement / test
-done -	LSI - getCheckedOutBooksForClass test / implement / test
-done - 	LSI - getCheckedOutBooksForUser test / implement / test
-done - NOTE - don't delete teachers - set to inactive!! used in loanhistory...
-done - 	LSI getAllCheckedOutForClient
-done - 	LSI getAllOverdueForClient
-done - 	LSI getLendingLimitForUser
-done - test and implement new backend methods....
-done - begin putting together pages, and wiring to controller
-done - beginning - front end. first pass ugly - blasting through pages, and then prettify
-done - checkout page - works
-done - select student - works
-done - select book - works
-done - confirm checkout - (remove later, but) works
-done - checkout - works
-done - return pages
-done - first pass checkedout
-done - first pass overdue summary
-done -  graceful exit when session has timed out
-done - oh- update status of book upon checkout and return
-done - clear book / bookid after checkout
-done - clear bookid after book is found
-done - checkout polite
-done - checkoutsummary.jspx polite
-done - return.jspx polite
-done - checkoutsuccess.jspx
-(don't do) - confirmcheckout.jspx
-done - overduesummary.jspx
-done - messages for checkout / remove checkout confirmation page
-done - linkbutton around...
-done - selectbook.jspx
-done - make the pages polite (and bilingual)
-done - validations - borrower, book
-done - add checkout for teacher
-done  - good solution started with FO, and JAXB. POC  done
-done - 	get xsls into correct spots.
-done - 	flesh out overdue report
-done - get generated into correct spots - not at all, actually! No thanks!!
-later - create java TotalSummaryReport
-done - begin work on report xsl 
-done - incorporate report into application
-done - make buttons for calling report by class
-done - will need language and client switches on templates
-nevermind - also - generating method for reportnames - client, namebase, timestamp
-done - create java ClassSummaryReport
+
+
 
 ---- end branch changes ----
 
@@ -295,6 +235,73 @@ done - fill in page
 done - also - general nav improvements - class overview from class pages, and class management page
 done - add validations to classes 
 done - validations - SGC, addNewStudent
+
+**** LENDING BRANCH *****
+
+done - 	test/implement lendBook
+done - 	test/implement returnBook
+done - run once without transaction to insert test data - for checkout - returns, we're on our own!!
+done - create LendingRecordDisplay
+done - create sql LendingRecordDisplay 
+done - create LendingSearchCriteria
+done - trouble with authors and books - multiple authors will produce multiple lines for loan record.  Solve this by making it into a tuple - lrd, book.then postprocess query results adding book to lrd.  ugly, but no more time for this!!!add isteacher to sql, LRD
+done - begin work on sqls
+done - 	then - LendingSearchService, Lending display objects, LendingSearchCriteria
+done - add Where clause to LSS
+done - mockup of controller to flesh out LS calls
+done - -- for querying type --- in person, define type @Column(name="ENTITY_TYPE",insertable=false,updatable=false)
+done - -- puzzle - multiple authors doesn't lead to multiple lines....
+done -   	CMSI - getStudentsForClass test / implement / test
+done -	LoginSI - getClientForUsername test / implementt / test
+done -	CMSI getClassInfoForClient test / implement / test
+done -	LSI - getCheckedOutBooksForClass test / implement / test
+done - 	LSI - getCheckedOutBooksForUser test / implement / test
+done - NOTE - don't delete teachers - set to inactive!! used in loanhistory...
+done - 	LSI getAllCheckedOutForClient
+done - 	LSI getAllOverdueForClient
+done - 	LSI getLendingLimitForUser
+done - test and implement new backend methods....
+done - begin putting together pages, and wiring to controller
+done - beginning - front end. first pass ugly - blasting through pages, and then prettify
+done - checkout page - works
+done - select student - works
+done - select book - works
+done - confirm checkout - (remove later, but) works
+done - checkout - works
+done - return pages
+done - first pass checkedout
+done - first pass overdue summary
+done -  graceful exit when session has timed out
+done - oh- update status of book upon checkout and return
+done - clear book / bookid after checkout
+done - clear bookid after book is found
+done - checkout polite
+done - checkoutsummary.jspx polite
+done - return.jspx polite
+done - checkoutsuccess.jspx
+(don't do) - confirmcheckout.jspx
+done - overduesummary.jspx
+done - messages for checkout / remove checkout confirmation page
+done - linkbutton around...
+done - selectbook.jspx
+done - make the pages polite (and bilingual)
+done - validations - borrower, book
+done - add checkout for teacher
+done  - good solution started with FO, and JAXB. POC  done
+done - 	get xsls into correct spots.
+done - 	flesh out overdue report
+done - get generated into correct spots - not at all, actually! No thanks!!
+later - create java TotalSummaryReport
+done - begin work on report xsl 
+done - incorporate report into application
+done - make buttons for calling report by class
+done - will need language and client switches on templates
+nevermind - also - generating method for reportnames - client, namebase, timestamp
+done - create java ClassSummaryReport
+done - teachername not showing up in loanhistory
+done - booksearchcontroller, 
+
+
 ----- end complete history ----
 
 ******* LATER DEVPT ******
