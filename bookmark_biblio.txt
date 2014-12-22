@@ -9,8 +9,10 @@ add book - add publisher name
 for book without details - ability to change author / illustrator / publisher names - as well as isbn.
 
 
-
-lendingcontroller
+to lock down...
+/import
+/admin
+/classes
 
 
 5 min tasks (ha!! :-)
