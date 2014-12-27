@@ -20,28 +20,6 @@ public interface CatalogService {
 	String detailstatuslkup = "detailstatus";
 	String languagelkup = "language";
 
-	BookModel createCatalogEntryFromBookModel(Long clientkey, BookModel model);
-
-	BookModel loadBookModel(Long id);
-
-	List<BookDao> getAllBooks();
-
-	public ArtistDao textToArtistName(String text);
-
-	public List<FoundDetailsDao> getFoundDetailsForBook(Long id);
-	public void classifyBook(Long bookid) throws ClassNotFoundException, InstantiationException, IllegalAccessException;
-	public void assignDetailToBook(Long detailid, Long bookid)
-			throws GeneralSecurityException, IOException;
-
-	void createCatalogEntriesFromList(Long clientkey, List<BookModel> toimport);
-
-	public PublisherDao findPublisherForName(String text);
-
-	public void fillInDetailsForList(List<BookModel> searchobjects)
-			throws GeneralSecurityException, IOException;
-
-	public BookDao saveBook(BookDao book);
-	
 	public final static  class Status {
 		public static final long CHECKEDOUT = 1;
 		public static final long SHELVED = 2;
@@ -65,9 +43,31 @@ public interface CatalogService {
 		public static final long MULTIDETAILSFOUND = 3;
 		public static final long DETAILFOUND = 4;
 	}
-	
-	
 
+
+
+	BookModel createCatalogEntryFromBookModel(Long clientkey, BookModel model);
+
+	BookModel loadBookModel(Long id);
+
+	List<BookDao> getAllBooks();
+
+	public ArtistDao textToArtistName(String text);
+
+	public List<FoundDetailsDao> getFoundDetailsForBook(Long id);
+	public void classifyBook(Long bookid) throws ClassNotFoundException, InstantiationException, IllegalAccessException;
+	public void assignDetailToBook(Long detailid, Long bookid)
+			throws GeneralSecurityException, IOException;
+
+	void createCatalogEntriesFromList(Long clientkey, List<BookModel> toimport);
+
+	public PublisherDao findPublisherForName(String text);
+
+	public void fillInDetailsForList(List<BookModel> searchobjects)
+			throws GeneralSecurityException, IOException;
+
+	public BookDao saveBook(BookDao book);
+	
 	HashMap<Long, ClassificationDao> getShelfClassHash(Long clientkey,
 			String lang);
 
@@ -77,7 +77,7 @@ public interface CatalogService {
 
 	void assignStatusToBooks(Long statusupdate, List<Long> toupdate);
 
-	BookModel updateCatalogEntryFromBookModel(Long clientkey, BookModel model);
+	BookModel updateCatalogEntryFromBookModel(Long clientkey, BookModel model, Boolean fillindetails) throws GeneralSecurityException, IOException;
 
 	 BookDao findBookByClientBookId(String bookid, ClientDao client) ;
 

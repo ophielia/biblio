@@ -29,11 +29,8 @@ define([
     	
     	showemptyselect:false,
 
-        // Using require.toUrl, we can get a path to our AuthorWidget's space
-        // and we want to have a default avatar, just in case
-        imagedefault: require.toUrl("/biblio/resources/mydojo/widget/images/blank.png"),
-
-        dropListArrow: require.toUrl("/biblio/resources/mydojo/widget/images/downarrow.png"),
+    	imagebasedir:"",
+        dropListArrow: require.toUrl("/resources/mydojo/widget/images/downarrow.png"),
         
         //passed json text
         jsontext: "",

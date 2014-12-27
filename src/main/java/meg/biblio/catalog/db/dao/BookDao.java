@@ -1,16 +1,12 @@
 package meg.biblio.catalog.db.dao;
-import meg.biblio.catalog.db.FoundWordsDao;
-import org.springframework.roo.addon.javabean.RooJavaBean;
-import org.springframework.roo.addon.jpa.entity.RooJpaEntity;
-import org.springframework.roo.addon.tostring.RooToString;
 import java.util.Date;
 import java.util.List;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.FetchType;
-import javax.persistence.JoinTable;
 import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -19,6 +15,12 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
+import meg.biblio.catalog.db.FoundWordsDao;
+
+import org.springframework.roo.addon.javabean.RooJavaBean;
+import org.springframework.roo.addon.jpa.entity.RooJpaEntity;
+import org.springframework.roo.addon.tostring.RooToString;
 
 @RooJavaBean
 @RooToString
@@ -64,8 +66,7 @@ private String isbn13;
 private String language;
 private Long type;
 
-@Lob 
-@Column( length=2512)
+@Column( length=2000)
 private String description;
 private Long status;
 private Long detailstatus;
@@ -87,6 +88,9 @@ private Boolean textchange=new Boolean(false);
 
 	public void setDescription(String description) {
 		if (this.description != description) setTextchange(true);
+		if (description!=null && description.length()>1510) {
+			this.description = description.substring(0,1510);	
+		}
 		this.description = description;
     }
 
@@ -140,5 +144,10 @@ private Boolean textchange=new Boolean(false);
 				setClientbookidsort(longclientid);
 			}
 		}
+	}
+
+	public boolean hasIsbn() {
+		boolean hasisbn = (isbn10!=null && isbn10.length()>0) || (isbn13!=null &&isbn13.length()>0);
+		return hasisbn;
 	}
 }

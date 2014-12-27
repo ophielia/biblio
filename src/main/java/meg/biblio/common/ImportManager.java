@@ -2,7 +2,6 @@ package meg.biblio.common;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -14,7 +13,6 @@ import meg.biblio.catalog.web.model.BookModel;
 import meg.biblio.common.db.ImportBookRepository;
 import meg.biblio.common.db.dao.ImportBookDao;
 import meg.biblio.search.SearchService;
-import meg.tools.FileUtils;
 import meg.tools.imp.FileConfig;
 import meg.tools.imp.Importer;
 import meg.tools.imp.ImporterFactory;
@@ -52,9 +50,7 @@ public class ImportManager {
 	
 	@Autowired
 	ImportBookRepository importRepo;
-	
-    @Value("${biblio.import.archivdir}")
-    private String archivedir;
+
 	
 
 	private List<Object> importFile(FileConfig config,MapConfig mapconfig, File file) {
@@ -77,6 +73,27 @@ public class ImportManager {
 		return importedobjects;
 	}
 
+	private List<Object> importFile(FileConfig config,MapConfig mapconfig, String string) {
+		// Get importer
+		Importer importer = ImporterFactory.getImporter(config);
+
+		// parse file into placeholders
+		List<Placeholder> placeholders = importer.parseString(string);
+
+		// map objects
+		Mapper mapper = MapperFactory.getMapper(mapconfig);
+		List<Object> importedobjects = new ArrayList<Object>();
+
+		for (int i = 0; i < placeholders.size(); i++) {
+			Object mapped = mapper.mapObject((Placeholder) placeholders.get(i));
+			importedobjects.add(mapped);
+		}
+
+		// return lists
+		return importedobjects;
+	}
+
+	
 	public HashMap<String,Integer>  importBookList(Long clientkey, String filestr) {
 		// get configs for client
 		FileConfig config=null;
@@ -91,14 +108,8 @@ public class ImportManager {
 			e.printStackTrace();
 		} 
 
-		// archive string to file
-		Date now = new Date();
-		String filename = getArchiveDir() + now.getTime() + "_"+clientkey+"_imp.txt";
-
 		// import file into ImportBookDao
-		FileUtils.writeStringToFile(filename, filestr);
-		File file = new File(filename);
-		List<Object> newbooks = importFile(config, mapconfig, file);
+		List<Object> newbooks = importFile(config, mapconfig, filestr);
 		Integer listsize = new Integer(newbooks.size());
 		
 		// go through all books, creating book models
@@ -184,13 +195,6 @@ public class ImportManager {
 	}
 
 
-	public String getArchiveDir() {
-		return this.archivedir;
-	}
-
-	public void setArchiveDir(String archivedir) {
-		this.archivedir = archivedir;
-	}
 
 
 }

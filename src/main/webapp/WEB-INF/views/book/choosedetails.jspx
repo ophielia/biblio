@@ -59,6 +59,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <spring:message code="label_book_published" htmlEscape="false" var="lpublished"/>
 <spring:message code="label_book_language" htmlEscape="false" var="llanguage"/>
 <spring:message code="label_book_btype" htmlEscape="false" var="lbooktype"/>
+<spring:message code="label_book_isbnenry" htmlEscape="false" var="lisbn"/>
 <spring:message code="label_book_isbn10" htmlEscape="false" var="lisbn10"/>
 <spring:message code="label_book_isbn13" htmlEscape="false" var="lisbn13"/>
 <spring:message code="label_book_detailstatus" htmlEscape="false" var="ldetailstatus"/>
@@ -66,7 +67,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <spring:message code="label_book_classification" htmlEscape="false" var="lclassification"/>
 <spring:message code="label_book_classificationverified" htmlEscape="false" var="lclassverif"/>
 <spring:message code="label_book_clientbookid" htmlEscape="false" var="lclientbookid"/>
-
+<spring:message code="button_searchbyisbn" htmlEscape="false" var="button_searchbyisbn"/>
 
 
 <spring:message code="button_save" htmlEscape="false" var="bsave"/>
@@ -91,6 +92,10 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 
 
 <form:form action="${actionurl}" id="assigndetail" method="POST" modelAttribute="bookModel">
+<div>
+${lisbn}: <form:input path="isbn10" type="text" ></form:input> <input id="isbn" name="save" type="submit" value="${button_searchbyisbn}"/>
+</div>
+
 <table>
 <thead>
 <tr>

@@ -80,8 +80,10 @@ public class BookController {
         // process book entries (author, illustrator)
         ArtistDao author = catalogService.textToArtistName(model.getAuthorname());
         ArtistDao illustrator = catalogService.textToArtistName(model.getIllustratorname());
+        String publisher = model.getPublishername();
         model.addAuthorToBook(author);
         model.addIllustratorToBook(illustrator);
+        model.setPublisher(publisher);
         
         // add book to catalog
         BookModel book = catalogService.createCatalogEntryFromBookModel(clientkey,model);
@@ -93,6 +95,9 @@ public class BookController {
         if (book.getDetailstatus().longValue() == CatalogServiceImpl.DetailStatus.MULTIDETAILSFOUND) {
         	// go to pickdetails page
         	return "redirect:/books/choosedetails/" + bookid;
+        } else if (book.getDetailstatus().longValue() == CatalogServiceImpl.DetailStatus.DETAILNOTFOUND ) {
+        	// go to pickdetails page
+        	return "redirect:/books/editfind/" + bookid;
         }
         return "redirect:/books/display/" + bookid;
     }    
@@ -111,6 +116,55 @@ public class BookController {
 
     	return "book/show";
     }   
+    
+    
+    @RequestMapping(value="/editfind/{id}", method = RequestMethod.GET, produces = "text/html")
+    public String showEditBaseBookForm(@PathVariable("id") Long id, Model uiModel, HttpServletRequest httpServletRequest, Principal principal) {
+    	Locale locale = httpServletRequest.getLocale();
+    	String lang = locale.getLanguage();
+
+    	BookModel model = new BookModel();
+    	if (id!=null) {
+    		model = catalogService.loadBookModel(id);	
+    	} 
+    	
+    	uiModel.addAttribute("bookModel",model);
+
+    	return "book/editbaseinfo";
+    }    
+    
+    @RequestMapping(value="/editfind/{id}", method = RequestMethod.POST, produces = "text/html")
+    public String saveEditBaseBook(@ModelAttribute("bookModel") BookModel bookModel,@PathVariable("id") Long id, Model uiModel, HttpServletRequest httpServletRequest, Principal principal) {
+    	ClientDao client = clientService.getCurrentClient(principal);
+    	Long clientkey = client.getId();
+    	Locale locale = httpServletRequest.getLocale();
+    	String lang = locale.getLanguage();
+
+    	// only making a few changes. load the model from the database, and copy changes into database model (from passed model)
+    	if (id!=null) {
+    		
+            ArtistDao author = catalogService.textToArtistName(bookModel.getAuthorname());
+            ArtistDao illustrator = catalogService.textToArtistName(bookModel.getIllustratorname());
+            String publisher = bookModel.getPublishername();
+            String isbn = bookModel.getIsbn10();
+    		
+            BookModel model = catalogService.loadBookModel(id);	
+    		if (isbn!=null) model.setIsbn10(isbn);
+    		if (publisher!=null) model.setPublisher(publisher);
+    		if (author!=null) model.setAuthorInBook(author);
+    		if (illustrator!=null) model.setIllustratorInBook(author);
+    		BookModel book;
+			try {
+				book = catalogService.updateCatalogEntryFromBookModel(clientkey,model,true);
+				uiModel.addAttribute("bookModel", book);
+			} catch (GeneralSecurityException | IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    		
+    	} 
+        return "book/show";
+    }  
     
     @RequestMapping(value="/edit/{id}", method = RequestMethod.GET, produces = "text/html")
     public String showEditBookForm(@PathVariable("id") Long id, Model uiModel, HttpServletRequest httpServletRequest, Principal principal) {
@@ -141,13 +195,21 @@ public class BookController {
     		model.setShelfclass(bookModel.getShelfclass());
     		model.setStatus(bookModel.getStatus());
     		model.setLanguage(bookModel.getLanguage());
-    		BookModel book = catalogService.updateCatalogEntryFromBookModel(clientkey,model);
-    		uiModel.addAttribute("bookModel", book);
-    	} else {
-    		uiModel.addAttribute("bookModel", bookModel);	
-    	}
+    		BookModel book;
+			try {
+				book = catalogService.updateCatalogEntryFromBookModel(clientkey,model,false);
+				uiModel.addAttribute("bookModel", book);
+			} catch (GeneralSecurityException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    		
+    	} 
 
- 
+    	uiModel.addAttribute("bookModel", bookModel);
         return "book/show";
     }     
     

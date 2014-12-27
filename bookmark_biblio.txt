@@ -1,12 +1,32 @@
-Branch - lending USECASES 	4	   Checkout for class
-							5	   Return for class
-							7	   Printouts for day
+Branch - MASTER -   add book - add publisher name
+					for book without details - ability to change author / illustrator / publisher names - as well as isbn.
+ 					appsettings table
+					get rid of clobs
 
 Immediate Roadmap
 
 
-add book - add publisher name
-for book without details - ability to change author / illustrator / publisher names - as well as isbn.
+finish - showing classification images.....
+	add imagebase to passed parameters
+	update db of classification
+	last changes to ShelfClassWidget - in html - change path of image
+	still open widget - pass in empty select text
+	
+choosedetails isbn - 
+	new controller method which searches by isbn
+	backend which dumps single book into founddetails
+		
+
+
+
+
+
+
+Heroku Issues - 
+encoding - funny characters
+memory!
+path to classification images
+
 
 
 to lock down...
@@ -17,7 +37,7 @@ to lock down...
 
 5 min tasks (ha!! :-)
 add language to indexing
-still open widget - pass in empty select text
+
 lock down site....
 fill in new client service from request  - principal
 check cancel throughout class page
@@ -25,7 +45,11 @@ plus, REALLY long sessions
 
 ---- begin commit changes ----
 
-
+done - add book - add publisher name
+done - for book without details - ability to change author / illustrator / publisher names - as well as isbn.
+done - appsettings table
+done - get rid of clobs
+done - remove import dependancy on filesystem
 
 ---- end commit changes ----
 

@@ -11,7 +11,6 @@ import meg.tools.imp.FileConfig;
 import meg.tools.imp.MapConfig;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -20,14 +19,11 @@ public class ClientServiceImpl implements ClientService {
 	@Autowired
 	ClientRepository clientRepo;
 
-    @Value("${biblio.defaultclient}")
-    private Long defaultkey;
+	@Autowired
+	LoginService loginService;
 
-@Autowired
-LoginService loginService;
-
-
-
+	@Autowired
+	AppSettingService settingService;
 
 	@Override
 	public Long getCurrentClientKey(HttpServletRequest httpServletRequest) {
@@ -38,14 +34,17 @@ LoginService loginService;
 		// get client
 
 		// return clientkey
-
-		// returns default coded in properties. For development, or single user systems
+		Long defaultkey = settingService
+				.getSettingAsLong("biblio.defaultclient");
+		// returns default coded in properties. For development, or single user
+		// systems
 		return defaultkey;
 	}
 
-
 	@Override
-	public Classifier getClassifierForClient(Long clientkey) throws ClassNotFoundException, InstantiationException, IllegalAccessException{
+	public Classifier getClassifierForClient(Long clientkey)
+			throws ClassNotFoundException, InstantiationException,
+			IllegalAccessException {
 		ClientDao client = getClientForKey(clientkey);
 		String classifierclass = client.getClassifyimplementation();
 
@@ -54,7 +53,9 @@ LoginService loginService;
 		return (Classifier) clazz.newInstance();
 	}
 
-	public FileConfig getFileConfigForClient(Long clientkey) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+	public FileConfig getFileConfigForClient(Long clientkey)
+			throws ClassNotFoundException, InstantiationException,
+			IllegalAccessException {
 		ClientDao client = getClientForKey(clientkey);
 		String fileconfig = client.getImportfileconfig();
 		// no real client key (yet) so just use defaults
@@ -63,7 +64,9 @@ LoginService loginService;
 
 	}
 
-	public MapConfig getMapConfigForClient(Long clientkey) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+	public MapConfig getMapConfigForClient(Long clientkey)
+			throws ClassNotFoundException, InstantiationException,
+			IllegalAccessException {
 		ClientDao client = getClientForKey(clientkey);
 		String mapconfig = client.getImportmapconfig();
 
@@ -79,20 +82,20 @@ LoginService loginService;
 
 	@Override
 	public ClientDao getCurrentClient(HttpServletRequest httpServletRequest) {
+		Long defaultkey = settingService
+				.getSettingAsLong("biblio.defaultclient");
 		Long clientkey = defaultkey;
 		ClientDao client = clientRepo.findOne(clientkey);
 		return client;
 	}
 
-
 	@Override
 	public ClientDao getCurrentClient(Principal principal) {
 		String username = principal.getName();
-		ClientDao client = loginService.getClientForUsername(username); 
-		
+		ClientDao client = loginService.getClientForUsername(username);
+
 		return client;
 	}
-
 
 	@Override
 	public Long getTestClientId() {

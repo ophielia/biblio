@@ -18,15 +18,21 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <spring:message code="label_book_illustrator_entry" htmlEscape="false" var="lillustrator"/>
 <spring:message code="label_book_publisher" htmlEscape="false" var="lpublisher"/>
 <spring:message code="label_book_isbnenry" htmlEscape="false" var="lisbn"/>
+<spring:message code="msg_book_nodetailsfound" htmlEscape="false" var="msgnodetails"/>
 <spring:message code="button_save" htmlEscape="false" var="bsave"/>
 <spring:message code="button_cancel" htmlEscape="false" var="bcancel"/>
 <spring:message code="global_menu_new" arguments="${lbook}" htmlEscape="false" var="pagetitle"/>
 
-<spring:url value="/books" var="actionurl"/>
+<spring:url value="/books/editfind/${bookModel.bookid}" var="actionurl"/>
 
 <h1>${pagetitle}</h1>
 
+<p>${msgnodetails}</p>
 <form:form action="${actionurl}" id="createbook" method="POST" modelAttribute="bookModel">
+<div>
+${lisbn}:  <form:input path="isbn10" type="text" ></form:input><br />
+</div>
+
 <div>
 <form:errors id="clientbookid_errors" class="errors" path="clientbookid" /> 
 ${lclientbookid}:<form:input path="clientbookid" type="text" ></form:input><br />
@@ -44,9 +50,7 @@ ${lillustrator}:  <form:input path="illustratorname" type="text" ></form:input><
 <div>
 ${lpublisher}:  <form:input path="publishername" type="text" ></form:input><br />
 </div>
-<div>
-${lisbn}:  <form:input path="isbn10" type="text" ></form:input><br />
-</div>
+
 
 	<input id="save" name="save" type="submit" value="${bsave}"/> 
 	<input id="cancel" name="cancel" type="submit" value="${bcancel}"/> 

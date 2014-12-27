@@ -25,13 +25,15 @@ import meg.biblio.catalog.db.dao.FoundDetailsDao;
 import meg.biblio.catalog.db.dao.PublisherDao;
 import meg.biblio.catalog.db.dao.SubjectDao;
 import meg.biblio.catalog.web.model.BookModel;
+import meg.biblio.common.AppSettingService;
 import meg.biblio.common.ClientService;
 import meg.biblio.common.SelectKeyService;
 import meg.biblio.common.db.dao.ClientDao;
 import meg.biblio.search.SearchService;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.repository.query.Param;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -58,6 +60,11 @@ public class CatalogServiceImpl implements CatalogService {
 		public static final long LASTNAME = 2;
 	}
 
+	
+	  /* Get actual class name to be printed on */
+	  static Logger log = Logger.getLogger(
+			  CatalogServiceImpl.class.getName());
+	  
 	@Autowired
 	SelectKeyService keyService;
 
@@ -93,25 +100,8 @@ public class CatalogServiceImpl implements CatalogService {
 	@Autowired
 	ClassificationRepository classRepo;
 
-	@Value("${biblio.google.apikey}")
-	private String apikey;
-
-	@Value("${biblio.appname}")
-	private String appname;
-
-	@Value("${biblio.google.maxdetails}")
-	private int maxdetails;
-
-	@Value("${biblio.google.turnedon}")
-	private boolean lookupwithgoogle;
-
-	@Value("${biblio.google.batchsearchmax}")
-	private int batchsearchmax;
-
-	@Value("${biblio.progressivefill.turnedon}")
-	private boolean progressivefillenabled;
-	
-
+	@Autowired
+	AppSettingService settingService;
 
 	/**
 	 * Assumes validated BookModel. Saves a book to the database for the first
@@ -123,6 +113,7 @@ public class CatalogServiceImpl implements CatalogService {
 			BookModel model) {
 		BookDao book = createBookFromBookModel(clientkey, model);
 		Long bookid = book.getId();
+		Boolean lookupwithgoogle = settingService.getSettingAsBoolean("biblio.google.turnedon");
 
 		// fill in details with google call
 		if (lookupwithgoogle) {
@@ -162,7 +153,8 @@ public class CatalogServiceImpl implements CatalogService {
 	public void createCatalogEntriesFromList(Long clientkey,
 			List<BookModel> toimport) {
 		List<BookModel> createdobjects = new ArrayList<BookModel>();
-
+		Boolean lookupwithgoogle = settingService.getSettingAsBoolean("biblio.google.turnedon");
+		
 		// go through list of BookModels, persisting them
 		for (BookModel imported : toimport) {
 
@@ -220,7 +212,10 @@ public class CatalogServiceImpl implements CatalogService {
 	public void fillInDetailsForList(List<BookModel> searchobjects)
 			throws GeneralSecurityException, IOException {
 		JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
+		String apikey = settingService.getSettingAsString("biblio.google.apikey");
+		String appname = settingService.getSettingAsString("biblio.appname");
+		Integer batchsearchmax = settingService.getSettingAsInteger("biblio.google.batchsearchmax");
+		
 		// set up query google
 		Volumes volumes = null;
 		final Books books = new Books.Builder(
@@ -344,9 +339,11 @@ public class CatalogServiceImpl implements CatalogService {
 	public BookDao saveBook(BookDao book) {
 		boolean bookchange = book.getTextchange();
 
+		
 		BookDao saved = bookRepo.save(book);
 		if (bookchange) {
 			indexBooktext(saved);
+			saved.setTextchange(false);
 		}
 
 		return saved;
@@ -354,6 +351,10 @@ public class CatalogServiceImpl implements CatalogService {
 
 
 	private void indexBooktext(BookDao saved) {
+		log.debug("indexing for bookid:" + saved.getId() + "; description:" + saved.getDescription());
+		List<FoundWordsDao> todelete = indexRepo.findWordsForBook(saved);
+		indexRepo.delete(todelete);
+		
 		// make counting hash
 		HashMap<String,Integer> wordcounts = new HashMap<String,Integer>();
 		List<FoundWordsDao> foundwords = new ArrayList<FoundWordsDao>();
@@ -452,7 +453,7 @@ public class CatalogServiceImpl implements CatalogService {
 		}
 		// persist
 		if (foundwords.size()>0) {
-			indexRepo.deleteWordsForBook(saved);
+			
 			indexRepo.save(foundwords);
 		}
 
@@ -460,6 +461,8 @@ public class CatalogServiceImpl implements CatalogService {
 
 	public void assignDetailToBook(Long detailid, Long bookid)
 			throws GeneralSecurityException, IOException {
+		String apikey = settingService.getSettingAsString("biblio.google.apikey");
+		String appname = settingService.getSettingAsString("biblio.appname");
 		// dummy check - nothing null
 		if (detailid != null && bookid != null) {
 			JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
@@ -711,59 +714,69 @@ public class CatalogServiceImpl implements CatalogService {
 	private void fillInDetailsForSingleBook(Long id)
 			throws GeneralSecurityException, IOException {
 		JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
+		String apikey = settingService.getSettingAsString("biblio.google.apikey");
+		String appname = settingService.getSettingAsString("biblio.appname");
+		
 		// find book
 		BookDao book = bookRepo.findOne(id);
 
 		if (book != null) {
 			// set up query for title and author
 			StringBuffer querybuild = new StringBuffer();
-			querybuild.append("intitle:");
-			String title = book.getTitle().toLowerCase();
-			title = title.replace(" ", "+");
-			querybuild.append(title);
-			boolean remainingauthors = false;
-			// try with author first
-			if (book.getAuthors() != null && book.getAuthors().size() > 0) {
-				ArtistDao author = book.getAuthors().get(0);
-				String authname = author.getLastname();
-				if (authname == null) {
-					authname = author.getFirstname() != null ? author
-							.getFirstname() : author.getMiddlename();
+			
+			if (book.hasIsbn()) {
+				String isbn = book.getIsbn10()!=null?book.getIsbn10():book.getIsbn13();
+				querybuild.append("isbn:");
+				querybuild.append(isbn);
+			} else {
+				querybuild.append("intitle:");
+				String title = book.getTitle().toLowerCase();
+				title = title.replace(" ", "+");
+				querybuild.append(title);
+				boolean remainingauthors = false;
+				// try with author 
+				if (book.getAuthors() != null && book.getAuthors().size() > 0) {
+					ArtistDao author = book.getAuthors().get(0);
+					String authname = author.getLastname();
+					if (authname == null) {
+						authname = author.getFirstname() != null ? author
+								.getFirstname() : author.getMiddlename();
+					}
+					if (authname != null) {
+						authname = authname.toLowerCase().replace(" ", "+");
+						querybuild.append("+inauthor:").append(authname);
+					}
+					remainingauthors = book.getAuthors().size() > 1;
+				} // if no authors available, try with illustrators
+				else if (book.getIllustrators() != null
+						&& book.getIllustrators().size() > 0) {
+					ArtistDao author = book.getIllustrators().get(0);
+					String authname = author.getLastname();
+					if (authname == null) {
+						authname = author.getFirstname() != null ? author
+								.getFirstname() : author.getMiddlename();
+					}
+					if (authname != null) {
+						authname = authname.toLowerCase().replace(" ", "+");
+						querybuild.append("+inauthor:").append(authname);
+					}
+					remainingauthors |= book.getIllustrators().size() > 1;
 				}
-				if (authname != null) {
-					authname = authname.toLowerCase().replace(" ", "+");
-					querybuild.append("+inauthor:").append(authname);
+				// if no authors or illustrators available, try with publisher
+				else if (book.getPublisher() != null) {
+					PublisherDao publisher = book.getPublisher();
+					String pubname = publisher.getName();
+					if (pubname != null) {
+						pubname = pubname.trim().toLowerCase();
+						pubname = pubname.toLowerCase().replace(" ", "+");
+						pubname = pubname + "+";
+						// pubname added as general key
+						querybuild.insert(0, pubname);
+					}
 				}
-				remainingauthors = book.getAuthors().size() > 1;
-			} // if no authors available, try with illustrators
-			else if (book.getIllustrators() != null
-					&& book.getIllustrators().size() > 0) {
-				ArtistDao author = book.getIllustrators().get(0);
-				String authname = author.getLastname();
-				if (authname == null) {
-					authname = author.getFirstname() != null ? author
-							.getFirstname() : author.getMiddlename();
-				}
-				if (authname != null) {
-					authname = authname.toLowerCase().replace(" ", "+");
-					querybuild.append("+inauthor:").append(authname);
-				}
-				remainingauthors |= book.getIllustrators().size() > 1;
+	
 			}
-			// if no authors or illustrators available, try with publisher
-			else if (book.getPublisher() != null) {
-				PublisherDao publisher = book.getPublisher();
-				String pubname = publisher.getName();
-				if (pubname != null) {
-					pubname = pubname.trim().toLowerCase();
-					pubname = pubname.toLowerCase().replace(" ", "+");
-					pubname = pubname + "+";
-					// pubname added as general key
-					querybuild.insert(0, pubname);
-				}
-			}
-
+			
 			String query = querybuild.toString();
 
 			// query google
@@ -881,6 +894,8 @@ public class CatalogServiceImpl implements CatalogService {
 
 	private List<FoundDetailsDao> copyDetailsIntoFoundRecords(
 			List<Volume> items, BookDao book) {
+		Integer maxdetails = settingService.getSettingAsInteger("biblio.google.maxdetails");
+		
 		List<FoundDetailsDao> details = new ArrayList<FoundDetailsDao>();
 		int processedcnt = 0;
 		for (Volume found : items) {
@@ -890,7 +905,7 @@ public class CatalogServiceImpl implements CatalogService {
 			if (info == null) {
 				continue;
 			}
-			if (processedcnt >= maxdetails) {
+			if (processedcnt >= maxdetails.intValue()) {
 				break;
 			}
 			detail.setBookid(book.getId());
@@ -1163,6 +1178,8 @@ public class CatalogServiceImpl implements CatalogService {
 
 	@Scheduled(fixedRate = 60000)
 	private void scheduledFillInDetails() {
+		Integer batchsearchmax = settingService.getSettingAsInteger("biblio.google.batchsearchmax");
+		Boolean progressivefillenabled = settingService.getSettingAsBoolean("biblio.progressivefill.turnedon");
 		if (progressivefillenabled) {
 
 			// get list of books without details - max batchsearchmax
@@ -1239,7 +1256,7 @@ public class CatalogServiceImpl implements CatalogService {
 	private void reindexBooks() {
 		if (reindex) {
 
-			// get list of books without details - max batchsearchmax
+			// get list of books without details - max 
 			List<BookDao> toreindex = getAllBooks();
 			for (BookDao book:toreindex) {
 				book.setTextchange(true);
@@ -1251,7 +1268,7 @@ public class CatalogServiceImpl implements CatalogService {
 
 	@Override
 	public BookModel updateCatalogEntryFromBookModel(Long clientkey,
-			BookModel model) {
+			BookModel model, Boolean fillindetails) throws GeneralSecurityException, IOException {
 		// get book
 		BookDao book = model.getBook();
 		book.setClientid(clientkey);
@@ -1261,6 +1278,9 @@ public class CatalogServiceImpl implements CatalogService {
 			book = saveBook(book);
 		}
 		
+		if (fillindetails) {
+			fillInDetailsForSingleBook(book.getId());
+		}
 		BookModel toreturn = loadBookModel(book.getId());
 		return toreturn;
 	}

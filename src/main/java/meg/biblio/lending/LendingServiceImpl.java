@@ -26,7 +26,6 @@ import meg.biblio.lending.web.model.LoanRecordDisplay;
 import meg.biblio.lending.web.model.TeacherInfo;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -62,12 +61,6 @@ public class LendingServiceImpl implements LendingService {
 
 	@Autowired
 	ApplicationContext appContext;
-
-	@Value("${biblio.report.outputdir}")
-	private String reportdir;
-
-	@Value("${biblio.report.transformdir}")
-	private String transformdir;
 
 	@Override
 	public LoanRecordDao checkoutBook(Long bookid, Long borrowerid,

@@ -1,5 +1,7 @@
 package meg.biblio.catalog;
 
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -531,7 +533,7 @@ public class CatalogServiceTest {
 	}
 
 	@Test
-	public void testUpdateBook() {
+	public void testUpdateBook() throws GeneralSecurityException, IOException {
 		// load testpubid
 		BookModel model = catalogService.loadBookModel(pubtestid);
 		
@@ -542,7 +544,7 @@ public class CatalogServiceTest {
 		model.setStatus(CatalogService.Status.CHECKEDOUT);
 
 		// server call
-		model = catalogService.updateCatalogEntryFromBookModel(1L, model);
+		model = catalogService.updateCatalogEntryFromBookModel(1L, model,false);
 		
 		// ensure that changes are shown
 		Assert.assertNotNull(model);

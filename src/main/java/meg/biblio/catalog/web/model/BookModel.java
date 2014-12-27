@@ -19,6 +19,7 @@ public class BookModel  implements Serializable {
 
 	private String authorname;
 	private String illustratorname;
+	private String publishername;
 	private Long assignDetailId;
 
 
@@ -69,7 +70,13 @@ public class BookModel  implements Serializable {
 		this.illustratorname = aLname;
 	}
 
+	public String getPublishername() {
+		return publishername;
+	}
 
+	public void setPublishername(String publishername) {
+		this.publishername = publishername;
+	}
 
 	// *** getters and setters for book object ***//
 	public void setClientid(Long clientid) {
@@ -101,11 +108,25 @@ public class BookModel  implements Serializable {
 	}
 
 	public void setIsbn10(String isbn10) {
-		if (isbn10!=null) this.book.setIsbn10(isbn10);
+		if (isbn10 != null) {
+			// remove non numeric characters
+			String str = isbn10.replaceAll("[^\\d.X]", "");
+			if (str.length() > 10) {
+				this.book.setIsbn13(str);
+			}
+			this.book.setIsbn10(str);
+		}
 	}
 
 	public void setIsbn13(String isbn13) {
-		if (isbn13!=null) this.book.setIsbn13(isbn13);
+		if (isbn13 != null) {
+			// remove non numeric characters
+			String str = isbn13.replaceAll("[^\\d.X]", "");
+			if (str.length() > 10) {
+				this.book.setIsbn13(str);
+			}
+			this.book.setIsbn10(str);
+		}
 	}
 
 	public void setLanguage(String language) {
@@ -256,16 +277,37 @@ public class BookModel  implements Serializable {
 			book.setAuthors(authors);
 		}
 	}
+	
+	public void setAuthorInBook(ArtistDao author) {
+		if (author != null) {
+			List<ArtistDao> authors = new ArrayList<ArtistDao>();
+			authors.add(author);
+			book.setAuthors(authors);
+		}
+	}	
 
 	public void addIllustratorToBook(ArtistDao illustrator) {
 		if (illustrator != null) {
-			List<ArtistDao> illustrators = book.getAuthors();
+			List<ArtistDao> illustrators = book.getIllustrators();
 			if (illustrators == null) {
 				illustrators = new ArrayList<ArtistDao>();
 			}
 			illustrators.add(illustrator);
 			book.setIllustrators(illustrators);
 		}
+	}
+	
+	public void setIllustratorInBook(ArtistDao illust) {
+		if (illust != null) {
+			List<ArtistDao> illusts = new ArrayList<ArtistDao>();
+			illusts.add(illust);
+			book.setAuthors(illusts);
+		}
+	}		
+	public void setPublisher(String publishername) {
+		PublisherDao publisher = new PublisherDao();
+		publisher.setName(publishername);
+		book.setPublisher(publisher);
 	}
 
 

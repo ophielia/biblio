@@ -23,4 +23,6 @@ public interface Importer {
 
 	Object formatField(String field, FieldFormat format) throws ParseException;
 
+	List<Placeholder> parseString(String source);
+
 }
