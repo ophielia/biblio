@@ -12,9 +12,12 @@ finish - showing classification images.....
 	last changes to ShelfClassWidget - in html - change path of image
 	still open widget - pass in empty select text
 	
-choosedetails isbn - 
-	new controller method which searches by isbn
-	backend which dumps single book into founddetails
+
+	
+edit page dustup
+	one edit page - no found details
+	one edit page, book status only	
+	
 		
 
 
@@ -45,19 +48,21 @@ plus, REALLY long sessions
 
 ---- begin commit changes ----
 
-done - add book - add publisher name
-done - for book without details - ability to change author / illustrator / publisher names - as well as isbn.
-done - appsettings table
-done - get rid of clobs
-done - remove import dependancy on filesystem
-
+done - choosedetails isbn - 
+	done - new controller method which searches by isbn
+	done - backend which dumps single book into founddetails
+	
 ---- end commit changes ----
 
 
 
 ----- begin branch changes ----
 
-
+done - add book - add publisher name
+done - for book without details - ability to change author / illustrator / publisher names - as well as isbn.
+done - appsettings table
+done - get rid of clobs
+done - remove import dependancy on filesystem
 
 
 ---- end branch changes ----

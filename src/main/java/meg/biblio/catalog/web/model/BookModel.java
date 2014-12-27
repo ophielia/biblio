@@ -79,6 +79,11 @@ public class BookModel  implements Serializable {
 	}
 
 	// *** getters and setters for book object ***//
+	public void setBookid(Long bookid) {
+		if (bookid!=null) this.book.setId(bookid);
+	}
+
+	
 	public void setClientid(Long clientid) {
 		if (clientid!=null) this.book.setClientid(clientid);
 	}

@@ -711,7 +711,7 @@ public class CatalogServiceImpl implements CatalogService {
 
 	}
 
-	private void fillInDetailsForSingleBook(Long id)
+	private void fillInDetailsForSingleBook(Long id, boolean forceintofounddetails)
 			throws GeneralSecurityException, IOException {
 		JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 		String apikey = settingService.getSettingAsString("biblio.google.apikey");
@@ -798,7 +798,7 @@ public class CatalogServiceImpl implements CatalogService {
 			if (volumes.getTotalItems() == 0 || volumes.getItems() == null) {
 				// set detailstatus to not found in book
 				book.setDetailstatus(DetailStatus.DETAILNOTFOUND);
-			} else if (volumes.getTotalItems() == 1) {
+			} else if (volumes.getTotalItems() == 1 && !forceintofounddetails) {
 				// one volume found - get details for this, fill in the book,
 				// and save the book
 				book.setDetailstatus(DetailStatus.DETAILFOUND);
@@ -808,6 +808,10 @@ public class CatalogServiceImpl implements CatalogService {
 				Get detailsrequest = books.volumes().get(volumeid);
 				Volume completedetails = detailsrequest.execute();
 				copyCompleteDetailsIntoBook(completedetails, book);
+			} else if (volumes.getTotalItems() == 1 && forceintofounddetails) {
+				// one volume found - but should be saved into found details
+				details = copyDetailsIntoFoundRecords(volumes.getItems(), book);
+				book.setDetailstatus(DetailStatus.ISBNFOUND);
 			} else {
 				// multiple volumes found. save info for volumes, and set
 				// detail status in book to multiple found
@@ -823,6 +827,11 @@ public class CatalogServiceImpl implements CatalogService {
 			foundRepo.save(details);
 		}
 
+	}
+
+	private void fillInDetailsForSingleBook(Long id) throws GeneralSecurityException, IOException {
+		fillInDetailsForSingleBook(id,false);
+		
 	}
 
 	private Volumes singleQueryGoogle(Books books, String query)
@@ -1283,6 +1292,41 @@ public class CatalogServiceImpl implements CatalogService {
 		}
 		BookModel toreturn = loadBookModel(book.getId());
 		return toreturn;
+	}
+
+	@Override
+	public BookModel addToFoundDetails(Long clientkey, BookModel dbmodel) {
+		Long id = dbmodel.getBookid();
+		if (id != null && dbmodel.getBook() != null) {
+			// save isbn in book
+			bookRepo.save(dbmodel.getBook());
+			// get found details for book
+			List<FoundDetailsDao> origdetails = getFoundDetailsForBook(id);
+			// do book search - copy into found details
+			try {
+				fillInDetailsForSingleBook(id, true);
+			} catch (GeneralSecurityException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			// load book model
+			dbmodel = loadBookModel(id);
+
+			// if results found (and copied into found details), delete other
+			// found details
+			if (dbmodel.getDetailstatus().longValue() == CatalogService.DetailStatus.ISBNFOUND) {
+				foundRepo.delete(origdetails);
+				BookDao book = dbmodel.getBook();
+				book.setDetailstatus(CatalogService.DetailStatus.MULTIDETAILSFOUND);
+				bookRepo.save(book);
+				dbmodel.setBook(book);
+			}
+		}
+		// return model
+		return dbmodel;
 	}
 
 	@Override

@@ -93,7 +93,8 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 
 <form:form action="${actionurl}" id="assigndetail" method="POST" modelAttribute="bookModel">
 <div>
-${lisbn}: <form:input path="isbn10" type="text" ></form:input> <input id="isbn" name="save" type="submit" value="${button_searchbyisbn}"/>
+${lisbn}: <form:input path="isbn10" type="text" ></form:input> <input id="isbn" name="isbn" type="submit" value="${button_searchbyisbn}"/>
+<form:input type="hidden" path="bookid"></form:input>
 </div>
 
 <table>

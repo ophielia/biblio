@@ -42,6 +42,7 @@ public interface CatalogService {
 		public static final long DETAILNOTFOUND = 2;
 		public static final long MULTIDETAILSFOUND = 3;
 		public static final long DETAILFOUND = 4;
+		public static final long ISBNFOUND = 5;
 	}
 
 
@@ -82,6 +83,8 @@ public interface CatalogService {
 	 BookDao findBookByClientBookId(String bookid, ClientDao client) ;
 
 	BookDao updateBookStatus(Long id, long checkedout);
+
+	BookModel addToFoundDetails(Long clientkey, BookModel dbmodel);
 
 
 
