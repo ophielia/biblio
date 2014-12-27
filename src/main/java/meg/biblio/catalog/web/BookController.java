@@ -16,6 +16,7 @@ import meg.biblio.catalog.db.dao.ClassificationDao;
 import meg.biblio.catalog.db.dao.FoundDetailsDao;
 import meg.biblio.catalog.web.model.BookModel;
 import meg.biblio.catalog.web.validator.BookModelValidator;
+import meg.biblio.common.AppSettingService;
 import meg.biblio.common.ClientService;
 import meg.biblio.common.SelectKeyService;
 import meg.biblio.common.db.dao.ClientDao;
@@ -47,6 +48,9 @@ public class BookController {
 
 	@Autowired
 	BookModelValidator bookValidator;
+	
+    @Autowired
+    AppSettingService settingService;	
 
 	@RequestMapping(params = "form", method = RequestMethod.GET, produces = "text/html")
 	public String createBookEntryForm(Model uiModel,
@@ -67,8 +71,6 @@ public class BookController {
 			Principal principal) {
 		ClientDao client = clientService.getCurrentClient(principal);
 		Long clientkey = client.getId();
-		Locale locale = httpServletRequest.getLocale();
-		String lang = locale.getLanguage();
 		bookValidator.validateSimpleEntry(model, bindingResult);
 
 		if (bindingResult.hasErrors()) {
@@ -108,8 +110,6 @@ public class BookController {
 	@RequestMapping(value = "/display/{id}", method = RequestMethod.GET, produces = "text/html")
 	public String showBook(@PathVariable("id") Long id, Model uiModel,
 			HttpServletRequest httpServletRequest, Principal principal) {
-		Locale locale = httpServletRequest.getLocale();
-		String lang = locale.getLanguage();
 
 		BookModel model = new BookModel();
 		if (id != null) {
@@ -121,32 +121,31 @@ public class BookController {
 		return "book/show";
 	}
 
-	@RequestMapping(value = "/editfind/{id}", method = RequestMethod.GET, produces = "text/html")
-	public String showEditBaseBookForm(@PathVariable("id") Long id,
-			Model uiModel, HttpServletRequest httpServletRequest,
-			Principal principal) {
-		Locale locale = httpServletRequest.getLocale();
-		String lang = locale.getLanguage();
-
+	@RequestMapping(value = "/edit/{id}", method = RequestMethod.GET, produces = "text/html")
+	public String showEditBookForm(@PathVariable("id") Long id, Model uiModel,
+			HttpServletRequest httpServletRequest, Principal principal) {
+	
 		BookModel model = new BookModel();
 		if (id != null) {
 			model = catalogService.loadBookModel(id);
 		}
-
+	
 		uiModel.addAttribute("bookModel", model);
-
-		return "book/editbaseinfo";
+	
+		String returnview="book/edit";
+		if (model.getDetailstatus().longValue()== CatalogService.DetailStatus.DETAILNOTFOUND) {
+			returnview = "book/editall";
+		}
+		return returnview;
 	}
 
-	@RequestMapping(value = "/editfind/{id}", method = RequestMethod.POST, produces = "text/html")
-	public String saveEditBaseBook(
+	@RequestMapping(value = "/editall/{id}", method = RequestMethod.POST, produces = "text/html")
+	public String saveEditAll(
 			@ModelAttribute("bookModel") BookModel bookModel,
 			@PathVariable("id") Long id, Model uiModel,
 			HttpServletRequest httpServletRequest, Principal principal) {
 		ClientDao client = clientService.getCurrentClient(principal);
 		Long clientkey = client.getId();
-		Locale locale = httpServletRequest.getLocale();
-		String lang = locale.getLanguage();
 
 		// only making a few changes. load the model from the database, and copy
 		// changes into database model (from passed model)
@@ -168,34 +167,21 @@ public class BookController {
 				model.setAuthorInBook(author);
 			if (illustrator != null)
 				model.setIllustratorInBook(author);
+			model.setType(bookModel.getType());
+			model.setShelfclass(bookModel.getShelfclass());
+			model.setStatus(bookModel.getStatus());
+			model.setLanguage(bookModel.getLanguage());
+
 			BookModel book;
 			try {
 				book = catalogService.updateCatalogEntryFromBookModel(
 						clientkey, model, true);
 				uiModel.addAttribute("bookModel", book);
 			} catch (GeneralSecurityException | IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-
 		}
 		return "book/show";
-	}
-
-	@RequestMapping(value = "/edit/{id}", method = RequestMethod.GET, produces = "text/html")
-	public String showEditBookForm(@PathVariable("id") Long id, Model uiModel,
-			HttpServletRequest httpServletRequest, Principal principal) {
-		Locale locale = httpServletRequest.getLocale();
-		String lang = locale.getLanguage();
-
-		BookModel model = new BookModel();
-		if (id != null) {
-			model = catalogService.loadBookModel(id);
-		}
-
-		uiModel.addAttribute("bookModel", model);
-
-		return "book/edit";
 	}
 
 	@RequestMapping(value = "/edit/{id}", method = RequestMethod.POST, produces = "text/html")
@@ -205,8 +191,6 @@ public class BookController {
 			HttpServletRequest httpServletRequest, Principal principal) {
 		ClientDao client = clientService.getCurrentClient(principal);
 		Long clientkey = client.getId();
-		Locale locale = httpServletRequest.getLocale();
-		String lang = locale.getLanguage();
 
 		// only making a few changes. load the model from the database, and copy
 		// changes into database model (from passed model)
@@ -222,10 +206,8 @@ public class BookController {
 						clientkey, model, false);
 				uiModel.addAttribute("bookModel", book);
 			} catch (GeneralSecurityException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 
@@ -238,8 +220,6 @@ public class BookController {
 	@RequestMapping(value = "/choosedetails/{id}", method = RequestMethod.GET, produces = "text/html")
 	public String showBookDetails(@PathVariable("id") Long id, Model uiModel,
 			HttpServletRequest httpServletRequest, Principal principal) {
-		Locale locale = httpServletRequest.getLocale();
-		String lang = locale.getLanguage();
 
 		BookModel model = new BookModel();
 		if (id != null) {
@@ -264,10 +244,8 @@ public class BookController {
 		try {
 			catalogService.assignDetailToBook(detailid, bookid);
 		} catch (GeneralSecurityException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -383,5 +361,12 @@ public class BookController {
 				CatalogService.detailstatuslkup, lang);
 		return booktypedisps;
 	}
+	
+    
+    @ModelAttribute("imagebasedir")
+    public String getImageBaseSetting(HttpServletRequest httpServletRequest) {
+    	String imagebase = settingService.getSettingAsString("biblio.imagebase");
+    	return imagebase; 
+    }  
 
 }

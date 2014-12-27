@@ -24,14 +24,14 @@ define([
         templateString: template,
 
     	showtext: false,
-    	
+
     	emptyselecttext: "Select",
-    	
+
     	showemptyselect:false,
 
-    	imagebasedir:"",
+    	imagebasedir:"/biblio",
         dropListArrow: require.toUrl("/resources/mydojo/widget/images/downarrow.png"),
-        
+
         //passed json text
         jsontext: "",
 
@@ -58,14 +58,14 @@ define([
 		     // fill the memory store
 			 var data = JSON.parse(this.jsontext);
 			 if (this.showemptyselect) {
-				 object = {"clientid":1,"description":" Select ","id":0,"imagedisplay":null,"key":0,"language":"en","textdisplay":"","version":0};
+				 object = {"clientid":1,"description":this.emptyselecttext,"id":0,"imagedisplay":null,"key":0,"language":"en","textdisplay":"","version":0};
 				 data.unshift(object);
 			 }
 			 this.memorystore = new dojo.store.Memory({data: data, idProperty:"id"});
 
 			// fill in current display
 			 this._setDisplayIdAttr(this.displayId);
-			 
+
 		     // don't want to see the list filling up
 		     style.set(this.selectlist,"display","none");
 
@@ -79,8 +79,9 @@ define([
 			      on(divnode,"click",lang.hitch(this,"_setDisplayIdAttr",shelfdata.id));
 
 				 if (shelfdata.imagedisplay) {
+					 srcpath = this.imagebasedir + shelfdata.imagedisplay;
 					 domConstruct.create("img", {
-				            src:shelfdata.imagedisplay
+				            src:srcpath
 				        },divnode);
 				 }
 				 domConstruct.create("span", {
@@ -133,18 +134,18 @@ define([
 
 				// set shelftext
 				if (this.showtext) {
-					this.currentTextNode.innerText = object.description;	
+					this.currentTextNode.innerText = object.description;
 				} else {
 					this.currentTextNode.innerText = "";
 				}
-				
+
 
 				// set input
 				updatenode.value = object.key;
 			}
 			// hide select
-			this._hideSelect();			
-			
+			this._hideSelect();
+
 		},
 
 

@@ -285,9 +285,12 @@ public class BookModel  implements Serializable {
 	
 	public void setAuthorInBook(ArtistDao author) {
 		if (author != null) {
-			List<ArtistDao> authors = new ArrayList<ArtistDao>();
-			authors.add(author);
-			book.setAuthors(authors);
+			// only set if different
+			if (!getMainAuthor().getDisplayName().equals(author.getDisplayName())) {
+				List<ArtistDao> authors = new ArrayList<ArtistDao>();
+				authors.add(author);
+				book.setAuthors(authors);
+			}
 		}
 	}	
 
@@ -303,12 +306,14 @@ public class BookModel  implements Serializable {
 	}
 	
 	public void setIllustratorInBook(ArtistDao illust) {
-		if (illust != null) {
+		if (!getMainIllustrator().getDisplayName().equals(illust.getDisplayName())) {
 			List<ArtistDao> illusts = new ArrayList<ArtistDao>();
 			illusts.add(illust);
-			book.setAuthors(illusts);
+			book.setIllustrators(illusts);
 		}
 	}		
+
+	
 	public void setPublisher(String publishername) {
 		PublisherDao publisher = new PublisherDao();
 		publisher.setName(publishername);

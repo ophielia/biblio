@@ -11,6 +11,7 @@ import meg.biblio.catalog.CatalogService;
 import meg.biblio.catalog.db.dao.BookDao;
 import meg.biblio.catalog.db.dao.ClassificationDao;
 import meg.biblio.catalog.web.model.BookListModel;
+import meg.biblio.common.AppSettingService;
 import meg.biblio.common.ClientService;
 import meg.biblio.common.SelectKeyService;
 import meg.biblio.common.db.dao.SelectValueDao;
@@ -48,7 +49,8 @@ public class BookAdminSearchController {
     @Autowired
     SelectKeyService keyService;
 
-    
+    @Autowired
+    AppSettingService settingService;
     
 	@RequestMapping(produces = "text/html")
     public String showList(@ModelAttribute("bookListModel") BookListModel model,Model uiModel,HttpServletRequest request) {
@@ -229,6 +231,12 @@ public class BookAdminSearchController {
     			
     	return shelfclasses; 
     }    
+    
+    @ModelAttribute("imagebasedir")
+    public String getImageBaseSetting(HttpServletRequest httpServletRequest) {
+    	String imagebase = settingService.getSettingAsString("biblio.imagebase");
+    	return imagebase; 
+    }     
     
     @ModelAttribute("classJson")
     public String getClassificationInfoAsJson(HttpServletRequest httpServletRequest) {

@@ -101,7 +101,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 	          
 	        	// Create our widget and place it
 	            var widget = new ShelfClassSelectWidget({displayId:'${shelfclass.id}',jsontext:'${classJson}',
-	            	showtext: true,updatenodename:"shelfclasskey"}).placeAt(classiContainer);
+	            	showtext: true,updatenodename:"shelfclasskey",imagebasedir:'${imagebasedir}'}).placeAt(classiContainer);
 		}); 
 </script>
 
@@ -230,7 +230,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 						<td><c:set var="shelfclass"
 								value="${classHash[book.shelfclass]}" /> <c:choose>
 								<c:when test="${ not empty shelfclass.imagedisplay}">
-									<img id="shelfimg" src="${shelfclass.imagedisplay}" width="50x" />
+									<img id="shelfimg" src="${imagebasedir}${shelfclass.imagedisplay}" width="50x" />
 								</c:when>
 								<c:otherwise>
 				${shelfclass.textdisplay}

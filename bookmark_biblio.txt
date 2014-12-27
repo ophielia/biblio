@@ -3,32 +3,10 @@ Branch - MASTER -   add book - add publisher name
  					appsettings table
 					get rid of clobs
 
-Immediate Roadmap
-
-
-finish - showing classification images.....
-	add imagebase to passed parameters
-	update db of classification
-	last changes to ShelfClassWidget - in html - change path of image
-	still open widget - pass in empty select text
-	
-
-	
-edit page dustup
-	one edit page - no found details
-	one edit page, book status only	
-	
-		
-
-
-
-
-
-
 Heroku Issues - 
 encoding - funny characters
 memory!
-path to classification images
+fixed - path to classification images
 
 
 
@@ -48,9 +26,14 @@ plus, REALLY long sessions
 
 ---- begin commit changes ----
 
-done - choosedetails isbn - 
-	done - new controller method which searches by isbn
-	done - backend which dumps single book into founddetails
+done - finish - showing classification images.....
+done - 	add imagebase to passed parameters
+done - update db of classification
+done - 	last changes to ShelfClassWidget - in html - change path of image
+done - 	still open widget - pass in empty select text
+done - edit page dustup
+done - 	one edit page - no found details
+done - 	one edit page, book status only	
 	
 ---- end commit changes ----
 
@@ -63,6 +46,9 @@ done - for book without details - ability to change author / illustrator / publi
 done - appsettings table
 done - get rid of clobs
 done - remove import dependancy on filesystem
+done - choosedetails isbn - 
+done - new controller method which searches by isbn
+done - backend which dumps single book into founddetails
 
 
 ---- end branch changes ----
