@@ -76,8 +76,8 @@ privileged aspect BookDaoDataOnDemand_Roo_DataOnDemand {
     
     public void BookDaoDataOnDemand.setDescription(BookDao obj, int index) {
         String description = "description_" + index;
-        if (description.length() > 1512) {
-            description = description.substring(0, 1512);
+        if (description.length() > 2000) {
+            description = description.substring(0, 2000);
         }
         obj.setDescription(description);
     }

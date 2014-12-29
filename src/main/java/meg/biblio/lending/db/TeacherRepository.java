@@ -16,5 +16,8 @@ public interface TeacherRepository {
 	List<TeacherDao> findActiveTeachersForClient(@Param("client") ClientDao client);	
 	
 	@Query("select r from TeacherDao as r where r.client = :client and r.active = true and r.schoolgroup = :schoolgroup ")
-	List<TeacherDao> findActiveTeachersForClientAndClass(@Param("client") ClientDao client,@Param("schoolgroup") SchoolGroupDao sgroup);		
+	List<TeacherDao> findActiveTeachersForClientAndClass(@Param("client") ClientDao client,@Param("schoolgroup") SchoolGroupDao sgroup);
+	
+	@Query("select r from TeacherDao as r where r.client = :client and r.active = true and r.schoolgroup = :schoolgroup and r.barcodeid is null")
+	List<TeacherDao> findActiveTeachersForClientAndClassWithoutBarcode(@Param("client") ClientDao client,@Param("schoolgroup") SchoolGroupDao sgroup);
 }

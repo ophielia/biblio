@@ -43,7 +43,6 @@ privileged aspect FoundDetailsDao_Roo_JavaBean {
         return this.description;
     }
     
-        
     public String FoundDetailsDao.getPublisher() {
         return this.publisher;
     }

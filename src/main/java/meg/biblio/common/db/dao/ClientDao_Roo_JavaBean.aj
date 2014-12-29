@@ -9,6 +9,14 @@ import meg.biblio.common.db.dao.UserLoginDao;
 
 privileged aspect ClientDao_Roo_JavaBean {
     
+    public Long ClientDao.getClientnr() {
+        return this.clientnr;
+    }
+    
+    public void ClientDao.setClientnr(Long clientnr) {
+        this.clientnr = clientnr;
+    }
+    
     public String ClientDao.getName() {
         return this.name;
     }
@@ -47,6 +55,22 @@ privileged aspect ClientDao_Roo_JavaBean {
     
     public void ClientDao.setImagepath(String imagepath) {
         this.imagepath = imagepath;
+    }
+    
+    public Long ClientDao.getLastBcBase() {
+        return this.lastBcBase;
+    }
+    
+    public void ClientDao.setLastBcBase(Long lastBcBase) {
+        this.lastBcBase = lastBcBase;
+    }
+    
+    public String ClientDao.getBarcodesheetxsl() {
+        return this.barcodesheetxsl;
+    }
+    
+    public void ClientDao.setBarcodesheetxsl(String barcodesheetxsl) {
+        this.barcodesheetxsl = barcodesheetxsl;
     }
     
     public List<UserLoginDao> ClientDao.getUsers() {

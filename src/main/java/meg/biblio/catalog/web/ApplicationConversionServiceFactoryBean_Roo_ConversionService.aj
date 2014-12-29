@@ -21,7 +21,7 @@ privileged aspect ApplicationConversionServiceFactoryBean_Roo_ConversionService 
     public Converter<ClientDao, String> ApplicationConversionServiceFactoryBean.getClientDaoToStringConverter() {
         return new org.springframework.core.convert.converter.Converter<meg.biblio.common.db.dao.ClientDao, java.lang.String>() {
             public String convert(ClientDao clientDao) {
-                return new StringBuilder().append(clientDao.getName()).append(' ').append(clientDao.getImportmapconfig()).append(' ').append(clientDao.getImportfileconfig()).append(' ').append(clientDao.getClassifyimplementation()).toString();
+                return new StringBuilder().append(clientDao.getClientnr()).append(' ').append(clientDao.getName()).append(' ').append(clientDao.getImportmapconfig()).append(' ').append(clientDao.getImportfileconfig()).toString();
             }
         };
     }

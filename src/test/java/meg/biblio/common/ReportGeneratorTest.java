@@ -9,6 +9,7 @@ import java.io.OutputStream;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -24,9 +25,14 @@ import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.stream.StreamSource;
 
 import meg.biblio.catalog.db.dao.BookDao;
+import meg.biblio.common.report.BarcodeSheet;
 import meg.biblio.common.report.ClassSummaryReport;
 import meg.biblio.common.report.OverdueBookReport;
+import meg.biblio.lending.ClassManagementService;
 import meg.biblio.lending.LendingService;
+import meg.biblio.lending.db.dao.SchoolGroupDao;
+import meg.biblio.lending.db.dao.StudentDao;
+import meg.biblio.lending.web.model.ClassModel;
 import meg.biblio.lending.web.model.LoanRecordDisplay;
 
 import org.apache.fop.apps.FOPException;
@@ -47,6 +53,107 @@ import org.springframework.transaction.annotation.Transactional;
 @RunWith(SpringJUnit4ClassRunner.class)
 @Transactional
 public class ReportGeneratorTest {
+	
+
+	@Autowired
+	ClassManagementService classService;
+	
+	@Autowired
+	BarcodeService barcodeService;
+	
+	@Autowired
+	ClientService clientService;	
+	
+	private FopFactory fopFactory = FopFactory.newInstance();
+	private TransformerFactory tFactory = TransformerFactory.newInstance();
+
+	@Test
+	public void testMakeAnXml() throws JAXBException {
+		Long clientid = clientService.getTestClientId();
+		BarcodeSheet list = barcodeService.assembleBarcodeSheetForBooks(12, clientid, Locale.ENGLISH);
+
+		JAXBContext context = JAXBContext.newInstance(BarcodeSheet.class);
+		Marshaller m = context.createMarshaller();
+		m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+		
+		m.marshal(list, new File("C:/Temp/bcs.xml"));
+		
+		}
+	
+	@Test
+	public void testMakeAClassXml() throws JAXBException {
+Long clientid = clientService.getTestClientId();
+		
+		// create dummy class, and three students
+		SchoolGroupDao sgroup = new SchoolGroupDao();
+		ClassModel model = new ClassModel(sgroup);
+		model.setTeachername("prof mcgonnagal");
+		model.fillInTeacherFromEntry();
+		model = classService.createClassFromClassModel(model, clientid);
+
+		// add students to class -
+		StudentDao hermione = classService.addNewStudentToClass("hermione granger",
+				1L, model.getSchoolGroup(), clientid);
+		StudentDao ron = classService.addNewStudentToClass("ron weasley",
+				1L, model.getSchoolGroup(), clientid);
+		StudentDao draco = classService.addNewStudentToClass("draco malfoy", 2L,
+				model.getSchoolGroup(), clientid);
+		StudentDao neville = classService.addNewStudentToClass(
+				"neville longbottom", 3L, model.getSchoolGroup(), clientid);
+		model = classService.loadClassModelById(model.getClassid());
+		
+		
+		BarcodeSheet sheet = barcodeService.assembleBarcodeSheetForClass(model.getSchoolGroup(),  clientid);
+		
+		JAXBContext context = JAXBContext.newInstance(BarcodeSheet.class);
+		Marshaller m = context.createMarshaller();
+		m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+		
+		m.marshal(sheet, new File("C:/Temp/bcs.xml"));
+		}	
+	
+	@Test
+	public void testHelloWorld() throws IOException, TransformerException {
+
+		// Step 2: Set up output stream.
+		// Note: Using BufferedOutputStream for performance reasons (helpful with FileOutputStreams).
+		OutputStream out = new BufferedOutputStream(new FileOutputStream(new File("C:/Temp/myfile2.pdf")));
+
+		try {
+
+
+		  //Setup FOP
+			Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, out);
+
+			//Setup Transformer
+			Source xsltSrc = new StreamSource(new File("C:/Temp/mybarcodes.xsl"));
+			Transformer transformer = tFactory.newTransformer(xsltSrc);
+
+			//Make sure the XSL transformation's result is piped through to FOP
+			Result res = new SAXResult(fop.getDefaultHandler());
+
+			//Setup input
+			Source src = new StreamSource(new File("C:/Temp/lrd.xml"));
+
+
+			//Start the transformation and rendering process
+			transformer.transform(src, res);
+
+		} catch (FOPException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (TransformerConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+		    //Clean-up
+		    out.close();
+		}
+
+
+	}
+
+	
 /*
 	@Autowired
 	ReportGenerator rGen;

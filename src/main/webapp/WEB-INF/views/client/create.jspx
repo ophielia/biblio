@@ -15,6 +15,9 @@
         <field:input field="teacherCOLimit" id="c_meg_biblio_common_db_dao_ClientDao_teacherCOLimit" validationMessageCode="field_invalid_integer" z="RBKEEV01O2qzIsiAPbidLkUDa7U="/>
         <field:input field="overduexslbase" id="c_meg_biblio_common_db_dao_ClientDao_overduexslbase" z="i1Umu9oiSetzxyJxVJLc9aIREo0="/>
         <field:input field="classsummaryxslbase" id="c_meg_biblio_common_db_dao_ClientDao_classsummaryxslbase" z="SEkp10E1EAMBajKCH7Qei0Wb5y4="/>
+        <field:input field="clientnr" id="c_meg_biblio_common_db_dao_ClientDao_clientnr" validationMessageCode="field_invalid_integer" z="1R9O6iHJTjQDKjbLSrGTfSkrlbw="/>
+        <field:input field="lastBcBase" id="c_meg_biblio_common_db_dao_ClientDao_lastBcBase" validationMessageCode="field_invalid_integer" z="aBiYcXMPUagHYHp7lUI8QWrHpQw="/>
+        <field:input field="barcodesheetxsl" id="c_meg_biblio_common_db_dao_ClientDao_barcodesheetxsl" z="MuN4d/VnlbwJ2qRDm5LvjvCy8u8="/>
     </form:create>
     <form:dependency dependencies="${dependencies}" id="d_meg_biblio_common_db_dao_ClientDao" render="${not empty dependencies}" z="OwI62yfU4B0oekp3l8B94MMTsmY="/>
 </div>

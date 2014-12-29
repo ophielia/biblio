@@ -29,11 +29,14 @@ privileged aspect ClientDaoDataOnDemand_Roo_DataOnDemand {
     
     public ClientDao ClientDaoDataOnDemand.getNewTransientClientDao(int index) {
         ClientDao obj = new ClientDao();
+        setBarcodesheetxsl(obj, index);
         setClassifyimplementation(obj, index);
         setClasssummaryxslbase(obj, index);
+        setClientnr(obj, index);
         setImagepath(obj, index);
         setImportfileconfig(obj, index);
         setImportmapconfig(obj, index);
+        setLastBcBase(obj, index);
         setName(obj, index);
         setOverduexslbase(obj, index);
         setStudentCOLimit(obj, index);
@@ -41,6 +44,11 @@ privileged aspect ClientDaoDataOnDemand_Roo_DataOnDemand {
         setTeacherCOLimit(obj, index);
         setTeachercheckouttime(obj, index);
         return obj;
+    }
+    
+    public void ClientDaoDataOnDemand.setBarcodesheetxsl(ClientDao obj, int index) {
+        String barcodesheetxsl = "barcodesheetxsl_" + index;
+        obj.setBarcodesheetxsl(barcodesheetxsl);
     }
     
     public void ClientDaoDataOnDemand.setClassifyimplementation(ClientDao obj, int index) {
@@ -51,6 +59,11 @@ privileged aspect ClientDaoDataOnDemand_Roo_DataOnDemand {
     public void ClientDaoDataOnDemand.setClasssummaryxslbase(ClientDao obj, int index) {
         String classsummaryxslbase = "classsummaryxslbase_" + index;
         obj.setClasssummaryxslbase(classsummaryxslbase);
+    }
+    
+    public void ClientDaoDataOnDemand.setClientnr(ClientDao obj, int index) {
+        Long clientnr = new Integer(index).longValue();
+        obj.setClientnr(clientnr);
     }
     
     public void ClientDaoDataOnDemand.setImagepath(ClientDao obj, int index) {
@@ -66,6 +79,11 @@ privileged aspect ClientDaoDataOnDemand_Roo_DataOnDemand {
     public void ClientDaoDataOnDemand.setImportmapconfig(ClientDao obj, int index) {
         String importmapconfig = "importmapconfig_" + index;
         obj.setImportmapconfig(importmapconfig);
+    }
+    
+    public void ClientDaoDataOnDemand.setLastBcBase(ClientDao obj, int index) {
+        Long lastBcBase = new Integer(index).longValue();
+        obj.setLastBcBase(lastBcBase);
     }
     
     public void ClientDaoDataOnDemand.setName(ClientDao obj, int index) {

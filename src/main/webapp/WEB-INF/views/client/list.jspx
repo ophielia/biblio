@@ -9,6 +9,7 @@
             <table:column id="c_meg_biblio_common_db_dao_ClientDao_importfileconfig" property="importfileconfig" z="RWimbIdR1B13vK7oaTYfgFHLins="/>
             <table:column id="c_meg_biblio_common_db_dao_ClientDao_classifyimplementation" property="classifyimplementation" z="uUJijuc93O9mdfyOO9rC/7WhBWM="/>
             <table:column id="c_meg_biblio_common_db_dao_ClientDao_imagepath" property="imagepath" z="TI1Ax3eYtI+rrUw4bhpUdpQQrxg="/>
+            <table:column id="c_meg_biblio_common_db_dao_ClientDao_clientnr" property="clientnr" z="XvHbyGpluwW3P+mGawS3wLpua74="/>
         </table:table>
     </page:list>
 </div>

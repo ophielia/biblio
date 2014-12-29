@@ -30,6 +30,8 @@ public class PersonDao {
 	@NotNull
 	private String lastname;
 
+	private String barcodeid;
+	
 	@OneToOne(cascade = CascadeType.ALL, fetch=FetchType.EAGER)
 	private ClientDao client;
 

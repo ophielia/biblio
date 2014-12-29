@@ -17,6 +17,8 @@ import org.springframework.roo.addon.tostring.RooToString;
 @Table(name="client")
 public class ClientDao {
 	
+	private Long clientnr;
+	
 	@NotNull
 	private String name;
 	
@@ -27,6 +29,10 @@ public class ClientDao {
 	private String classifyimplementation;
 	
 	private String imagepath;
+	
+	private Long lastBcBase;
+	
+	private String barcodesheetxsl;
 	
 	@OneToMany(mappedBy = "client",cascade = CascadeType.PERSIST, fetch=FetchType.LAZY)
 	private List<UserLoginDao> users;

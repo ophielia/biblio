@@ -274,6 +274,11 @@
             </exclusion>
         </exclusions>			
 		</dependency>
+	<dependency>
+		<groupId>net.sf.barcode4j</groupId>
+		<artifactId>barcode4j</artifactId>
+		<version>2.1</version>
+	</dependency>
 		<dependency>
         <groupId>org.apache.avalon.framework</groupId>
         <artifactId>avalon-framework-api</artifactId>
