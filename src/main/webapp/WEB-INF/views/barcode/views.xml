@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 2.1//EN" "http://tiles.apache.org/dtds/tiles-config_2_1.dtd">
+<tiles-definitions>
+	<definition extends="default" name="barcode/generatebooks">
+		<put-attribute name="body"
+			value="/WEB-INF/views/barcode/generatebooks.jspx" />
+	</definition>
+
+	<definition extends="default" name="barcode/generateclass">
+		<put-attribute name="body"
+			value="/WEB-INF/views/barcode/generateclass.jspx" />
+	</definition>
+
+
+	<definition extends="default" name="barcode/assigncode">
+		<put-attribute name="body"
+			value="/WEB-INF/views/barcode/assigncode.jspx" />
+	</definition>
+
+
+	<definition extends="default" name="barcode/assignsuccess">
+		<put-attribute name="body"
+			value="/WEB-INF/views/barcode/assignsuccess.jspx" />
+	</definition>
+
+	<definition extends="default" name="barcode/choosebook">
+		<put-attribute name="body"
+			value="/WEB-INF/views/barcode/choosebook.jspx" />
+	</definition>
+
+	<definition extends="default" name="barcode/isbnedit">
+		<put-attribute name="body"
+			value="/WEB-INF/views/barcode/isbnedit.jspx" />
+	</definition>
+
+	<definition extends="default" name="barcode/editbook">
+		<put-attribute name="body"
+			value="/WEB-INF/views/barcode/editbook.jspx" />
+	</definition>
+
+</tiles-definitions>

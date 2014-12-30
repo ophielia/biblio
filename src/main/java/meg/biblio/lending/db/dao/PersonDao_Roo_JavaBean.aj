@@ -25,6 +25,14 @@ privileged aspect PersonDao_Roo_JavaBean {
         this.lastname = lastname;
     }
     
+    public String PersonDao.getBarcodeid() {
+        return this.barcodeid;
+    }
+    
+    public void PersonDao.setBarcodeid(String barcodeid) {
+        this.barcodeid = barcodeid;
+    }
+    
     public ClientDao PersonDao.getClient() {
         return this.client;
     }

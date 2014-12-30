@@ -22,6 +22,8 @@ public class ClientServiceTest {
 		Assert.assertNotNull(result);
 		Assert.assertEquals(1L, result.longValue());
 	}
+	
+
 
 
 }

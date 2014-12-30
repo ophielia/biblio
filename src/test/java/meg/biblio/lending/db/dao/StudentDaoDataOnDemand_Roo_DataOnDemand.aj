@@ -38,6 +38,7 @@ privileged aspect StudentDaoDataOnDemand_Roo_DataOnDemand {
     public StudentDao StudentDaoDataOnDemand.getNewTransientStudentDao(int index) {
         StudentDao obj = new StudentDao();
         setActive(obj, index);
+        setBarcodeid(obj, index);
         setFirstname(obj, index);
         setLastname(obj, index);
         setPsn_type(obj, index);
@@ -48,6 +49,11 @@ privileged aspect StudentDaoDataOnDemand_Roo_DataOnDemand {
     public void StudentDaoDataOnDemand.setActive(StudentDao obj, int index) {
         Boolean active = Boolean.TRUE;
         obj.setActive(active);
+    }
+    
+    public void StudentDaoDataOnDemand.setBarcodeid(StudentDao obj, int index) {
+        String barcodeid = "barcodeid_" + index;
+        obj.setBarcodeid(barcodeid);
     }
     
     public void StudentDaoDataOnDemand.setFirstname(StudentDao obj, int index) {

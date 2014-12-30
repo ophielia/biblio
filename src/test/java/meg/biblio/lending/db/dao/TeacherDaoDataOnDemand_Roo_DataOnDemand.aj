@@ -38,6 +38,7 @@ privileged aspect TeacherDaoDataOnDemand_Roo_DataOnDemand {
     public TeacherDao TeacherDaoDataOnDemand.getNewTransientTeacherDao(int index) {
         TeacherDao obj = new TeacherDao();
         setActive(obj, index);
+        setBarcodeid(obj, index);
         setEmail(obj, index);
         setFirstname(obj, index);
         setLastname(obj, index);
@@ -48,6 +49,11 @@ privileged aspect TeacherDaoDataOnDemand_Roo_DataOnDemand {
     public void TeacherDaoDataOnDemand.setActive(TeacherDao obj, int index) {
         Boolean active = Boolean.TRUE;
         obj.setActive(active);
+    }
+    
+    public void TeacherDaoDataOnDemand.setBarcodeid(TeacherDao obj, int index) {
+        String barcodeid = "barcodeid_" + index;
+        obj.setBarcodeid(barcodeid);
     }
     
     public void TeacherDaoDataOnDemand.setEmail(TeacherDao obj, int index) {

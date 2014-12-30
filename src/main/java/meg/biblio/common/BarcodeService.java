@@ -3,7 +3,6 @@ package meg.biblio.common;
 import java.util.Locale;
 
 import meg.biblio.common.report.BarcodeSheet;
-import meg.biblio.lending.db.dao.SchoolGroupDao;
 
 
 
@@ -13,9 +12,11 @@ public interface BarcodeService {
 		public static final String BOOK = "B";
 		public static final String PERSON = "A";
 	}
+	
+	public final static String codecountlkup="codecount";
+	
 
-	BarcodeSheet assembleBarcodeSheetForClass(SchoolGroupDao schoolgroup,
-			Long clientid);
+	BarcodeSheet assembleBarcodeSheetForClass(Long classId, Long clientid);
 
 	BarcodeSheet assembleBarcodeSheetForBooks(int barcodecnt, Long clientid,
 			Locale locale);

@@ -18,6 +18,7 @@ import meg.biblio.lending.web.model.ClassModel;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -32,7 +33,7 @@ public class BarcodeServiceImpl implements BarcodeService {
 	ClientService clientService;
 	
 	@Autowired
-	MessageSource messageSource;
+	MessageSource  appMessageSource;
 	
 	@Autowired
 	StudentRepository studentRepo;	
@@ -57,7 +58,7 @@ public class BarcodeServiceImpl implements BarcodeService {
 		// get codelist (length barcodecnt)
 		List<Barcode> codes = generateCodes(barcodecnt, BarcodeService.CodeType.BOOK,client,message);
 		// place codes in BookBarcodeSheet, with client
-		String base = messageSource.getMessage("reports_barcode_booktitle",null, locale);
+		String base = appMessageSource.getMessage("reports_barcode_booktitle",null, locale);
 		String title = base + client.getName();
 		BarcodeSheet sheet = new BarcodeSheet(codes,title);
 		// return BookBarcodeSheet
@@ -65,21 +66,25 @@ public class BarcodeServiceImpl implements BarcodeService {
 	}
 	
 	@Override
-	public BarcodeSheet assembleBarcodeSheetForClass(SchoolGroupDao schoolgroup, Long clientid) {
+	public BarcodeSheet assembleBarcodeSheetForClass(Long classId, Long clientid) {
 		// get client
 		ClientDao client = clientService.getClientForKey(clientid);
 
 		// assign codes to any students without codes
+		SchoolGroupDao schoolgroup = classService.getClassForClient(classId, clientid);
 		List<StudentDao> nocodestudents = studentRepo.findActiveStudentsForClassWithoutBarcode(schoolgroup, client,  null);
 		if (nocodestudents!=null && nocodestudents.size()>0) {
+			List<StudentDao> toupdate = new ArrayList<StudentDao>(); 
 			List<Barcode> newcodes = generateCodes(nocodestudents.size(),BarcodeService.CodeType.PERSON,client,"");
 			int i=0;
 			for (StudentDao student:nocodestudents) {
+				StudentDao toupd = studentRepo.findOne(student.getId());
 				Barcode bc = newcodes.get(i);
-				student.setBarcodeid(bc.getCode());
+				toupd.setBarcodeid(bc.getCode());
+				toupdate.add(toupd);
 				i++;
 			}
-			studentRepo.save(nocodestudents);
+			studentRepo.save(toupdate);
 		}
 		
 		// ensure that teacher has a code
@@ -88,11 +93,13 @@ public class BarcodeServiceImpl implements BarcodeService {
 			List<Barcode> newcodes = generateCodes(nocodeteachers.size(),BarcodeService.CodeType.PERSON,client,"");
 			int i=0;
 			for (TeacherDao teacher:nocodeteachers) {
+				TeacherDao toupd = teacherRepo.findOne(teacher.getId());
 				Barcode bc = newcodes.get(i);
-				teacher.setBarcodeid(bc.getCode());
+				toupd.setBarcodeid(bc.getCode());
+				teacherRepo.save(toupd);
 				i++;
 			}
-			teacherRepo.save(nocodeteachers);
+			
 		}		
 		
 		// load classmodel
@@ -142,6 +149,7 @@ public class BarcodeServiceImpl implements BarcodeService {
 		Long lastused = client.getLastBcBase();
 		int begin = lastused.intValue()+1;
 		Long after = lastused + length + 1;
+		client = clientRepo.findOne(client.getId());
 		client.setLastBcBase(after);
 		clientRepo.save(client);
 		

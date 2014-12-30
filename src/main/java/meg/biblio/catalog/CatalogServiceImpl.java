@@ -110,8 +110,8 @@ public class CatalogServiceImpl implements CatalogService {
 	 */
 	@Override
 	public BookModel createCatalogEntryFromBookModel(Long clientkey,
-			BookModel model) {
-		BookDao book = createBookFromBookModel(clientkey, model);
+			BookModel model, Boolean createclientbookid) {
+		BookDao book = createBookFromBookModel(clientkey, model, createclientbookid);
 		Long bookid = book.getId();
 		Boolean lookupwithgoogle = settingService.getSettingAsBoolean("biblio.google.turnedon");
 
@@ -148,6 +148,12 @@ public class CatalogServiceImpl implements CatalogService {
 		// return bookmodel
 		return result;
 	}
+	
+	@Override
+	public BookModel createCatalogEntryFromBookModel(Long clientkey,
+			BookModel model) {
+		return createCatalogEntryFromBookModel(clientkey, model, false);
+	}
 
 	@Override
 	public void createCatalogEntriesFromList(Long clientkey,
@@ -158,7 +164,7 @@ public class CatalogServiceImpl implements CatalogService {
 		// go through list of BookModels, persisting them
 		for (BookModel imported : toimport) {
 
-			BookDao saved = createBookFromBookModel(clientkey, imported);
+			BookDao saved = createBookFromBookModel(clientkey, imported, false);
 			Long bookid = saved.getId();
 
 			// reload book in bookmodel
@@ -646,13 +652,22 @@ public class CatalogServiceImpl implements CatalogService {
 		}
 	}
 
-	private BookDao createBookFromBookModel(Long clientkey, BookModel model) {
+	private BookDao createBookFromBookModel(Long clientkey, BookModel model, Boolean createid) {
 		// get book
 		BookDao book = model.getBook();
 
 		// add clientkey
 		book.setClientid(clientkey);
 
+		// make new clientbookid if needed
+		if (createid) {
+			// get max bookid
+			Long maxbookid = clientService.getAndIncrementLastBookNr(clientkey);
+			// set max bookid in book
+			book.setClientbookid(maxbookid.toString());
+		}
+		
+		
 		// add default entries for status, detail status, type
 		book.setStatus(Status.PROCESSING);
 		book.setDetailstatus(DetailStatus.NODETAIL);
@@ -1355,83 +1370,20 @@ public class CatalogServiceImpl implements CatalogService {
 		return book;
 	}
 
+	@Override
+	public void assignCodeToBook(String code, Long bookid) {
+		if (bookid != null && code != null) {
+			// get book
+			BookDao book = bookRepo.findOne(bookid);
+			if (book != null) {
+				// put code in slot
+				book.setBarcodeid(code);
+				// save book
+				saveBook(book);
+			}
+		}
+	}
+
 
 
 }
-
-/*
- *
- * public BookDao copyAuthorsIntoBook(BookDao book, List<String> foundauthors) {
- * if (foundauthors != null && book != null) { HashMap<Long,ArtistDao>
- * bookauthors = new HashMap<Long, ArtistDao>(); HashMap<Long,ArtistDao>
- * bookillustrators = new HashMap<Long, ArtistDao>(); if
- * (book.getAuthors()!=null) { for (ArtistDao author:book.getAuthors()) {
- * bookauthors.put(author.getId(), author); } } if
- * (book.getIllustrators()!=null) { for (ArtistDao
- * illust:book.getIllustrators()) { bookillustrators.put(illust.getId(),
- * illust); } } List<ArtistDao> newauthors = new ArrayList<ArtistDao>();
- * List<ArtistDao> newillustrators = new ArrayList<ArtistDao>();
- *
- * // go through all found authors for (String found : foundauthors) { boolean
- * matchfound = false;
- *
- * // get name (ArtistDao) for authortext ArtistDao foundauthor =
- * textToName(found);
- *
- * // go through book authors to find match (by last name) if (book.getAuthors()
- * != null) { for (ArtistDao existauth : book.getAuthors()) { if
- * (existauth.hasLastname() && foundauthor.hasLastname()) { if (existauth
- * .getLastname() .trim() .toLowerCase()
- * .equals(foundauthor.getLastname().trim() .toLowerCase())) { // ensure that
- * first initials of first match if (existauth.hasFirstname() &&
- * foundauthor.hasFirstname()) { if (existauth .getFirstname()
- * .trim().toLowerCase
- * ().startsWith(foundauthor.getFirstname().toLowerCase().substring(0,2))) {
- * matchfound = true; } } else { matchfound = true; } // determine if
- * foundauthor info is more // complete boolean foundmorecomplete = (!existauth
- * .hasFirstname() && foundauthor .hasFirstname()); foundmorecomplete |=
- * (!existauth .hasMiddlename() && foundauthor .hasMiddlename());
- * foundmorecomplete |= (existauth.hasFirstname() && foundauthor.hasFirstname()
- * && existauth .getFirstname().length() < foundauthor
- * .getFirstname().length());
- *
- * // if foundauthor is more complete, find in db if (foundmorecomplete) {
- *
- * ArtistDao match = searchService.findArtistMatchingName(foundauthor); // if
- * found, replace in list if (match != null) { newauthors.add(match); } else {
- * // if not found, replace copy // foundauthor info into current author
- * newauthors.add(foundauthor); } } } } } } // end book authors
- *
- * // if not match, go through illustrators if (!matchfound) { for (ArtistDao
- * existillus : book.getIllustrators()) { if (existillus.hasLastname() &&
- * foundauthor.hasLastname()) { if (existillus .getLastname() .trim()
- * .toLowerCase() .equals(foundauthor.getLastname().trim() .toLowerCase())) { //
- * ensure that first initials of first match if (existillus.hasFirstname() &&
- * foundauthor.hasFirstname()) { if (existillus .getFirstname() .trim()
- * .substring(0, 2) .equals(existillus.getFirstname() .trim().substring(0, 2)))
- * { matchfound = true; } } else { matchfound = true; } // determine if
- * foundauthor info is more // complete boolean foundmorecomplete = (!existillus
- * .hasFirstname() && foundauthor .hasFirstname()); foundmorecomplete |=
- * (!existillus .hasMiddlename() && foundauthor .hasMiddlename());
- * foundmorecomplete |= (existillus.hasFirstname() && foundauthor.hasFirstname()
- * && existillus .getFirstname().length() < foundauthor
- * .getFirstname().length());
- *
- * // if foundauthor is more complete, find in db if (foundmorecomplete) {
- *
- * ArtistDao match = searchService.findArtistMatchingName(foundauthor); // if
- * found, replace in list if (match != null) { newillustrators.add(match); }
- * else { // if not found, replace copy // foundauthor info into current author
- * newillustrators.add(foundauthor); } } } } } } // end illustrators // if no
- * match found, add to authors if (!matchfound) { newauthors.add(foundauthor); }
- *
- *
- *
- * } // end go through all foundauthors
- *
- * // if authorlist has members, set in book if (newauthors.size()>0) {
- * book.setAuthors(newauthors); } // if illustratorlist has members, set in book
- * if (newillustrators.size()>0) { book.setIllustrators(newauthors); } } return
- * book; }
- */
-

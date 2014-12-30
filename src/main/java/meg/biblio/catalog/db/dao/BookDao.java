@@ -75,6 +75,7 @@ private Boolean shelfclassverified;
 private Date createdon;
 private String clientbookid;
 private Long clientbookidsort;
+private String barcodeid;
 @OneToMany(mappedBy = "book",cascade = CascadeType.ALL, fetch=FetchType.LAZY)
 private List<FoundWordsDao> foundwords;
 @Transient

@@ -2,6 +2,9 @@ package meg.biblio.common;
 
 import java.security.Principal;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.servlet.http.HttpServletRequest;
 
 import meg.biblio.catalog.Classifier;
@@ -24,6 +27,9 @@ public class ClientServiceImpl implements ClientService {
 
 	@Autowired
 	AppSettingService settingService;
+
+	@PersistenceContext
+	private EntityManager entityManager;
 
 	@Override
 	public Long getCurrentClientKey(HttpServletRequest httpServletRequest) {
@@ -101,6 +107,20 @@ public class ClientServiceImpl implements ClientService {
 	public Long getTestClientId() {
 		// make strong for live....
 		return 1L;
+	}
+
+	@Override
+	public Long getAndIncrementLastBookNr(Long clientkey) {
+		// get client
+		ClientDao client = getClientForKey(clientkey);
+		// read lastbooknr
+		Long maxbook = client.getLastBookNr();
+		// update client
+		Query query = entityManager
+				.createQuery("Update ClientDao c set lastBookNr = lastBookNr + 1");
+		int deletedCount = query.executeUpdate();
+
+		return maxbook;
 	}
 
 }

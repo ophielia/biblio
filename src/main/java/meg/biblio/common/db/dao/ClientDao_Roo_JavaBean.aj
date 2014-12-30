@@ -121,6 +121,22 @@ privileged aspect ClientDao_Roo_JavaBean {
         this.overduexslbase = overduexslbase;
     }
     
+    public String ClientDao.getShortname() {
+        return this.shortname;
+    }
+    
+    public void ClientDao.setShortname(String shortname) {
+        this.shortname = shortname;
+    }
+    
+    public Long ClientDao.getLastBookNr() {
+        return this.lastBookNr;
+    }
+    
+    public void ClientDao.setLastBookNr(Long lastBookNr) {
+        this.lastBookNr = lastBookNr;
+    }
+    
     public String ClientDao.getClasssummaryxslbase() {
         return this.classsummaryxslbase;
     }

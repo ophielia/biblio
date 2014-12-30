@@ -17,5 +17,7 @@
         <field:display field="clientnr" id="s_meg_biblio_common_db_dao_ClientDao_clientnr" object="${clientdao}" z="pERO8V5Jgc9ZyC+5hFl154c6jlA="/>
         <field:display field="lastBcBase" id="s_meg_biblio_common_db_dao_ClientDao_lastBcBase" object="${clientdao}" z="TXzAE61baAkiJa+1xIrERWGJup8="/>
         <field:display field="barcodesheetxsl" id="s_meg_biblio_common_db_dao_ClientDao_barcodesheetxsl" object="${clientdao}" z="X6mXqEntO0Gnr8ge2w1caS0L8t4="/>
+        <field:display field="shortname" id="s_meg_biblio_common_db_dao_ClientDao_shortname" object="${clientdao}" z="tuENR5Oa6irWhjLM7qwW2HCrs6s="/>
+        <field:display field="lastBookNr" id="s_meg_biblio_common_db_dao_ClientDao_lastBookNr" object="${clientdao}" z="9GQHJh84c5/imHaxz7zu52HUEX0="/>
     </page:show>
 </div>

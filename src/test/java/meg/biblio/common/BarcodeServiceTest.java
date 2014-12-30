@@ -33,7 +33,8 @@ public class BarcodeServiceTest {
 	@Test
 	public void testAssembleBookSheet() {
 		Long clientid = clientService.getTestClientId();
-		BarcodeSheet sheet = barcodeService.assembleBarcodeSheetForBooks(50,  clientid, Locale.ENGLISH);
+		Locale test = Locale.US;
+		BarcodeSheet sheet = barcodeService.assembleBarcodeSheetForBooks(50,  clientid,test);
 		Assert.assertNotNull(sheet);
 		Assert.assertTrue(sheet.getTitle().startsWith("dBook"));
 	}
@@ -61,7 +62,7 @@ public class BarcodeServiceTest {
 		model = classService.loadClassModelById(model.getClassid());
 		
 		
-		BarcodeSheet sheet = barcodeService.assembleBarcodeSheetForClass(model.getSchoolGroup(),  clientid);
+		BarcodeSheet sheet = barcodeService.assembleBarcodeSheetForClass(model.getSchoolGroup().getId(),  clientid);
 		Assert.assertNotNull(sheet);
 		//Assert.assertEquals("Class of prof mcgonnagal",sheet.getTitle());
 		Assert.assertEquals(5, sheet.getCodes().size());

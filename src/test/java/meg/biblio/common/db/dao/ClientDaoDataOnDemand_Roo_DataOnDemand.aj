@@ -37,8 +37,10 @@ privileged aspect ClientDaoDataOnDemand_Roo_DataOnDemand {
         setImportfileconfig(obj, index);
         setImportmapconfig(obj, index);
         setLastBcBase(obj, index);
+        setLastBookNr(obj, index);
         setName(obj, index);
         setOverduexslbase(obj, index);
+        setShortname(obj, index);
         setStudentCOLimit(obj, index);
         setStudentcheckouttime(obj, index);
         setTeacherCOLimit(obj, index);
@@ -86,6 +88,11 @@ privileged aspect ClientDaoDataOnDemand_Roo_DataOnDemand {
         obj.setLastBcBase(lastBcBase);
     }
     
+    public void ClientDaoDataOnDemand.setLastBookNr(ClientDao obj, int index) {
+        Long lastBookNr = new Integer(index).longValue();
+        obj.setLastBookNr(lastBookNr);
+    }
+    
     public void ClientDaoDataOnDemand.setName(ClientDao obj, int index) {
         String name = "name_" + index;
         obj.setName(name);
@@ -94,6 +101,11 @@ privileged aspect ClientDaoDataOnDemand_Roo_DataOnDemand {
     public void ClientDaoDataOnDemand.setOverduexslbase(ClientDao obj, int index) {
         String overduexslbase = "overduexslbase_" + index;
         obj.setOverduexslbase(overduexslbase);
+    }
+    
+    public void ClientDaoDataOnDemand.setShortname(ClientDao obj, int index) {
+        String shortname = "shortname_" + index;
+        obj.setShortname(shortname);
     }
     
     public void ClientDaoDataOnDemand.setStudentCOLimit(ClientDao obj, int index) {

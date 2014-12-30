@@ -2,19 +2,14 @@ package meg.biblio.common;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
-import javax.xml.bind.util.JAXBSource;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
@@ -24,27 +19,19 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.stream.StreamSource;
 
-import meg.biblio.catalog.db.dao.BookDao;
 import meg.biblio.common.report.BarcodeSheet;
-import meg.biblio.common.report.ClassSummaryReport;
-import meg.biblio.common.report.OverdueBookReport;
 import meg.biblio.lending.ClassManagementService;
-import meg.biblio.lending.LendingService;
 import meg.biblio.lending.db.dao.SchoolGroupDao;
 import meg.biblio.lending.db.dao.StudentDao;
 import meg.biblio.lending.web.model.ClassModel;
-import meg.biblio.lending.web.model.LoanRecordDisplay;
 
 import org.apache.fop.apps.FOPException;
 import org.apache.fop.apps.Fop;
 import org.apache.fop.apps.FopFactory;
 import org.apache.fop.apps.MimeConstants;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.FileSystemResourceLoader;
-import org.springframework.mock.web.MockServletContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -103,7 +90,7 @@ Long clientid = clientService.getTestClientId();
 		model = classService.loadClassModelById(model.getClassid());
 		
 		
-		BarcodeSheet sheet = barcodeService.assembleBarcodeSheetForClass(model.getSchoolGroup(),  clientid);
+		BarcodeSheet sheet = barcodeService.assembleBarcodeSheetForClass(model.getSchoolGroup().getId(),  clientid);
 		
 		JAXBContext context = JAXBContext.newInstance(BarcodeSheet.class);
 		Marshaller m = context.createMarshaller();

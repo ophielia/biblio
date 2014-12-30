@@ -1,7 +1,18 @@
-Branch - MASTER -   add book - add publisher name
-					for book without details - ability to change author / illustrator / publisher names - as well as isbn.
- 					appsettings table
-					get rid of clobs
+Branch - barcodes -   Generate Barcodes
+					  Generate Barcodes for Users
+				      Generate Barcodes for Books
+				      
+
+
+
+
+basic programming assign codes to book done - 
+  need to make it pretty!!
+  problem with imagebase in widget
+  layout of pages
+  i18 messages / labels
+  run-through for new book - current null pointer exception
+
 
 Heroku Issues - 
 encoding - funny characters
@@ -26,15 +37,14 @@ plus, REALLY long sessions
 
 ---- begin commit changes ----
 
-done - finish - showing classification images.....
-done - 	add imagebase to passed parameters
-done - update db of classification
-done - 	last changes to ShelfClassWidget - in html - change path of image
-done - 	still open widget - pass in empty select text
-done - edit page dustup
-done - 	one edit page - no found details
-done - 	one edit page, book status only	
-	
+done - add messages - from context
+done - 	books done, but ugly
+done - bring sheets to front end
+done - 	class - using select for class, int messages
+done - 	finish books - add select, int messages
+done - test import lockdown
+done - begin assigncodestobook backend
+
 ---- end commit changes ----
 
 
@@ -49,7 +59,12 @@ done - remove import dependancy on filesystem
 done - choosedetails isbn - 
 done - new controller method which searches by isbn
 done - backend which dumps single book into founddetails
-
+done - BS - assembleBarcodeSheetForBooks implemented and tested
+done - started  - fill out BarcodeSheet to produce xml
+nevermind - 	make rows for barcode sheet 
+done - 	containing element for barcodes				      
+done - assembleBarcodeSheetForClass test / implement / test
+	
 
 ---- end branch changes ----
 
@@ -318,6 +333,7 @@ done - create java ClassSummaryReport
 done - teachername not showing up in loanhistory
 done - booksearchcontroller, 
 
+***** MASTER - HEROKU CHANGES *****
 
 ----- end complete history ----
 

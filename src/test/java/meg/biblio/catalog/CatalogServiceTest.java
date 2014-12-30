@@ -19,6 +19,7 @@ import meg.biblio.catalog.db.dao.ArtistDao;
 import meg.biblio.catalog.db.dao.BookDao;
 import meg.biblio.catalog.db.dao.PublisherDao;
 import meg.biblio.catalog.web.model.BookModel;
+import meg.biblio.common.ClientService;
 import meg.biblio.search.SearchService;
 
 import org.junit.Assert;
@@ -58,6 +59,10 @@ public class CatalogServiceTest {
 
 	@Autowired
 	SubjectRepository subjectRepo;
+	
+
+	@Autowired
+	ClientService clientService;
 
 	Long artistid;
 	Long pubtestid;
@@ -218,6 +223,32 @@ public class CatalogServiceTest {
 
 		// check that publisher is not null
 		Assert.assertNotNull(book.getPublisher());
+	}
+	
+	@Test
+	public void testAssignCodeToBook() {
+		Long clientid = clientService.getTestClientId();
+		BookDao book = new BookDao();
+		book.setTitle("les trois brigands");
+		ArtistDao author = catalogService.textToArtistName("Ungerer");
+		List<ArtistDao> authors = new ArrayList<ArtistDao>();
+		authors.add(author);
+		book.setAuthors(authors);
+
+		BookModel model = new BookModel(book);
+		model = catalogService.createCatalogEntryFromBookModel(clientid,
+				model);
+		
+		// bookid, code
+		Long bookid = model.getBookid();
+		String code = "B1000001000";
+		
+		// service call
+		catalogService.assignCodeToBook(code, bookid);
+		
+		model = catalogService.loadBookModel(bookid);
+		Assert.assertEquals(code,model.getBook().getBarcodeid());
+		
 	}
 
 	@Test

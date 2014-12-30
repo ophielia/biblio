@@ -1,5 +1,6 @@
 package meg.biblio.catalog.web;
 import java.io.UnsupportedEncodingException;
+import java.security.Principal;
 import java.util.HashMap;
 
 import javax.servlet.http.HttpServletRequest;
@@ -9,6 +10,7 @@ import meg.biblio.catalog.web.model.BookImportModel;
 import meg.biblio.common.ClientService;
 import meg.biblio.common.ImportManager;
 import meg.biblio.common.SelectKeyService;
+import meg.biblio.common.db.dao.ClientDao;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -37,8 +39,9 @@ public class UploadController {
 	@RequestMapping(value = "/upload",method = RequestMethod.POST, produces = "text/html")
 	public String create(@Valid BookImportModel bookImportModel, BindingResult bindingResult, Model uiModel,
 	       @RequestParam("content") CommonsMultipartFile content,
-	       HttpServletRequest httpServletRequest) {
-		Long clientkey = clientService.getCurrentClientKey(httpServletRequest);
+	       HttpServletRequest httpServletRequest, Principal principal) {
+		ClientDao client = clientService.getCurrentClient(principal);
+		Long clientkey = client.getId();
 		String filestr = "";
 	   byte[] file = content.getBytes();
 	   filestr = new String(file);

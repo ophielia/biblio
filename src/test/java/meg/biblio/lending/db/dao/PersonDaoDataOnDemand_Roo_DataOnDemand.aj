@@ -38,6 +38,7 @@ privileged aspect PersonDaoDataOnDemand_Roo_DataOnDemand {
     public PersonDao PersonDaoDataOnDemand.getNewTransientPersonDao(int index) {
         PersonDao obj = new PersonDao();
         setActive(obj, index);
+        setBarcodeid(obj, index);
         setFirstname(obj, index);
         setLastname(obj, index);
         setPsn_type(obj, index);
@@ -47,6 +48,11 @@ privileged aspect PersonDaoDataOnDemand_Roo_DataOnDemand {
     public void PersonDaoDataOnDemand.setActive(PersonDao obj, int index) {
         Boolean active = Boolean.TRUE;
         obj.setActive(active);
+    }
+    
+    public void PersonDaoDataOnDemand.setBarcodeid(PersonDao obj, int index) {
+        String barcodeid = "barcodeid_" + index;
+        obj.setBarcodeid(barcodeid);
     }
     
     public void PersonDaoDataOnDemand.setFirstname(PersonDao obj, int index) {

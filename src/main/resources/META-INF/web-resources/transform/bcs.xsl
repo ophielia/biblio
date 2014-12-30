@@ -43,6 +43,7 @@
             <xsl:if test="not($posi mod 3)">
                 <xsl:attribute name="ends-row">true</xsl:attribute>
             </xsl:if>
+            <fo:block keep-together="always">
             <fo:block margin-left="3mm">
 	    	<xsl:value-of select="description"/>
             </fo:block>
@@ -50,6 +51,7 @@
 	                  <fo:instream-foreign-object>
 	                    <xsl:copy-of select="barcode:generate($barcode-cfg, msg)"/>
 	                  </fo:instream-foreign-object>
+            </fo:block>
             </fo:block>
         </fo:table-cell>
     </xsl:template>

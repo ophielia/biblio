@@ -26,4 +26,6 @@ public interface ClientService {
 	ClientDao getClientForKey(Long key);
 
 	public Long getTestClientId();
+
+	public Long getAndIncrementLastBookNr(Long clientkey);
 }

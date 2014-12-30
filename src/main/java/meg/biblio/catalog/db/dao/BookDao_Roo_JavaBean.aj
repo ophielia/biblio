@@ -145,6 +145,14 @@ privileged aspect BookDao_Roo_JavaBean {
         this.clientbookidsort = clientbookidsort;
     }
     
+    public String BookDao.getBarcodeid() {
+        return this.barcodeid;
+    }
+    
+    public void BookDao.setBarcodeid(String barcodeid) {
+        this.barcodeid = barcodeid;
+    }
+    
     public List<FoundWordsDao> BookDao.getFoundwords() {
         return this.foundwords;
     }

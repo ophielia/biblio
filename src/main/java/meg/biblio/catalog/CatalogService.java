@@ -47,6 +47,8 @@ public interface CatalogService {
 
 
 
+	BookModel createCatalogEntryFromBookModel(Long clientkey, BookModel model,Boolean createclientbookid);
+	
 	BookModel createCatalogEntryFromBookModel(Long clientkey, BookModel model);
 
 	BookModel loadBookModel(Long id);
@@ -85,6 +87,8 @@ public interface CatalogService {
 	BookDao updateBookStatus(Long id, long checkedout);
 
 	BookModel addToFoundDetails(Long clientkey, BookModel dbmodel);
+
+	void assignCodeToBook(String code, Long bookid);
 
 
 

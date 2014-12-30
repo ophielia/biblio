@@ -36,6 +36,7 @@ privileged aspect BookDaoDataOnDemand_Roo_DataOnDemand {
     
     public BookDao BookDaoDataOnDemand.getNewTransientBookDao(int index) {
         BookDao obj = new BookDao();
+        setBarcodeid(obj, index);
         setClientbookid(obj, index);
         setClientbookidsort(obj, index);
         setClientid(obj, index);
@@ -52,6 +53,11 @@ privileged aspect BookDaoDataOnDemand_Roo_DataOnDemand {
         setTitle(obj, index);
         setType(obj, index);
         return obj;
+    }
+    
+    public void BookDaoDataOnDemand.setBarcodeid(BookDao obj, int index) {
+        String barcodeid = "barcodeid_" + index;
+        obj.setBarcodeid(barcodeid);
     }
     
     public void BookDaoDataOnDemand.setClientbookid(BookDao obj, int index) {

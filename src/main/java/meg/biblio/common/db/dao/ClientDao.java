@@ -47,6 +47,10 @@ public class ClientDao {
 	
 	private String overduexslbase;
 	
+	private String shortname;
+	
+	private Long lastBookNr;
+	
 	private String classsummaryxslbase;
 }
 
