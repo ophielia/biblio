@@ -31,46 +31,6 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 			return stripped;
 		}
 	focusUtil.focus(dom.byId("assignedcode"));
-		/*// wire up sort buttons
-	dojo.query("th[id^='aSort']").forEach(function(node) {
-	var id = node.id;
-
-	on(dojo.byId(id), 'click', function(event) {
-		clickedid = event.currentTarget.id;
-		sortaction = getIndex('aSort', clickedid);
-		var form = dojo.byId('resultlist');
-		form.action = "${actionurl}?sort=" + sortaction;
-		form.submit();
-	});
-});
-
-form = dojo.byId("resultlist");
-	on(form, "input#updateStatus:click", function(event){
-	   if (this.id="updateStatus") {
-		checkselect = dojo.byId("statusUpdate");
-		if (checkselect.value == "") {
-			alert("${missingstatus}");
-   		event.preventDefault();
-   		event.stopPropagation();	   			
-		}
-	   }
-	});
-	
-	
-	form = dojo.byId("resultlist");
-	on(form, "input#shelfclassUpdate:click", function(event){
-	   if (this.id="shelfclassUpdate") {
-		checkselect = dojo.byId("shelfclassentry");
-		if (checkselect.value == "") {
-			alert("${missingshelfclass}");
-   		event.preventDefault();
-   		event.stopPropagation();	   			
-		}
-	   }
-	});
-*/
-		
-		
 	});
  
 
@@ -82,11 +42,12 @@ form = dojo.byId("resultlist");
 
 <form:form action="${actionurl}" id="generatebookcodes" method="POST" modelAttribute="assignCodeModel">
 
-<div>
- <form:input path="assignedcode"></form:input><br/>
+<div style="height:300px">
+<form:errors path="assignedcode"></form:errors>
+ <form:input type="text" path="assignedcode"></form:input><br/>
 
 
-	<input id="existing" name="existing" type="submit" value="Select"></input>
+	
 
 </div>
 

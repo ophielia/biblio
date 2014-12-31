@@ -23,10 +23,15 @@
 			value="/WEB-INF/views/barcode/assignsuccess.jspx" />
 	</definition>
 
-	<definition extends="default" name="barcode/choosebook">
+	<definition extends="default" name="barcode/choosenewbook">
+		<put-attribute name="body"
+			value="/WEB-INF/views/barcode/newbook.jspx" />
+	</definition>
+	
+	<definition extends="default" name="barcode/chooseexistbook">
 		<put-attribute name="body"
 			value="/WEB-INF/views/barcode/choosebook.jspx" />
-	</definition>
+	</definition>	
 
 	<definition extends="default" name="barcode/isbnedit">
 		<put-attribute name="body"

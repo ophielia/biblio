@@ -18,7 +18,8 @@ public class AssignCodeModel {
 	private String isbnentry;
 	private Long shelfclass;
 	private String assignedcode;
-
+private Long status;
+	
 	private BookDao book;
 	
 	
@@ -30,9 +31,20 @@ public class AssignCodeModel {
 
 	public void setBook(BookDao book) {
 		this.book = book;
+		if (this.shelfclass==null) {
+			this.shelfclass=this.book.getShelfclass();
+		}
 	}
 
 
+
+	public Long getStatus() {
+		return status;
+	}
+
+	public void setStatus(Long status) {
+		this.status = status;
+	}
 
 	public Long getBookid() {
 		return bookid;

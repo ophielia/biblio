@@ -122,14 +122,14 @@ define([
 				var hasimage = false;
 				if (object.imagedisplay) {
 					hasimage = true;
-					this.currentImageNode.src = object.imagedisplay;
+					this.currentImageNode.src = this.imagebasedir + object.imagedisplay;
 					style.set(this.currentImageNode,"display","inline");
 				} else {
 					style.set(this.currentImageNode,"display","none");
 				}
 
 				// set shelfinfo
-				this.currentInfoNode.innerText = object.textdisplay + " : "
+				this.currentInfoNode.innerText = this.imagebasedir + object.textdisplay + " : "
 						+ object.description;
 
 				// set shelftext

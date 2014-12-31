@@ -42,7 +42,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <script type="text/javascript">
 
  
- <c:set var="shelfclass" value="${classHash[assignBookModel.book.shelfclass]}" />
+ <c:set var="scobj" value="${classis[assignCodeModel.shelfclass]}" />
  require(
 		  ["mydojo/widget/ShelfClassSelectWidget","dojo/dom", "dojo/domReady!"],
 		    function( ShelfClassSelectWidget,dom){
@@ -50,7 +50,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 	        	var classiContainer = dom.byId("imageselectbox");
 	          
 	        	// Create our widget and place it
-	            var widget = new ShelfClassSelectWidget({displayId:'${shelfclass.id}',jsontext:'${classJson}',
+	            var widget = new ShelfClassSelectWidget({displayId:'${scobj.id}',jsontext:'${classJson}',
 	            	updatenodename:"shelfclass", showemptyselect:true,emptyselecttext:'${lemptyselect}',imagebasedir:'${imagebasedir}'}).placeAt(classiContainer);
 		});
  
@@ -61,14 +61,54 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <spring:url value="/assignbarcode/updatebook" var="actionurl"/>
 
 <h1>${pagetitle}</h1>
-
 <form:form action="${actionurl}" id="editbook" method="POST" modelAttribute="assignCodeModel">
 
-<div style="width:60%;float:left">
+<div style="width:45%;float:left">
 
-
+<div style="background-color: #C2C2A3;border: 1px dotted grey;padding: 5px;margin: 10px;">	
 	<div>
-	<form:errors id="title_errors" class="errors" path="title" /> 
+	<form:input type="hidden" path="shelfclass"></form:input><br />
+	${lclassification}: 
+	
+	
+	<!--  use this var to get the id of the currently selected classification -->
+	<span id="imageselectbox"></span>
+	
+    </div>
+
+	
+	<div  class="inputspace">
+				${lstatus}:
+				<form:select path="status">
+					<form:option value="" label="${lemptyoption}" />
+					<c:forEach items="${statusLkup}" var="tmp">
+						<form:option value="${tmp.key}" label="${tmp.value}" />
+					</c:forEach>
+				</form:select>
+
+
+			</div>
+	
+	</div>
+<br />
+<br />	
+
+<div><c:if test="${assignCodeModel.book.detailstatus!=null}">${ldetailstatus}: ${detailstatusLkup[assignCodeModel.book.detailstatus]} |  </c:if>
+<c:if test="${assignCodeModel.book.isbn10!=null}">${lisbn10}: ${assignCodeModel.book.isbn10} | </c:if>
+<c:if test="${assignCodeModel.book.isbn13!=null}">${lisbn13}: ${assignCodeModel.book.isbn13}  </c:if></div>
+
+
+
+
+
+
+</div>
+<div >
+<!-- accent box -->
+<div>
+	${lclientbookid}: ${assignCodeModel.book.clientbookid}<form:input type="hidden" path="bookid"></form:input>
+	</div>
+		<div>
 	${ltitle}:${assignCodeModel.book.title}<br />
 	</div>
 	<div>
@@ -81,48 +121,16 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 	${lpublisher}:  <c:if test="${!empty book.publisher}">${assignCodeModel.book.publisher.name}</c:if>
 	</div>	
 		<div>
-	${lisbn}:  <form:input path="isbnentry" type="text" ></form:input><br />
-	</div>
-</div>
-<div style="background-color: #C2C2A3;width: 35%;float: right;border: 1px dotted grey;padding: 5px;margin: 10px;">
-<!-- accent box -->
-	<div>
-	${lclientbookid}: ${assignCodeModel.book.clientbookid}<form:input type="hidden" path="bookid"></form:input>
-	</div>
-	
-	<div>
-	<form:input type="hidden" path="shelfclass"></form:input><br />
-	${lclassification}: 
-	
-	
-	<!--  use this var to get the id of the currently selected classification -->
-	<span id="imageselectbox"></span>
-
-	
-	
-	
-    </div>
-
-	
-	<div>
-	${lstatus}:${statusLkup[assignCodeModel.book.detailstatus]}
-							
-	</div>
-	<div>
 	${lbooktype}:${bookTypeLkup[assignCodeModel.book.type]}
 						
 	</div>	
 	<div>
 	${llanguage}:${langLkup[assignCodeModel.book.language]}
 			
-	</div>		
-	
-	
+	</div>	
 </div>
 <div style="width:100%;clear:both;padding-top:25px">
-<c:if test="${assignCodeModel.book.detailstatus!=null}">${ldetailstatus}: ${detailstatusLkup[assignCodeModel.book.detailstatus]} | </c:if>
-<c:if test="${assignCodeModel.book.isbn10!=null}">${lisbn10}: ${assignCodeModel.book.isbn10} | </c:if>
-<c:if test="${assignCodeModel.book.isbn13!=null}">${lisbn13}: ${assignCodeModel.book.isbn13} | </c:if>
+${ldescription}: ${assignCodeModel.book.description}
 </div>
 <input id="save" name="save" type="submit" value="Save and Assign Code"/> 
 

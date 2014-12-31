@@ -3,7 +3,11 @@ package meg.biblio.lending.web.validator;
 import java.util.List;
 
 import meg.biblio.catalog.CatalogService;
+import meg.biblio.catalog.db.BookRepository;
+import meg.biblio.catalog.db.dao.BookDao;
+import meg.biblio.common.db.dao.ClientDao;
 import meg.biblio.lending.LendingService;
+import meg.biblio.lending.web.model.AssignCodeModel;
 import meg.biblio.lending.web.model.ClassModel;
 import meg.biblio.lending.web.model.LendingModel;
 import meg.biblio.lending.web.model.LoanRecordDisplay;
@@ -18,77 +22,57 @@ import antlr.CSharpCodeGenerator;
 public class AssignModelValidator {
 
 	@Autowired
-	LendingService lendingService;
+	CatalogService catalogService;
 	
-	public void validateBorrowerEntry(LendingModel model, BindingResult errors) {
-		// ensure that borrower hasn't reached borrowing limit
-		int maxco = lendingService.getLendLimitForBorrower(model.getBorrowerId(), model.getClientid());
-		List<LoanRecordDisplay> checkedoutforuser = lendingService
-				.getCheckedOutBooksForUser(model.getBorrowerId(), model.getClientid());
-		if (checkedoutforuser!=null & checkedoutforuser.size()>=maxco) {
-			errors.reject("error_maxbookscheckedout",new Object[]{new Integer(maxco)},"TOO MANY BOOKS!!!");
-		}
-	}
-	public void validateBookEntry(LendingModel model, BindingResult errors) {
-		// check that book was found
-		if (model.getBook() == null) {
-			errors.reject("error_booknotfound");			
-		} else if (model.getBook().getStatus().longValue()==CatalogService.Status.CHECKEDOUT){
-			// check that book isn't already checkedout
-			errors.reject("error_alreadycheckedout");
-		}
-	}
+	@Autowired
+	BookRepository bookRepo;
 	
-	public void validateNewStudentEntry(ClassModel model, BindingResult errors) {
-		// check name of student is entered and isn't too long
-		String studententry = model.getStudentname();
-		if (studententry!=null) {
-			int length = studententry.trim().length();
-			if (studententry.trim().length()==0) {
-				errors.rejectValue("studentname","field_required");	
-			}else if (length>250) {
-				errors.rejectValue("studentname","field_toolong");
+	public void validateNewBookEntry(AssignCodeModel model, BindingResult errors,ClientDao client) {
+		// validation - check isbn - OR - title 
+		boolean hasisbn = model.getIsbnentry()!=null && model.getIsbnentry().trim().length()>0;
+		boolean hastitle = model.getTitle()!=null && model.getTitle().trim().length()>0;
+		if ((!hasisbn) && !(hastitle)) {
+			errors.reject("field_eitheror",null,"Title or ISBN");
+		}
+		
+		// if not generate new - no existing book for book code
+		boolean generatenew = model.getCreatenewid();
+		if (!generatenew) {
+			String clientnr = model.getNewbooknr();
+			BookDao book = catalogService.findBookByClientBookId(clientnr, client);
+			if (book!=null) {
+				errors.rejectValue("newbooknr","error_bookfound");
 			}
-		} else {
-			errors.rejectValue("studentname","field_required");
 		}
-	}	
-	
-	public void validateEditStudentEntry(ClassModel model, BindingResult errors) {
-		// check name of student is entered and isn't too long
-		String studententry = model.getStudentname();
-		if (studententry!=null) {
-			int length = studententry.trim().length();
-			if (length==0) {
-				errors.rejectValue("studentname","field_required");	
-			}else if (length>250) {
-				errors.rejectValue("studentname","field_toolong");
-			}	
-			String studentfn = model.getStudentfirstname();
-			if (studentfn!=null) {
-				length=studentfn.trim().length();
-				if (length==0) {
-					errors.rejectValue("studentfirstname","field_required");	
-				}else if (length>250) {
-					errors.rejectValue("studentfirstname","field_toolong");
-				}				
-			}			
-		} else {
-			String studentfn = model.getStudentfirstname();
-			if (studentfn!=null) {
-				int length=studentfn.trim().length();
-				if (length==0) {
-					errors.rejectValue("studentfirstname","field_required");	
-				}else if (length>250) {
-					errors.rejectValue("studentfirstname","field_toolong");
-				}				
-			} else {
-				errors.rejectValue("studentname","field_required");
-				errors.rejectValue("studentfirstname","field_required");
-			}
-			
-			
-		}
-	}		
 
+	}
+
+	public void validateExistingBookEntry(AssignCodeModel assignCodeModel,
+			BookDao book, BindingResult errors, ClientDao client) {
+		// validate - book already assigned code, book not found
+		if (book==null) {
+			errors.rejectValue("existbooknr","error_booknotfound");
+		} else if (book.getBarcodeid()!=null && book.getBarcodeid().trim().length()>0) {
+			errors.rejectValue("existbooknr","error_book_hasbarcode");
+		}
+		
+	}
+
+	public void validateAssignCodeToBook(String code, BindingResult errors) {
+		if (code==null) {
+			errors.rejectValue("assignedcode","error_barcode_nocode");
+		} else {
+			BookDao book = bookRepo.findBookByBarcode(code);
+			if (book!=null) {
+				errors.rejectValue("assignedcode", "error_barcode_alreadyused");
+			}
+		}
+		// check whether code has already been used
+		
+		
+	}
+	
+	
+	
+	
 }

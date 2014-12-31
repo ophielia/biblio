@@ -17,79 +17,25 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <spring:message code="label_generate_books" htmlEscape="false" var="pagetitle"/>
 <spring:message code="label_generate_codecount" htmlEscape="false" var="codecount"/>
 
-<spring:url value="/assignbarcode/assign" var="actionurl"/>
-
-<script type="text/javascript">
- require([
-          'dojo/dom',"dijit/focus","dojo/on","dijit/TooltipDialog", "dijit/popup",
-          'dojo/domReady!'
-      ], function (dom,focusUtil,on,TooltipDialog,popup) {
-	 
-	function getIndex(prefix, text) {
-			// gets a substring of the text, starting at the char after the length of the prefix
-			var stripped = text.substr(prefix.length);
-			return stripped;
-		}
-	focusUtil.focus(dom.byId("assignedcode"));
-		/*// wire up sort buttons
-	dojo.query("th[id^='aSort']").forEach(function(node) {
-	var id = node.id;
-
-	on(dojo.byId(id), 'click', function(event) {
-		clickedid = event.currentTarget.id;
-		sortaction = getIndex('aSort', clickedid);
-		var form = dojo.byId('resultlist');
-		form.action = "${actionurl}?sort=" + sortaction;
-		form.submit();
-	});
-});
-
-form = dojo.byId("resultlist");
-	on(form, "input#updateStatus:click", function(event){
-	   if (this.id="updateStatus") {
-		checkselect = dojo.byId("statusUpdate");
-		if (checkselect.value == "") {
-			alert("${missingstatus}");
-   		event.preventDefault();
-   		event.stopPropagation();	   			
-		}
-	   }
-	});
-	
-	
-	form = dojo.byId("resultlist");
-	on(form, "input#shelfclassUpdate:click", function(event){
-	   if (this.id="shelfclassUpdate") {
-		checkselect = dojo.byId("shelfclassentry");
-		if (checkselect.value == "") {
-			alert("${missingshelfclass}");
-   		event.preventDefault();
-   		event.stopPropagation();	   			
-		}
-	   }
-	});
-*/
-		
-		
-	});
- 
-
-</script>
+<spring:url value="/assignbarcode/enternewbook" var="nextnew"/>
+<spring:url value="/assignbarcode/enterbook" var="nextexist"/>
 
 
 
-<h1>Assign Code To Book</h1>
 
-<form:form action="${actionurl}" id="generatebookcodes" method="POST" modelAttribute="assignCodeModel">
+
+<h1>Success!!</h1>
+
 
 <div>
- <form:input path="assignedcode"></form:input><br/>
 
-success.
-	<input id="existing" name="existing" type="submit" value="Select"></input>
+success. ${assignCodeModel.book.title}
+	<a href="${nextnew}" >'nother code (new)</a>
+	<a href="${nextexist}" >'nother code (exist)</a>
 
+
+				
 </div>
 
 
-</form:form>
 </div>

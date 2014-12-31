@@ -4,14 +4,10 @@ Branch - barcodes -   Generate Barcodes
 				      
 
 
+success page  need to make it pretty!!
+success page i18 messages / labels
+??? isbn that doesn't return results.....
 
-
-basic programming assign codes to book done - 
-  need to make it pretty!!
-  problem with imagebase in widget
-  layout of pages
-  i18 messages / labels
-  run-through for new book - current null pointer exception
 
 
 Heroku Issues - 
@@ -22,8 +18,7 @@ fixed - path to classification images
 
 
 to lock down...
-/import
-/admin
+
 /classes
 
 
@@ -37,13 +32,13 @@ plus, REALLY long sessions
 
 ---- begin commit changes ----
 
-done - add messages - from context
-done - 	books done, but ugly
-done - bring sheets to front end
-done - 	class - using select for class, int messages
-done - 	finish books - add select, int messages
-done - test import lockdown
-done - begin assigncodestobook backend
+done - basic programming assign codes to book done - 
+done -   problem with imagebase in widget
+done -   layout of pages
+done -   run-through for new book - current null pointer exception
+done - validation
+done - /import locked
+done - /admin locked
 
 ---- end commit changes ----
 
@@ -64,7 +59,13 @@ done - started  - fill out BarcodeSheet to produce xml
 nevermind - 	make rows for barcode sheet 
 done - 	containing element for barcodes				      
 done - assembleBarcodeSheetForClass test / implement / test
-	
+done - add messages - from context
+done - 	books done, but ugly
+done - bring sheets to front end
+done - 	class - using select for class, int messages
+done - 	finish books - add select, int messages
+done - test import lockdown
+done - begin assigncodestobook backend	
 
 ---- end branch changes ----
 

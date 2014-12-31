@@ -14,4 +14,7 @@ public interface BookRepository {
 	
 	@Query("select r from BookDao as r where r.clientid = :client and r.clientbookid = :clientbookid")
 	List<BookDao> findBookByClientAssignedId(@Param("clientbookid") String clientbookid,@Param("client") Long clientid);
+
+	@Query("select r from BookDao as r where r.barcodeid = :code")
+	BookDao findBookByBarcode(@Param("code") String code);
 }

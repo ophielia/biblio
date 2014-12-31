@@ -28,6 +28,7 @@ margin-left: 20px;
 margin-right: 20px;
 background-color: #648C1D;
 text-decoration: none;
+vertical-align: bottom;
 }  
 
 a.linkbutton  {
@@ -39,6 +40,7 @@ margin-left: 10px;
 margin-right: 10px;
 background-color: #648C1D;
 text-decoration: none;
+vertical-align: bottom;
 }  
 
 a.linkbutton:visited  {
@@ -51,3 +53,13 @@ margin-right: 10px;
 background-color: #648C1D;
 text-decoration: none;
 }  
+
+.inputspace  {
+	margin-bottom: 5px;
+}
+
+.checkboxalign  {
+	padding: 0;
+	margin: 0;
+	height: 13px;
+}

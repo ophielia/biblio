@@ -719,6 +719,10 @@ public class CatalogServiceImpl implements CatalogService {
 					.getName());
 			book.setPublisher(pub);
 		}
+		
+		if (book.hasIsbn()&& (book.getTitle()==null || book.getTitle().trim().length()==0)) {
+			book.setTitle("--");
+		}
 
 		// persist book
 		BookDao saved = saveBook(book);

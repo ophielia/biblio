@@ -35,6 +35,7 @@
         <intercept-url pattern="/books/**" access="isAuthenticated()" />
         <intercept-url pattern="/generatebarcode/**" access="isAuthenticated()" />
         <intercept-url pattern="/assignbarcode/**" access="isAuthenticated()" />
+        <intercept-url pattern="/admin/search/**" access="isAuthenticated()" />
         <intercept-url pattern="/import/**" access="isAuthenticated()" />
         	<intercept-url pattern="/resources/**" access="permitAll" />
         <intercept-url pattern="/login/**" access="permitAll" />

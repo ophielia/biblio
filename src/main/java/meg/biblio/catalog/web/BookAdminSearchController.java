@@ -1,5 +1,6 @@
 package meg.biblio.catalog.web;
 
+import java.security.Principal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -14,6 +15,7 @@ import meg.biblio.catalog.web.model.BookListModel;
 import meg.biblio.common.AppSettingService;
 import meg.biblio.common.ClientService;
 import meg.biblio.common.SelectKeyService;
+import meg.biblio.common.db.dao.ClientDao;
 import meg.biblio.common.db.dao.SelectValueDao;
 import meg.biblio.search.BookSearchCriteria;
 import meg.biblio.search.SearchService;
@@ -53,8 +55,9 @@ public class BookAdminSearchController {
     AppSettingService settingService;
     
 	@RequestMapping(produces = "text/html")
-    public String showList(@ModelAttribute("bookListModel") BookListModel model,Model uiModel,HttpServletRequest request) {
-		Long clientkey = clientService.getCurrentClientKey(request);
+    public String showList(@ModelAttribute("bookListModel") BookListModel model,Model uiModel,HttpServletRequest request, Principal principal) {
+		ClientDao client = clientService.getCurrentClient(principal);
+		Long clientkey = client.getId();
 		BookSearchCriteria criteria = model.getCriteria();
 		HttpSession session = request.getSession();
 		session.setAttribute(sessioncriteria,criteria);
@@ -64,8 +67,9 @@ public class BookAdminSearchController {
     }
 	
 	@RequestMapping(method = RequestMethod.PUT, produces = "text/html")
-	public String searchCatalog(@ModelAttribute("bookListModel") BookListModel model,Model uiModel,HttpServletRequest request) {
-		Long clientkey = clientService.getCurrentClientKey(request);
+	public String searchCatalog(@ModelAttribute("bookListModel") BookListModel model,Model uiModel,HttpServletRequest request, Principal principal) {
+		ClientDao client = clientService.getCurrentClient(principal);
+		Long clientkey = client.getId();
 		BookSearchCriteria criteria = model.getCriteria();
 		HttpSession session = request.getSession();
 		session.setAttribute(sessioncriteria,criteria);
@@ -77,8 +81,10 @@ public class BookAdminSearchController {
 	
 	
 	@RequestMapping(method = RequestMethod.PUT,params="sort" ,produces = "text/html")
-	public String sortBooks(@RequestParam("sort") Long sorttype,@ModelAttribute("bookListModel") BookListModel model,Model uiModel,HttpServletRequest request) {
-		Long clientkey = clientService.getCurrentClientKey(request);
+	public String sortBooks(@RequestParam("sort") Long sorttype,@ModelAttribute("bookListModel") BookListModel model,
+			Model uiModel,HttpServletRequest request, Principal principal) {
+		ClientDao client = clientService.getCurrentClient(principal);
+		Long clientkey = client.getId();
 		BookSearchCriteria criteria = model.getCriteria();
 		if (sorttype!=null) {
 			// check if the sortby is the same
@@ -100,8 +106,9 @@ public class BookAdminSearchController {
 	}
 	
 	@RequestMapping(method = RequestMethod.PUT, params = "updateshelfclass",produces = "text/html")
-	public String updateShelfClass(@ModelAttribute("bookListModel") BookListModel model,Model uiModel,HttpServletRequest request) {
-		Long clientkey = clientService.getCurrentClientKey(request);
+	public String updateShelfClass(@ModelAttribute("bookListModel") BookListModel model,Model uiModel,HttpServletRequest request, Principal principal) {
+		ClientDao client = clientService.getCurrentClient(principal);
+		Long clientkey = client.getId();
 		BookSearchCriteria criteria = model.getCriteria();
 		HttpSession session = request.getSession();
 		session.setAttribute(sessioncriteria,criteria);
@@ -121,8 +128,9 @@ public class BookAdminSearchController {
 	}	
 	
 	@RequestMapping(method = RequestMethod.PUT, params = "updatestatus",produces = "text/html")
-	public String updateStatus(@ModelAttribute("bookListModel") BookListModel model,Model uiModel,HttpServletRequest request) {
-		Long clientkey = clientService.getCurrentClientKey(request);
+	public String updateStatus(@ModelAttribute("bookListModel") BookListModel model,Model uiModel,HttpServletRequest request, Principal principal) {
+		ClientDao client = clientService.getCurrentClient(principal);
+		Long clientkey = client.getId();
 		BookSearchCriteria criteria = model.getCriteria();
 		HttpSession session = request.getSession();
 		session.setAttribute(sessioncriteria,criteria);
@@ -155,8 +163,9 @@ public class BookAdminSearchController {
 	}
 
 	@ModelAttribute("bookListModel")
-	public BookListModel populateBookList(HttpServletRequest request) {
-		Long clientkey = clientService.getCurrentClientKey(request);
+	public BookListModel populateBookList(HttpServletRequest request, Principal principal) {
+		ClientDao client = clientService.getCurrentClient(principal);
+		Long clientkey = client.getId();
 		
 		HttpSession session = request.getSession();
 		BookSearchCriteria criteria = (BookSearchCriteria) session.getAttribute(sessioncriteria);
@@ -211,10 +220,11 @@ public class BookAdminSearchController {
           
     
     @ModelAttribute("classHash")
-    public HashMap<Long,ClassificationDao> getClassificationInfo(HttpServletRequest httpServletRequest) {
+    public HashMap<Long,ClassificationDao> getClassificationInfo(HttpServletRequest httpServletRequest,Principal principal) {
     	Locale locale = httpServletRequest.getLocale();
     	String lang = locale.getLanguage();
-    	Long clientkey = clientService.getCurrentClientKey(httpServletRequest);
+		ClientDao client = clientService.getCurrentClient(principal);
+		Long clientkey = client.getId();
     	
     	HashMap<Long,ClassificationDao> shelfclasses =catalogService.getShelfClassHash(clientkey,lang);
     			
@@ -222,10 +232,11 @@ public class BookAdminSearchController {
     }    
     
     @ModelAttribute("classList")
-    public List<ClassificationDao> getClassificationInfoAsList(HttpServletRequest httpServletRequest) {
+    public List<ClassificationDao> getClassificationInfoAsList(HttpServletRequest httpServletRequest,Principal principal) {
     	Locale locale = httpServletRequest.getLocale();
     	String lang = locale.getLanguage();
-    	Long clientkey = clientService.getCurrentClientKey(httpServletRequest);
+		ClientDao client = clientService.getCurrentClient(principal);
+		Long clientkey = client.getId();
     	
     	List<ClassificationDao> shelfclasses =catalogService.getShelfClassList(clientkey,lang);
     			
@@ -239,10 +250,11 @@ public class BookAdminSearchController {
     }     
     
     @ModelAttribute("classJson")
-    public String getClassificationInfoAsJson(HttpServletRequest httpServletRequest) {
+    public String getClassificationInfoAsJson(HttpServletRequest httpServletRequest,Principal principal) {
     	Locale locale = httpServletRequest.getLocale();
     	String lang = locale.getLanguage();
-    	Long clientkey = clientService.getCurrentClientKey(httpServletRequest);
+		ClientDao client = clientService.getCurrentClient(principal);
+		Long clientkey = client.getId();
     	
     	List<ClassificationDao> shelfclasses =catalogService.getShelfClassList(clientkey,lang);
     	ClassificationDao selectdao = new ClassificationDao();

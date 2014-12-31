@@ -14,36 +14,27 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 
 <spring:message code="button_generate" htmlEscape="false" var="bgen"/>
 <spring:message code="button_cancel" htmlEscape="false" var="bcancel"/>
-<spring:message code="label_generate_books" htmlEscape="false" var="pagetitle"/>
-<spring:message code="label_generate_codecount" htmlEscape="false" var="codecount"/>
+<spring:message code="label_number" htmlEscape="false" var="lnumber"/>
+
+<spring:message code="label_book" htmlEscape="false" var="lbook"/>
+<spring:message code="label_barcode_assignexist" htmlEscape="false" var="lpagetitle"/>
+<spring:message code="action_lending_selectargs" arguments="${lbook}" htmlEscape="false" var="aselect"/>
 
 <spring:url value="/assignbarcode/editbook" var="actionurl"/>
 
-<h1>Assign Codes To Book</h1>
+<h1>${lpagetitle}</h1>
 
 <form:form action="${actionurl}" id="generatebookcodes" method="POST" modelAttribute="assignCodeModel">
 
 <div>
-Exists in Catalog
 
-Mareschale Nr: <form:input path="existbooknr"></form:input><br/>
-
-
-	<input id="existing" name="existing" type="submit" value="Select"></input>
-
-</div>
-	
-<div>
-Mareschale Nr: <form:input path="newbooknr"></form:input>Generate New Number: <form:checkbox path="createnewid"></form:checkbox><br/>
-ISBN Nr: <form:input path="isbnentry"></form:input><br/>
-<br />
-<br />
-Title: <form:input path="title"></form:input><br/>
-Author: <form:input path="author"></form:input><br/>
-	<input id="newbook" name="newbook" type="submit" value="Add To Catalog"></input>
+<form:errors id="errors" class="errors" path="*" />
+<form:errors id="errors" class="errors" path="existbooknr" />
+<div class="inputspace">${clientname} ${lnumber}: <form:input path="existbooknr"></form:input></div>
+	<input id="existing" name="existing" type="submit" value="${aselect}"></input>
 
 </div>
-	
+
 
 
 

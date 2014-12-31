@@ -8,6 +8,7 @@ import java.util.Locale;
 import javax.servlet.http.HttpServletRequest;
 
 import meg.biblio.catalog.CatalogService;
+import meg.biblio.catalog.db.dao.ArtistDao;
 import meg.biblio.catalog.db.dao.BookDao;
 import meg.biblio.catalog.db.dao.ClassificationDao;
 import meg.biblio.catalog.web.model.BookModel;
@@ -21,6 +22,7 @@ import meg.biblio.lending.web.validator.AssignModelValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.SessionAttributes;
@@ -60,16 +62,42 @@ public class AssignBarcodeController {
 		Long classification = assignCodeModel.getShelfclass();
 		assignCodeModel = new AssignCodeModel();
 		assignCodeModel.setShelfclass(classification);
+		assignCodeModel.setCreatenewid(true);
 		uiModel.addAttribute("assignCodeModel", assignCodeModel);
 
+		String shortname = client.getShortname();
+		uiModel.addAttribute("clientname",shortname);
+		
 		// return choosebook page
-		return "barcode/choosebook";
+		return "barcode/chooseexistbook";
 	}
+	
+	@RequestMapping(value = "/enternewbook", method = RequestMethod.GET, produces = "text/html")
+	public String showNewBookPage(AssignCodeModel assignCodeModel,
+			Model uiModel, HttpServletRequest httpServletRequest,
+			Principal principal) {
+		ClientDao client = clientService.getCurrentClient(principal);
+		Long clientid = client.getId();
+		Locale locale = httpServletRequest.getLocale();
+		String lang = locale.getLanguage();
+
+		// clear model, place in uiModel
+		Long classification = assignCodeModel.getShelfclass();
+		assignCodeModel = new AssignCodeModel();
+		assignCodeModel.setShelfclass(classification);
+		uiModel.addAttribute("assignCodeModel", assignCodeModel);
+
+		String shortname = client.getShortname();
+		uiModel.addAttribute("clientname",shortname);
+		
+		// return choosebook page
+		return "barcode/choosenewbook";
+	}	
 
 	// assign code for existing book
 	@RequestMapping(value = "/editbook", params = "existing", method = RequestMethod.POST, produces = "text/html")
 	public String assignCodeForExistingBook(AssignCodeModel assignCodeModel,
-			Model uiModel, HttpServletRequest httpServletRequest,
+			Model uiModel, BindingResult bindingResult,HttpServletRequest httpServletRequest,
 			Principal principal) {
 		ClientDao client = clientService.getCurrentClient(principal);
 		Long clientid = client.getId();
@@ -79,8 +107,16 @@ public class AssignBarcodeController {
 
 		// load bookid
 		BookDao book = catalogService.findBookByClientBookId(booknr, client);
-		// book-> AssignCodeModel -> uiModel
 		assignCodeModel.setBook(book);
+		
+		// validate - book already assigned code, book not found
+		assignValidator.validateExistingBookEntry(assignCodeModel, book,bindingResult,client);
+		if (bindingResult.hasErrors()) {
+			// return to choosenewbook page
+			return "barcode/choosenewbook";
+		}
+		
+		// book-> AssignCodeModel -> uiModel
 		uiModel.addAttribute("assignCodeModel", assignCodeModel);
 
 		// choose return view (isbnedit if no details, otherwise editbook)
@@ -97,17 +133,36 @@ public class AssignBarcodeController {
 
 	// assign code for new (to catalog) book
 	@RequestMapping(value = "/editbook", params = "newbook", method = RequestMethod.POST, produces = "text/html")
-	public String assignCodeForNewBook(AssignCodeModel assignCodeModel,
-			Model uiModel, HttpServletRequest httpServletRequest,
+	public String createNewBook(AssignCodeModel assignCodeModel,
+			Model uiModel, BindingResult bindingResult,HttpServletRequest httpServletRequest,
 			Principal principal) {
 		ClientDao client = clientService.getCurrentClient(principal);
 		Long clientid = client.getId();
 
+		// validation - check isbn - OR - title 
+		// if not generate new - no existing book for book code
+		assignValidator.validateNewBookEntry(assignCodeModel, bindingResult,client);
+		if (bindingResult.hasErrors()) {
+			// return to choosenewbook page
+			return "barcode/choosenewbook";
+		}
+		
 		// gatherinfo -cBookid (or generateok), isbn, title, author
-		Boolean createclientbookid = true;
+		String cbooknr = assignCodeModel.getNewbooknr();
+		String isbn = assignCodeModel.getIsbnentry();
+		String title = assignCodeModel.getTitle();
+		String author = assignCodeModel.getAuthor();
+		Boolean createclientbookid = assignCodeModel.getCreatenewid();
 
 		// create book in catalog
 		BookModel model = new BookModel();
+		model.setClientbookid(cbooknr);
+		model.setIsbn10(isbn);
+		model.setTitle(title);
+		ArtistDao artist = catalogService.textToArtistName(author);
+		if (artist!=null) {
+			model.setAuthorInBook(artist);
+		}
 		model = catalogService.createCatalogEntryFromBookModel(clientid, model,
 				createclientbookid);
 		// book-> AssignCodeModel -> uiModel
@@ -138,12 +193,13 @@ public class AssignBarcodeController {
 		// update book - gather classification, isbn
 		Long classification=assignCodeModel.getShelfclass();
 		String isbn = assignCodeModel.getIsbnentry();
-		
+		Long status = assignCodeModel.getStatus();
 
 		// put book into model
 		BookModel model = catalogService.loadBookModel(assignCodeModel.getBook().getId());
-		model.setIsbn10(isbn);
-		model.setShelfclass(classification);
+		if (isbn!=null) model.setIsbn10(isbn);
+		if (classification!=null) model.setShelfclass(classification);
+		if (status!=null) model.setStatus(status);
 		
 		// update book - if changed
 		// fill in details if not detailfound, and isbn exists
@@ -168,7 +224,7 @@ public class AssignBarcodeController {
 	// persist any changes to book (new classification, addition of isbn)
 	@RequestMapping(value = "/assign", method = RequestMethod.POST, produces = "text/html")
 	public String assignCodeToBook(AssignCodeModel assignCodeModel,
-			Model uiModel, HttpServletRequest httpServletRequest,
+			Model uiModel, BindingResult bindingResult,HttpServletRequest httpServletRequest,
 			Principal principal) {
 		ClientDao client = clientService.getCurrentClient(principal);
 		Long clientid = client.getId();
@@ -176,6 +232,15 @@ public class AssignBarcodeController {
 		// gather info - code, bookid
 		Long bookid = assignCodeModel.getBook().getId();
 		String code = assignCodeModel.getAssignedcode();
+
+		// validation - has this barcode already been assigned??
+		assignValidator.validateAssignCodeToBook(code,bindingResult);
+		if (bindingResult.hasErrors()) {
+			assignCodeModel.setAssignedcode(null);
+			uiModel.addAttribute("assignCodeModel",assignCodeModel);
+			return "barcode/assigncode";
+		}
+		
 		// service call - assignCodeToBook
 		catalogService.assignCodeToBook(code, bookid);
 		// load book model
@@ -191,11 +256,14 @@ public class AssignBarcodeController {
 		String lang = locale.getLanguage();
 		Long clientkey = client.getId();
 
-		List<ClassificationDao> shelfclasses = catalogService
+		HashMap<Long, ClassificationDao> shelfclasses = catalogService
+				.getShelfClassHash(clientkey, lang);
+		List<ClassificationDao> shelfclasslist = catalogService
 				.getShelfClassList(clientkey, lang);
-
+		
+		uiModel.addAttribute("classis", shelfclasses);
 		JSONSerializer serializer = new JSONSerializer();
-		String json = serializer.exclude("*.class").serialize(shelfclasses);
+		String json = serializer.exclude("*.class").serialize(shelfclasslist);
 		uiModel.addAttribute("classJson", json);
 		HashMap<Long, String> booktypedisps = keyService.getDisplayHashForKey(
 				CatalogService.booktypelkup, lang);
