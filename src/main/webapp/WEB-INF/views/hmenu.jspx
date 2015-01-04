@@ -20,6 +20,8 @@
 				<li><moo:menulink label="menu_lending_alloverdue" url="/lending/overdue/all" /></li>
 				<li><moo:menulink label="menu_lending_allcheckedout" url="/lending/checkout/all" /></li>
 			</ul></li>
+		<li><moo:menulink label="menu_bclending" url="/barcode/checkout" />
+			</li>			
 		<li><moo:menulink label="menu_barcodes" url="#" />
 			<ul>
 				<li><moo:menulink label="menu_barcodes_generate" url="/generatebarcode/books" />

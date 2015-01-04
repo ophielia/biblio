@@ -12,12 +12,12 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <link rel="stylesheet" href="/biblio/resources/mydojo/widget/css/ShelfClassWidget.css" media="screen"></link>
 <link rel="stylesheet" href="/biblio/resources/mydojo/widget/css/ShelfClassSelectWidget.css" media="screen"></link>
 
+<spring:message code="label_barcode_lendingtitle" htmlEscape="false" var="pagetitle"/>
+<spring:message code="msg_barcode_scanbegin" htmlEscape="false" var="msg"/>
 <spring:message code="button_generate" htmlEscape="false" var="bgen"/>
 <spring:message code="button_cancel" htmlEscape="false" var="bcancel"/>
-<spring:message code="label_generate_books" htmlEscape="false" var="pagetitle"/>
-<spring:message code="label_generate_codecount" htmlEscape="false" var="codecount"/>
 
-<spring:url value="/assignbarcode/assign" var="actionurl"/>
+<spring:url value="/barcode/checkout" var="actionurl"/>
 
 <script type="text/javascript">
  require([
@@ -30,7 +30,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 			var stripped = text.substr(prefix.length);
 			return stripped;
 		}
-	focusUtil.focus(dom.byId("assignedcode"));
+	focusUtil.focus(dom.byId("code"));
 	});
  
 
@@ -38,13 +38,13 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 
 
 
-<h1>Assign Code To Book</h1>
-
-<form:form action="${actionurl}" id="generatebookcodes" method="POST" modelAttribute="assignCodeModel">
-
-<div style="height:300px">
-<form:errors path="assignedcode"></form:errors>
- <form:input type="text" path="assignedcode"></form:input><br/>
+<h1>${pagetitle}</h1>
+<p>${msg }</p>
+<form:form action="${actionurl}" id="generatebookcodes" method="POST" modelAttribute="barcodeLendModel">
+<form:errors id="errors" class="errors" path="*" />
+<div style="height:150px">
+<form:errors path="code"></form:errors>
+ <form:input class="therebutnot" type="text" path="code"></form:input><br/>
 
 
 	

@@ -297,7 +297,7 @@ public class LendingServiceImpl implements LendingService {
 	}
 
 	@Override
-	public void returnBookByBookid(Long bookid, Long clientid) {
+	public LoanHistoryDao returnBookByBookid(Long bookid, Long clientid) {
 		// find loanrecord
 		// build criteria
 		LendingSearchCriteria criteria = new LendingSearchCriteria();
@@ -311,9 +311,9 @@ public class LendingServiceImpl implements LendingService {
 		if (checkedout!=null && checkedout.size()>0) {
 			LoanRecordDisplay disp = checkedout.get(0);
 			// return book
-			returnBook(disp.getLoanrecordid(),clientid);
+			return returnBook(disp.getLoanrecordid(),clientid);
 		} 
-		
+		return null;
 	}
 
 }

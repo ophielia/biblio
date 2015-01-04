@@ -12,8 +12,8 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <link rel="stylesheet" href="/biblio/resources/mydojo/widget/css/ShelfClassWidget.css" media="screen"></link>
 <link rel="stylesheet" href="/biblio/resources/mydojo/widget/css/ShelfClassSelectWidget.css" media="screen"></link>
 
-<spring:message code="label_barcode_checkout" htmlEscape="false" var="pagetitle"/>
-<spring:message code="msg_barcode_checkoutgreeting" arguments="${person.firstname},${person.lastname}" htmlEscape="false" var="msg"/>
+<spring:message code="label_barcode_success" htmlEscape="false" var="pagetitle"/>
+<spring:message code="msg_barcode_checkoutsuccess" arguments="${personname};${booktitle};${bookauthor}" htmlEscape="false" argumentSeparator=";" var="msg"/>
 <spring:message code="button_generate" htmlEscape="false" var="bgen"/>
 <spring:message code="button_cancel" htmlEscape="false" var="bcancel"/>
 

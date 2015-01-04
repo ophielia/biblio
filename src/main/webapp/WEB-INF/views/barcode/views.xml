@@ -23,7 +23,7 @@
 
 	<definition extends="default" name="barcode/returnsuccess">
 		<put-attribute name="body"
-			value="/WEB-INF/views/barcode/cosuccess.jspx" />
+			value="/WEB-INF/views/barcode/coretsuccess.jspx" />
 	</definition>
 		
 	<definition extends="default" name="barcode/personcheckout">

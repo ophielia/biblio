@@ -14,6 +14,7 @@ import meg.biblio.common.SelectKeyService;
 import meg.biblio.common.db.dao.ClientDao;
 import meg.biblio.lending.LendingService;
 import meg.biblio.lending.db.PersonRepository;
+import meg.biblio.lending.db.dao.LoanHistoryDao;
 import meg.biblio.lending.db.dao.PersonDao;
 import meg.biblio.lending.web.model.BarcodeLendModel;
 import meg.biblio.lending.web.validator.BarcodeLendValidator;
@@ -56,7 +57,8 @@ public class BarcodeLendingController {
 	public String showMainCheckoutPage(BarcodeLendModel barcodeLendModel,
 			Model uiModel, HttpServletRequest httpServletRequest,
 			Principal principal) {
-
+		barcodeLendModel.setPerson(null);
+		uiModel.addAttribute("barcodeLendModel",barcodeLendModel);
 		// return choosebook page
 		return "barcode/maincheckout";
 	}
@@ -75,7 +77,8 @@ public class BarcodeLendingController {
 		} else if (isBook(code)) {
 			return processBook(code,barcodeLendModel, uiModel,bindingErrors,client);
 		}
-		
+		barcodeLendModel.setCode(null);
+		uiModel.addAttribute("barcodeLendModel",barcodeLendModel);
 		bindingErrors.reject("error_codeunrecognized",null,"Code not recognized.");
 		return "barcode/maincheckout";
 	
@@ -91,40 +94,49 @@ public class BarcodeLendingController {
 		// validate (book not found - ischeckout && book already checkedout - error... or !ischeckout, and book not checkedout)
 		barcodeLendValidator.validateBook(book,ischeckout,bindingErrors);
 		if (bindingErrors.hasErrors()) {
+			barcodeLendModel.setCode(null);
+			uiModel.addAttribute("barcodeLendModel",barcodeLendModel);
+			barcodeLendModel.setPerson(null);
 			return "barcode/maincheckout";
 		}
 		
 		// if checkout - checkout book for user, and return checkout success page
+		String firstname = barcodeLendModel.getPerson()!=null?barcodeLendModel.getPerson().getFulldisplayname():"";
+		String booktitle = book.getTitle();
+		String bookauthor = book.getAuthorsAsString();
+		String bookimg=book.getImagelink();
 		if (ischeckout) {
 			// checkout book
 			lendingService.checkoutBook(book.getId(), barcodeLendModel.getPerson().getId(),
 					client.getId());
 			
-			String firstname = barcodeLendModel.getPerson().getFulldisplayname();
-			String booktitle = book.getTitle();
-			String bookauthor = book.getAuthorsAsString();
+
 			//---- put name, book title in uiModel 
 			uiModel.addAttribute("personname",firstname);
 			uiModel.addAttribute("booktitle", booktitle);
 			uiModel.addAttribute("bookauthor",bookauthor);
+			uiModel.addAttribute("bookimagelink",bookimg);
 			// delete from LendingModel
 			barcodeLendModel.setPerson(null);
+			barcodeLendModel.setCode(null);
+			uiModel.addAttribute("barcodeLendModel",barcodeLendModel);
 			// return success
 			return "barcode/checkoutsuccess";
 		} else {
 			// if return - return book and return success page
 			// return book
-			lendingService.returnBookByBookid(book.getId(), client.getId());
+			LoanHistoryDao lh = lendingService.returnBookByBookid(book.getId(), client.getId());
 			
-			String firstname = barcodeLendModel.getPerson().getFulldisplayname();
-			String booktitle = book.getTitle();
-			String bookauthor = book.getAuthorsAsString();
+			firstname = lh.getBorrower().getFirstname();
 			//---- put name, book title in uiModel 
 			uiModel.addAttribute("personname",firstname);
 			uiModel.addAttribute("booktitle", booktitle);
 			uiModel.addAttribute("bookauthor",bookauthor);
+			uiModel.addAttribute("bookimagelink",bookimg);
 			// delete from LendingModel
 			barcodeLendModel.setPerson(null);
+			barcodeLendModel.setCode(null);
+			uiModel.addAttribute("barcodeLendModel",barcodeLendModel);
 			// return success
 			return "barcode/returnsuccess";
 		}
@@ -137,11 +149,14 @@ public class BarcodeLendingController {
 		// validate (found??person already reached limit of checkout books?
 		barcodeLendValidator.validatePerson(person, client, bindingErrors);
 		if (bindingErrors.hasErrors()) {
+			barcodeLendModel.setCode(null);
+			uiModel.addAttribute("barcodeLendModel",barcodeLendModel);
 			return "barcode/maincheckout";
 		}
 		// put person in model
 		barcodeLendModel.setPerson(person);
-		
+		barcodeLendModel.setCode(null);
+		uiModel.addAttribute("barcodeLendModel",barcodeLendModel);
 		// return person page
 		return "barcode/personcheckout";
 	}

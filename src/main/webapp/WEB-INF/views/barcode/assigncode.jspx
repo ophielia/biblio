@@ -12,6 +12,8 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <link rel="stylesheet" href="/biblio/resources/mydojo/widget/css/ShelfClassWidget.css" media="screen"></link>
 <link rel="stylesheet" href="/biblio/resources/mydojo/widget/css/ShelfClassSelectWidget.css" media="screen"></link>
 
+<spring:message code="label_barcode_assign" htmlEscape="false" var="pagetitle"/>
+<spring:message code="msg_assign_scancode" htmlEscape="false" var="msg"/>
 <spring:message code="button_generate" htmlEscape="false" var="bgen"/>
 <spring:message code="button_cancel" htmlEscape="false" var="bcancel"/>
 <spring:message code="label_generate_books" htmlEscape="false" var="pagetitle"/>
@@ -38,7 +40,9 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 
 
 
-<h1>Assign Code To Book</h1>
+<h1>${pagetitle}</h1>
+
+<p>${msg}</p>
 
 <form:form action="${actionurl}" id="generatebookcodes" method="POST" modelAttribute="assignCodeModel">
 
