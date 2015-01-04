@@ -28,7 +28,6 @@
 				</ul></li>
 				
 				<li><moo:menulink label="menu_barcodes_assignbarcode" url="/assignbarcode/enternewbook" /></li>
-				<li><moo:menulink label="menu_barcodes_assignbarcodeext" url="/assignbarcode/enterbook" /></li>
 				
 			</ul></li>			
 		<li><moo:menulink label="menu_admin" url="#" />

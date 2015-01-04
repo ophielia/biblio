@@ -23,8 +23,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import flexjson.JSONSerializer;
@@ -49,6 +51,13 @@ public class AssignBarcodeController {
 	@Autowired
 	AssignModelValidator assignValidator;
 
+	
+	public static final class EditMode {
+		public static String title = "T";
+		public static String isbn="I";
+		public static String editbook="E";
+	}
+	
 	@RequestMapping(value = "/enterbook", method = RequestMethod.GET, produces = "text/html")
 	public String showChooseBookPage(AssignCodeModel assignCodeModel,
 			Model uiModel, HttpServletRequest httpServletRequest,
@@ -62,7 +71,8 @@ public class AssignBarcodeController {
 		Long classification = assignCodeModel.getShelfclass();
 		assignCodeModel = new AssignCodeModel();
 		assignCodeModel.setShelfclass(classification);
-		assignCodeModel.setCreatenewid(true);
+		assignCodeModel.setStatus(CatalogService.Status.SHELVED);
+		assignCodeModel.setCreatenewid(new Boolean(true));
 		uiModel.addAttribute("assignCodeModel", assignCodeModel);
 
 		String shortname = client.getShortname();
@@ -85,6 +95,8 @@ public class AssignBarcodeController {
 		Long classification = assignCodeModel.getShelfclass();
 		assignCodeModel = new AssignCodeModel();
 		assignCodeModel.setShelfclass(classification);
+		assignCodeModel.setCreatenewid(true);
+		assignCodeModel.setStatus(CatalogService.Status.SHELVED);
 		uiModel.addAttribute("assignCodeModel", assignCodeModel);
 
 		String shortname = client.getShortname();
@@ -120,10 +132,20 @@ public class AssignBarcodeController {
 		uiModel.addAttribute("assignCodeModel", assignCodeModel);
 
 		// choose return view (isbnedit if no details, otherwise editbook)
+		assignCodeModel.setEditMode(EditMode.editbook);
 		String returnview = "barcode/editbook";
 		if (book.getDetailstatus().longValue() != CatalogService.DetailStatus.DETAILFOUND) {
-			returnview = "barcode/isbnedit";
+			if (book.getTitle()!=null && book.getTitle().equals(CatalogService.titledefault)) {
+				assignCodeModel.setTitle("");
+				assignCodeModel.setEditMode(EditMode.title);
+				uiModel.addAttribute("assignCodeModel",assignCodeModel);
+				returnview = "barcode/titleedit";
+			} else {
+				assignCodeModel.setEditMode(EditMode.isbn);
+				returnview = "barcode/isbnedit";	
+			}
 		}
+
 
 		// add lookups / displays for view
 		putDisplayInfoInModel(uiModel, httpServletRequest, client);
@@ -131,6 +153,50 @@ public class AssignBarcodeController {
 		return returnview;
 	}
 
+	// assign code for existing book
+	@RequestMapping(value = "/editbook", params = "booknr", method = RequestMethod.GET, produces = "text/html")
+	public String assignCodeForExistingBookGet(@RequestParam("booknr") String booknr,AssignCodeModel assignCodeModel,
+			Model uiModel, BindingResult bindingResult,HttpServletRequest httpServletRequest,
+			Principal principal) {
+		ClientDao client = clientService.getCurrentClient(principal);
+		Long clientid = client.getId();
+
+		// load bookid
+		BookDao book = catalogService.findBookByClientBookId(booknr, client);
+		assignCodeModel.setBook(book);
+		
+		// validate - book already assigned code, book not found
+		assignValidator.validateExistingBookEntry(assignCodeModel, book,bindingResult,client);
+		if (bindingResult.hasErrors()) {
+			// return to choosenewbook page
+			return "barcode/choosenewbook";
+		}
+		
+		// book-> AssignCodeModel -> uiModel
+		uiModel.addAttribute("assignCodeModel", assignCodeModel);
+
+		// choose return view (isbnedit if no details, otherwise editbook)
+		assignCodeModel.setEditMode(EditMode.editbook);
+		String returnview = "barcode/editbook";
+		if (book.getDetailstatus().longValue() != CatalogService.DetailStatus.DETAILFOUND) {
+			if (book.getTitle()!=null && book.getTitle().equals(CatalogService.titledefault)) {
+				assignCodeModel.setTitle("");
+				assignCodeModel.setEditMode(EditMode.title);
+				uiModel.addAttribute("assignCodeModel",assignCodeModel);
+				returnview = "barcode/titleedit";
+			} else {
+				assignCodeModel.setEditMode(EditMode.isbn);
+				returnview = "barcode/isbnedit";	
+			}
+		}
+
+
+		// add lookups / displays for view
+		putDisplayInfoInModel(uiModel, httpServletRequest, client);
+		// return view
+		return returnview;
+	}
+	
 	// assign code for new (to catalog) book
 	@RequestMapping(value = "/editbook", params = "newbook", method = RequestMethod.POST, produces = "text/html")
 	public String createNewBook(AssignCodeModel assignCodeModel,
@@ -143,6 +209,13 @@ public class AssignBarcodeController {
 		// if not generate new - no existing book for book code
 		assignValidator.validateNewBookEntry(assignCodeModel, bindingResult,client);
 		if (bindingResult.hasErrors()) {
+			String shortname = client.getShortname();
+			uiModel.addAttribute("clientname",shortname);
+			if (bindingResult.hasFieldErrors("newbooknr")) {
+				// this book is already found, so add clue that link should be 
+				// shown to assign code to existingbook
+				uiModel.addAttribute("showlinkexist",true);
+			}
 			// return to choosenewbook page
 			return "barcode/choosenewbook";
 		}
@@ -156,9 +229,9 @@ public class AssignBarcodeController {
 
 		// create book in catalog
 		BookModel model = new BookModel();
-		model.setClientbookid(cbooknr);
-		model.setIsbn10(isbn);
-		model.setTitle(title);
+		if (cbooknr!=null) model.setClientbookid(cbooknr);
+		if (isbn!=null) model.setIsbn10(isbn);
+		if (title!=null) model.setTitle(title);
 		ArtistDao artist = catalogService.textToArtistName(author);
 		if (artist!=null) {
 			model.setAuthorInBook(artist);
@@ -171,12 +244,23 @@ public class AssignBarcodeController {
 		uiModel.addAttribute("assignCodeModel", assignCodeModel);
 
 		// choose return view (isbnedit if no details, otherwise editbook)
+		assignCodeModel.setEditMode(EditMode.editbook);
 		String returnview = "barcode/editbook";
 		if (book.getDetailstatus().longValue() != CatalogService.DetailStatus.DETAILFOUND) {
-			returnview = "barcode/isbnedit";
+			if (book.getTitle()!=null && book.getTitle().equals(CatalogService.titledefault)) {
+				assignCodeModel.setTitle("");
+				assignCodeModel.setEditMode(EditMode.title);
+				uiModel.addAttribute("assignCodeModel",assignCodeModel);
+				returnview = "barcode/titleedit";
+			} else {
+				assignCodeModel.setEditMode(EditMode.isbn);
+				returnview = "barcode/isbnedit";	
+			}
 		}
 
 		// add lookups / displays for view
+		String shortname = client.getShortname();
+		uiModel.addAttribute("clientname",shortname);
 		putDisplayInfoInModel(uiModel, httpServletRequest, client);
 		// return view
 		return returnview;
@@ -186,20 +270,40 @@ public class AssignBarcodeController {
 	// persist any changes to book (new classification, addition of isbn)
 	@RequestMapping(value = "/updatebook", method = RequestMethod.POST, produces = "text/html")
 	public String updateBook(AssignCodeModel assignCodeModel, Model uiModel,
-			HttpServletRequest httpServletRequest, Principal principal) {
+			HttpServletRequest httpServletRequest, BindingResult bindingResult,Principal principal) {
 		ClientDao client = clientService.getCurrentClient(principal);
 		Long clientid = client.getId();
 
+		assignValidator.validateUpdateBook(assignCodeModel,bindingResult);
+		if (bindingResult.hasErrors()) {
+			String returnview = "barcode/editbook";
+			if (assignCodeModel.getEditMode().equals(EditMode.title)) {
+					returnview = "barcode/titleedit";
+				} else if (assignCodeModel.getEditMode().equals(EditMode.title)) {
+
+					returnview = "barcode/isbnedit";	
+			}
+
+			return returnview;
+		}
+		
 		// update book - gather classification, isbn
 		Long classification=assignCodeModel.getShelfclass();
 		String isbn = assignCodeModel.getIsbnentry();
 		Long status = assignCodeModel.getStatus();
-
+		String title =assignCodeModel.getTitle();
+		String author = assignCodeModel.getAuthor();
+		
 		// put book into model
 		BookModel model = catalogService.loadBookModel(assignCodeModel.getBook().getId());
-		if (isbn!=null) model.setIsbn10(isbn);
 		if (classification!=null) model.setShelfclass(classification);
 		if (status!=null) model.setStatus(status);
+		if (isbn!=null) model.setIsbn10(isbn);
+		if (title!=null) model.setTitle(title);
+		ArtistDao artist = catalogService.textToArtistName(author);
+		if (artist!=null) {
+			model.setAuthorInBook(artist);
+		}
 		
 		// update book - if changed
 		// fill in details if not detailfound, and isbn exists

@@ -43,6 +43,7 @@ privileged aspect BookDaoDataOnDemand_Roo_DataOnDemand {
         setCreatedon(obj, index);
         setDescription(obj, index);
         setDetailstatus(obj, index);
+        setImagelink(obj, index);
         setIsbn10(obj, index);
         setIsbn13(obj, index);
         setLanguage(obj, index);
@@ -91,6 +92,11 @@ privileged aspect BookDaoDataOnDemand_Roo_DataOnDemand {
     public void BookDaoDataOnDemand.setDetailstatus(BookDao obj, int index) {
         Long detailstatus = new Integer(index).longValue();
         obj.setDetailstatus(detailstatus);
+    }
+    
+    public void BookDaoDataOnDemand.setImagelink(BookDao obj, int index) {
+        String imagelink = "imagelink_" + index;
+        obj.setImagelink(imagelink);
     }
     
     public void BookDaoDataOnDemand.setIsbn10(BookDao obj, int index) {

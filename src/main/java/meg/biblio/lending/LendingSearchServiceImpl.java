@@ -193,6 +193,14 @@ public class LendingSearchServiceImpl implements LendingSearchService {
 					person.<Long>get("id"), param));
 		}
 
+		// do bookid
+		if (criteria.getBookid() != null) {
+			ParameterExpression<Long> param = cb.parameter(Long.class,
+					"bookid");
+			whereclause.add(cb.equal(
+					book.<Long>get("id"), param));
+		}
+
 		// to lentto
 		if (criteria.getLentToType() != null) {
 			String comparison = "";
@@ -250,6 +258,11 @@ public class LendingSearchServiceImpl implements LendingSearchService {
 		// do forschoolgroup
 		if (criteria.getBorrowerid() != null) {
 			q.setParameter("borrowerid", criteria.getBorrowerid());
+		}
+
+		// do bookid
+		if (criteria.getBookid() != null) {
+			q.setParameter("bookid", criteria.getBookid());
 		}
 
 		// to lentto - no parameter

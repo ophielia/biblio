@@ -15,6 +15,8 @@ public interface LendingService {
 
 	LoanHistoryDao returnBook(Long loanrecordid, Long clientid);
 
+	void returnBookByBookid(Long bookid, Long clientid);
+	
 	List<LoanRecordDisplay> getCheckedOutBooksForClass(Long classid, Long clientid);
 
 	List<LoanRecordDisplay> getCheckedOutBooksForUser(Long borrowerId,
@@ -30,5 +32,6 @@ public interface LendingService {
 
 	ClassSummaryReport assembleClassSummaryReport(Long classid, Date date,
 			Long clientid);
+
 
 }

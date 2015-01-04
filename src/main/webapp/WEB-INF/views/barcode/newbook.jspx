@@ -33,7 +33,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
       ], function (dom,style,focusUtil,on) {
 
 	 	
-	 	<c:if test="${createnewid=='true'}">
+	 	<c:if test="${assignCodeModel.createnewid}">
 	 		dojo.byId("newbooknr").disabled="true";
 	 	</c:if>
 		on(dojo.byId("createnewid1"), 'click', function(event) {
@@ -56,14 +56,21 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <h1>${pagetitle}</h1>
 
 <form:form action="${actionurl}" id="generatebookcodes" method="POST" modelAttribute="assignCodeModel">
-
-
 <form:errors id="errors" class="errors" path="*" />	
 <div >
-<form:errors id="errors" class="errors" path="newbooknr" />
 <div class="inputspace">${clientname} ${lnumber}: <form:input path="newbooknr"></form:input><span style="padding-left:5px;padding-right:5px"> ${lor} </span>
 <form:checkbox class="checkboxalign" path="createnewid"></form:checkbox>${ageneratenr}</div>
-<div class="inputspace">${lisbn}: <form:input path="isbnentry"></form:input><a href="#" class="linkbutton" id="showaddl">${isbnnotavail}</a></div>
+<div class="inputspace">${lisbn}: <form:input path="isbnentry"></form:input>
+<input id="newbook" class="linkbutton" name="newbook" type="submit" value="${aaddcatalog }"></input>
+<c:if test="${showlinkexist}">
+<span style="margin-left:10px"> </span>
+<spring:url value="/assignbarcode/editbook?booknr=${assignCodeModel.newbooknr}" var="existurl"/>
+<a class="linkbutton" href="${existurl}">Assign Code to Existing Book</a>
+</c:if>
+<span style="margin-left:10px"> </span>
+<spring:url value="/assignbarcode/enternewbook" var="cancelurl"/>
+	<a href="${cancelurl}" class="linkbutton" id="showaddl">${bcancel}</a>
+</div>
 
 <br />
 <br />
@@ -72,12 +79,8 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <div class="inputspace">${lauthor }: <form:input path="author"></form:input></div>
 </div>
 
-
-
-
-
-
-	<input id="newbook" name="newbook" type="submit" value="${aaddcatalog }"></input>
+<a href="#" class="linkbutton" id="showaddl">${isbnnotavail}</a>
+	
 
 </div>
 	

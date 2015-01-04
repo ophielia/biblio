@@ -11,6 +11,25 @@
 			value="/WEB-INF/views/barcode/generateclass.jspx" />
 	</definition>
 
+	<definition extends="default" name="barcode/maincheckout">
+		<put-attribute name="body"
+			value="/WEB-INF/views/barcode/comain.jspx" />
+	</definition>
+
+	<definition extends="default" name="barcode/checkoutsuccess">
+		<put-attribute name="body"
+			value="/WEB-INF/views/barcode/cosuccess.jspx" />
+	</definition>
+
+	<definition extends="default" name="barcode/returnsuccess">
+		<put-attribute name="body"
+			value="/WEB-INF/views/barcode/cosuccess.jspx" />
+	</definition>
+		
+	<definition extends="default" name="barcode/personcheckout">
+		<put-attribute name="body"
+			value="/WEB-INF/views/barcode/coperson.jspx" />
+	</definition>
 
 	<definition extends="default" name="barcode/assigncode">
 		<put-attribute name="body"
@@ -36,6 +55,11 @@
 	<definition extends="default" name="barcode/isbnedit">
 		<put-attribute name="body"
 			value="/WEB-INF/views/barcode/isbnedit.jspx" />
+	</definition>
+
+	<definition extends="default" name="barcode/titleedit">
+		<put-attribute name="body"
+			value="/WEB-INF/views/barcode/titleedit.jspx" />
 	</definition>
 
 	<definition extends="default" name="barcode/editbook">

@@ -169,4 +169,12 @@ privileged aspect BookDao_Roo_JavaBean {
         this.textchange = textchange;
     }
     
+    public String BookDao.getImagelink() {
+        return this.imagelink;
+    }
+    
+    public void BookDao.setImagelink(String imagelink) {
+        this.imagelink = imagelink;
+    }
+    
 }

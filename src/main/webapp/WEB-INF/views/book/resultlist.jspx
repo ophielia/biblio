@@ -106,7 +106,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
  <c:forEach var="book" items="${bookListModel.books}" varStatus="expstatus">
  			<tr>
  			
-			<td>(image)</td>
+			<td><c:if test="${book.imagelink != null}"><img src="${book.imagelink}" /></c:if></td>
 			<td>${book.title}</td>
 			<td>${book.authorsAsString} / <br />${book.illustratorsAsString}</td>
 			<td>${book.publisher.name}</td>

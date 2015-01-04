@@ -296,4 +296,24 @@ public class LendingServiceImpl implements LendingService {
 		return summaryreport;
 	}
 
+	@Override
+	public void returnBookByBookid(Long bookid, Long clientid) {
+		// find loanrecord
+		// build criteria
+		LendingSearchCriteria criteria = new LendingSearchCriteria();
+		criteria.setBookid(bookid);
+
+		// search for loan records
+		List<LoanRecordDisplay> checkedout = lendingSearch
+				.findLoanRecordsByCriteria(criteria, clientid);
+		
+		// get loan record
+		if (checkedout!=null && checkedout.size()>0) {
+			LoanRecordDisplay disp = checkedout.get(0);
+			// return book
+			returnBook(disp.getLoanrecordid(),clientid);
+		} 
+		
+	}
+
 }

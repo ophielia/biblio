@@ -42,9 +42,9 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 
 <form:form action="${actionurl}" id="generatebookcodes" method="POST" modelAttribute="assignCodeModel">
 
-<div style="height:150px">
+<div style="height:300px">
 <form:errors path="assignedcode"></form:errors>
- <form:input class="therebutnot" type="text" path="assignedcode"></form:input><br/>
+ <form:input type="text" path="assignedcode"></form:input><br/>
 
 
 	

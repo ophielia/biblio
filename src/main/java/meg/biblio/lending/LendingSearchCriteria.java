@@ -22,6 +22,7 @@ public class LendingSearchCriteria {
 	private Boolean overdueonly;
 	private Long clientid;
 	private Long borrowerid;
+	private Long bookid;
 
 
 	public Date getCheckedouton() {
@@ -35,6 +36,13 @@ public class LendingSearchCriteria {
 	}
 	public void setReturnedon(Date returnedon) {
 		this.returnedon = returnedon;
+	}
+	
+	public Long getBookid() {
+		return bookid;
+	}
+	public void setBookid(Long bookid) {
+		this.bookid = bookid;
 	}
 	public Long getSchoolgroup() {
 		return forschoolgroup;

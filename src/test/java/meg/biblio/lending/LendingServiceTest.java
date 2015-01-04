@@ -3,14 +3,12 @@ package meg.biblio.lending;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
+import meg.biblio.catalog.CatalogService;
 import meg.biblio.catalog.db.BookRepository;
-import meg.biblio.catalog.db.IgnoredWordsDao;
-import meg.biblio.catalog.db.dao.ArtistDao;
 import meg.biblio.catalog.db.dao.BookDao;
-import meg.biblio.catalog.db.dao.PublisherDao;
+import meg.biblio.catalog.web.model.BookModel;
 import meg.biblio.common.ClientService;
 import meg.biblio.common.db.ClientRepository;
 import meg.biblio.common.db.dao.ClientDao;
@@ -44,6 +42,8 @@ public class LendingServiceTest {
 	@Autowired
 	ClientService clientService;
 	@Autowired
+	CatalogService catalogService;
+	@Autowired
 	ClassManagementService classService;
 	@Autowired
 	SearchService searchService;
@@ -52,12 +52,12 @@ public class LendingServiceTest {
 	@Autowired
 	BookRepository bookRepo;
 	@Autowired
-	ClientRepository clientRepo;	
+	ClientRepository clientRepo;
 	@Autowired
 	LoanRecordRepository lrRepo;
 	@Autowired
-	LoanHistoryRepository lhRepo;	
-	
+	LoanHistoryRepository lhRepo;
+
 	Long bookid1;
 	Long bookid2;
 	Long bookid3;
@@ -67,6 +67,7 @@ public class LendingServiceTest {
 	private Long student3id;
 	private Long student4id;
 	private Long clientid;
+
 	@Before
 	public void initData() {
 		// create books to checkout and return
@@ -83,11 +84,11 @@ public class LendingServiceTest {
 		book3.setClientid(clientid);
 		book3.setTitle("another book");
 		book3 = bookRepo.save(book3);
-	
-		bookid1=book1.getId();
-		bookid2=book2.getId();
-		bookid3=book3.getId();
-		
+
+		bookid1 = book1.getId();
+		bookid2 = book2.getId();
+		bookid3 = book3.getId();
+
 		// create class to do the checking out and returning
 		// create dummy class, and three students
 		SchoolGroupDao sgroup = new SchoolGroupDao();
@@ -109,67 +110,109 @@ public class LendingServiceTest {
 		StudentDao hansolo = classService.addNewStudentToClass(
 				"neville longbottom", 3L, model.getSchoolGroup(), 1L);
 		student4id = hansolo.getId();
-		model = classService.loadClassModelById(model.getClassid());	
+		model = classService.loadClassModelById(model.getClassid());
 		classid = model.getClassid();
 	}
-	
+
 	@Test
 	public void testCheckout() {
 		testCheckout(1);
 		testCheckout(2);
 		testCheckout(3);
-		
+
 	}
-	
+
 	private void testCheckout(int selectnr) {
 		// get default client
-				ClientDao client = clientService.getClientForKey(1L);
-				Long clientid = client.getId();
-				// get student
-				// get list of classes - go through classes until student 
-				// is found, make this the student
-				Long studentid = 0L;
-				List<SchoolGroupDao> sgroups = classService.getClassesForClient(clientid);
-				int i=0;
-				for (SchoolGroupDao sgroup:sgroups) {
-					List<StudentDao> students = sgroup.getStudents();
-					if (students!=null) {
-						for (StudentDao student:students) {
-							if (student!=null && i==selectnr) {
-								studentid = student.getId();
-								break;
-							}
-							i++;
-						}
-					}
-
-					if (studentid!=0L) break;
-				}
-				
-				// get book
-				Long bookid = 0L;
-				BookSearchCriteria bscrit = new BookSearchCriteria();
-				bscrit.setClientid(clientid);
-				List<BookDao> books = searchService.findBooksForCriteria(bscrit,clientid);
-				i=0;
-				for (BookDao book:books) {
-					if (book!=null && i==selectnr) {
-						bookid = book.getId();
+		ClientDao client = clientService.getClientForKey(1L);
+		Long clientid = client.getId();
+		// get student
+		// get list of classes - go through classes until student
+		// is found, make this the student
+		Long studentid = 0L;
+		List<SchoolGroupDao> sgroups = classService
+				.getClassesForClient(clientid);
+		int i = 0;
+		for (SchoolGroupDao sgroup : sgroups) {
+			List<StudentDao> students = sgroup.getStudents();
+			if (students != null) {
+				for (StudentDao student : students) {
+					if (student != null && i == selectnr) {
+						studentid = student.getId();
 						break;
 					}
 					i++;
 				}
-				
-				// service call
-				LoanRecordDao lr = lendingService.checkoutBook(bookid, studentid, clientid);
-				
-				// ensure that loan record exists with studentid, bookid, and checkedout to current date
-				Assert.assertNotNull(lr);
-				Assert.assertEquals(studentid,lr.getBorrower().getId());
-				Assert.assertEquals(bookid,lr.getBook().getId());
-				// string comp to today....
+			}
+
+			if (studentid != 0L)
+				break;
+		}
+
+		// get book
+		Long bookid = 0L;
+		BookSearchCriteria bscrit = new BookSearchCriteria();
+		bscrit.setClientid(clientid);
+		List<BookDao> books = searchService.findBooksForCriteria(bscrit,
+				clientid);
+		i = 0;
+		for (BookDao book : books) {
+			if (book != null && i == selectnr) {
+				bookid = book.getId();
+				break;
+			}
+			i++;
+		}
+
+		// service call
+		LoanRecordDao lr = lendingService.checkoutBook(bookid, studentid,
+				clientid);
+
+		// ensure that loan record exists with studentid, bookid, and checkedout
+		// to current date
+		Assert.assertNotNull(lr);
+		Assert.assertEquals(studentid, lr.getBorrower().getId());
+		Assert.assertEquals(bookid, lr.getBook().getId());
+		// string comp to today....
 	}
-	
+
+	@Test
+	public void testReturnBookByBookid() {
+		Long clientid = clientService.getTestClientId();
+		ClientDao client = clientService.getClientForKey(clientid);
+		SchoolGroupDao sgroup = new SchoolGroupDao();
+		ClassModel model = new ClassModel(sgroup);
+		model.setTeachername("willy wonka");
+		model.fillInTeacherFromEntry();
+		model = classService.createClassFromClassModel(model, clientid);
+
+		// service call
+		StudentDao student = classService.addNewStudentToClass("keli skalicky",
+				1L, model.getSchoolGroup(), 1L);
+		BookModel newbook = new BookModel();
+		newbook.setTitle("hamburgers are good");
+		newbook = catalogService.createCatalogEntryFromBookModel(clientid,
+				newbook);
+		// checkout book
+		LoanRecordDao lr = lendingService.checkoutBook(newbook.getBookid(),
+				student.getId(), clientid);
+
+		// holdinfo
+		// service call
+		lendingService.returnBookByBookid(newbook.getBookid(), clientid);
+
+		// ensure - loan record no longer exists
+		LoanRecordDao testnull = lrRepo.findOne(lr.getId());
+		Assert.assertNull(testnull);
+		// loanhistory record exists, with return date of today, studentid and
+		// bookid as in loan record
+		boolean found = false;
+		List<LoanHistoryDao> returned = lhRepo.findForClient(client);
+
+		Assert.assertNotNull(returned);
+
+	}
+
 	@Test
 	public void testReturn() {
 		// get default client
@@ -179,29 +222,32 @@ public class LendingServiceTest {
 		// get loanrecords - and select one
 		LoanRecordDao selected = null;
 		List<LoanRecordDao> checkedout = lrRepo.findForClient(client);
-		for (LoanRecordDao lr:checkedout ) {
-			if (lr!=null) {
+		for (LoanRecordDao lr : checkedout) {
+			if (lr != null) {
 				selected = lr;
 			}
 		}
-		if (selected!=null) {
+		if (selected != null) {
 			// holdinfo
 			PersonDao person = selected.getBorrower();
 			BookDao book = selected.getBook();
 			Long loanrecordid = selected.getId();
 			// service call
-			LoanHistoryDao lhist = lendingService.returnBook(selected.getId(), clientid);
-			
+			LoanHistoryDao lhist = lendingService.returnBook(selected.getId(),
+					clientid);
+
 			// ensure - loan record no longer exists
-			LoanRecordDao testnull=lrRepo.findOne(loanrecordid);
+			LoanRecordDao testnull = lrRepo.findOne(loanrecordid);
 			Assert.assertNull(testnull);
-			// loanhistory record exists, with return date of today, studentid and bookid as in loan record
+			// loanhistory record exists, with return date of today, studentid
+			// and bookid as in loan record
 			boolean found = false;
 			List<LoanHistoryDao> returned = lhRepo.findForClient(client);
-			for (LoanHistoryDao record:returned) {
-				if (record.getId().longValue()==lhist.getId().longValue()) {
-					found=true;
-					Assert.assertEquals(person.getId(), record.getBorrower().getId());
+			for (LoanHistoryDao record : returned) {
+				if (record.getId().longValue() == lhist.getId().longValue()) {
+					found = true;
+					Assert.assertEquals(person.getId(), record.getBorrower()
+							.getId());
 					Assert.assertEquals(book.getId(), record.getBook().getId());
 					// check string here...
 					break;
@@ -210,25 +256,26 @@ public class LendingServiceTest {
 			Assert.assertTrue(found);
 		} else {
 			// should fail - nothing checkedout, so can't return
-			Assert.assertEquals(new Long(3),new Long(4));
+			Assert.assertEquals(new Long(3), new Long(4));
 		}
-			}	
-	
+	}
+
 	@Test
 	public void testGetCheckedOutBooksForClass() {
 		// checkout 2 books for students
 		lendingService.checkoutBook(bookid1, student1id, clientid);
 		lendingService.checkoutBook(bookid2, student2id, clientid);
-		
+
 		// service call
-		List<LoanRecordDisplay> results = lendingService.getCheckedOutBooksForClass(classid, clientid);
+		List<LoanRecordDisplay> results = lendingService
+				.getCheckedOutBooksForClass(classid, clientid);
 
 		// results not null
 		Assert.assertNotNull(results);
 		// borrowers to hash, books to hash
 		List<Long> borrowerids = new ArrayList<Long>();
 		List<Long> bookids = new ArrayList<Long>();
-		for (LoanRecordDisplay lr:results) {
+		for (LoanRecordDisplay lr : results) {
 			borrowerids.add(lr.getBorrowerid());
 			bookids.add(lr.getBookid());
 		}
@@ -238,23 +285,24 @@ public class LendingServiceTest {
 		Assert.assertTrue(bookids.contains(bookid1));
 		Assert.assertTrue(bookids.contains(bookid2));
 	}
-	
+
 	@Test
 	public void testGetCheckedOutBooksForBorrower() {
 		// checkout 2 books for students
 		lendingService.checkoutBook(bookid3, student3id, clientid);
 		lendingService.checkoutBook(bookid2, student3id, clientid);
-		
+
 		// service call
-		List<LoanRecordDisplay> results = lendingService.getCheckedOutBooksForUser(student3id, clientid);
+		List<LoanRecordDisplay> results = lendingService
+				.getCheckedOutBooksForUser(student3id, clientid);
 
 		// results not null
 		Assert.assertNotNull(results);
-		Assert.assertEquals(2,results.size());
+		Assert.assertEquals(2, results.size());
 		// borrowers to hash, books to hash
 		List<Long> borrowerids = new ArrayList<Long>();
 		List<Long> bookids = new ArrayList<Long>();
-		for (LoanRecordDisplay lr:results) {
+		for (LoanRecordDisplay lr : results) {
 			borrowerids.add(lr.getBorrowerid());
 			bookids.add(lr.getBookid());
 		}
@@ -262,8 +310,8 @@ public class LendingServiceTest {
 		Assert.assertTrue(borrowerids.contains(student3id));
 		Assert.assertTrue(bookids.contains(bookid3));
 		Assert.assertTrue(bookids.contains(bookid2));
-	}	
-	
+	}
+
 	@Test
 	public void testLendingLimit() {
 		// set lending limits for client
@@ -277,68 +325,74 @@ public class LendingServiceTest {
 		// get student for schoolgroup
 		List<StudentDao> students = cmodel.getStudents();
 		StudentDao student = students.get(0);
-		
+
 		// service call - teacher
-		int limit = lendingService.getLendLimitForBorrower(teacher.getId(), clientid);
-		
+		int limit = lendingService.getLendLimitForBorrower(teacher.getId(),
+				clientid);
+
 		// should be 50
-		Assert.assertEquals(50,limit);
-		
+		Assert.assertEquals(50, limit);
+
 		// service call - student
-		limit = lendingService.getLendLimitForBorrower(student.getId(), clientid);
-		
+		limit = lendingService.getLendLimitForBorrower(student.getId(),
+				clientid);
+
 		// should be 1
-		Assert.assertEquals(1,limit);
+		Assert.assertEquals(1, limit);
 	}
-	
+
 	@Test
 	public void testGetOverdue() {
 		// make one overdue book - checkout book and then fiddle with db.
-		LoanRecordDao makeoverdue = lendingService.checkoutBook(bookid3, student3id, clientid);
+		LoanRecordDao makeoverdue = lendingService.checkoutBook(bookid3,
+				student3id, clientid);
 		Calendar cal = Calendar.getInstance();
-		cal.add(Calendar.YEAR,-1);
+		cal.add(Calendar.YEAR, -1);
 		Date fiddledate = cal.getTime();
 		makeoverdue.setDuedate(fiddledate);
 		makeoverdue.setCheckoutdate(fiddledate);
 		lrRepo.save(makeoverdue);
 		Long lrid = makeoverdue.getId();
-		
+
 		// get overdue list
-		List<LoanRecordDisplay> results = lendingService.getOverdueBooksForClient(clientid);
+		List<LoanRecordDisplay> results = lendingService
+				.getOverdueBooksForClient(clientid);
 
 		// ensure that size >0 and student/ book appear at leas once in list
 		Assert.assertNotNull(results);
-		Assert.assertTrue(results.size()>0);
+		Assert.assertTrue(results.size() > 0);
 		boolean lrfound = false;
-		for (LoanRecordDisplay lr:results) {
-			if (lr.getLoanrecordid().longValue()==lrid.longValue()) {
+		for (LoanRecordDisplay lr : results) {
+			if (lr.getLoanrecordid().longValue() == lrid.longValue()) {
 				lrfound = true;
 				break;
 			}
 		}
 		Assert.assertTrue(lrfound);
-	}	
-	
+	}
+
 	@Test
 	public void testGetCheckedOutForClient() {
 		// make one overdue book - checkout book and then fiddle with db.
-		LoanRecordDao makeoverdue = lendingService.checkoutBook(bookid1, student4id, clientid);
+		LoanRecordDao makeoverdue = lendingService.checkoutBook(bookid1,
+				student4id, clientid);
 		Long lrid = makeoverdue.getId();
-		
+
 		// get overdue list
-		List<LoanRecordDisplay> results = lendingService.getCheckedOutBooksForClient(clientid);
+		List<LoanRecordDisplay> results = lendingService
+				.getCheckedOutBooksForClient(clientid);
 
 		// ensure that size >0 and student/ book appear at leas once in list
 		Assert.assertNotNull(results);
-		Assert.assertTrue(results.size()>0);
+		Assert.assertTrue(results.size() > 0);
 		boolean lrfound = false;
-		for (LoanRecordDisplay lr:results) {
-			if (lr.getLoanrecordid().longValue()==lrid.longValue()) {
+		for (LoanRecordDisplay lr : results) {
+			if (lr.getLoanrecordid().longValue() == lrid.longValue()) {
 				lrfound = true;
 				break;
 			}
 		}
 		Assert.assertTrue(lrfound);
-	}		
-		
+	}
+
 }

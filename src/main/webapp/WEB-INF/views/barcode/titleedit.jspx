@@ -35,7 +35,8 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <spring:message code="label_number" htmlEscape="false" var="lnumber"/>
 <spring:message code="select_emptyoption" htmlEscape="false" var="lemptyselect"/>
 <spring:message code="label_barcode_saveandassign" htmlEscape="false" var="bsaveand"/>
-<spring:message code="msg_assign_pagemessage" htmlEscape="false" var="msginstr"/>
+<spring:message code="msg_assign_titleedit" htmlEscape="false" var="msginstr"/>
+
 
 <spring:message code="button_save" htmlEscape="false" var="bsave"/>
 <spring:message code="button_cancel" htmlEscape="false" var="bcancel"/>
@@ -64,6 +65,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <spring:url value="/assignbarcode/updatebook" var="actionurl"/>
 
 <h1>${pagetitle}</h1>
+
 <p>${msginstr}</p>
 <form:form action="${actionurl}" id="editbook" method="POST" modelAttribute="assignCodeModel">
 
@@ -72,67 +74,61 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 			<div
 				style="background-color: #C2C2A3; border: 1px dotted grey; padding: 5px; margin: 10px;">
 				<div>
-
-	<form:input type="hidden" path="shelfclass"></form:input><br />
-	${lclassification}: 
-	
-	
-	<!--  use this var to get the id of the currently selected classification -->
-	<span id="imageselectbox"></span>
-	
-    </div>
-
-	
-	<div  class="inputspace">
-				${lstatus}:
-				<form:select path="status">
-					<form:option value="" label="${lemptyoption}" />
-					<c:forEach items="${statusLkup}" var="tmp">
-						<form:option value="${tmp.key}" label="${tmp.value}" />
-					</c:forEach>
-				</form:select>
+					${ltitle}:
+					<form:input type="text" path="title"></form:input>
+					<br />
+				</div>
+				<div>
+					${lauthor}:
+					<form:input type="text" path="author"></form:input>
+				</div>
+				<div>
+					<form:input type="hidden" path="shelfclass"></form:input>
+					<br /> ${lclassification}:
 
 
-			</div>
-	<div   ><spring:url value="/assignbarcode/enternewbook" var="linkurl"/>
-	<a href="${linkurl}" class="linkbutton" id="showaddl">${bcancel}</a>
-	<span>				<input class="linkbutton" id="save" name="save" type="submit" 
-						value="${bsaveand}" /></span>
-	
-	</div>
+					<!--  use this var to get the id of the currently selected classification -->
+					<span id="imageselectbox"></span>
 
-	</div>
-<br />
-<br />	
-
-<div><c:if test="${assignCodeModel.book.detailstatus!=null}">${ldetailstatus}: ${detailstatusLkup[assignCodeModel.book.detailstatus]} |  </c:if>
-<c:if test="${assignCodeModel.book.isbn10!=null}">${lisbn10}: ${assignCodeModel.book.isbn10} | </c:if>
-<c:if test="${assignCodeModel.book.isbn13!=null}">${lisbn13}: ${assignCodeModel.book.isbn13}  </c:if></div>
+				</div>
 
 
+				<div class="inputspace">
+					${lstatus}:
+					<form:select path="status">
+						<form:option value="" label="${lemptyoption}" />
+						<c:forEach items="${statusLkup}" var="tmp">
+							<form:option value="${tmp.key}" label="${tmp.value}" />
+						</c:forEach>
+					</form:select>
 
 
+				</div>
 
+<div   ><spring:url value="/assignbarcode/enternewbook" var="linkurl"/>
+<a href="${linkurl}" class="linkbutton" id="showaddl">${bcancel}</a>
+<span>				<input class="linkbutton" id="save" name="save" type="submit" 
+					value="${bsaveand}" /></span>
 
 </div>
-<div >
+
+			</div>
+			<br /> <br />
+
+
+
+
+
+		</div>
+		<div style="padding: 13px;">
 <!-- accent box -->
 <div>
 	${clientname} ${lnumber}: ${assignCodeModel.book.clientbookid}<form:input type="hidden" path="bookid"></form:input>
-
-	</div>
-		<div>
-	${ltitle}:${assignCodeModel.book.title}<br />
-	</div>
-	<div>
-	${lauthor}: ${assignCodeModel.book.authorsAsString}
-	</div>
-	<div>
-	${lillustrator}: ${assignCodeModel.book.illustratorsAsString}
 	</div>
 	<div>
 	${lpublisher}:  <c:if test="${!empty book.publisher}">${assignCodeModel.book.publisher.name}</c:if>
 	</div>	
+
 		<div>
 	${lbooktype}:${bookTypeLkup[assignCodeModel.book.type]}
 						
@@ -140,16 +136,17 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 	<div>
 	${llanguage}:${langLkup[assignCodeModel.book.language]}
 			
-	</div>	
-		<div>
-		${ldetailstatus}: ${detailstatusLkup[assignCodeModel.book.detailstatus]}
-		</div>
-		<div>
-		${lisbn}: ${assignCodeModel.book.isbn10}/<br />${assignCodeModel.book.isbn13}
-		</div>
-
+	</div>
+	<div>
+	${ldetailstatus}: ${detailstatusLkup[assignCodeModel.book.detailstatus]}
+	</div>
+	<div>
+	${lisbn}: ${assignCodeModel.book.isbn10}/<br />${assignCodeModel.book.isbn13}
+	</div>
+	
+		
 </div>
-<div style="width:100%;clear:both;padding-top:25px">
+<div style="width:100%;clear:both;padding-top:5px">
 ${ldescription}: ${assignCodeModel.book.description}
 </div>
 

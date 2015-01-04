@@ -3,10 +3,9 @@ Branch - barcodes -   Generate Barcodes
 				      Generate Barcodes for Books
 				      
 
+test - book search classifications
 
-success page  need to make it pretty!!
-success page i18 messages / labels
-??? isbn that doesn't return results.....
+
 
 
 
@@ -15,10 +14,10 @@ encoding - funny characters
 memory!
 fixed - path to classification images
 
-
+Before Run-through
+images throughout app - assign code - code success - verify - lists - checkout
 
 to lock down...
-
 /classes
 
 
@@ -30,15 +29,33 @@ fill in new client service from request  - principal
 check cancel throughout class page
 plus, REALLY long sessions
 
+later features
+check-all in admin search
 ---- begin commit changes ----
 
+done - success page  need to make it pretty!!
+done - success page i18 messages / labels
+done - ??? isbn that doesn't return results.....
+done - issues - choosebook - no default....
+done - check isbnedit - form should be like title edit
+done - check editbook should be like titleedit
+done - change / tailor messages for titleedit, editbook, isbnedit
+done - returnBookByBookid, backend for LendingService returnByBookId()
+done - ensure all pages are there (from view)
+done - titleedit - add validation for title
 done - basic programming assign codes to book done - 
 done -   problem with imagebase in widget
 done -   layout of pages
 done -   run-through for new book - current null pointer exception
 done - validation
-done - /import locked
 done - /admin locked
+done  test - new - code not found - title and assign code
+done - assignedbarcode - check in new bookk - already exists. (save extra clicks)
+done - cancel button to isbnedit, editbook, titleedit
+done - general - this has already been assigned.  add - Please try a different barcode	
+done - test - existing - no code - code found - assign code
+done - test - existing - no code - code not found - assign code
+done - test - new - code found - assign code
 
 ---- end commit changes ----
 

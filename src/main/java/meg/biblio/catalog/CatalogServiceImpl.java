@@ -721,7 +721,7 @@ public class CatalogServiceImpl implements CatalogService {
 		}
 		
 		if (book.hasIsbn()&& (book.getTitle()==null || book.getTitle().trim().length()==0)) {
-			book.setTitle("--");
+			book.setTitle(CatalogService.titledefault);
 		}
 
 		// persist book
@@ -917,7 +917,11 @@ public class CatalogServiceImpl implements CatalogService {
 				subjects.add(subject);
 			}
 		}
-
+		// add image link
+		String imagelink = info.getImageLinks() != null ? info
+				.getImageLinks().getThumbnail() : null;
+		book.setImagelink(imagelink);		
+				
 	}
 
 	private List<FoundDetailsDao> copyDetailsIntoFoundRecords(

@@ -63,3 +63,21 @@ text-decoration: none;
 	margin: 0;
 	height: 13px;
 }
+
+.therebutnot {
+	border: 0px;
+color: white;
+/*outline:none;*/
+}
+
+input.linkbutton  {
+	padding: 5px;
+color: #e7e5e5;
+margin-left: 10px;
+margin-right: 10px;
+background-color: #648C1D;
+text-decoration: none;
+vertical-align: bottom;
+outline: 0;
+height: 27px;
+}

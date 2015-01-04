@@ -80,7 +80,7 @@ private String barcodeid;
 private List<FoundWordsDao> foundwords;
 @Transient
 private Boolean textchange=new Boolean(false);
-
+private String imagelink;
 
 	public void setAuthors(List<ArtistDao> authors) {
         if (this.authors != authors) setTextchange(true);

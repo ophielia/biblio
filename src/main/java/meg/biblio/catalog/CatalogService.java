@@ -19,6 +19,7 @@ public interface CatalogService {
 	String bookstatuslkup = "bookstatus";
 	String detailstatuslkup = "detailstatus";
 	String languagelkup = "language";
+	String titledefault = "--";
 
 	public final static  class Status {
 		public static final long CHECKEDOUT = 1;

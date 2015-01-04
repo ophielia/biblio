@@ -1,11 +1,6 @@
 package meg.biblio.lending.web.model;
 
-import java.util.HashMap;
-import java.util.List;
-
 import meg.biblio.catalog.db.dao.BookDao;
-import meg.biblio.catalog.web.model.BookModel;
-import meg.biblio.lending.db.dao.StudentDao;
 
 public class AssignCodeModel {
 
@@ -19,11 +14,9 @@ public class AssignCodeModel {
 	private Long shelfclass;
 	private String assignedcode;
 private Long status;
-	
+private String editmode;	
+
 	private BookDao book;
-	
-	
-	
 	
 	public BookDao getBook() {
 		return book;
@@ -87,7 +80,7 @@ private Long status;
 	}
 
 	public Boolean getCreatenewid() {
-		return createnewid;
+		return this.createnewid;
 	}
 
 	public void setCreatenewid(Boolean createnewid) {
@@ -116,6 +109,14 @@ private Long status;
 
 	public void setAssignedcode(String assignedcode) {
 		this.assignedcode = assignedcode;
+	}
+
+	public void setEditMode(String editprefix) {
+		this.editmode = editprefix;
+	}
+
+	public String getEditMode() {
+		return this.editmode;
 	}
 	
 	
