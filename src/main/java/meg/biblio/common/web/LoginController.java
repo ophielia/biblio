@@ -1,5 +1,6 @@
 package meg.biblio.common.web;
 
+import java.security.Principal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -50,8 +51,9 @@ public class LoginController {
 	UserLoginValidator userloginValidator;
 
 	@RequestMapping(value = "/create",params = "form", produces = "text/html")
-	public String createForm(Model uiModel,HttpServletRequest request) {
-		Long clientkey = clientService.getCurrentClientKey(request);
+	public String createForm(Model uiModel,HttpServletRequest request,Principal principal) {
+		ClientDao client = clientService.getCurrentClient(principal);
+		Long clientkey = client.getId();
 		populateEditForm(uiModel, new UserLoginDao(), clientkey, null);
 		return "userlogins/create";
 	}
@@ -59,8 +61,9 @@ public class LoginController {
 	@RequestMapping(value = "/create",method = RequestMethod.POST, produces = "text/html")
 	public String create(@ModelAttribute("userLoginDao") UserLoginDao userlogin,
 			BindingResult bindingResult, Model uiModel,
-			HttpServletRequest httpServletRequest) {
-		Long clientkey = clientService.getCurrentClientKey(httpServletRequest);
+			HttpServletRequest httpServletRequest, Principal principal) {
+		ClientDao client = clientService.getCurrentClient(principal);
+		Long clientkey =client.getId();
 		userloginValidator.validate(userlogin, bindingResult);
 
 		if (bindingResult.hasErrors()) {
@@ -94,9 +97,10 @@ public class LoginController {
 	}
 
 	@RequestMapping(produces = "text/html")
-	public String list(Model uiModel, HttpServletRequest httpServletRequest)  {
+	public String list(Model uiModel, HttpServletRequest httpServletRequest, Principal principal)  {
 		// get client key
-		Long clientkey = clientService.getCurrentClientKey(httpServletRequest);
+		ClientDao client = clientService.getCurrentClient(principal);
+		Long clientkey = client.getId();
 		// get users for client
 		List<UserLoginDao> users = accountService.getUsersForClient(clientkey);
 		// put in model
@@ -108,11 +112,10 @@ public class LoginController {
 
 
 	@RequestMapping(value = "/update/{id}", method = RequestMethod.GET,params = "form", produces = "text/html")
-	public String updateForm(@PathVariable("id") Long id, Model uiModel,HttpServletRequest request) {
-		Long clientkey = clientService.getCurrentClientKey(request);
+	public String updateForm(@PathVariable("id") Long id, Model uiModel,HttpServletRequest request,Principal principal) {
+		ClientDao client = clientService.getCurrentClient(principal);
+		Long clientkey = client.getId();
 		// does userlogin belong to client
-		// get client
-		ClientDao client = clientService.getClientForKey(clientkey);
 
 		// get userlogin
 		UserLoginDao userlogin = accountService.getUserLoginDaoById(id);
@@ -130,11 +133,10 @@ public class LoginController {
 	public String update(
 			@ModelAttribute("userLoginDao") UserLoginDao userlogin,
 			Model uiModel, BindingResult bindingResult,
-			HttpServletRequest httpServletRequest) {
-		Long clientkey = clientService.getCurrentClientKey(httpServletRequest);
+			HttpServletRequest httpServletRequest,Principal principal) {
+		ClientDao client = clientService.getCurrentClient(principal);
+		Long clientkey = client.getId();
 		// does userlogin belong to client
-		// get client
-		ClientDao client = clientService.getClientForKey(clientkey);
 
 		// assure that userlogin belongs to current account
 		long userclientid = userlogin.getClientkey() != null ? userlogin
@@ -171,8 +173,8 @@ public class LoginController {
 	}
 	
 	@ModelAttribute("clientname") 
-	public String getClientName(HttpServletRequest httpServletRequest) {
-		ClientDao clientkey = clientService.getCurrentClient(httpServletRequest);
+	public String getClientName(Principal principal) {
+		ClientDao clientkey = clientService.getCurrentClient(principal);
 		return clientkey.getName();
 	}
 	

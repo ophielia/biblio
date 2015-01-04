@@ -53,8 +53,8 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 </tbody>
 
 </table>
-<spring:url value="/pdfwrangler/overduenotices" var="actionurl" target="_blank"/>
-<form:form action="${actionurl}" id="classlist" method="POST" modelAttribute="lendingModel">
+<spring:url value="/pdfwrangler/overduenotices" var="actionurl" />
+<form:form action="${actionurl}" id="classlist" method="POST" modelAttribute="lendingModel" target="_blank">
 <input type="submit" value="${bprint}" name="print"></input>
 </form:form>
 

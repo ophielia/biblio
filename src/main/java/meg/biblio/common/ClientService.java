@@ -11,7 +11,7 @@ import meg.tools.imp.MapConfig;
 
 public interface ClientService {
 
-	public Long getCurrentClientKey(HttpServletRequest httpServletRequest);
+	
 
 	public Classifier getClassifierForClient(Long clientkey) throws ClassNotFoundException, InstantiationException, IllegalAccessException;
 
@@ -19,7 +19,7 @@ public interface ClientService {
 	
 	public MapConfig getMapConfigForClient(Long clientkey) throws ClassNotFoundException, InstantiationException, IllegalAccessException;
 
-	public ClientDao getCurrentClient(HttpServletRequest httpServletRequest);
+	
 	
 	public ClientDao getCurrentClient(Principal principal);
 

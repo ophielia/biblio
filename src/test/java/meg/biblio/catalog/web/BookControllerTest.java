@@ -1,6 +1,5 @@
 package meg.biblio.catalog.web;
 
-
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -19,6 +18,7 @@ import meg.biblio.catalog.db.dao.BookDaoDataOnDemand;
 import meg.biblio.catalog.web.model.BookModel;
 import meg.biblio.catalog.web.validator.BookModelValidator;
 import meg.biblio.common.ClientService;
+import meg.biblio.common.db.dao.ClientDao;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -41,97 +41,102 @@ public class BookControllerTest {
 
 	@Mock
 	CatalogService bookService;
-	
+
 	@Mock
-	ClientService clientService;	
+	ClientService clientService;
 
 	@Autowired
 	BookModelValidator bookValidator;
-	
-	
-    @InjectMocks
-    BookController controllerUnderTest;
-    private MockMvc mockMvc;
 
-    @Before
-    public void setup() {
-    	// this must be called for the @Mock annotations above to be processed
-        // and for the mock service to be injected into the controller under
-        // test.
-        MockitoAnnotations.initMocks(this);
+	@InjectMocks
+	BookController controllerUnderTest;
+	private MockMvc mockMvc;
 
-    	this.mockMvc = MockMvcBuilders.standaloneSetup(controllerUnderTest)
-    			.build();
-    }
+	@Before
+	public void setup() {
+		// this must be called for the @Mock annotations above to be processed
+		// and for the mock service to be injected into the controller under
+		// test.
+		MockitoAnnotations.initMocks(this);
 
+		this.mockMvc = MockMvcBuilders.standaloneSetup(controllerUnderTest)
+				.build();
+	}
 
+	@Test
+	public void getCreateForm() throws Exception {
 
-    @Test
-    public void getCreateForm() throws Exception {
+		when(bookService.getAllBooks()).thenReturn(new ArrayList<BookDao>());
 
-    	when(bookService.getAllBooks()).thenReturn(new ArrayList<BookDao>());
+		this.mockMvc
+				.perform(
+						get("/books?create")
+								.accept(MediaType.TEXT_HTML)
+								.param("form", "form")
+								.header("content-type",
+										"application/x-www-form-urlencoded"))
+				.andExpect(status().isOk())
+				.andExpect(view().name("book/create"));
 
-        this.mockMvc.perform(get("/books?create")
-        		.accept(MediaType.TEXT_HTML)
-        		.param("form","form")
-        		.header("content-type", "application/x-www-form-urlencoded"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("book/create"));
+	}
 
+	@Test
+	public void createEntry() throws Exception {
+		BookDaoDataOnDemand cdod = new BookDaoDataOnDemand();
+		ArtistDaoDataOnDemand adod = new ArtistDaoDataOnDemand();
+		BookDao book = cdod.getNewTransientBookDao(0);
+		ArtistDao artist = adod.getNewTransientArtistDao(0);
+		book.setId(2222L);
+		List<ArtistDao> authors = new ArrayList<ArtistDao>();
+		authors.add(artist);
+		book.setAuthors(authors);
+		BookModel returnmodel = new BookModel(book);
+		ClientDao client = new ClientDao();
+		when(bookService.getAllBooks()).thenReturn(new ArrayList<BookDao>());
+		when(
+				bookService.createCatalogEntryFromBookModel(any(Long.class),
+						any(BookModel.class))).thenReturn(returnmodel);
+		when(clientService.getCurrentClient(null)).thenReturn(client);
 
-    }
+		this.mockMvc
+				.perform(
+						post("/books")
+								.accept(MediaType.TEXT_HTML)
+								.param("title", "title")
+								.param("aFname", "first")
+								.param("aMname", "middle")
+								.param("aLname", "last")
+								.header("content-type",
+										"application/x-www-form-urlencoded"))
+				.andExpect(status().isFound())
+				.andExpect(view().name("redirect:/books/display/2222"));
 
-    @Test
-    public void createEntry() throws Exception {
-    	BookDaoDataOnDemand cdod = new BookDaoDataOnDemand();
-    	ArtistDaoDataOnDemand adod = new ArtistDaoDataOnDemand();
-    	BookDao book = cdod.getNewTransientBookDao(0);
-    	ArtistDao artist = adod.getNewTransientArtistDao(0);
-    	book.setId(2222L);
-    	List<ArtistDao> authors = new ArrayList<ArtistDao>();
-    	authors.add(artist);
-    	book.setAuthors(authors);
-    	BookModel returnmodel = new BookModel(book);
+	}
 
-    	when(bookService.getAllBooks()).thenReturn(new ArrayList<BookDao>());
-    	when(bookService.createCatalogEntryFromBookModel(any(Long.class),any(BookModel.class))).thenReturn(returnmodel);
-    	when(clientService.getCurrentClientKey(null)).thenReturn(1L);
+	@Test
+	public void getDisplayModel() throws Exception {
+		BookDaoDataOnDemand cdod = new BookDaoDataOnDemand();
+		ArtistDaoDataOnDemand adod = new ArtistDaoDataOnDemand();
+		BookDao book = cdod.getNewTransientBookDao(0);
+		ArtistDao artist = adod.getNewTransientArtistDao(0);
+		book.setId(2222L);
+		List<ArtistDao> authors = new ArrayList<ArtistDao>();
+		authors.add(artist);
+		book.setAuthors(authors);
+		BookModel returnmodel = new BookModel(book);
 
-        this.mockMvc.perform(post("/books")
-        		.accept(MediaType.TEXT_HTML)
-        		.param("title","title")
-        		.param("aFname","first")
-        		.param("aMname","middle")
-        		.param("aLname","last")
-        		.header("content-type", "application/x-www-form-urlencoded"))
-                .andExpect(status().isFound())
-                .andExpect(view().name("redirect:/books/display/2222"));
+		when(bookService.getAllBooks()).thenReturn(new ArrayList<BookDao>());
+		when(bookService.loadBookModel(any(Long.class)))
+				.thenReturn(returnmodel);
 
-    }
+		this.mockMvc
+				.perform(
+						get("/books/display/{id}", 22222L)
+								.accept(MediaType.TEXT_HTML)
+								.param("form", "form")
+								.header("content-type",
+										"application/x-www-form-urlencoded"))
+				.andExpect(status().isOk()).andExpect(view().name("book/show"));
 
-
-    @Test
-    public void getDisplayModel() throws Exception {
-    	BookDaoDataOnDemand cdod = new BookDaoDataOnDemand();
-    	ArtistDaoDataOnDemand adod = new ArtistDaoDataOnDemand();
-    	BookDao book = cdod.getNewTransientBookDao(0);
-    	ArtistDao artist = adod.getNewTransientArtistDao(0);
-    	book.setId(2222L);
-    	List<ArtistDao> authors = new ArrayList<ArtistDao>();
-    	authors.add(artist);
-    	book.setAuthors(authors);
-    	BookModel returnmodel = new BookModel(book);
-    	
-    	when(bookService.getAllBooks()).thenReturn(new ArrayList<BookDao>());
-    	when(bookService.loadBookModel(any(Long.class))).thenReturn(returnmodel);
-    	
-        this.mockMvc.perform(get("/books/display/{id}",22222L)
-        		.accept(MediaType.TEXT_HTML)
-        		.param("form","form")
-        		.header("content-type", "application/x-www-form-urlencoded"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("book/show"));
-
-
-    }    
+	}
 }

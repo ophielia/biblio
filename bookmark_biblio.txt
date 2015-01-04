@@ -3,12 +3,11 @@ Branch - barcodes -   Generate Barcodes
 				      Generate Barcodes for Books
 				      
 
-test - book search classifications
-if book exists - no title error.... (newbook)
 
-BLController - in return book - handle null....
+make summary page (checkout and returns)
+move / change assigncode to add new book
 
-checkout!!
+to get ready for demo
 
 
 
@@ -37,7 +36,6 @@ later features
 check-all in admin search
 
 ---- begin commit changes ----
-
 
 
 ---- end commit changes ----
@@ -89,6 +87,12 @@ done - general - this has already been assigned.  add - Please try a different b
 done - test - existing - no code - code found - assign code
 done - test - existing - no code - code not found - assign code
 done - test - new - code found - assign code
+done - test - book search classifications
+done -BLController - in return book - handle null....
+done - scan library card to end checkout
+done - error when scanning code which doesn't exist
+done - name in coperson
+done - if book exists - no title error.... (newbook)
 
 ---- end branch changes ----
 

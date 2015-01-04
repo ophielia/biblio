@@ -15,6 +15,11 @@
 		<put-attribute name="body"
 			value="/WEB-INF/views/barcode/comain.jspx" />
 	</definition>
+	
+		<definition extends="default" name="barcode/multicheckout">
+		<put-attribute name="body"
+			value="/WEB-INF/views/barcode/comulti.jspx" />
+	</definition>
 
 	<definition extends="default" name="barcode/checkoutsuccess">
 		<put-attribute name="body"

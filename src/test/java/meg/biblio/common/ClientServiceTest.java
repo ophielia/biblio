@@ -18,7 +18,7 @@ public class ClientServiceTest {
 
 	@Test
 	public void testGetCurrentClientKeyDefault() {
-		Long result = clientService.getCurrentClientKey(null);
+		Long result = clientService.getTestClientId();
 		Assert.assertNotNull(result);
 		Assert.assertEquals(1L, result.longValue());
 	}

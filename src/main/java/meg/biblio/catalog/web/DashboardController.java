@@ -1,5 +1,6 @@
 package meg.biblio.catalog.web;
 
+import java.security.Principal;
 import java.util.HashMap;
 import java.util.Locale;
 
@@ -35,9 +36,9 @@ public class DashboardController {
 
 
     @RequestMapping(method = RequestMethod.GET, produces = "text/html")
-    public String showDashboard(Model uiModel, HttpServletRequest httpServletRequest) {
+    public String showDashboard(Model uiModel, HttpServletRequest httpServletRequest,Principal principal) {
     	// get client key
-    	ClientDao client = clientService.getCurrentClient(httpServletRequest);
+    	ClientDao client = clientService.getCurrentClient(principal);
     	// get total book count
     	Long bookcount = searchService.getBookCount(client.getId());
     	// get status breakout

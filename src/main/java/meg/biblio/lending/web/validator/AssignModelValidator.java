@@ -20,12 +20,7 @@ public class AssignModelValidator {
 	BookRepository bookRepo;
 	
 	public void validateNewBookEntry(AssignCodeModel model, BindingResult errors,ClientDao client) {
-		// validation - check isbn - OR - title 
-		boolean hasisbn = model.getIsbnentry()!=null && model.getIsbnentry().trim().length()>0;
-		boolean hastitle = model.getTitle()!=null && model.getTitle().trim().length()>0;
-		if ((!hasisbn) && !(hastitle)) {
-			errors.reject("error_eitheror",null,"Title or ISBN");
-		}
+
 		
 		// if not generate new - no existing book for book code
 		boolean generatenew = model.getCreatenewid();
@@ -38,9 +33,16 @@ public class AssignModelValidator {
 				} else {
 					errors.rejectValue("newbooknr","error_bookfound");
 				}
-				
+				return;
 			}
 		}
+		
+		// validation - check isbn - OR - title 
+		boolean hasisbn = model.getIsbnentry()!=null && model.getIsbnentry().trim().length()>0;
+		boolean hastitle = model.getTitle()!=null && model.getTitle().trim().length()>0;
+		if ((!hasisbn) && !(hastitle)) {
+			errors.reject("error_eitheror",null,"Title or ISBN");
+		}		
 
 	}
 

@@ -12,8 +12,17 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <link rel="stylesheet" href="/biblio/resources/mydojo/widget/css/ShelfClassWidget.css" media="screen"></link>
 <link rel="stylesheet" href="/biblio/resources/mydojo/widget/css/ShelfClassSelectWidget.css" media="screen"></link>
 
-<spring:message code="label_barcode_returned" htmlEscape="false" var="pagetitle"/>
-<spring:message code="msg_barcode_returnsuccess" arguments="${personname};${booktitle}" htmlEscape="false" argumentSeparator=";" var="msg"/>
+<spring:message code="label_lending_borrower" htmlEscape="false" var="lborrower"/>
+<spring:message code="label_lending_class" htmlEscape="false" var="lclass"/>
+<spring:message code="label_lending_booktitle" htmlEscape="false" var="lbooktitle"/>
+<spring:message code="label_lending_author" htmlEscape="false" var="lauthor"/>
+<spring:message code="label_lending_checkedout" htmlEscape="false" var="lcheckedout"/>
+<spring:message code="label_lending_duedate" htmlEscape="false" var="lduedate"/>
+
+
+<spring:message code="label_barcode_success" htmlEscape="false" var="pagetitle"/>
+<spring:message code="msg_barcode_multimsg" htmlEscape="false" var="instructions"/>
+<spring:message code="msg_barcode_checkoutsuccess" arguments="${personname};${booktitle}" htmlEscape="false" argumentSeparator=";" var="msg"/>
 <spring:message code="button_generate" htmlEscape="false" var="bgen"/>
 <spring:message code="button_cancel" htmlEscape="false" var="bcancel"/>
 
@@ -40,10 +49,38 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 
 <h1>${pagetitle}</h1>
 <p>${msg }</p>
+<p>${instructions}</p>
+
 <form:form action="${actionurl}" id="generatebookcodes" method="POST" modelAttribute="barcodeLendModel">
 <form:errors id="errors" class="errors" path="*" />
 <div style="height:150px">
 <form:errors path="code"></form:errors>
+<table> 
+ <thead>
+<tr>
+<td>${lborrower}</td>
+<td>${lclass}</td>
+<td>${lbooktitle}</td>
+<td>${lauthor}</td>
+<td>${lcheckedout}</td>
+<td>${lduedate}</td>
+</tr>
+</thead>
+<tbody>
+<c:forEach items="${barcodeLendModel.checkedoutForUser}" var="checkedout">
+<tr>
+<td>${checkedout.borrowerfn} ${checkedout.borrowerln} </td>
+<td>${classInfo[checkedout.classid].firstname}</td>
+<td>${checkedout.booktitle} </td>
+<td>${checkedout.author} </td>
+<td>${checkedout.checkedout} </td>
+<td>${checkedout.duedate} </td>
+</tr>
+</c:forEach>
+</tbody>
+</table>
+<spring:url value="/barcode/checkout/clearuser" var="linkurl"/>
+	<a href="${linkurl}" class="linkbutton" id="showaddl">${bcancel}</a>
  <form:input class="therebutnot" type="text" path="code"></form:input><br/>
 
 

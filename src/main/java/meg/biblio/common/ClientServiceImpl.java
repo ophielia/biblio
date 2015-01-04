@@ -5,7 +5,6 @@ import java.security.Principal;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import javax.servlet.http.HttpServletRequest;
 
 import meg.biblio.catalog.Classifier;
 import meg.biblio.common.db.ClientRepository;
@@ -31,21 +30,7 @@ public class ClientServiceImpl implements ClientService {
 	@PersistenceContext
 	private EntityManager entityManager;
 
-	@Override
-	public Long getCurrentClientKey(HttpServletRequest httpServletRequest) {
-		// get principal
 
-		// get logindao
-
-		// get client
-
-		// return clientkey
-		Long defaultkey = settingService
-				.getSettingAsLong("biblio.defaultclient");
-		// returns default coded in properties. For development, or single user
-		// systems
-		return defaultkey;
-	}
 
 	@Override
 	public Classifier getClassifierForClient(Long clientkey)
@@ -86,14 +71,7 @@ public class ClientServiceImpl implements ClientService {
 		return clientRepo.findOne(key);
 	}
 
-	@Override
-	public ClientDao getCurrentClient(HttpServletRequest httpServletRequest) {
-		Long defaultkey = settingService
-				.getSettingAsLong("biblio.defaultclient");
-		Long clientkey = defaultkey;
-		ClientDao client = clientRepo.findOne(clientkey);
-		return client;
-	}
+
 
 	@Override
 	public ClientDao getCurrentClient(Principal principal) {
