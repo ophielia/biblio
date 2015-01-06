@@ -23,8 +23,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <spring:message code="label_barcode_success" htmlEscape="false" var="pagetitle"/>
 <spring:message code="msg_barcode_multimsg" htmlEscape="false" var="instructions"/>
 <spring:message code="msg_barcode_checkoutsuccess" arguments="${personname};${booktitle}" htmlEscape="false" argumentSeparator=";" var="msg"/>
-<spring:message code="button_generate" htmlEscape="false" var="bgen"/>
-<spring:message code="button_cancel" htmlEscape="false" var="bcancel"/>
+<spring:message code="button_finishcheckout" htmlEscape="false" var="bcancel"/>
 
 <spring:url value="/barcode/checkout" var="actionurl"/>
 
@@ -53,7 +52,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 
 <form:form action="${actionurl}" id="generatebookcodes" method="POST" modelAttribute="barcodeLendModel">
 <form:errors id="errors" class="errors" path="*" />
-<div style="height:150px">
+<div style="min-height:150px">
 <form:errors path="code"></form:errors>
 <table> 
  <thead>
