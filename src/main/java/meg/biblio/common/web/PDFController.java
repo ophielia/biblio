@@ -1,7 +1,6 @@
 package meg.biblio.common.web;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.Date;
@@ -28,6 +27,7 @@ import meg.biblio.common.ClientService;
 import meg.biblio.common.db.dao.ClientDao;
 import meg.biblio.common.report.BarcodeSheet;
 import meg.biblio.common.report.ClassSummaryReport;
+import meg.biblio.common.report.DailySummaryReport;
 import meg.biblio.common.report.OverdueBookReport;
 import meg.biblio.lending.LendingService;
 
@@ -84,7 +84,7 @@ public class PDFController {
 		ClientDao client = clientService.getCurrentClient(principal);
 		Long clientkey = client.getId();
 		Locale locale = httpServletRequest.getLocale();
-		String lang = locale.getLanguage();
+		String lang = getShortLangCode(locale.getLanguage());
 
 		String cxslname = "META-INF/web-resources/transform/" + client.getOverduexslbase() + "-" + lang + ".xsl";
 
@@ -132,7 +132,7 @@ public class PDFController {
 		ClientDao client = clientService.getCurrentClient(principal);
 		Long clientkey = client.getId();
 		Locale locale = httpServletRequest.getLocale();
-		String lang = locale.getLanguage();
+		String lang = getShortLangCode(locale.getLanguage());
 
 		String cxslname = "META-INF/web-resources/transform/" + client.getClasssummaryxslbase() + "-" + lang + ".xsl";
 
@@ -145,6 +145,53 @@ public class PDFController {
 			Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, out);
 			JAXBContext context = JAXBContext
 					.newInstance(ClassSummaryReport.class);
+			JAXBSource source = new JAXBSource(context, csr);
+
+			// Setup Transformer
+			Resource resource = new ClassPathResource(cxslname);
+			Source xsltSrc = new StreamSource(resource.getFile());
+			Transformer transformer = tFactory.newTransformer(xsltSrc);
+
+			// Make sure the XSL transformation's result is piped through to FOPx
+			Result res = new SAXResult(fop.getDefaultHandler());
+
+			// Start the transformation and rendering process
+			transformer.transform(source, res);
+
+			// prepare response
+			response.setContentType("application/pdf");
+			response.setContentLength(out.size());
+
+			// send content to browser
+			response.getOutputStream().write(out.toByteArray());
+			response.getOutputStream().flush();
+		} finally {
+			out.close();
+		}
+	}
+	
+	@RequestMapping(value = "/dailysummary", method = RequestMethod.POST, produces = "text/html")
+	public void generateDailySummaryReport( Model uiModel,
+			HttpServletRequest request, HttpServletRequest httpServletRequest,
+			HttpServletResponse response, Principal principal)
+			throws FOPException, JAXBException, TransformerException,
+			IOException, ServletException {
+		ClientDao client = clientService.getCurrentClient(principal);
+		Long clientkey = client.getId();
+		Locale locale = httpServletRequest.getLocale();
+		String lang = getShortLangCode(locale.getLanguage());
+
+		String cxslname = "META-INF/web-resources/transform/" + client.getClasssummaryxslbase() + "-" + lang + ".xsl";
+
+		DailySummaryReport csr = lendingService
+				.assembleDailySummaryReport(new Date(), clientkey,false);
+
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		try {
+
+			Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, out);
+			JAXBContext context = JAXBContext
+					.newInstance(DailySummaryReport.class);
 			JAXBSource source = new JAXBSource(context, csr);
 
 			// Setup Transformer
@@ -275,4 +322,12 @@ public class PDFController {
 			}
 		}
 	}	
+
+	private String getShortLangCode(String lang) {
+		if (lang==null) {return null;}
+		if (lang.startsWith("en")) return "en";
+		if (lang.startsWith("fr")) return "fr";
+		return "en";
+	}
+
 }

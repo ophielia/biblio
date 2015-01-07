@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page" 
+xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" 
+xmlns:c="http://java.sun.com/jsp/jstl/core" 
+xmlns:spring="http://www.springframework.org/tags" 
+xmlns:form="http://www.springframework.org/tags/form" 
+xmlns:fmt="http://java.sun.com/jsp/jstl/fmt" 
+xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    
+<spring:message code="menu_lending_summaryforclasses" htmlEscape="false" var="ltitle"/>
+
+
+
+<spring:message code="label_lending_borrower" htmlEscape="false" var="lborrower"/>
+<spring:message code="label_lending_class" htmlEscape="false" var="lclass"/>
+<spring:message code="label_lending_booktitle" htmlEscape="false" var="lbooktitle"/>
+<spring:message code="label_lending_author" htmlEscape="false" var="lauthor"/>
+<spring:message code="label_lending_checkedout" htmlEscape="false" var="lcheckedout"/>
+<spring:message code="label_lending_duedate" htmlEscape="false" var="lduedate"/>
+
+<spring:message code="label_lendingclassof" htmlEscape="false" var="lclassof"/>
+<spring:message code="label_lending_checkedout" htmlEscape="false" var="tcheckedout"/>
+<spring:message code="label_lendingreturned" htmlEscape="false" var="lreturned"/>
+<spring:message code="label_lending_titlereturned" htmlEscape="false" var="treturned"/>
+<spring:message code="label_lendingtitleoverdue" htmlEscape="false" var="toverdue"/>
+<spring:message code="label_lendingnocheckedout" htmlEscape="false" var="mnocheckedout"/>
+<spring:message code="label_lendingnoreturned" htmlEscape="false" var="mnoreturned"/>
+<spring:message code="label_lendingnooverdue" htmlEscape="false" var="mnooverdue"/>
+<spring:message code="action_lending_printdailysummary" htmlEscape="false" var="bprint"/>
+
+
+
+<h1>${ltitle}</h1>
+<div style="text-align: right;margin-right: 5px;">
+<spring:url value="/pdfwrangler/dailysummary" var="actionurl" /><form:form action="${actionurl}" id="classlist" method="POST" modelAttribute="lendingModel" target="_blank">
+<input type="submit" value="${bprint}" class="linkbutton" name="print"></input>
+</form:form></div>
+<c:forEach items="${dailySummaryReport.classsummarylist}" var="report">
+<h2>
+${lclassof} ${report.teacherfn}
+</h2>
+<div>
+<c:choose><c:when test="${report.checkedoutCount>0}">
+<br />${tcheckedout}
+<table>
+<thead>
+<tr>
+<td>${lborrower}</td>
+<td>${lbooktitle}</td>
+<td>${lauthor}</td>
+<td>${lcheckedout}</td>
+<td>${lduedate}</td>
+</tr>
+</thead>
+<tbody>
+<c:forEach items="${report.checkedoutlist}" var="checkedout">
+<tr>
+<td>${checkedout.borrowerfn} ${checkedout.borrowerln} </td>
+<td>${checkedout.booktitle} </td>
+<td>${checkedout.author} </td>
+<td>${checkedout.checkedout} </td>
+<td>${checkedout.duedate} </td>
+</tr>
+</c:forEach>
+</tbody>
+</table><br /></c:when>
+<c:otherwise>${mnocheckedout}</c:otherwise>
+</c:choose> 
+</div>
+<div>
+<c:choose><c:when test="${report.returnedCount>0}">
+<br />${treturned}
+<table>
+<thead>
+<tr>
+<td>${lborrower}</td>
+<td>${lbooktitle}</td>
+<td>${lauthor}</td>
+<td>${lduedate}</td>
+<td>${lreturned}</td>
+</tr>
+</thead>
+<tbody>
+<c:forEach items="${report.returnedlist}" var="checkedout">
+<tr>
+<td>${checkedout.borrowerfn} ${checkedout.borrowerln} </td>
+<td>${checkedout.booktitle} </td>
+<td>${checkedout.author} </td>
+<td>${checkedout.duedate} </td>
+<td>${checkedout.returned} </td>
+</tr>
+</c:forEach>
+</tbody>
+</table>
+</c:when>
+<c:otherwise>${mnoreturned}</c:otherwise>
+</c:choose>
+
+
+</div>
+<div>
+<c:choose><c:when test="${report.overdueCount>0}">
+<br />${toverdue}
+<table>
+<thead>
+<tr>
+<td>${lborrower}</td>
+<td>${lbooktitle}</td>
+<td>${lauthor}</td>
+<td>${lcheckedout}</td>
+<td>${lduedate}</td>
+</tr>
+</thead>
+<tbody>
+<c:forEach items="${report.overduelist}" var="checkedout">
+<tr>
+<td>${checkedout.borrowerfn} ${checkedout.borrowerln} </td>
+<td>${checkedout.booktitle} </td>
+<td>${checkedout.author} </td>
+<td>${checkedout.checkedout} </td>
+<td>${checkedout.duedate} </td>
+</tr>
+</c:forEach>
+</tbody>
+</table><br /></c:when>
+<c:otherwise>${mnooverdue}</c:otherwise>
+</c:choose>
+
+
+</div>
+</c:forEach>
+
+
+
+</div>
+
+

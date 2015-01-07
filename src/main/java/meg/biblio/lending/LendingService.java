@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import meg.biblio.common.report.ClassSummaryReport;
+import meg.biblio.common.report.DailySummaryReport;
 import meg.biblio.common.report.OverdueBookReport;
 import meg.biblio.lending.db.dao.LoanHistoryDao;
 import meg.biblio.lending.db.dao.LoanRecordDao;
@@ -33,5 +34,8 @@ public interface LendingService {
 	ClassSummaryReport assembleClassSummaryReport(Long classid, Date date,
 			Long clientid);
 
+	DailySummaryReport assembleDailySummaryReport(Date date,
+			Long clientid, Boolean includeEmpties);
 
+	
 }

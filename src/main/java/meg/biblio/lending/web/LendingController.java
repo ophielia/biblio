@@ -2,6 +2,7 @@ package meg.biblio.lending.web;
 
 import java.io.IOException;
 import java.security.Principal;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -16,6 +17,8 @@ import meg.biblio.catalog.db.dao.BookDao;
 import meg.biblio.common.ClientService;
 import meg.biblio.common.SelectKeyService;
 import meg.biblio.common.db.dao.ClientDao;
+import meg.biblio.common.report.ClassSummaryReport;
+import meg.biblio.common.report.DailySummaryReport;
 import meg.biblio.lending.ClassManagementService;
 import meg.biblio.lending.LendingService;
 import meg.biblio.lending.db.dao.StudentDao;
@@ -321,7 +324,24 @@ public class LendingController {
 		return "lending/overduesummary";
 		}
 	
+	@RequestMapping(value="/summary/all",method = RequestMethod.GET, produces = "text/html")
+	public String showAllClassSummary(LendingModel model, Model uiModel,
+				HttpServletRequest httpServletRequest, Principal principal) {
+		ClientDao client = clientService.getCurrentClient(principal);
+		Long clientkey = client.getId();
+		Locale locale = httpServletRequest.getLocale();
 
+
+		DailySummaryReport csr = lendingService
+				.assembleDailySummaryReport( new Date(), clientkey, true);
+
+		uiModel.addAttribute("dailySummaryReport",csr);
+		// return checkout report 
+		return "lending/checkoutreport";
+		}
+	
+
+	
 	private void populateLendingModel(LendingModel model, Model uiModel) {
 		uiModel.addAttribute("lendingModel", model);
 

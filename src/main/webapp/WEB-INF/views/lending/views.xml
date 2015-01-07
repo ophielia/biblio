@@ -28,6 +28,10 @@
         <put-attribute name="body" value="/WEB-INF/views/lending/checkoutsummary.jspx"/>
     </definition>  
     
+             <definition extends="default" name="lending/checkoutreport">
+        <put-attribute name="body" value="/WEB-INF/views/lending/checkoutreport.jspx"/>
+    </definition>  
+        
              <definition extends="default" name="lending/overduesummary">
         <put-attribute name="body" value="/WEB-INF/views/lending/overduesummary.jspx"/>
     </definition>     

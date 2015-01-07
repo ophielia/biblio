@@ -1,5 +1,6 @@
 package meg.biblio.lending;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -11,6 +12,7 @@ import meg.biblio.catalog.db.dao.BookDao;
 import meg.biblio.common.ClientService;
 import meg.biblio.common.db.dao.ClientDao;
 import meg.biblio.common.report.ClassSummaryReport;
+import meg.biblio.common.report.DailySummaryReport;
 import meg.biblio.common.report.OverdueBookReport;
 import meg.biblio.lending.db.LoanHistoryRepository;
 import meg.biblio.lending.db.LoanRecordRepository;
@@ -314,6 +316,23 @@ public class LendingServiceImpl implements LendingService {
 			return returnBook(disp.getLoanrecordid(),clientid);
 		} 
 		return null;
+	}
+
+	@Override
+	public DailySummaryReport assembleDailySummaryReport(Date date,
+			Long clientid, Boolean includeEmpties) {
+		List<SchoolGroupDao> classes = classService.getClassesForClient(clientid);
+		List<ClassSummaryReport> results = new ArrayList<ClassSummaryReport>();
+		for (SchoolGroupDao sgroup:classes) {
+			ClassSummaryReport csum = assembleClassSummaryReport(sgroup.getId(),date, clientid);
+			if (!csum.isEmpty()) {
+				results.add(csum);
+			} else if (includeEmpties) {
+				results.add(csum);
+			}
+		}
+		DailySummaryReport report = new DailySummaryReport(results); 
+		return report;
 	}
 
 }

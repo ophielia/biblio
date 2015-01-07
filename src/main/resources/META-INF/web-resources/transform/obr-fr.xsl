@@ -40,28 +40,22 @@
 	<xsl:template match="book">
 		<fo:block page-break-inside="avoid" space-after="5mm">
 			<fo:block text-align="right" margin="1mm">
-				<xsl:value-of select="firstname_teacher" />
-				's Class
+				Classe de <xsl:value-of select="firstname_teacher" />
 			</fo:block>
 			<fo:block margin-bottom="15mm" border-width="1mm" border-bottom-style="dotted" padding-bottom="15mm" space-after="5mm">
 				<xsl:variable name="dt" select="checkedout" />
-				<fo:block>Hello <xsl:value-of select="firstname_borrower" />! &#xA;</fo:block>
+				<fo:block>Bonjour, &#xA;</fo:block>
 				<fo:block space-after="1cm" space-before="1cm">
-				Your book,
-				<fo:inline font-style="italic">
-					<xsl:value-of select="booktitle" />
-				</fo:inline>
-				is really really late. You checked it out on
-				<xsl:value-of select="concat(
+				 <xsl:value-of select="firstname_borrower" /> a emprunte le livre, "<xsl:value-of select="booktitle" />" le <xsl:value-of select="concat(
                       substring($dt, 9, 2),
                       '/',
                       substring($dt, 6, 2),
                       '/',
                       substring($dt, 1, 4)
-                      )" />
-				. Please return it as soon as possible.
+                      )" /> qui est maintenant en retard.  S'il vous plaît rappelez 
+				à votre enfant de ramener leur livre dès que possible.
 				</fo:block>
-
+				
 				<fo:block space-after="1cm">
 					<fo:table table-layout="fixed">
 						<fo:table-column column-width="140mm" />
@@ -83,30 +77,5 @@
 		</fo:block>
 	</xsl:template>
 
-<xsl:template name="overduetitle">
-Overdue Notices
-</xsl:template>
-
-	<xsl:template name="overduesummary">
-		<fo:block text-align="left">
-			Class of:
-			<xsl:value-of select="firstname_teacher" />
-			<xsl:text>&#xA0;</xsl:text>
-			<xsl:value-of select="lastname_teacher" />
-		</fo:block>
-		<fo:block margin-bottom="5mm" border-width="1mm" white-space-collapse="true"
-			border-bottom-style="dotted" padding-bottom="15mm">
-			<xsl:for-each select="overduelist">
-				<fo:block text-indent="10mm">
-					<xsl:value-of select="firstname_borrower" />
-					<xsl:text>&#xA0;</xsl:text>
-					<xsl:value-of select="lastname_borrower" />
-					-
-					<xsl:text>&#xA0;</xsl:text>
-					<xsl:value-of select="booktitle" />
-				</fo:block>
-			</xsl:for-each>
-		</fo:block>
-	</xsl:template>
 
 </xsl:stylesheet>

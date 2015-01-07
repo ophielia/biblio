@@ -7,6 +7,14 @@ Branch - barcodes -   Generate Barcodes
 make summary page (checkout and returns)
 move / change assigncode to add new book
 
+---> LendingServiceImpl  - coding and testing DailySummary
+making xml
+making xsl (french translation)
+
+
+
+
+
 to get ready for demo
 
 

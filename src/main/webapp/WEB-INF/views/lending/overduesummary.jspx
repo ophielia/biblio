@@ -55,7 +55,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 </table>
 <spring:url value="/pdfwrangler/overduenotices" var="actionurl" />
 <form:form action="${actionurl}" id="classlist" method="POST" modelAttribute="lendingModel" target="_blank">
-<input type="submit" value="${bprint}" name="print"></input>
+<input type="submit" value="${bprint}" class="linkbutton" name="print"></input>
 </form:form>
 
 </div>

@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Date;
 import java.util.Locale;
 
 import javax.xml.bind.JAXBContext;
@@ -20,7 +21,11 @@ import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.stream.StreamSource;
 
 import meg.biblio.common.report.BarcodeSheet;
+import meg.biblio.common.report.ClassSummaryReport;
+import meg.biblio.common.report.DailySummaryReport;
+import meg.biblio.common.report.OverdueBookReport;
 import meg.biblio.lending.ClassManagementService;
+import meg.biblio.lending.LendingService;
 import meg.biblio.lending.db.dao.SchoolGroupDao;
 import meg.biblio.lending.db.dao.StudentDao;
 import meg.biblio.lending.web.model.ClassModel;
@@ -49,6 +54,9 @@ public class ReportGeneratorTest {
 	BarcodeService barcodeService;
 	
 	@Autowired
+	LendingService lendingService;
+	
+	@Autowired
 	ClientService clientService;	
 	
 	private FopFactory fopFactory = FopFactory.newInstance();
@@ -57,13 +65,13 @@ public class ReportGeneratorTest {
 	@Test
 	public void testMakeAnXml() throws JAXBException {
 		Long clientid = clientService.getTestClientId();
-		BarcodeSheet list = barcodeService.assembleBarcodeSheetForBooks(12, clientid, Locale.ENGLISH);
-
-		JAXBContext context = JAXBContext.newInstance(BarcodeSheet.class);
+		OverdueBookReport list = lendingService.assembleOverdueBookReport( clientid);
+//assembleOverdueBookReport
+		JAXBContext context = JAXBContext.newInstance(OverdueBookReport.class);
 		Marshaller m = context.createMarshaller();
 		m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 		
-		m.marshal(list, new File("C:/Temp/bcs.xml"));
+		m.marshal(list, new File("C:/Temp/obr.xml"));
 		
 		}
 	
@@ -113,14 +121,14 @@ Long clientid = clientService.getTestClientId();
 			Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, out);
 
 			//Setup Transformer
-			Source xsltSrc = new StreamSource(new File("C:/Temp/mybarcodes.xsl"));
+			Source xsltSrc = new StreamSource(new File("C:/Temp/mydsr.xsl"));
 			Transformer transformer = tFactory.newTransformer(xsltSrc);
 
 			//Make sure the XSL transformation's result is piped through to FOP
 			Result res = new SAXResult(fop.getDefaultHandler());
 
 			//Setup input
-			Source src = new StreamSource(new File("C:/Temp/lrd.xml"));
+			Source src = new StreamSource(new File("C:/Temp/dsr.xml"));
 
 
 			//Start the transformation and rendering process

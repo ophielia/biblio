@@ -10,7 +10,7 @@ import meg.biblio.lending.db.dao.SchoolGroupDao;
 import meg.biblio.lending.web.model.LoanHistoryDisplay;
 import meg.biblio.lending.web.model.LoanRecordDisplay;
 
-@XmlRootElement(name = "classsummaryreport")
+@XmlRootElement(name = "classreport")
 public class ClassSummaryReport {
 
 	
@@ -129,4 +129,8 @@ public class ClassSummaryReport {
 		int total = getCheckedoutCount() + getReturnedCount() + getOverdueCount();
 		return total==0;
 	}
+	
+	public boolean getIsEmpty() {
+		return isEmpty();
+	}	
 }

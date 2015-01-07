@@ -36,7 +36,7 @@
 	<fo:table-body >
 	  <fo:table-row >
 	    <fo:table-cell >
-	     <fo:block text-align="left"   font-size="14pt" font-weight="bold">Class of: <xsl:value-of select="firstname_teacher"/><xsl:text>&#xA0;</xsl:text><xsl:value-of select="lastname_teacher"/></fo:block>
+	     <fo:block text-align="left"   font-size="14pt" font-weight="bold">Classe de: <xsl:value-of select="firstname_teacher"/><xsl:text>&#xA0;</xsl:text><xsl:value-of select="lastname_teacher"/></fo:block>
 	    </fo:table-cell>    
 	    <fo:table-cell text-align="left">
 	      <fo:block  font-weight="bold" font-size="14pt" >Date: <xsl:variable name="dat" select="rundate"/><xsl:value-of select="concat(
@@ -68,14 +68,14 @@
                </fo:table>
 	            
 	       <!-- after the table, list of returns -->
-	        <fo:block space-before="1cm" font-size="9pt">Returned Books:<xsl:if test="returnedcount = 0"> No Books Returned On This Date</xsl:if>
+	        <fo:block space-before="1cm" font-size="9pt">Livres retournés:<xsl:if test="returnedcount = 0"> Pas de livres retourné à cette date</xsl:if>
 	        <!-- apply templates here for returns -->
 		    <xsl:apply-templates select="returnedlist"/>
 		</fo:block>    
 		<!-- overdue books -->
 		<xsl:if test="overduecount > 0">
 		<fo:block page-break-before="always">
-		<fo:block text-align="center" font-weight="bold" space-after="15mm">Overdue Notices</fo:block>
+		<fo:block text-align="center" font-weight="bold" space-after="15mm">Avis de retard</fo:block>
 		<!-- apply templates here for overdue books -->
 		<xsl:call-template name="overduesummary">
 		</xsl:call-template>
@@ -88,12 +88,6 @@
 		
             
     </xsl:template>
-
-<xsl:template match="checkedoutcount">
-	       <fo:block-container width="175mm">
-	       <fo:block text-align="right" font-weight="bold"><xsl:value-of select="."/> Checked Out</fo:block>
-</fo:block-container>
-</xsl:template>
 
 <xsl:template match="checkedoutlist">
  <fo:table-row>
@@ -127,6 +121,14 @@
  </fo:table-row>
 </xsl:template>
 
+<xsl:template match="checkedoutcount">
+	       <fo:block-container width="175mm">
+	       <fo:block text-align="right" font-weight="bold"><xsl:value-of select="."/> Emprunté</fo:block>
+</fo:block-container>
+</xsl:template>
+
+
+
 
 <xsl:template match="returnedlist">
 <xsl:value-of select="firstname_borrower"/><xsl:text>&#xA0;</xsl:text><xsl:value-of select="lastname_borrower"/>: 
@@ -135,7 +137,7 @@
 
 
 <xsl:template name="overduesummary">
-<fo:block text-align="left">Class of: <xsl:value-of select="firstname_teacher"/><xsl:text>&#xA0;</xsl:text><xsl:value-of select="lastname_teacher"/></fo:block>          
+<fo:block text-align="left">Classe de: <xsl:value-of select="firstname_teacher"/><xsl:text>&#xA0;</xsl:text><xsl:value-of select="lastname_teacher"/></fo:block>          
     <fo:block  margin-bottom="5mm" border-width="1mm" border-bottom-style="dotted" padding-bottom="15mm" >
    <xsl:for-each select="overduelist">
 <fo:block text-indent="10mm"><xsl:value-of select="firstname_borrower"/><xsl:text>&#xA0;</xsl:text><xsl:value-of select="lastname_borrower"/>-<xsl:text>&#xA0;</xsl:text><xsl:value-of select="booktitle"/></fo:block>
@@ -148,21 +150,21 @@
 <fo:table-header>
   <fo:table-row>
     <fo:table-cell xsl:use-attribute-sets="myBorder" >
-      <fo:block font-weight="bold">Book</fo:block>
-      <fo:block font-weight="bold">Id</fo:block>
+      <fo:block font-weight="bold">Numéro de </fo:block>
+      <fo:block font-weight="bold">Livre</fo:block>
     </fo:table-cell>
   <fo:table-cell xsl:use-attribute-sets="myBorder">
-      <fo:block font-weight="bold">Student</fo:block>
+      <fo:block font-weight="bold">Elève</fo:block>
     </fo:table-cell>
  <fo:table-cell xsl:use-attribute-sets="myBorder" >
-          <fo:block font-weight="bold">Book Title</fo:block>
+          <fo:block font-weight="bold">Titre du livre</fo:block>
     </fo:table-cell>
  <fo:table-cell xsl:use-attribute-sets="myBorder" >
-          <fo:block font-weight="bold">Checked </fo:block>
-          <fo:block font-weight="bold">Out</fo:block>
+          <fo:block font-weight="bold">Emprunté </fo:block>
+          <fo:block font-weight="bold"></fo:block>
     </fo:table-cell>    
  <fo:table-cell xsl:use-attribute-sets="myBorder">
-          <fo:block font-weight="bold" >Returned</fo:block>
+          <fo:block font-weight="bold" >Retourné</fo:block>
     </fo:table-cell>     
   </fo:table-row>
 </fo:table-header>
@@ -175,16 +177,19 @@
 
 <xsl:template match="overduelist">
 <fo:block page-break-inside="avoid" space-after="5mm"  > 
-          <fo:block text-align="right" margin="1mm"><xsl:value-of select="firstname_teacher"/>'s Class</fo:block>
+          <fo:block text-align="right" margin="1mm">Classe de <xsl:value-of select="firstname_teacher"/></fo:block>
           <fo:block margin-bottom="15mm" linefeed-treatment="preserve" border-width="1mm" border-bottom-style="dotted" padding-bottom="15mm"   space-after="5mm"  >
-          <xsl:variable name="dt" select="checkedout"/>Hello <xsl:value-of select="firstname_borrower"/>! &#xA;
-            Your book,<fo:inline font-style="italic"> <xsl:value-of select="booktitle"/>        </fo:inline> is really really late.  You checked it out on        <xsl:value-of select="concat(
+          				<xsl:variable name="dt" select="checkedout" />
+				<fo:block>Bonjour, &#xA;</fo:block>
+				<fo:block space-after="1cm" space-before="1cm">
+				 <xsl:value-of select="firstname_borrower" /> a emprunte le livre, "<xsl:value-of select="booktitle" />" le <xsl:value-of select="concat(
                       substring($dt, 9, 2),
                       '/',
                       substring($dt, 6, 2),
                       '/',
                       substring($dt, 1, 4)
-                      )"/>. Please return it as soon as possible.
+                      )" /> qui est maintenant en retard.  S'il vous plaît rappelez à votre enfant de ramener leur livre dès que possible.
+				</fo:block>
 
 <fo:block space-after="1cm">
 <fo:table  table-layout="fixed" >
