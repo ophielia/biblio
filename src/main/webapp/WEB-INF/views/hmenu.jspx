@@ -11,6 +11,7 @@
 		<li><moo:menulink label="menu_catalog" url="/search" />
 			<ul>
 				<li><moo:menulink label="menu_createbook" url="/books?form" /></li>
+				<li><moo:menulink label="menu_createbook" url="/newbook?form" /></li>
 			</ul></li>
 		<li><moo:menulink label="menu_lending" url="/lending/checkout" />
 			<ul>

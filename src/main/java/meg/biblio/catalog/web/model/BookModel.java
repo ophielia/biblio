@@ -22,7 +22,11 @@ public class BookModel  implements Serializable {
 	private String publishername;
 	private Long assignDetailId;
 
-
+	private String isbnentry;
+	private Boolean createnewid;
+	private String editMode;
+	private String assignedcode;
+	private Boolean showbarcodelinks;
 	
 	// *** constructors ***//
 	public BookModel(BookDao book) {
@@ -318,6 +322,46 @@ public class BookModel  implements Serializable {
 		PublisherDao publisher = new PublisherDao();
 		publisher.setName(publishername);
 		book.setPublisher(publisher);
+	}
+
+	public String getIsbnentry() {
+		return isbnentry;
+	}
+
+	public void setIsbnentry(String isbnentry) {
+		this.isbnentry = isbnentry;
+	}
+
+	public Boolean getCreatenewid() {
+		return createnewid;
+	}
+
+	public void setCreatenewid(Boolean createnewid) {
+		this.createnewid = createnewid;
+	}
+
+	public String getEditMode() {
+		return editMode;
+	}
+
+	public void setEditMode(String editMode) {
+		this.editMode = editMode;
+	}
+
+	public String getAssignedcode() {
+		return assignedcode;
+	}
+
+	public void setAssignedcode(String assignedcode) {
+		this.assignedcode = assignedcode;
+	}
+
+	public Boolean getShowbarcodelinks() {
+		return showbarcodelinks;
+	}
+
+	public void setShowbarcodelinks(Boolean showbarcodelinks) {
+		this.showbarcodelinks = showbarcodelinks;
 	}
 
 

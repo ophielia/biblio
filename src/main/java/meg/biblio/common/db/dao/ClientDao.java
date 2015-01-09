@@ -52,5 +52,7 @@ public class ClientDao {
 	private Long lastBookNr;
 	
 	private String classsummaryxslbase;
+	
+	private Boolean usesBarcodes;
 }
 

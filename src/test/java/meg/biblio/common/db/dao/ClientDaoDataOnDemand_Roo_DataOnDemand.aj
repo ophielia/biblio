@@ -45,6 +45,7 @@ privileged aspect ClientDaoDataOnDemand_Roo_DataOnDemand {
         setStudentcheckouttime(obj, index);
         setTeacherCOLimit(obj, index);
         setTeachercheckouttime(obj, index);
+        setUsesBarcodes(obj, index);
         return obj;
     }
     
@@ -126,6 +127,11 @@ privileged aspect ClientDaoDataOnDemand_Roo_DataOnDemand {
     public void ClientDaoDataOnDemand.setTeachercheckouttime(ClientDao obj, int index) {
         Integer teachercheckouttime = new Integer(index);
         obj.setTeachercheckouttime(teachercheckouttime);
+    }
+    
+    public void ClientDaoDataOnDemand.setUsesBarcodes(ClientDao obj, int index) {
+        Boolean usesBarcodes = Boolean.TRUE;
+        obj.setUsesBarcodes(usesBarcodes);
     }
     
     public ClientDao ClientDaoDataOnDemand.getSpecificClientDao(int index) {

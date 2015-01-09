@@ -20,6 +20,7 @@
         <field:input field="barcodesheetxsl" id="c_meg_biblio_common_db_dao_ClientDao_barcodesheetxsl" z="MuN4d/VnlbwJ2qRDm5LvjvCy8u8="/>
         <field:input field="shortname" id="c_meg_biblio_common_db_dao_ClientDao_shortname" z="lh73PmGpvavNcaa6YnEgN9VsCMo="/>
         <field:input field="lastBookNr" id="c_meg_biblio_common_db_dao_ClientDao_lastBookNr" validationMessageCode="field_invalid_integer" z="U7hBjgtPzwV1qshgnN2UA6So7S8="/>
+        <field:checkbox field="usesBarcodes" id="c_meg_biblio_common_db_dao_ClientDao_usesBarcodes" z="/C2cxqoDJyqOsKoFZSaEnH8mOpg="/>
     </form:create>
     <form:dependency dependencies="${dependencies}" id="d_meg_biblio_common_db_dao_ClientDao" render="${not empty dependencies}" z="OwI62yfU4B0oekp3l8B94MMTsmY="/>
 </div>

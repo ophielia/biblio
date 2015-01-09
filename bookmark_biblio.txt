@@ -1,23 +1,16 @@
-Branch - barcodes -   Generate Barcodes
-					  Generate Barcodes for Users
-				      Generate Barcodes for Books
+Branch - master - final function tweaks
 				      
 
 
-make summary page (checkout and returns)
-move / change assigncode to add new book
+---> move / change assigncode to add new book
 
----> LendingServiceImpl  - coding and testing DailySummary
-making xml
-making xsl (french translation)
+---> change link name if no barcodes
+---> reintegrate into bookcontroller
+---> create page - no isbn available button not working
 
-
-
-
+tweaking multicheckout
 
 to get ready for demo
-
-
 
 
 Heroku Issues - 
@@ -45,6 +38,9 @@ check-all in admin search
 
 ---- begin commit changes ----
 
+done - changes done on paper
+done - take it for a (bumpy) test drive...
+done - default to new number.... create page
 
 ---- end commit changes ----
 
@@ -52,55 +48,10 @@ check-all in admin search
 
 ----- begin branch changes ----
 
-done - add book - add publisher name
-done - for book without details - ability to change author / illustrator / publisher names - as well as isbn.
-done - appsettings table
-done - get rid of clobs
-done - remove import dependancy on filesystem
-done - choosedetails isbn - 
-done - new controller method which searches by isbn
-done - backend which dumps single book into founddetails
-done - BS - assembleBarcodeSheetForBooks implemented and tested
-done - started  - fill out BarcodeSheet to produce xml
-nevermind - 	make rows for barcode sheet 
-done - 	containing element for barcodes				      
-done - assembleBarcodeSheetForClass test / implement / test
-done - add messages - from context
-done - 	books done, but ugly
-done - bring sheets to front end
-done - 	class - using select for class, int messages
-done - 	finish books - add select, int messages
-done - test import lockdown
-done - begin assigncodestobook backend	
-done - success page  need to make it pretty!!
-done - success page i18 messages / labels
-done - ??? isbn that doesn't return results.....
-done - issues - choosebook - no default....
-done - check isbnedit - form should be like title edit
-done - check editbook should be like titleedit
-done - change / tailor messages for titleedit, editbook, isbnedit
-done - returnBookByBookid, backend for LendingService returnByBookId()
-done - ensure all pages are there (from view)
-done - titleedit - add validation for title
-done - basic programming assign codes to book done - 
-done -   problem with imagebase in widget
-done -   layout of pages
-done -   run-through for new book - current null pointer exception
-done - validation
-done - /admin locked
-done  test - new - code not found - title and assign code
-done - assignedbarcode - check in new bookk - already exists. (save extra clicks)
-done - cancel button to isbnedit, editbook, titleedit
-done - general - this has already been assigned.  add - Please try a different barcode	
-done - test - existing - no code - code found - assign code
-done - test - existing - no code - code not found - assign code
-done - test - new - code found - assign code
-done - test - book search classifications
-done -BLController - in return book - handle null....
-done - scan library card to end checkout
-done - error when scanning code which doesn't exist
-done - name in coperson
-done - if book exists - no title error.... (newbook)
+done - make summary page (checkout and returns)
+done - LendingServiceImpl  - coding and testing DailySummary
+done - making xml
+done - making xsl (french translation)
 
 ---- end branch changes ----
 
@@ -370,6 +321,61 @@ done - teachername not showing up in loanhistory
 done - booksearchcontroller, 
 
 ***** MASTER - HEROKU CHANGES *****
+
+
+***** BARCODE BRANCH *******
+done - add book - add publisher name
+done - for book without details - ability to change author / illustrator / publisher names - as well as isbn.
+done - appsettings table
+done - get rid of clobs
+done - remove import dependancy on filesystem
+done - choosedetails isbn - 
+done - new controller method which searches by isbn
+done - backend which dumps single book into founddetails
+done - BS - assembleBarcodeSheetForBooks implemented and tested
+done - started  - fill out BarcodeSheet to produce xml
+nevermind - 	make rows for barcode sheet 
+done - 	containing element for barcodes				      
+done - assembleBarcodeSheetForClass test / implement / test
+done - add messages - from context
+done - 	books done, but ugly
+done - bring sheets to front end
+done - 	class - using select for class, int messages
+done - 	finish books - add select, int messages
+done - test import lockdown
+done - begin assigncodestobook backend	
+done - success page  need to make it pretty!!
+done - success page i18 messages / labels
+done - ??? isbn that doesn't return results.....
+done - issues - choosebook - no default....
+done - check isbnedit - form should be like title edit
+done - check editbook should be like titleedit
+done - change / tailor messages for titleedit, editbook, isbnedit
+done - returnBookByBookid, backend for LendingService returnByBookId()
+done - ensure all pages are there (from view)
+done - titleedit - add validation for title
+done - basic programming assign codes to book done - 
+done -   problem with imagebase in widget
+done -   layout of pages
+done -   run-through for new book - current null pointer exception
+done - validation
+done - /admin locked
+done  test - new - code not found - title and assign code
+done - assignedbarcode - check in new bookk - already exists. (save extra clicks)
+done - cancel button to isbnedit, editbook, titleedit
+done - general - this has already been assigned.  add - Please try a different barcode	
+done - test - existing - no code - code found - assign code
+done - test - existing - no code - code not found - assign code
+done - test - new - code found - assign code
+done - test - book search classifications
+done -BLController - in return book - handle null....
+done - scan library card to end checkout
+done - error when scanning code which doesn't exist
+done - name in coperson
+done - if book exists - no title error.... (newbook)
+
+
+
 
 ----- end complete history ----
 

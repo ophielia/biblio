@@ -61,14 +61,12 @@ public class AssignModelValidator {
 		if (code==null) {
 			errors.rejectValue("assignedcode","error_barcode_nocode");
 		} else {
+			// check whether code has already been used
 			BookDao book = bookRepo.findBookByBarcode(code);
 			if (book!=null) {
 				errors.rejectValue("assignedcode", "error_barcode_alreadyused");
 			}
 		}
-		// check whether code has already been used
-		
-		
 	}
 
 	public void validateUpdateBook(AssignCodeModel assignCodeModel,

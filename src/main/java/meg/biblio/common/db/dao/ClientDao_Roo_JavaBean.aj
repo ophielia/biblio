@@ -145,4 +145,12 @@ privileged aspect ClientDao_Roo_JavaBean {
         this.classsummaryxslbase = classsummaryxslbase;
     }
     
+    public Boolean ClientDao.getUsesBarcodes() {
+        return this.usesBarcodes;
+    }
+    
+    public void ClientDao.setUsesBarcodes(Boolean usesBarcodes) {
+        this.usesBarcodes = usesBarcodes;
+    }
+    
 }

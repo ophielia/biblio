@@ -19,8 +19,6 @@ public interface ClientService {
 	
 	public MapConfig getMapConfigForClient(Long clientkey) throws ClassNotFoundException, InstantiationException, IllegalAccessException;
 
-	
-	
 	public ClientDao getCurrentClient(Principal principal);
 
 	ClientDao getClientForKey(Long key);

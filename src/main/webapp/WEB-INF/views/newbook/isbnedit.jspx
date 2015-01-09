@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page" 
+xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" 
+xmlns:c="http://java.sun.com/jsp/jstl/core" 
+xmlns:spring="http://www.springframework.org/tags" 
+xmlns:form="http://www.springframework.org/tags/form" 
+xmlns:fmt="http://java.sun.com/jsp/jstl/fmt" 
+xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+
+<link rel="stylesheet" href="/biblio/resources/mydojo/widget/css/ShelfClassWidget.css" media="screen"></link>
+<link rel="stylesheet" href="/biblio/resources/mydojo/widget/css/ShelfClassSelectWidget.css" media="screen"></link>
+
+
+<spring:message code="label_book" htmlEscape="false" var="lbook"/>
+<spring:message code="msg_assign_pagemessage" htmlEscape="false" var="msgtitleedit"/>
+<spring:message code="label_book_title" htmlEscape="false" var="ltitle"/>
+<spring:message code="label_book_author" htmlEscape="false" var="lauthor"/>
+<spring:message code="label_book_illustrator" htmlEscape="false" var="lillustrator"/>
+<spring:message code="label_book_description" htmlEscape="false" var="ldescription"/>
+<spring:message code="label_book_publisher" htmlEscape="false" var="lpublisher"/>
+<spring:message code="label_book_published" htmlEscape="false" var="lpublished"/>
+<spring:message code="label_book_language" htmlEscape="false" var="llanguage"/>
+<spring:message code="label_book_btype" htmlEscape="false" var="lbooktype"/>
+<spring:message code="label_book_isbn10" htmlEscape="false" var="lisbn10"/>
+<spring:message code="label_book_isbn13" htmlEscape="false" var="lisbn13"/>
+<spring:message code="label_book_detailstatus" htmlEscape="false" var="ldetailstatus"/>
+<spring:message code="label_book_status" htmlEscape="false" var="lstatus"/>
+<spring:message code="label_book_classification" htmlEscape="false" var="lclassification"/>
+<spring:message code="label_book_classificationverified" htmlEscape="false" var="lclassverif"/>
+<spring:message code="label_book_clientbookid" htmlEscape="false" var="lclientbookid"/>
+<spring:message code="label_book_verified" htmlEscape="false" var="lvfd"/>
+<spring:message code="label_book_notverified" htmlEscape="false" var="lnvfd"/>
+<spring:message code="label_number" htmlEscape="false" var="lnumber"/>
+<spring:message code="select_emptyoption" htmlEscape="false" var="lemptyselect"/>
+<spring:message code="label_barcode_saveandassign" htmlEscape="false" var="bsaveand"/>
+<spring:message code="msg_assign_isbnedit" htmlEscape="false" var="msginstr"/>
+
+
+<spring:message code="button_save" htmlEscape="false" var="bsave"/>
+<spring:message code="button_cancel" htmlEscape="false" var="bcancel"/>
+<spring:message code="entity_editargs" arguments="${lbook}" htmlEscape="false" var="pagetitle"/>
+<spring:message code="label_book_isbnenry" htmlEscape="false" var="lisbn"/>
+
+<script type="text/javascript">
+
+ 
+ <c:set var="scobj" value="${classis[bookModel.shelfclass]}" />
+ require(
+		  ["mydojo/widget/ShelfClassSelectWidget","dojo/dom", "dojo/domReady!"],
+		    function( ShelfClassSelectWidget,dom){
+	        	
+	        	var classiContainer = dom.byId("imageselectbox");
+	          
+	        	// Create our widget and place it
+	            var widget = new ShelfClassSelectWidget({displayId:'${scobj.id}',jsontext:'${classJson}',
+	            	updatenodename:"shelfclass", showemptyselect:true,emptyselecttext:'${lemptyselect}',imagebasedir:'${imagebasedir}'}).placeAt(classiContainer);
+		});
+ 
+ 
+</script>
+
+
+<spring:url value="/newbook/updatebook" var="actionurl"/>
+
+<h1>${pagetitle}</h1>
+<p>${msginstr}</p>
+
+<form:form action="${actionurl}" id="editbook" method="POST" modelAttribute="bookModel">
+
+<div style="width:45%;float:left">
+
+			<div
+				style="background-color: #C2C2A3; border: 1px dotted grey; padding: 5px; margin: 10px;">
+				<div>
+	${lisbn}:  <form:input path="isbnentry" type="text" ></form:input><br />
+	</div>
+	<div>
+	<form:input type="hidden" path="shelfclass"></form:input><br />
+	${lclassification}: 
+	
+	
+	<!--  use this var to get the id of the currently selected classification -->
+	<span id="imageselectbox"></span>
+	
+    </div>
+
+	
+	<div  class="inputspace">
+				${lstatus}:
+				<form:select path="status">
+					<form:option value="" label="${lemptyoption}" />
+					<c:forEach items="${statusLkup}" var="tmp">
+						<form:option value="${tmp.key}" label="${tmp.value}" />
+					</c:forEach>
+				</form:select>
+
+
+			</div>
+	
+	<div   ><spring:url value="/newbook/enternewbook" var="linkurl"/>
+	<a href="${linkurl}" class="linkbutton" id="showaddl">${bcancel}</a>
+	<span>				<input class="linkbutton" id="save" name="save" type="submit" 
+						value="${bsaveand}" /></span>
+	
+	</div>
+	
+				</div>
+				<br /> <br />
+	
+	
+	
+	
+	
+			</div>
+			<div style="padding: 13px;">
+
+<!-- accent box -->
+<div>
+	${lclientbookid}: ${bookModel.book.clientbookid}<form:input type="hidden" path="bookid"></form:input>
+	</div>
+		<div>
+	${ltitle}:${bookModel.book.title}<br />
+	</div>
+	<div>
+	${lauthor}: ${bookModel.book.authorsAsString}
+	</div>
+	<div>
+	${lillustrator}: ${bookModel.book.illustratorsAsString}
+	</div>
+	<div>
+	${lpublisher}:  <c:if test="${!empty book.publisher}">${bookModel.book.publisher.name}</c:if>
+	</div>	
+		<div>
+	${lbooktype}:${bookTypeLkup[bookModel.book.type]}
+						
+	</div>	
+	<div>
+	${llanguage}:${langLkup[bookModel.book.language]}
+			
+	</div>	
+</div>
+<div style="width:100%;clear:both;padding-top:5px">
+
+${ldescription}: ${bookModel.book.description}
+</div>
+</form:form>
+</div>
