@@ -10,10 +10,11 @@ import java.util.Locale;
 import javax.servlet.http.HttpServletRequest;
 
 import meg.biblio.catalog.CatalogService;
-import meg.biblio.catalog.CatalogServiceImpl;
 import meg.biblio.catalog.db.dao.ArtistDao;
+import meg.biblio.catalog.db.dao.BookDao;
 import meg.biblio.catalog.db.dao.ClassificationDao;
 import meg.biblio.catalog.db.dao.FoundDetailsDao;
+import meg.biblio.catalog.web.NewBookController.EditMode;
 import meg.biblio.catalog.web.model.BookModel;
 import meg.biblio.catalog.web.validator.BookModelValidator;
 import meg.biblio.common.AppSettingService;
@@ -53,60 +54,201 @@ public class BookController {
     AppSettingService settingService;	
 
 	@RequestMapping(params = "form", method = RequestMethod.GET, produces = "text/html")
-	public String createBookEntryForm(Model uiModel,
-			HttpServletRequest httpServletRequest, Principal principal) {
-
-		// create empty book model
-		BookModel model = new BookModel();
-		// place in uiModel
-		uiModel.addAttribute("bookModel", model);
-		// return book/create
-		return "book/create";
-
-	}
-
-	@RequestMapping(method = RequestMethod.POST, produces = "text/html")
-	public String createBookEntry(BookModel model, Model uiModel,
-			BindingResult bindingResult, HttpServletRequest httpServletRequest,
+	public String showNewBookPage(BookModel bookModel,
+			Model uiModel, HttpServletRequest httpServletRequest,
 			Principal principal) {
 		ClientDao client = clientService.getCurrentClient(principal);
-		Long clientkey = client.getId();
-		bookValidator.validateSimpleEntry(model, bindingResult);
+		Locale locale = httpServletRequest.getLocale();
 
+		// clear model, place in uiModel
+		Long classification = bookModel.getShelfclass();
+		bookModel = new BookModel();
+		bookModel.setShelfclass(classification);
+		bookModel.setCreatenewid(new Boolean(true));
+		bookModel.setStatus(CatalogService.Status.SHELVED);
+
+		uiModel.addAttribute("bookModel", bookModel);
+
+		String shortname = client.getShortname();
+		uiModel.addAttribute("clientname",shortname);
+		
+
+
+		// return choosebook page
+		return "book/create";
+	}	
+
+
+
+	
+	// assign code for new (to catalog) book
+	@RequestMapping(value = "/editbook", params = "newbook", method = RequestMethod.POST, produces = "text/html")
+	public String createNewBook(BookModel bookModel,
+			Model uiModel, BindingResult bindingResult,HttpServletRequest httpServletRequest,
+			Principal principal) {
+		ClientDao client = clientService.getCurrentClient(principal);
+		Long clientid = client.getId();
+
+		// validation - check isbn - OR - title 
+		// if not generate new - no existing book for book code
+		bookValidator.validateNewBookEntry(bookModel, bindingResult,client);
 		if (bindingResult.hasErrors()) {
-			uiModel.addAttribute("bookModel", model);
+			String shortname = client.getShortname();
+			uiModel.addAttribute("clientname",shortname);
+			if (bindingResult.hasFieldErrors("newbooknr")) {
+				// this book is already found, so add clue that link should be 
+				// shown to assign code to existingbook
+				uiModel.addAttribute("showlinkexist",true);
+			}
+			// return to choosenewbook page
 			return "book/create";
 		}
-		uiModel.asMap().clear();
+		
+		// gatherinfo -cBookid (or generateok), isbn, title, author
+		String cbooknr = bookModel.getClientbookid();
+		String isbn = bookModel.getIsbnentry();
+		String title = bookModel.getTitle();
+		String author = bookModel.getAuthorname();
+		Boolean createclientbookid = bookModel.getCreatenewid();
 
-		// process book entries (author, illustrator)
-		ArtistDao author = catalogService.textToArtistName(model
-				.getAuthorname());
-		ArtistDao illustrator = catalogService.textToArtistName(model
-				.getIllustratorname());
-		String publisher = model.getPublishername();
-		model.addAuthorToBook(author);
-		model.addIllustratorToBook(illustrator);
-		model.setPublisher(publisher);
-
-		// add book to catalog
-		BookModel book = catalogService.createCatalogEntryFromBookModel(
-				clientkey, model);
-		Long bookid = book.getBookid();
-
-		uiModel.addAttribute("bookModel", book);
-
-		// go to show single page, unless multi details were found
-		if (book.getDetailstatus().longValue() == CatalogServiceImpl.DetailStatus.MULTIDETAILSFOUND) {
-			// go to pickdetails page
-			return "redirect:/books/choosedetails/" + bookid;
-		} else if (book.getDetailstatus().longValue() == CatalogServiceImpl.DetailStatus.DETAILNOTFOUND) {
-			// go to pickdetails page
-			return "redirect:/books/editfind/" + bookid;
+		// create book in catalog
+		BookModel model = new BookModel();
+		if (cbooknr!=null) model.setClientbookid(cbooknr);
+		if (isbn!=null) model.setIsbn10(isbn);
+		if (title!=null) model.setTitle(title);
+		ArtistDao artist = catalogService.textToArtistName(author);
+		if (artist!=null) {
+			model.setAuthorInBook(artist);
 		}
-		return "redirect:/books/display/" + bookid;
+		model = catalogService.createCatalogEntryFromBookModel(clientid, model,
+				createclientbookid);
+		// book-> BookModel -> uiModel
+		BookDao book = model.getBook();
+		bookModel.setBook(book);
+		uiModel.addAttribute("bookModel", bookModel);
+
+		// choose return view (isbnedit if no details, otherwise editbook)
+		bookModel.setEditMode(EditMode.editbook);
+		String returnview = "book/editbook";
+		if (book.getDetailstatus().longValue() != CatalogService.DetailStatus.DETAILFOUND) {
+			if (book.getTitle()!=null && book.getTitle().equals(CatalogService.titledefault)) {
+				bookModel.setTitle("");
+				bookModel.setEditMode(EditMode.title);
+				uiModel.addAttribute("bookModel",bookModel);
+				returnview = "book/titleedit";
+			} else {
+				bookModel.setEditMode(EditMode.isbn);
+				returnview = "book/isbnedit";	
+			}
+		}
+
+		// add lookups / displays for view
+		String shortname = client.getShortname();
+		uiModel.addAttribute("clientname",shortname);
+		
+		// check uses barcodes
+		Boolean showbarcode = client.getUsesBarcodes()!=null && client.getUsesBarcodes();
+		uiModel.addAttribute("showbarcodes",showbarcode);	
+		// return view
+		return returnview;
+
 	}
 
+	// persist any changes to book (new classification, addition of isbn)
+	@RequestMapping(value = "/updatebook", method = RequestMethod.POST, produces = "text/html")
+	public String updateBook(BookModel bookModel, Model uiModel,
+			HttpServletRequest httpServletRequest, BindingResult bindingResult,Principal principal) {
+		ClientDao client = clientService.getCurrentClient(principal);
+		Long clientid = client.getId();
+
+		// update book - gather classification, isbn
+		Long classification=bookModel.getShelfclass();
+		String isbn = bookModel.getIsbnentry();
+		Long status = bookModel.getStatus();
+		String title =bookModel.getTitle();
+		String author = bookModel.getAuthorname();
+		
+		// put book into model
+		BookModel model = catalogService.loadBookModel(bookModel.getBook().getId());
+		if (classification!=null) model.setShelfclass(classification);
+		if (status!=null) model.setStatus(status);
+		if (isbn!=null) model.setIsbn10(isbn);
+		if (title!=null) model.setTitle(title);
+		ArtistDao artist = catalogService.textToArtistName(author);
+		if (artist!=null) {
+			model.setAuthorInBook(artist);
+		}
+		// now, put this model updated book into the (session) book model
+		bookModel.setBook(model.getBook());
+		
+		bookValidator.validateUpdateBook(bookModel,bindingResult);
+		if (bindingResult.hasErrors()) {
+			String returnview = "book/editbook";
+			if (bookModel.getEditMode().equals(EditMode.title)) {
+					returnview = "book/titleedit";
+				} else if (bookModel.getEditMode().equals(EditMode.title)) {
+					returnview = "book/isbnedit";	
+			}
+
+			return returnview;
+		}
+		
+		// update book - if changed
+		// fill in details if not detailfound, and isbn exists
+		boolean fillindetails = model.getBook().hasIsbn() && !(model.getDetailstatus().longValue()==CatalogService.DetailStatus.DETAILFOUND);
+		try {
+			model = catalogService.updateCatalogEntryFromBookModel(clientid, model, fillindetails);
+			bookModel.setBook(model.getBook());
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		
+		// return view - returns either to display book, or to assign code
+		uiModel.addAttribute("bookModel",bookModel);
+		Boolean showbarcode = client.getUsesBarcodes()!=null && client.getUsesBarcodes();
+		uiModel.addAttribute("showbarcodes",showbarcode);
+		if (showbarcode) {
+			// return assign code page
+			return "book/assigncode";
+		} else {
+			// redirect to display book page
+			String redirect = "/books/display/" + bookModel.getBookid();
+			return "redirect:" + redirect;
+			
+		}
+	}
+
+	// persist any changes to book (new classification, addition of isbn)
+	@RequestMapping(value = "/assign", method = RequestMethod.POST, produces = "text/html")
+	public String assignCodeToBook(BookModel bookModel,
+			Model uiModel, BindingResult bindingResult,HttpServletRequest httpServletRequest,
+			Principal principal) {
+		ClientDao client = clientService.getCurrentClient(principal);
+		Long clientid = client.getId();
+
+		// gather info - code, bookid
+		Long bookid = bookModel.getBook().getId();
+		String code = bookModel.getAssignedcode();
+
+		// validation - has this barcode already been assigned??
+		bookValidator.validateAssignCodeToBook(code,bindingResult);
+		if (bindingResult.hasErrors()) {
+			bookModel.setAssignedcode(null);
+			uiModel.addAttribute("bookModel",bookModel);
+			return "book/isbnedit";
+		}
+		
+		// service call - assignCodeToBook
+		catalogService.assignCodeToBook(code, bookid);
+		// load book model
+		BookModel model = catalogService.loadBookModel(bookid);
+		uiModel.addAttribute("bookModel",bookModel);
+		// redirect to display book page
+		String redirect = "/books/display/" + bookModel.getBookid();
+		return "redirect:" + redirect;
+	}
+  
 	@RequestMapping(value = "/display/{id}", method = RequestMethod.GET, produces = "text/html")
 	public String showBook(@PathVariable("id") Long id, Model uiModel,
 			HttpServletRequest httpServletRequest, Principal principal) {
@@ -119,24 +261,6 @@ public class BookController {
 		uiModel.addAttribute("bookModel", model);
 
 		return "book/show";
-	}
-
-	@RequestMapping(value = "/edit/{id}", method = RequestMethod.GET, produces = "text/html")
-	public String showEditBookForm(@PathVariable("id") Long id, Model uiModel,
-			HttpServletRequest httpServletRequest, Principal principal) {
-	
-		BookModel model = new BookModel();
-		if (id != null) {
-			model = catalogService.loadBookModel(id);
-		}
-	
-		uiModel.addAttribute("bookModel", model);
-	
-		String returnview="book/edit";
-		if (model.getDetailstatus().longValue()== CatalogService.DetailStatus.DETAILNOTFOUND) {
-			returnview = "book/editall";
-		}
-		return returnview;
 	}
 
 	@RequestMapping(value = "/editall/{id}", method = RequestMethod.POST, produces = "text/html")
@@ -181,39 +305,6 @@ public class BookController {
 				e.printStackTrace();
 			}
 		}
-		return "book/show";
-	}
-
-	@RequestMapping(value = "/edit/{id}", method = RequestMethod.POST, produces = "text/html")
-	public String saveEditBook(
-			@ModelAttribute("bookModel") BookModel bookModel,
-			@PathVariable("id") Long id, Model uiModel,
-			HttpServletRequest httpServletRequest, Principal principal) {
-		ClientDao client = clientService.getCurrentClient(principal);
-		Long clientkey = client.getId();
-
-		// only making a few changes. load the model from the database, and copy
-		// changes into database model (from passed model)
-		if (id != null) {
-			BookModel model = catalogService.loadBookModel(id);
-			model.setType(bookModel.getType());
-			model.setShelfclass(bookModel.getShelfclass());
-			model.setStatus(bookModel.getStatus());
-			model.setLanguage(bookModel.getLanguage());
-			BookModel book;
-			try {
-				book = catalogService.updateCatalogEntryFromBookModel(
-						clientkey, model, false);
-				uiModel.addAttribute("bookModel", book);
-			} catch (GeneralSecurityException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-
-		}
-
-		uiModel.addAttribute("bookModel", bookModel);
 		return "book/show";
 	}
 
@@ -301,6 +392,8 @@ public class BookController {
 
 		return shelfclasses;
 	}
+	
+	
 
 	@ModelAttribute("classJson")
 	public String getClassificationInfoAsJson(

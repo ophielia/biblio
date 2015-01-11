@@ -153,7 +153,7 @@ public class NewBookController {
 		
 		// check uses barcodes
 		Boolean showbarcode = client.getUsesBarcodes()!=null && client.getUsesBarcodes();
-		uiModel.addAttribute("usesbarcodes",showbarcode);	
+		uiModel.addAttribute("showbarcodes",showbarcode);	
 		// return view
 		return returnview;
 
@@ -212,6 +212,7 @@ public class NewBookController {
 		// return view - returns either to display book, or to assign code
 		uiModel.addAttribute("bookModel",bookModel);
 		Boolean showbarcode = client.getUsesBarcodes()!=null && client.getUsesBarcodes();
+		uiModel.addAttribute("showbarcodes",showbarcode);
 		if (showbarcode) {
 			// return assign code page
 			return "newbook/assigncode";

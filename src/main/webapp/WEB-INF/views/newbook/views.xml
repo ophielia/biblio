@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 2.1//EN" "http://tiles.apache.org/dtds/tiles-config_2_1.dtd">
 <tiles-definitions>
-    <definition extends="default" name="newbook/create">
+    <definition extends="default" name="book/create">
         <put-attribute name="body" value="/WEB-INF/views/newbook/create.jspx"/>
     </definition>
 
-    <definition extends="default" name="newbook/isbnedit">
+    <definition extends="default" name="book/isbnedit">
         <put-attribute name="body" value="/WEB-INF/views/newbook/isbnedit.jspx"/>
     </definition>
     
-    <definition extends="default" name="newbook/titleedit">
+    <definition extends="default" name="book/titleedit">
         <put-attribute name="body" value="/WEB-INF/views/newbook/titleedit.jspx"/>
     </definition>
     
-    <definition extends="default" name="newbook/editbook">
+    <definition extends="default" name="book/editbook">
         <put-attribute name="body" value="/WEB-INF/views/newbook/editbook.jspx"/>
     </definition>    
         
-    <definition extends="default" name="newbook/assigncode">
+    <definition extends="default" name="book/assigncode">
         <put-attribute name="body" value="/WEB-INF/views/newbook/assigncode.jspx"/>
     </definition>
     
-    <definition extends="default" name="newbook/assigncodesuccess">
+    <definition extends="default" name="book/assigncodesuccess">
         <put-attribute name="body" value="/WEB-INF/views/newbook/assigncodesuccess.jspx"/>
     </definition>    
     

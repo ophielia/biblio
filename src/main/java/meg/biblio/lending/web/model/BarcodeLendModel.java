@@ -11,6 +11,7 @@ public class BarcodeLendModel {
 	private PersonDao person;
 	private String code;
 	private List<LoanRecordDisplay> checkedoutforuser;
+	private Boolean multicheckout;
 
 	public BookDao getBook() {
 		return book;
@@ -51,5 +52,17 @@ public class BarcodeLendModel {
 		return (this.person.getId().longValue()==person2.getId().longValue()); 
 		
 	}
+
+
+
+	public Boolean getMulticheckout() {
+		return multicheckout;
+	}
+
+	public void setMulticheckout(Boolean multicheckout) {
+		this.multicheckout = multicheckout;
+	}
+	
+	
 
 }

@@ -5,6 +5,22 @@
         <put-attribute name="body" value="/WEB-INF/views/book/create.jspx"/>
     </definition>
 
+    <definition extends="default" name="book/isbnedit">
+        <put-attribute name="body" value="/WEB-INF/views/book/isbnedit.jspx"/>
+    </definition>
+    
+    <definition extends="default" name="book/titleedit">
+        <put-attribute name="body" value="/WEB-INF/views/book/titleedit.jspx"/>
+    </definition>
+    
+    <definition extends="default" name="book/editbook">
+        <put-attribute name="body" value="/WEB-INF/views/book/editbook.jspx"/>
+    </definition>    
+        
+    <definition extends="default" name="book/assigncode">
+        <put-attribute name="body" value="/WEB-INF/views/book/assigncode.jspx"/>
+    </definition>
+
     <definition extends="default" name="book/show">
         <put-attribute name="body" value="/WEB-INF/views/book/show.jspx"/>
     </definition>

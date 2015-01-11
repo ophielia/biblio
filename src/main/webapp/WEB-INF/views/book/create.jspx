@@ -8,48 +8,84 @@ xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
-    
 
+<link rel="stylesheet" href="/biblio/resources/mydojo/widget/css/ShelfClassWidget.css" media="screen"></link>
+<link rel="stylesheet" href="/biblio/resources/mydojo/widget/css/ShelfClassSelectWidget.css" media="screen"></link>
 
-<spring:message code="label_book" htmlEscape="false" var="lbook"/>
-<spring:message code="label_book_title" htmlEscape="false" var="ltitle"/>
-<spring:message code="label_book_clientbookid" htmlEscape="false" var="lclientbookid"/>
-<spring:message code="label_book_author_entry" htmlEscape="false" var="lauthor"/>
-<spring:message code="label_book_illustrator_entry" htmlEscape="false" var="lillustrator"/>
-<spring:message code="label_book_publisher" htmlEscape="false" var="lpublisher"/>
-<spring:message code="label_book_isbnenry" htmlEscape="false" var="lisbn"/>
-<spring:message code="button_save" htmlEscape="false" var="bsave"/>
+<spring:message code="button_generate" htmlEscape="false" var="bgen"/>
 <spring:message code="button_cancel" htmlEscape="false" var="bcancel"/>
-<spring:message code="global_menu_new" arguments="${lbook}" htmlEscape="false" var="pagetitle"/>
+<spring:message code="label_barcode_assignnew" htmlEscape="false" var="pagetitle"/>
+<spring:message code="label_number" htmlEscape="false" var="lnumber"/>
+<spring:message code="action_book_generatenumber" htmlEscape="false" var="ageneratenr"/>
+<spring:message code="label_or" htmlEscape="false" var="lor"/>
+<spring:message code="label_book_isbnenry" htmlEscape="false" var="lisbn"/>
+<spring:message code="action_book_isbnnotthere" htmlEscape="false" var="isbnnotavail"/>
+<spring:message code="label_book_title" htmlEscape="false" var="ltitle"/>
+<spring:message code="label_book_author" htmlEscape="false" var="lauthor"/>
+<spring:message code="action_book_addtocatalog" htmlEscape="false" var="aaddcatalog"/>
+<spring:message code="label_barcode_assignexist" htmlEscape="false" var="bassigncodeexist"/>
 
-<spring:url value="/books" var="actionurl"/>
+<spring:url value="/book/editbook" var="actionurl"/>
 
-<h1>${pagetitle}</h1>
+<script type="text/javascript">
+ require([
+          'dojo/dom',"dojo/dom-style","dijit/focus","dojo/on", 
+          'dojo/domReady!'
+      ], function (dom,style,focusUtil,on) {
 
-<form:form action="${actionurl}" id="createbook" method="POST" modelAttribute="bookModel">
-<div>
-<form:errors id="clientbookid_errors" class="errors" path="clientbookid" /> 
-${lclientbookid}:<form:input path="clientbookid" type="text" ></form:input><br />
-</div>
-<div>
-<form:errors id="title_errors" class="errors" path="title" /> 
-${ltitle}:<form:input path="title" type="text" ></form:input><br />
-</div>
-<div>
-${lauthor}: <form:input path="authorname" type="text" ></form:input><br />
-</div>
-<div>
-${lillustrator}:  <form:input path="illustratorname" type="text" ></form:input><br />
-</div>
-<div>
-${lpublisher}:  <form:input path="publishername" type="text" ></form:input><br />
-</div>
-<div>
-${lisbn}:  <form:input path="isbn10" type="text" ></form:input><br />
+	 	
+	 	<c:if test="${bookModel.createnewid}">
+	 		dojo.byId("clientbookid").disabled="true";
+	 	</c:if>
+		on(dojo.byId("createnewid1"), 'click', function(event) {
+			ischecked = event.currentTarget.checked;
+			dojo.byId("clientbookid").disabled=ischecked;
+			focusUtil.focus(dom.byId("isbnentry"));
+		});
+		
+		on(dojo.byId("showaddl"), 'click', function(event) {
+			// reveal the additional fields
+			style.set("addlfields","display","inline");
+			// hide the show addl fields button
+			style.set("showaddl","display","none");
+		});		
+ 	
+
+	});
+ </script>
+
+<h1>${pagetitle}ddddddddddddddddd</h1>
+<form:form action="${actionurl}" id="generatebookcodes" method="POST" modelAttribute="bookModel">
+<form:errors id="errors" class="errors" path="*" />	
+<div >
+<div class="inputspace">${clientname} ${lnumber}: <form:input path="clientbookid"></form:input><span style="padding-left:5px;padding-right:5px"> ${lor} </span>
+<form:checkbox class="checkboxalign" path="createnewid"></form:checkbox>${ageneratenr}</div>
+<div class="inputspace">${lisbn}: <form:input path="isbnentry"></form:input>
+<input id="newbook" class="linkbutton" name="newbook" type="submit" value="${aaddcatalog }"></input>
+<c:if test="${showlinkexist}">
+<span style="margin-left:10px"> </span>
+<spring:url value="/book/editbook?booknr=${bookModel.clientbookid}" var="existurl"/>
+<a class="linkbutton" href="${existurl}">${bassigncodeexist }</a>
+</c:if>
+<span style="margin-left:10px"> </span>
+<spring:url value="/search" var="cancelurl"/>
+	<a href="${cancelurl}" class="linkbutton" id="cancel">${bcancel}</a>
 </div>
 
-	<input id="save" name="save" type="submit" value="${bsave}"/> 
-	<input id="cancel" name="cancel" type="submit" value="${bcancel}"/> 
+<br />
+<br />
+<div id="addlfields" style="display:none">
+<div class="inputspace">${ltitle }: <form:input path="title"></form:input></div>
+<div class="inputspace">${lauthor }: <form:input path="authorname"></form:input></div>
+</div>
+
+<a href="#" class="linkbutton" id="showaddl">${isbnnotavail}</a>
+	
+
+</div>
+	
+
+
+
 </form:form>
-
 </div>

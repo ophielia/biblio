@@ -115,8 +115,13 @@ public class BarcodeLendingController {
 			barcodeLendValidator.validateBook(book, ischeckout, bindingErrors);
 			if (bindingErrors.hasErrors()) {
 				barcodeLendModel.setCode(null);
-				clearUser(barcodeLendModel, uiModel);
-				return "barcode/maincheckout";
+				if (barcodeLendModel.getMulticheckout()) {
+					return "barcode/multicheckout";
+				} else {
+					clearUser(barcodeLendModel, uiModel);
+					return "barcode/maincheckout";
+					
+				}
 			}
 
 			// if checkout - checkout book for user, and return checkout success
@@ -146,10 +151,12 @@ public class BarcodeLendingController {
 				int borrowerlimit = lendingService.getLendLimitForBorrower(
 						borrowerid, client.getId());
 				barcodeLendModel.setCheckedoutForUser(checkedoutforuser);
+				
 				if (checkedoutforuser != null
 						&& checkedoutforuser.size() < borrowerlimit) {
+					barcodeLendModel.setMulticheckout(true);
 					uiModel.addAttribute("barcodeLendModel", barcodeLendModel);
-
+					
 					return "barcode/multicheckout";
 				} else {
 					clearUser(barcodeLendModel, uiModel);
@@ -176,11 +183,27 @@ public class BarcodeLendingController {
 				return "barcode/returnsuccess";
 			}
 		} else {
+			if (bindingErrors.hasErrors()) {
+				barcodeLendModel.setCode(null);
+				if (barcodeLendModel.getMulticheckout()) {
+					return "barcode/multicheckout";
+				} else {
+					clearUser(barcodeLendModel, uiModel);
+					return "barcode/maincheckout";
+					
+				}
+			}
+			
+			
 			// book not found
 			barcodeLendModel.setCode(null);
 			uiModel.addAttribute("barcodeLendModel", barcodeLendModel);
 			bindingErrors.reject("error_nobookforcode");
-			return "barcode/maincheckout";
+			if (barcodeLendModel.getMulticheckout()) {
+				return "barcode/multicheckout";
+			} else {
+				return "barcode/maincheckout";
+			}
 		}
 	}
 

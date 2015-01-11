@@ -23,6 +23,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <spring:message code="label_book_title" htmlEscape="false" var="ltitle"/>
 <spring:message code="label_book_author" htmlEscape="false" var="lauthor"/>
 <spring:message code="action_book_addtocatalog" htmlEscape="false" var="aaddcatalog"/>
+<spring:message code="label_barcode_assignexist" htmlEscape="false" var="bassigncodeexist"/>
 
 <spring:url value="/newbook/editbook" var="actionurl"/>
 
@@ -64,11 +65,11 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <c:if test="${showlinkexist}">
 <span style="margin-left:10px"> </span>
 <spring:url value="/newbook/editbook?booknr=${bookModel.clientbookid}" var="existurl"/>
-<a class="linkbutton" href="${existurl}">Assign Code to Existing Book</a>
+<a class="linkbutton" href="${existurl}">${bassigncodeexist }</a>
 </c:if>
 <span style="margin-left:10px"> </span>
-<spring:url value="/newbook/enternewbook" var="cancelurl"/>
-	<a href="${cancelurl}" class="linkbutton" id="showaddl">${bcancel}</a>
+<spring:url value="/search" var="cancelurl"/>
+	<a href="${cancelurl}" class="linkbutton" id="cancel">${bcancel}</a>
 </div>
 
 <br />

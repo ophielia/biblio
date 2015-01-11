@@ -35,11 +35,10 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <spring:message code="label_number" htmlEscape="false" var="lnumber"/>
 <spring:message code="select_emptyoption" htmlEscape="false" var="lemptyselect"/>
 <spring:message code="label_barcode_saveandassign" htmlEscape="false" var="bsaveand"/>
-<spring:message code="msg_assign_isbnedit" htmlEscape="false" var="msginstr"/>
+<spring:message code="msg_assign_pagemessage" htmlEscape="false" var="msginstr"/>
 <c:if test="${!showbarcodes}">
 <spring:message code="button_save" htmlEscape="false" var="bsaveand"/>
 </c:if>
-
 
 <spring:message code="button_save" htmlEscape="false" var="bsave"/>
 <spring:message code="button_cancel" htmlEscape="false" var="bcancel"/>
@@ -49,7 +48,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <script type="text/javascript">
 
  
- <c:set var="scobj" value="${classis[bookModel.shelfclass]}" />
+ <c:set var="scobj" value="${classHash[bookModel.shelfclass]}" />
  require(
 		  ["mydojo/widget/ShelfClassSelectWidget","dojo/dom", "dojo/domReady!"],
 		    function( ShelfClassSelectWidget,dom){
@@ -65,21 +64,18 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 </script>
 
 
-<spring:url value="/newbook/updatebook" var="actionurl"/>
+<spring:url value="/book/updatebook" var="actionurl"/>
 
 <h1>${pagetitle}</h1>
 <p>${msginstr}</p>
-
 <form:form action="${actionurl}" id="editbook" method="POST" modelAttribute="bookModel">
 <form:errors id="errors" class="errors" path="*" />	
-<div style="width:45%;float:left">
+		<div style="width: 45%; float: left">
 
 			<div
 				style="background-color: #C2C2A3; border: 1px dotted grey; padding: 5px; margin: 10px;">
 				<div>
-	${lisbn}:  <form:input path="isbnentry" type="text" ></form:input><br />
-	</div>
-	<div>
+
 	<form:input type="hidden" path="shelfclass"></form:input><br />
 	${lclassification}: 
 	
@@ -101,27 +97,32 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 
 
 			</div>
-	
-	<div   ><spring:url value="/newbook?form" var="linkurl"/>
+	<div   ><spring:url value="/book?form" var="linkurl"/>
 	<a href="${linkurl}" class="linkbutton" id="showaddl">${bcancel}</a>
 	<span>				<input class="linkbutton" id="save" name="save" type="submit" 
 						value="${bsaveand}" /></span>
 	
 	</div>
-	
-				</div>
-				<br /> <br />
-	
-	
-	
-	
-	
-			</div>
-			<div style="padding: 13px;">
 
+	</div>
+<br />
+<br />	
+
+<div><c:if test="${bookModel.book.detailstatus!=null}">${ldetailstatus}: ${detailstatusLkup[bookModel.book.detailstatus]} |  </c:if>
+<c:if test="${bookModel.book.isbn10!=null}">${lisbn10}: ${bookModel.book.isbn10} | </c:if>
+<c:if test="${bookModel.book.isbn13!=null}">${lisbn13}: ${bookModel.book.isbn13}  </c:if></div>
+
+
+
+
+
+
+</div>
+<div >
 <!-- accent box -->
 <div>
-	${lclientbookid}: ${bookModel.book.clientbookid}<form:input type="hidden" path="bookid"></form:input>
+	${clientname} ${lnumber}: ${bookModel.book.clientbookid}<form:input type="hidden" path="bookid"></form:input>
+
 	</div>
 		<div>
 	${ltitle}:${bookModel.book.title}<br />
@@ -143,10 +144,17 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 	${llanguage}:${langLkup[bookModel.book.language]}
 			
 	</div>	
-</div>
-<div style="width:100%;clear:both;padding-top:5px">
+		<div>
+		${ldetailstatus}: ${detailstatusLkup[bookModel.book.detailstatus]}
+		</div>
+		<div>
+		${lisbn}: ${bookModel.book.isbn10}/<br />${bookModel.book.isbn13}
+		</div>
 
+</div>
+<div style="width:100%;clear:both;padding-top:25px">
 ${ldescription}: ${bookModel.book.description}
 </div>
+
 </form:form>
 </div>

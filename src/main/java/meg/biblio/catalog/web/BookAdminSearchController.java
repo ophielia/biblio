@@ -199,8 +199,7 @@ public class BookAdminSearchController {
     } 
   
     @ModelAttribute("detailstatusLkup")
-    public HashMap<Long,String> getDetailstatusLkup(HttpServletRequest httpServletRequest) {
-    	Locale locale = httpServletRequest.getLocale();
+    public HashMap<Long,String> getDetailstatusLkup(HttpServletRequest httpServletRequest,Locale locale) {
     	String lang = locale.getLanguage();
     	
     	HashMap<Long, String> booktypedisps = keyService
