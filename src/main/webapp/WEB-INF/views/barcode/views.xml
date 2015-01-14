@@ -71,5 +71,10 @@
 		<put-attribute name="body"
 			value="/WEB-INF/views/barcode/editbook.jspx" />
 	</definition>
+	
+	<definition extends="default" name="barcode/verify">
+		<put-attribute name="body"
+			value="/WEB-INF/views/barcode/verify.jspx" />
+	</definition>	
 
 </tiles-definitions>

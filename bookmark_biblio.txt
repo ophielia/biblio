@@ -6,17 +6,26 @@ Branch - master - final function tweaks
 test - tweaking multicheckout
 
 to get ready for demo
+----> Verify code page
+----> run through entering new books.
+----> get online
 
 French translations, Web
 	last - application.messages
 	check all reports
 Get rid of roo
-Petite biblio domain
-Rework menu
-Get online
-Test data class
-Test data
+done - Petite biblio domain
+
+done -  Rework menu
+Get online - with domain name
+done - Test data class
+done - Test data
 Dashboard with checked out stats, classification stats, school / student stats
+
+little bugs to note
+pdfwrangler not in french.
+book display in verify - pass correct arguments - show image, if available.
+
 
 
 Heroku Issues - 
@@ -28,8 +37,10 @@ Before Run-through
 images throughout app - assign code - code success - verify - lists - checkout
 
 to lock down...
-/classes
+done - /classes
 
+
+Product Advertising API 
 
 5 min tasks (ha!! :-)
 add language to indexing
@@ -42,6 +53,8 @@ plus, REALLY long sessions
 later features
 check-all in admin search
 has code in all show/edit books, admin list
+changing/reassigning barcode for book
+
 
 ---- begin commit changes ----
 

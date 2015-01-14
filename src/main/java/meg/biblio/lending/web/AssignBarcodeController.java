@@ -63,9 +63,6 @@ public class AssignBarcodeController {
 			Model uiModel, HttpServletRequest httpServletRequest,
 			Principal principal) {
 		ClientDao client = clientService.getCurrentClient(principal);
-		Long clientid = client.getId();
-		Locale locale = httpServletRequest.getLocale();
-		String lang = locale.getLanguage();
 
 		// clear model, place in uiModel
 		Long classification = assignCodeModel.getShelfclass();
@@ -87,9 +84,6 @@ public class AssignBarcodeController {
 			Model uiModel, HttpServletRequest httpServletRequest,
 			Principal principal) {
 		ClientDao client = clientService.getCurrentClient(principal);
-		Long clientid = client.getId();
-		Locale locale = httpServletRequest.getLocale();
-		String lang = locale.getLanguage();
 
 		// clear model, place in uiModel
 		Long classification = assignCodeModel.getShelfclass();
@@ -110,7 +104,7 @@ public class AssignBarcodeController {
 	@RequestMapping(value = "/editbook", params = "existing", method = RequestMethod.POST, produces = "text/html")
 	public String assignCodeForExistingBook(AssignCodeModel assignCodeModel,
 			Model uiModel, BindingResult bindingResult,HttpServletRequest httpServletRequest,
-			Principal principal) {
+			Principal principal,Locale locale) {
 		ClientDao client = clientService.getCurrentClient(principal);
 		Long clientid = client.getId();
 
@@ -148,7 +142,7 @@ public class AssignBarcodeController {
 
 
 		// add lookups / displays for view
-		putDisplayInfoInModel(uiModel, httpServletRequest, client);
+		putDisplayInfoInModel(uiModel, httpServletRequest, client,locale);
 		// return view
 		return returnview;
 	}
@@ -157,7 +151,7 @@ public class AssignBarcodeController {
 	@RequestMapping(value = "/editbook", params = "booknr", method = RequestMethod.GET, produces = "text/html")
 	public String assignCodeForExistingBookGet(@RequestParam("booknr") String booknr,AssignCodeModel assignCodeModel,
 			Model uiModel, BindingResult bindingResult,HttpServletRequest httpServletRequest,
-			Principal principal) {
+			Principal principal,Locale locale) {
 		ClientDao client = clientService.getCurrentClient(principal);
 		Long clientid = client.getId();
 
@@ -192,7 +186,7 @@ public class AssignBarcodeController {
 
 
 		// add lookups / displays for view
-		putDisplayInfoInModel(uiModel, httpServletRequest, client);
+		putDisplayInfoInModel(uiModel, httpServletRequest, client,locale);
 		// return view
 		return returnview;
 	}
@@ -201,7 +195,7 @@ public class AssignBarcodeController {
 	@RequestMapping(value = "/editbook", params = "newbook", method = RequestMethod.POST, produces = "text/html")
 	public String createNewBook(AssignCodeModel assignCodeModel,
 			Model uiModel, BindingResult bindingResult,HttpServletRequest httpServletRequest,
-			Principal principal) {
+			Principal principal,Locale locale) {
 		ClientDao client = clientService.getCurrentClient(principal);
 		Long clientid = client.getId();
 
@@ -261,7 +255,7 @@ public class AssignBarcodeController {
 		// add lookups / displays for view
 		String shortname = client.getShortname();
 		uiModel.addAttribute("clientname",shortname);
-		putDisplayInfoInModel(uiModel, httpServletRequest, client);
+		putDisplayInfoInModel(uiModel, httpServletRequest, client,locale);
 		// return view
 		return returnview;
 
@@ -355,8 +349,7 @@ public class AssignBarcodeController {
 	}
 
 	private void putDisplayInfoInModel(Model uiModel,
-			HttpServletRequest httpServletRequest, ClientDao client) {
-		Locale locale = httpServletRequest.getLocale();
+			HttpServletRequest httpServletRequest, ClientDao client,Locale locale) {
 		String lang = locale.getLanguage();
 		Long clientkey = client.getId();
 

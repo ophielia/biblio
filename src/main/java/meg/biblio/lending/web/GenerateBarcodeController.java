@@ -56,10 +56,7 @@ public class GenerateBarcodeController {
 
 	@RequestMapping(value="/books",method = RequestMethod.GET, produces = "text/html")
 	public String showGenerateBarcodesForBooks( Model uiModel,
-			HttpServletRequest httpServletRequest, Principal principal) {
-		ClientDao client = clientService.getCurrentClient(principal);
-		Long clientid = client.getId();
-		Locale locale = httpServletRequest.getLocale();
+			HttpServletRequest httpServletRequest, Principal principal,Locale locale) {
 		String lang = locale.getLanguage();
 
 		// fill in select - 50, 100, 150, etc....

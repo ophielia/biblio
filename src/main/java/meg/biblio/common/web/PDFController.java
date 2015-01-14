@@ -78,12 +78,11 @@ public class PDFController {
 	@RequestMapping(value = "/overduenotices", method = RequestMethod.POST)
 	public void generateOverdueReport(Model uiModel,
 			HttpServletRequest request, HttpServletRequest httpServletRequest,
-			HttpServletResponse response, Principal principal)
+			HttpServletResponse response, Principal principal,Locale locale)
 			throws FOPException, JAXBException, TransformerException,
 			IOException, ServletException {
 		ClientDao client = clientService.getCurrentClient(principal);
 		Long clientkey = client.getId();
-		Locale locale = httpServletRequest.getLocale();
 		String lang = getShortLangCode(locale.getLanguage());
 
 		String cxslname = "META-INF/web-resources/transform/" + client.getOverduexslbase() + "-" + lang + ".xsl";
@@ -126,12 +125,11 @@ public class PDFController {
 	@RequestMapping(value = "/classsummary/{id}", method = RequestMethod.POST, produces = "text/html")
 	public void generateClassSummaryReport(@PathVariable("id") Long classid, Model uiModel,
 			HttpServletRequest request, HttpServletRequest httpServletRequest,
-			HttpServletResponse response, Principal principal)
+			HttpServletResponse response, Principal principal,Locale locale)
 			throws FOPException, JAXBException, TransformerException,
 			IOException, ServletException {
 		ClientDao client = clientService.getCurrentClient(principal);
 		Long clientkey = client.getId();
-		Locale locale = httpServletRequest.getLocale();
 		String lang = getShortLangCode(locale.getLanguage());
 
 		String cxslname = "META-INF/web-resources/transform/" + client.getClasssummaryxslbase() + "-" + lang + ".xsl";
@@ -173,12 +171,11 @@ public class PDFController {
 	@RequestMapping(value = "/dailysummary", method = RequestMethod.POST, produces = "text/html")
 	public void generateDailySummaryReport( Model uiModel,
 			HttpServletRequest request, HttpServletRequest httpServletRequest,
-			HttpServletResponse response, Principal principal)
+			HttpServletResponse response, Principal principal,Locale locale)
 			throws FOPException, JAXBException, TransformerException,
 			IOException, ServletException {
 		ClientDao client = clientService.getCurrentClient(principal);
 		Long clientkey = client.getId();
-		Locale locale = httpServletRequest.getLocale();
 		String lang = getShortLangCode(locale.getLanguage());
 
 		String cxslname = "META-INF/web-resources/transform/" + client.getClasssummaryxslbase() + "-" + lang + ".xsl";
@@ -221,13 +218,11 @@ public class PDFController {
 	public void generateBookBarcodeSheet(
 			@RequestParam("codeCount") Integer codeCount, Model uiModel,
 			HttpServletRequest request, HttpServletRequest httpServletRequest,
-			HttpServletResponse response, Principal principal)
+			HttpServletResponse response, Principal principal, Locale locale)
 			throws FOPException, JAXBException, TransformerException,
 			IOException, ServletException {
 		ClientDao client = clientService.getCurrentClient(principal);
 		Long clientkey = client.getId();
-		Locale locale = httpServletRequest.getLocale();
-		String lang = locale.getLanguage();
 
 		String cxslname = "META-INF/web-resources/transform/"
 				+ client.getBarcodesheetxsl() + ".xsl";
@@ -236,7 +231,7 @@ public class PDFController {
 
 			int codecount = codeCount.intValue();
 			BarcodeSheet sheet = barcodeService.assembleBarcodeSheetForBooks(
-					codecount, clientkey, locale);
+					codecount, clientkey,locale);
 
 			ByteArrayOutputStream out = new ByteArrayOutputStream();
 			try {
@@ -280,8 +275,6 @@ public class PDFController {
 			IOException, ServletException {
 		ClientDao client = clientService.getCurrentClient(principal);
 		Long clientkey = client.getId();
-		Locale locale = httpServletRequest.getLocale();
-		String lang = locale.getLanguage();
 
 		String cxslname = "META-INF/web-resources/transform/"
 				+ client.getBarcodesheetxsl() + ".xsl";

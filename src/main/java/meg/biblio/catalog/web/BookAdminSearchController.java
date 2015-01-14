@@ -179,8 +179,7 @@ public class BookAdminSearchController {
 	}
 	
 	@ModelAttribute("sortlist")
-    public List<SelectValueDao> referenceSortkeys(HttpServletRequest httpServletRequest) {
-    	Locale locale = httpServletRequest.getLocale();
+    public List<SelectValueDao> referenceSortkeys(HttpServletRequest httpServletRequest,Locale locale) {
     	String lang = locale.getLanguage();
     	
     	List<SelectValueDao> sortlist = keyService.getSelectValuesForKey(
@@ -189,8 +188,7 @@ public class BookAdminSearchController {
     }	
 
     @ModelAttribute("statusLkup")
-    public HashMap<Long,String> getStatusLkup(HttpServletRequest httpServletRequest) {
-    	Locale locale = httpServletRequest.getLocale();
+    public HashMap<Long,String> getStatusLkup(HttpServletRequest httpServletRequest,Locale locale) {
     	String lang = locale.getLanguage();
     	
     	HashMap<Long, String> booktypedisps = keyService
@@ -208,8 +206,7 @@ public class BookAdminSearchController {
     } 
       
     @ModelAttribute("booktypeLkup")
-    public HashMap<Long,String> getBooktyeLkup(HttpServletRequest httpServletRequest) {
-    	Locale locale = httpServletRequest.getLocale();
+    public HashMap<Long,String> getBooktyeLkup(HttpServletRequest httpServletRequest,Locale locale) {
     	String lang = locale.getLanguage();
     	
     	HashMap<Long, String> booktypedisps = keyService
@@ -219,8 +216,7 @@ public class BookAdminSearchController {
           
     
     @ModelAttribute("classHash")
-    public HashMap<Long,ClassificationDao> getClassificationInfo(HttpServletRequest httpServletRequest,Principal principal) {
-    	Locale locale = httpServletRequest.getLocale();
+    public HashMap<Long,ClassificationDao> getClassificationInfo(HttpServletRequest httpServletRequest,Principal principal,Locale locale) {
     	String lang = locale.getLanguage();
 		ClientDao client = clientService.getCurrentClient(principal);
 		Long clientkey = client.getId();
@@ -231,8 +227,7 @@ public class BookAdminSearchController {
     }    
     
     @ModelAttribute("classList")
-    public List<ClassificationDao> getClassificationInfoAsList(HttpServletRequest httpServletRequest,Principal principal) {
-    	Locale locale = httpServletRequest.getLocale();
+    public List<ClassificationDao> getClassificationInfoAsList(HttpServletRequest httpServletRequest,Principal principal,Locale locale) {
     	String lang = locale.getLanguage();
 		ClientDao client = clientService.getCurrentClient(principal);
 		Long clientkey = client.getId();
@@ -249,8 +244,7 @@ public class BookAdminSearchController {
     }     
     
     @ModelAttribute("classJson")
-    public String getClassificationInfoAsJson(HttpServletRequest httpServletRequest,Principal principal) {
-    	Locale locale = httpServletRequest.getLocale();
+    public String getClassificationInfoAsJson(HttpServletRequest httpServletRequest,Principal principal,Locale locale) {
     	String lang = locale.getLanguage();
 		ClientDao client = clientService.getCurrentClient(principal);
 		Long clientkey = client.getId();

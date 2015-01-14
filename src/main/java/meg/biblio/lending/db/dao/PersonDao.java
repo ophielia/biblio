@@ -32,7 +32,7 @@ public class PersonDao {
 
 	private String barcodeid;
 	
-	@OneToOne(cascade = CascadeType.ALL, fetch=FetchType.EAGER)
+	@OneToOne(cascade = CascadeType.PERSIST, fetch=FetchType.EAGER)
 	private ClientDao client;
 
 	@ManyToOne(fetch=FetchType.EAGER)

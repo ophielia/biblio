@@ -165,4 +165,6 @@ public class BarcodeServiceImpl implements BarcodeService {
 		// return resultlist
 		return results;
 	}
+	
+
 }

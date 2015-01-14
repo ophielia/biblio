@@ -58,7 +58,6 @@ public class BookController {
 			Model uiModel, HttpServletRequest httpServletRequest,
 			Principal principal) {
 		ClientDao client = clientService.getCurrentClient(principal);
-		Locale locale = httpServletRequest.getLocale();
 
 		// clear model, place in uiModel
 		Long classification = bookModel.getShelfclass();
@@ -381,8 +380,7 @@ public class BookController {
 
 	@ModelAttribute("classHash")
 	public HashMap<Long, ClassificationDao> getClassificationInfo(
-			HttpServletRequest httpServletRequest, Principal principal) {
-		Locale locale = httpServletRequest.getLocale();
+			HttpServletRequest httpServletRequest, Principal principal,Locale locale) {
 		String lang = locale.getLanguage();
 		ClientDao client = clientService.getCurrentClient(principal);
 		Long clientkey = client.getId();
@@ -397,8 +395,7 @@ public class BookController {
 
 	@ModelAttribute("classJson")
 	public String getClassificationInfoAsJson(
-			HttpServletRequest httpServletRequest, Principal principal) {
-		Locale locale = httpServletRequest.getLocale();
+			HttpServletRequest httpServletRequest, Principal principal,Locale locale) {
 		String lang = locale.getLanguage();
 		ClientDao client = clientService.getCurrentClient(principal);
 		Long clientkey = client.getId();
@@ -413,8 +410,7 @@ public class BookController {
 
 	@ModelAttribute("typeLkup")
 	public HashMap<Long, String> getBookTypeLkup(
-			HttpServletRequest httpServletRequest) {
-		Locale locale = httpServletRequest.getLocale();
+			HttpServletRequest httpServletRequest,Locale locale) {
 		String lang = locale.getLanguage();
 
 		HashMap<Long, String> booktypedisps = keyService.getDisplayHashForKey(
@@ -424,8 +420,7 @@ public class BookController {
 
 	@ModelAttribute("statusLkup")
 	public HashMap<Long, String> getStatusLkup(
-			HttpServletRequest httpServletRequest) {
-		Locale locale = httpServletRequest.getLocale();
+			HttpServletRequest httpServletRequest,Locale locale) {
 		String lang = locale.getLanguage();
 
 		HashMap<Long, String> booktypedisps = keyService.getDisplayHashForKey(
@@ -435,8 +430,7 @@ public class BookController {
 
 	@ModelAttribute("langLkup")
 	public HashMap<String, String> getLanguageLkup(
-			HttpServletRequest httpServletRequest) {
-		Locale locale = httpServletRequest.getLocale();
+			HttpServletRequest httpServletRequest,Locale locale) {
 		String lang = locale.getLanguage();
 
 		HashMap<String, String> langdisps = keyService
@@ -446,8 +440,7 @@ public class BookController {
 
 	@ModelAttribute("detailstatusLkup")
 	public HashMap<Long, String> getDetailStatusLkup(
-			HttpServletRequest httpServletRequest) {
-		Locale locale = httpServletRequest.getLocale();
+			HttpServletRequest httpServletRequest,Locale locale) {
 		String lang = locale.getLanguage();
 
 		HashMap<Long, String> booktypedisps = keyService.getDisplayHashForKey(

@@ -13,4 +13,7 @@ public interface SelectKeyService {
 
 	public HashMap<String, String> getStringDisplayHashForKey(
 			String languagelkup, String lang);
+
+	public String getDisplayForKeyValue(String key, String value,
+			String lang);
 }

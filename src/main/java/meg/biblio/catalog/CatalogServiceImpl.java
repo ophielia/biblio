@@ -608,6 +608,7 @@ public class CatalogServiceImpl implements CatalogService {
 	@Override
 	public HashMap<Long, ClassificationDao> getShelfClassHash(Long clientkey,
 			String lang) {
+		lang = getShortLangCode(lang);
 		HashMap<Long, ClassificationDao> resulthash=new HashMap<Long, ClassificationDao>();
 		List<ClassificationDao> shelfclasses =classRepo.findByClientidAndLanguage(clientkey, lang);
 		if (shelfclasses!=null) {
@@ -621,10 +622,18 @@ public class CatalogServiceImpl implements CatalogService {
 	@Override
 	public List<ClassificationDao> getShelfClassList(Long clientkey,
 			String lang) {
+		lang = getShortLangCode(lang);
 		List<ClassificationDao> shelfclasses =classRepo.findByClientidAndLanguage(clientkey, lang);
 		return shelfclasses;
 	}
 
+	
+	private String getShortLangCode(String lang) {
+		if (lang==null) {return null;}
+		if (lang.startsWith("en")) return "en";
+		if (lang.startsWith("fr")) return "fr";
+		return "en";
+	}
 	/**
 	 * Convenience method for testing/devpt. Final will be done through
 	 * SearchService.

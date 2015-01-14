@@ -329,7 +329,6 @@ public class LendingController {
 				HttpServletRequest httpServletRequest, Principal principal) {
 		ClientDao client = clientService.getCurrentClient(principal);
 		Long clientkey = client.getId();
-		Locale locale = httpServletRequest.getLocale();
 
 
 		DailySummaryReport csr = lendingService
@@ -354,8 +353,7 @@ public class LendingController {
 	}
 
     @ModelAttribute("sectionLkup")
-    public HashMap<Long,String> getSectionLkup(HttpServletRequest httpServletRequest) {
-    	Locale locale = httpServletRequest.getLocale();
+    public HashMap<Long,String> getSectionLkup(HttpServletRequest httpServletRequest,Locale locale) {
     	String lang = locale.getLanguage();
 
     	HashMap<Long, String> booktypedisps = keyService

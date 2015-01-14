@@ -23,7 +23,7 @@ public class SelectKeyServiceImpl implements SelectKeyService {
 	@Override
 	public HashMap<Long, String> getDisplayHashForKey(String key, String lang) {
 		lang = getShortLangCode(lang);
-		
+
 		// lookup values for key, in language
 		List<SelectValueDao> values = getSelectValuesForKey(key, lang);
 		// put found values in hashmap
@@ -39,9 +39,13 @@ public class SelectKeyServiceImpl implements SelectKeyService {
 	}
 
 	private String getShortLangCode(String lang) {
-		if (lang==null) {return null;}
-		if (lang.startsWith("en")) return "en";
-		if (lang.startsWith("fr")) return "fr";
+		if (lang == null) {
+			return null;
+		}
+		if (lang.startsWith("en"))
+			return "en";
+		if (lang.startsWith("fr"))
+			return "fr";
 		return "en";
 	}
 
@@ -55,8 +59,8 @@ public class SelectKeyServiceImpl implements SelectKeyService {
 	}
 
 	@Override
-	public HashMap<String, String> getStringDisplayHashForKey(
-			String key, String lang) {
+	public HashMap<String, String> getStringDisplayHashForKey(String key,
+			String lang) {
 		lang = getShortLangCode(lang);
 		// lookup values for key, in language
 		List<SelectValueDao> values = getSelectValuesForKey(key, lang);
@@ -70,6 +74,17 @@ public class SelectKeyServiceImpl implements SelectKeyService {
 			return map;
 		}
 		return null;
+	}
+
+	@Override
+	public String getDisplayForKeyValue(String key, String value, String lang) {
+		lang = getShortLangCode(lang);
+		SelectValueDao select = valueRepo.findByKeyValueLanguage(key, value,
+				lang);
+		if (select != null) {
+			return select.getDisplay();
+		}
+		return "";
 	}
 
 }

@@ -13,10 +13,13 @@ import meg.biblio.common.BarcodeService;
 import meg.biblio.common.ClientService;
 import meg.biblio.common.SelectKeyService;
 import meg.biblio.common.db.dao.ClientDao;
+import meg.biblio.lending.ClassManagementService;
 import meg.biblio.lending.LendingService;
 import meg.biblio.lending.db.PersonRepository;
 import meg.biblio.lending.db.dao.LoanHistoryDao;
 import meg.biblio.lending.db.dao.PersonDao;
+import meg.biblio.lending.db.dao.StudentDao;
+import meg.biblio.lending.db.dao.TeacherDao;
 import meg.biblio.lending.web.model.BarcodeLendModel;
 import meg.biblio.lending.web.model.LoanRecordDisplay;
 import meg.biblio.lending.web.validator.BarcodeLendValidator;
@@ -37,6 +40,9 @@ public class BarcodeLendingController {
 	@Autowired
 	ClientService clientService;
 
+	@Autowired
+	SelectKeyService selectService;	
+	
 	@Autowired
 	BookRepository bookRepo;
 
@@ -247,21 +253,72 @@ public class BarcodeLendingController {
 	public String showVerifyPage(BarcodeLendModel barcodeLendModel,
 			Model uiModel, HttpServletRequest httpServletRequest,
 			Principal principal) {
-		ClientDao client = clientService.getCurrentClient(principal);
-		Long clientid = client.getId();
-		Locale locale = httpServletRequest.getLocale();
-		String lang = locale.getLanguage();
-		return null;
+
+				return "barcode/verify";
 	}
 
 	@RequestMapping(value = "/verify", method = RequestMethod.POST, produces = "text/html")
-	public String verifyCode(BarcodeLendModel barcodeLendModel, Model uiModel,
-			HttpServletRequest httpServletRequest, Principal principal) {
+	public String verifyCode(BarcodeLendModel barcodeLendModel, Model uiModel,BindingResult bindingErrors,
+			HttpServletRequest httpServletRequest, Principal principal,Locale locale) {
+		String lang = locale.getLanguage();
 		ClientDao client = clientService.getCurrentClient(principal);
 		Long clientid = client.getId();
-		Locale locale = httpServletRequest.getLocale();
-		String lang = locale.getLanguage();
-		return null;
+		// get code
+				String code = barcodeLendModel.getCode();
+				// person or book
+				if (isPerson(code)) {
+					// get person for code
+					PersonDao person = personRepo.findPersonByBarcode(code);
+					// put person firstname, lastname, section and/or teacher in model
+					if (person!=null) {
+						String name = person.getFulldisplayname();
+						Boolean isteacher = (person instanceof TeacherDao);
+						String sectiondisp = "";
+						if (!isteacher) {
+							StudentDao student = (StudentDao) person;
+							String sectionkey = String.valueOf(student.getSectionkey());
+							sectiondisp = selectService.getDisplayForKeyValue(ClassManagementService.sectionLkup,sectionkey,lang);
+						}
+						uiModel.addAttribute("personname",name);
+						uiModel.addAttribute("isteacher",isteacher);
+						uiModel.addAttribute("section",sectiondisp);
+						uiModel.addAttribute("isperson",new Boolean(true));
+					}else {
+						// person not found
+						bindingErrors.reject("error_nopersonforcode");
+
+					}
+					barcodeLendModel.setCode(null);
+					uiModel.addAttribute("barcodeLendModel", barcodeLendModel);
+					return "barcode/verify";
+				} else if (isBook(code)) {
+					// get book
+					BookDao book = bookRepo.findBookByBarcode(code);
+					
+					// put book title and author and image (if available) in model
+					if (book!=null) {
+						// put book title and author and image (if available) in model
+						String title = book.getTitle();
+						String author = book.getAuthorsAsString();
+						Boolean noauthor = author.trim().length()>0;
+						String imagelink = book.getImagelink();
+						uiModel.addAttribute("title",title);
+						uiModel.addAttribute("author",author);
+						uiModel.addAttribute("imagelink",imagelink);
+						uiModel.addAttribute("isbook",new Boolean(true));
+					} else {
+						bindingErrors.reject("error_nobookforcode");
+
+					}
+					barcodeLendModel.setCode(null);
+					uiModel.addAttribute("barcodeLendModel", barcodeLendModel);
+					return "barcode/verify";
+				}
+				barcodeLendModel.setCode(null);
+				uiModel.addAttribute("barcodeLendModel", barcodeLendModel);
+				bindingErrors.reject("error_codeunrecognized", null,
+						"Code not recognized.");
+				return "barcode/verify";
 	}
 
 	private boolean isBook(String code) {

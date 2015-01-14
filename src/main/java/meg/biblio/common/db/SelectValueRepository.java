@@ -17,5 +17,7 @@ public interface SelectValueRepository {
 	@Query(FINDBY_KEYLANGACTIVE)
 	List<SelectValueDao> findByKeyLanguageDisplay(@Param("key")String key,@Param("language") String language, Sort sort);
 	
+	@Query("select v from SelectValueDao v inner join v.selectkey k where  k.lookup = :key and v.value = :value and  v.active = true and v.languagekey=:language")
+	SelectValueDao findByKeyValueLanguage(@Param("key")String key,@Param("value")String value,@Param("language") String language);
 	
 }

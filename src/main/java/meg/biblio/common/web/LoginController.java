@@ -179,8 +179,7 @@ public class LoginController {
 	}
 	
     @ModelAttribute("roleLkup")
-    public HashMap<String,String> getRoleLkup(HttpServletRequest httpServletRequest) {
-    	Locale locale = httpServletRequest.getLocale();
+    public HashMap<String,String> getRoleLkup(HttpServletRequest httpServletRequest,Locale locale) {
     	String lang = locale.getLanguage();
     	
     	HashMap<String, String> langdisps = keyService

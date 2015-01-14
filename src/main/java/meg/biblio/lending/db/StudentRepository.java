@@ -23,6 +23,9 @@ public interface StudentRepository {
 	@Query("select r from StudentDao as r where r.client = :client and r.active = true")
 	List<StudentDao> findActiveStudentsForClient(@Param("client") ClientDao client);	
 
+	@Query("select r from StudentDao as r where r.client = :client")
+	List<StudentDao> findAllStudentsForClient(@Param("client") ClientDao client);	
+	
 	@Query("select r from StudentDao as r where r.client = :client and r.schoolgroup = :schoolgroup and r.active = true and r.barcodeid is null")
 	List<StudentDao> findActiveStudentsForClassWithoutBarcode(@Param("schoolgroup") SchoolGroupDao schoolgroup,
 			@Param("client") ClientDao client, Sort sort);

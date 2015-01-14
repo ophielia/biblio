@@ -53,8 +53,7 @@ public class DashboardController {
 
 
     @ModelAttribute("statusLkup")
-    public HashMap<Long,String> getStatusLkup(HttpServletRequest httpServletRequest) {
-    	Locale locale = httpServletRequest.getLocale();
+    public HashMap<Long,String> getStatusLkup(HttpServletRequest httpServletRequest,Locale locale) {
     	String lang = locale.getLanguage();
 
     	HashMap<Long, String> booktypedisps = keyService
