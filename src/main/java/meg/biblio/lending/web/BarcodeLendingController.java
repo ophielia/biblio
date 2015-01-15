@@ -306,6 +306,7 @@ public class BarcodeLendingController {
 						uiModel.addAttribute("author",author);
 						uiModel.addAttribute("imagelink",imagelink);
 						uiModel.addAttribute("isbook",new Boolean(true));
+						uiModel.addAttribute("noauthor",noauthor);
 					} else {
 						bindingErrors.reject("error_nobookforcode");
 

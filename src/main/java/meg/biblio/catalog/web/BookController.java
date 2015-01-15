@@ -14,7 +14,6 @@ import meg.biblio.catalog.db.dao.ArtistDao;
 import meg.biblio.catalog.db.dao.BookDao;
 import meg.biblio.catalog.db.dao.ClassificationDao;
 import meg.biblio.catalog.db.dao.FoundDetailsDao;
-import meg.biblio.catalog.web.NewBookController.EditMode;
 import meg.biblio.catalog.web.model.BookModel;
 import meg.biblio.catalog.web.validator.BookModelValidator;
 import meg.biblio.common.AppSettingService;
@@ -52,6 +51,14 @@ public class BookController {
 	
     @Autowired
     AppSettingService settingService;	
+    
+	
+	public static final class EditMode {
+		public static String title = "T";
+		public static String isbn="I";
+		public static String editbook="E";
+	}
+	
 
 	@RequestMapping(params = "form", method = RequestMethod.GET, produces = "text/html")
 	public String showNewBookPage(BookModel bookModel,
@@ -81,7 +88,7 @@ public class BookController {
 
 	
 	// assign code for new (to catalog) book
-	@RequestMapping(value = "/editbook", params = "newbook", method = RequestMethod.POST, produces = "text/html")
+	@RequestMapping(value = "/newbook", method = RequestMethod.POST, produces = "text/html")
 	public String createNewBook(BookModel bookModel,
 			Model uiModel, BindingResult bindingResult,HttpServletRequest httpServletRequest,
 			Principal principal) {

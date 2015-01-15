@@ -27,9 +27,17 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <div>
 <span><input id="save" name="cleartestdata" type="submit" value="Clear Test Data"/> </span>
 </div>
-
+<br />
 <div>
 <span><input id="save" name="filltestdata" type="submit" value="Fill Test Data"/> </span>
+</div>
+<br />
+<div>
+<span><input id="save" name="clearlendingtestdata" type="submit" value="Clear Lending Data"/> </span>
+</div>
+<br />
+<div>
+<span><input id="save" name="filllendingtestdata" type="submit" value="Fill Lending Data"/> </span>
 </div>
 
 </form:form>

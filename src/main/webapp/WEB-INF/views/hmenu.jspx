@@ -53,7 +53,7 @@
 				<li><moo:menulink label="menu_barcodes_assignbarcode"
 						url="/assignbarcode/enternewbook" /></li>
 
-				<li><moo:menulink label="menu_barcodes_verifybarcode" url="/userlogins" /></li>
+				<li><moo:menulink label="menu_barcodes_verifybarcode" url="/barcode/checkout/verify" /></li>
 
 
 			</ul></li>

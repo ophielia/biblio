@@ -80,12 +80,7 @@ public class TestDataServiceImpl implements TestDataService {
 	public void clearAllTestData() {
 		Long clientid = clientService.getTestClientId();
 		ClientDao client = clientService.getClientForKey(clientid);
-		// delete from loan history
-		List<LoanHistoryDao> lhdelete =lhRepo.findForClient(client);
-		lhRepo.delete(lhdelete);
-		// delete from loan record
-		List<LoanRecordDao> lrdelete =lrRepo.findForClient(client);
-		lrRepo.delete(lrdelete);
+		clearLendingTestData();
 
 		
 		// delete from schoolgroup
@@ -123,7 +118,7 @@ public class TestDataServiceImpl implements TestDataService {
 	}
 	
 	@Override
-	public void setTestData() {
+	public void setAllTestData() {
 		Long clientid = clientService.getTestClientId();
 		// set classes
 		// gryffindor
@@ -204,7 +199,55 @@ public class TestDataServiceImpl implements TestDataService {
 		createStudent("Blaise Zabini",ClassManagementService.Sections.GS,40L,model.getSchoolGroup(),clientid);
 				
 		// work on checkout
+		setLendingTestData();
+
 		
+	}
+	
+	private void createStudent(String name, Long sectionnr,Long codenr,
+			SchoolGroupDao schoolGroup, Long clientid) {
+		StudentDao student = classService.addNewStudentToClass(name, sectionnr,
+				schoolGroup, clientid);
+		student.setBarcodeid(getCodeForNumber(codenr,BarcodeService.CodeType.PERSON));
+		studentRepo.save(student);
+		
+	}
+
+	public String getCodeForNumber(Long number, String type) {
+		int barcodelength=12;
+		String filler = "000000000000";
+		if (number!=null && type!=null) {
+		String base = String.valueOf(number);
+		int fillerlength = barcodelength - base.length(); 
+		String codefiller = filler.substring(0,fillerlength);
+		String barcode = type + codefiller + base;
+		return barcode;
+		}
+		return null;
+	}	
+	
+	@Override
+	public void clearLendingTestData() {
+		Long clientid = clientService.getTestClientId();
+		ClientDao client = clientService.getClientForKey(clientid);
+		// return all checked out books
+		LendingSearchCriteria lsc = new LendingSearchCriteria();
+		List<LoanRecordDisplay> lrs = lendingSearchService.findLoanRecordsByCriteria(lsc, clientid);
+		
+		for (LoanRecordDisplay lrd:lrs) {
+			lendingService.returnBookByBookid(lrd.getBookid(), clientid);
+		}
+		
+		// delete from loan history
+		List<LoanHistoryDao> lhdelete =lhRepo.findForClient(client);
+		lhRepo.delete(lhdelete);
+		
+		
+	}	
+	
+	
+	public void setLendingTestData() {
+		Long clientid = clientService.getTestClientId();
 		// get classes
 		List<SchoolGroupDao> sgroups = classService.getClassesForClient(clientid);
 		List<ClassModel> classes = new ArrayList<ClassModel>();
@@ -281,28 +324,5 @@ criteria.setStatus(CatalogService.Status.SHELVED);
 
 		}
 		
-		
 	}
-	
-	private void createStudent(String name, Long sectionnr,Long codenr,
-			SchoolGroupDao schoolGroup, Long clientid) {
-		StudentDao student = classService.addNewStudentToClass(name, sectionnr,
-				schoolGroup, clientid);
-		student.setBarcodeid(getCodeForNumber(codenr,BarcodeService.CodeType.PERSON));
-		studentRepo.save(student);
-		
-	}
-
-	public String getCodeForNumber(Long number, String type) {
-		int barcodelength=12;
-		String filler = "000000000000";
-		if (number!=null && type!=null) {
-		String base = String.valueOf(number);
-		int fillerlength = barcodelength - base.length(); 
-		String codefiller = filler.substring(0,fillerlength);
-		String barcode = type + codefiller + base;
-		return barcode;
-		}
-		return null;
-	}	
 }

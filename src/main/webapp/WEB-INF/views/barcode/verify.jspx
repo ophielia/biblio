@@ -49,7 +49,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <c:when test="${isbook}">
 <spring:message code="msg_barcode_verifybook" arguments="${title}" htmlEscape="false" var="msgverify"/>
 <c:if test="${!noauthor}">
-<spring:message code="msg_barcode_verifybookauthor" arguments="${author}" htmlEscape="false" var="msgverify"/>
+<spring:message code="msg_barcode_verifybookauthor" arguments="${title};${author}" htmlEscape="false" argumentSeparator=";" var="msgverify"/>
 </c:if>
 </c:when>
 <c:when test="${isperson}">

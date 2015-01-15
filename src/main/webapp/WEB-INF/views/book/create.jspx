@@ -25,7 +25,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <spring:message code="action_book_addtocatalog" htmlEscape="false" var="aaddcatalog"/>
 <spring:message code="label_barcode_assignexist" htmlEscape="false" var="bassigncodeexist"/>
 
-<spring:url value="/book/editbook" var="actionurl"/>
+<spring:url value="/books/newbook" var="actionurl"/>
 
 <script type="text/javascript">
  require([
@@ -58,7 +58,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <form:form action="${actionurl}" id="generatebookcodes" method="POST" modelAttribute="bookModel">
 <form:errors id="errors" class="errors" path="*" />	
 <div >
-<div class="inputspace">${clientname} ${lnumber}: <form:input path="clientbookid"></form:input><span style="padding-left:5px;padding-right:5px"> ${lor} </span>
+<div class="inputspace">${clientname} dkdkdk${lnumber}: <form:input path="clientbookid"></form:input><span style="padding-left:5px;padding-right:5px"> ${lor} </span>
 <form:checkbox class="checkboxalign" path="createnewid"></form:checkbox>${ageneratenr}</div>
 <div class="inputspace">${lisbn}: <form:input path="isbnentry"></form:input>
 <input id="newbook" class="linkbutton" name="newbook" type="submit" value="${aaddcatalog }"></input>

@@ -50,7 +50,7 @@ public class TestDataController {
     	}
 
     @RequestMapping(value="/manage", params="cleartestdata", method = RequestMethod.POST, produces = "text/html")
-    public String clearTestData( Model uiModel, HttpServletRequest httpServletRequest, Principal principal) {
+    public String clearTestAllData( Model uiModel, HttpServletRequest httpServletRequest, Principal principal) {
     	ClientDao client = clientService.getCurrentClient(principal);
 
     	testDataService.clearAllTestData();
@@ -61,14 +61,36 @@ public class TestDataController {
     	}
     
     @RequestMapping(value="/manage", params="filltestdata", method = RequestMethod.POST, produces = "text/html")
-    public String fillTestData( Model uiModel, HttpServletRequest httpServletRequest, Principal principal) {
+    public String fillAllTestData( Model uiModel, HttpServletRequest httpServletRequest, Principal principal) {
     	ClientDao client = clientService.getCurrentClient(principal);
 
-    	testDataService.setTestData();
+    	testDataService.setAllTestData();
 
     	// return edit class view
     	return "testdata/settings";
 
     	}    
+    
+    @RequestMapping(value="/manage", params="clearlendingtestdata", method = RequestMethod.POST, produces = "text/html")
+    public String clearTestLendingData( Model uiModel, HttpServletRequest httpServletRequest, Principal principal) {
+    	ClientDao client = clientService.getCurrentClient(principal);
+
+    	testDataService.clearLendingTestData();
+
+    	// return edit class view
+    	return "testdata/settings";
+
+    	}    
+    
+    @RequestMapping(value="/manage", params="filllendingtestdata", method = RequestMethod.POST, produces = "text/html")
+    public String fillTestLendingData( Model uiModel, HttpServletRequest httpServletRequest, Principal principal) {
+    	ClientDao client = clientService.getCurrentClient(principal);
+
+    	testDataService.setLendingTestData();
+
+    	// return edit class view
+    	return "testdata/settings";
+
+    	}        
 }
 

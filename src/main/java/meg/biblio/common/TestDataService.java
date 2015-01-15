@@ -3,9 +3,13 @@ package meg.biblio.common;
 
 public interface TestDataService {
 
-	void setTestData();
+	void setAllTestData();
 
 	void clearAllTestData();
+	
+	void clearLendingTestData();
+	
+	void setLendingTestData();
 
 	
 }
