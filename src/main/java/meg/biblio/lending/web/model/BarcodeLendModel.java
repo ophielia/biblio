@@ -56,7 +56,7 @@ public class BarcodeLendModel {
 
 
 	public Boolean getMulticheckout() {
-		return multicheckout;
+		return multicheckout!=null?multicheckout:false;
 	}
 
 	public void setMulticheckout(Boolean multicheckout) {

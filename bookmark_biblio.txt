@@ -1,73 +1,73 @@
-Branch - master - final function tweaks
+Branch - master - demo online
 				      
 
+*** to get ready for demo ***
+isbn in add book   ... in createNewBook (BookController) and analog for assign code, add isbn to titleedit, and always redirect there if details aren't found....
+redo adding books
 
-
-test - tweaking multicheckout
-
-to get ready for demo
-----> Verify code page
-----> run through entering new books.
-----> get online
-
-French translations, Web
-	last - application.messages
-	check all reports
+db to heroku
+redo look and feel
 Get rid of roo
-
-done - Petite biblio domain
-
-done -  Rework menu
 Get online - with domain name
-done - Test data class
-done - Test data
-Dashboard with checked out stats, classification stats, school / student stats
+
 
 little bugs to note
 pdfwrangler not in french - class codes
-class checkout summary - adjust column widths
-book display in verify - pass correct arguments - show image, if available.
-done - Get rid of NewBookController and friends
-attribute code - on load to isbn nr
-all classifications for french missing!	
+multico -> different person -> book already checked out -> goes back to multico page with "success" message AND error message!  
+	different person from multico should throw error - message - finish your checkout first!! with tips
+edit link broken from detailed search
+broken link - add book (bookController)
+
+
+	
 
 
 Heroku Issues - 
-encoding - funny characters
 memory!
-fixed - path to classification images
 
 Before Run-through
-images throughout app - assign code - code success - verify - lists - checkout
-
-to lock down...
-done - /classes
 
 
 Product Advertising API 
 
 5 min tasks (ha!! :-)
 add language to indexing
-
-lock down site....
-fill in new client service from request  - principal
 check cancel throughout class page
 plus, REALLY long sessions
 
 later features
+superadmin pages - create / edit clients, testdata page access
 check-all in admin search
 has code in all show/edit books, admin list
 changing/reassigning barcode for book
-
+images throughout app - assign code - code success - verify - lists - checkout
+make obr.xsl with include....(like csr)
+Dashboard with checked out stats, classification stats, school / student stats
 
 ---- begin commit changes ----
 
-done -  move / change assigncode to add new book
-done -  change link name if no barcodes
-done - reintegrate into bookcontroller
-done -  create page - no isbn available button not working
-done - Install language
-done - French translations class summary report
+done - tweaking multicheckout, barcode
+done - class checkout summary - adjust column widths
+done - remove images from catalog display
+done - all classifications for french missing!
+done - assign code - isbn not available broken
+
+done -  Verify code page
+done -  run through entering new books.
+done -  get online
+done - French translations, Web
+done - 	last - application.messages
+done - 	check all reports
+done - Petite biblio domain
+done -  Rework menu
+done - Test data class
+done - Test data
+done - encoding - funny characters
+done - fixed - path to classification images
+done - /classes lockdown
+done - book display in verify - pass correct arguments - show image, if available.
+done - Get rid of NewBookController and friends
+done - attribute code - on load to isbn nr
 
 ---- end commit changes ----
 
@@ -82,6 +82,13 @@ done - making xsl (french translation)
 done - changes done on paper
 done - take it for a (bumpy) test drive...
 done - default to new number.... create page
+done -  move / change assigncode to add new book
+done -  change link name if no barcodes
+done - reintegrate into bookcontroller
+done -  create page - no isbn available button not working
+done - Install language
+done - French translations class summary report
+
 
 
 ---- end branch changes ----

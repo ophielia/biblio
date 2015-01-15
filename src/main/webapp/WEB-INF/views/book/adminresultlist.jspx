@@ -205,7 +205,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 		<thead>		
 		
 		
-				<tr ><th></th>
+				<tr >
 			<th id="aSort6">${lclientbookid}</th>
 			<th id="aSort3">${ltitle}</th>
 			<th id="aSort4">${lauthor} / <br />${lillustrator} </th>
