@@ -67,8 +67,14 @@
 	       <!-- call template for table headers (keep the text out of here...)-->
 		<xsl:call-template name="tableheaders" />
 	                   <fo:table-body>
-	       <!-- apply templates here for checkedoutlist -->
-	       <xsl:apply-templates select="checkedoutlist"/>
+	        <xsl:if test="checkedoutcount = 0">
+	        	<!-- apply templates here for checkedoutlist -->
+	       		<xsl:call-template name="nonecheckedout"/>
+	        </xsl:if>
+			 <xsl:if test="checkedoutcount > 0">
+				       <!-- apply templates here for checkedoutlist -->
+				       <xsl:apply-templates select="checkedoutlist"/>
+			 </xsl:if>
 	       </fo:table-body>
                </fo:table>
 	            
@@ -76,7 +82,7 @@
 	        <xsl:call-template name="returnedbooks" />
 	        
 	        <!-- apply templates here for returns -->
-		    <xsl:apply-templates select="returnedlist"/>
+		    <fo:block font-size="9pt" page-break-after="always"><xsl:apply-templates select="returnedlist"/></fo:block>
 
 		<!-- overdue books -->
 		<xsl:if test="overduecount > 0">

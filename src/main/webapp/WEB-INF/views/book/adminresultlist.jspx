@@ -206,6 +206,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 		
 		
 				<tr >
+			<th></th>
 			<th id="aSort6">${lclientbookid}</th>
 			<th id="aSort3">${ltitle}</th>
 			<th id="aSort4">${lauthor} / <br />${lillustrator} </th>
@@ -236,7 +237,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 				${shelfclass.textdisplay}
 				</c:otherwise>
 							</c:choose></td>
-						<td><spring:url value="/books/edit/${book.id}"
+						<td><spring:url value="/books/editall/${book.id}"
 								var="editurl" /> <a href="${editurl}">${ledit}</a> <c:if
 								test="${book.detailstatus == 3}">
 								<spring:url value="/books/choosedetails/${book.id}"

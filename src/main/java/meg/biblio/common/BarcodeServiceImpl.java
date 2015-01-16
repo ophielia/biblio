@@ -66,7 +66,7 @@ public class BarcodeServiceImpl implements BarcodeService {
 	}
 	
 	@Override
-	public BarcodeSheet assembleBarcodeSheetForClass(Long classId, Long clientid) {
+	public BarcodeSheet assembleBarcodeSheetForClass(Long classId, Long clientid, Locale locale) {
 		// get client
 		ClientDao client = clientService.getClientForKey(clientid);
 
@@ -109,8 +109,9 @@ public class BarcodeServiceImpl implements BarcodeService {
 		
 		// get message for title
 		String teachername = model.getTeacher().getFulldisplayname();
-		String title = "Barcodes for Class of " + teachername;
-		
+		String base = appMessageSource.getMessage("reports_barcode_classtitle",null, locale);
+
+		String title = base + teachername;
 		
 		// make list for codes
 		List<Barcode> classcodes = new ArrayList<Barcode>();

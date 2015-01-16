@@ -62,7 +62,7 @@ public class BarcodeServiceTest {
 		model = classService.loadClassModelById(model.getClassid());
 		
 		
-		BarcodeSheet sheet = barcodeService.assembleBarcodeSheetForClass(model.getSchoolGroup().getId(),  clientid);
+		BarcodeSheet sheet = barcodeService.assembleBarcodeSheetForClass(model.getSchoolGroup().getId(),  clientid, null);
 		Assert.assertNotNull(sheet);
 		//Assert.assertEquals("Class of prof mcgonnagal",sheet.getTitle());
 		Assert.assertEquals(5, sheet.getCodes().size());

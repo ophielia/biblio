@@ -81,8 +81,10 @@ public class AssignModelValidator {
 			// isbn has been entered, and a search will be made...
 			if (assignCodeModel.getBook().getDetailstatus().longValue()==CatalogService.DetailStatus.DETAILNOTFOUND) {
 				String enteredtitle = assignCodeModel.getTitle();
-				if (enteredtitle == null || enteredtitle.trim().length()==0) {
-					bindingResult.rejectValue("title", "error_entertitle");
+				if (assignCodeModel.getIsbnentry()==null ) {
+					if (enteredtitle == null || enteredtitle.trim().length()==0) {
+						bindingResult.rejectValue("title", "error_entertitle");
+					}
 				}
 			}
 		}

@@ -16,7 +16,7 @@ public interface BarcodeService {
 	public final static String codecountlkup="codecount";
 	
 
-	BarcodeSheet assembleBarcodeSheetForClass(Long classId, Long clientid);
+	BarcodeSheet assembleBarcodeSheetForClass(Long classId, Long clientid, Locale locale);
 
 	BarcodeSheet assembleBarcodeSheetForBooks(int barcodecnt, Long clientid,
 			Locale locale);

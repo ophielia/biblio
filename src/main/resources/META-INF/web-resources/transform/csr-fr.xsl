@@ -32,7 +32,7 @@
 <fo:table-header>
   <fo:table-row>
     <fo:table-cell xsl:use-attribute-sets="myBorder" >
-      <fo:block font-weight="bold">Numéro de </fo:block>
+      <fo:block font-weight="bold">Nr. de </fo:block>
       <fo:block font-weight="bold">Livre</fo:block>
     </fo:table-cell>
   <fo:table-cell xsl:use-attribute-sets="myBorder">
@@ -97,5 +97,10 @@
 
 <xsl:template name="returnedbooks">
 <fo:block space-before="1cm" font-size="9pt">Livres retourné:<xsl:if test="returnedcount = 0"> Pas de livres retourné</xsl:if>		</fo:block>    
+</xsl:template>
+
+
+<xsl:template name="nonecheckedout">
+	      <fo:table-cell number-columns-spanned="5"  xsl:use-attribute-sets="myBorder"><fo:block>Aucune livre retourné</fo:block></fo:table-cell>
 </xsl:template>
 </xsl:stylesheet>

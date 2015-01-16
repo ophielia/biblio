@@ -220,10 +220,13 @@ public class BarcodeLendingController {
 		PersonDao person = personRepo.findPersonByBarcode(code);
 		if (person != null) {
 			// ending checkout?
-			if (barcodeLendModel.matchesPerson(person)) {
+			if (barcodeLendModel.getMulticheckout() &&  barcodeLendModel.matchesPerson(person)) {
 				barcodeLendModel.setCode(null);
 				clearUser(barcodeLendModel,uiModel);
 				return "barcode/maincheckout";
+			} else if ((barcodeLendModel.getMulticheckout() &&  !barcodeLendModel.matchesPerson(person))) {
+				bindingErrors.reject("error_finish_checkout");
+				return "barcode/multicheckout";
 			}
 			
 			// validate (found??person already reached limit of checkout books?
@@ -339,6 +342,8 @@ public class BarcodeLendingController {
 	private void clearUser(BarcodeLendModel model, Model uiModel) {
 		model.setPerson(null);
 		model.setCheckedoutForUser(null);
+		model.setMulticheckout(false);
+		model.setCode(null);
 		uiModel.addAttribute("barcodeLendModel", model);
 	}
 

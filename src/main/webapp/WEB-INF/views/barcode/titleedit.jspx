@@ -68,7 +68,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 
 <p>${msginstr}</p>
 <form:form action="${actionurl}" id="editbook" method="POST" modelAttribute="assignCodeModel">
-
+<form:errors id="errors" class="errors" path="*" />
 		<div style="width: 45%; float: left">
 
 			<div
@@ -82,6 +82,9 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 					${lauthor}:
 					<form:input type="text" path="author"></form:input>
 				</div>
+				<div>
+	${lisbn}:  <form:input path="isbnentry" type="text" ></form:input><br />
+	</div>				
 				<div>
 					<form:input type="hidden" path="shelfclass"></form:input>
 					<br /> ${lclassification}:
@@ -140,9 +143,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 	<div>
 	${ldetailstatus}: ${detailstatusLkup[assignCodeModel.book.detailstatus]}
 	</div>
-	<div>
-	${lisbn}: ${assignCodeModel.book.isbn10}/<br />${assignCodeModel.book.isbn13}
-	</div>
+
 	
 		
 </div>

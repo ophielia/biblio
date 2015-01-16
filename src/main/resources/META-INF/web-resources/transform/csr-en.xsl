@@ -82,6 +82,12 @@
 </xsl:template>
 
 
+
+<xsl:template name="nonecheckedout">
+	      <fo:table-cell number-columns-spanned="5"  xsl:use-attribute-sets="myBorder"><fo:block>No Books Checked Out</fo:block></fo:table-cell>
+</xsl:template>
+
+
 <xsl:template name="returnedbooks">
 <fo:block space-before="1cm" font-size="9pt">Returned Books:<xsl:if test="returnedcount = 0"> No Books Returned On This Date</xsl:if>		</fo:block>    
 </xsl:template>

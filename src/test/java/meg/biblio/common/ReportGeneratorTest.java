@@ -65,13 +65,13 @@ public class ReportGeneratorTest {
 	@Test
 	public void testMakeAnXml() throws JAXBException {
 		Long clientid = clientService.getTestClientId();
-		OverdueBookReport list = lendingService.assembleOverdueBookReport( clientid);
+		ClassSummaryReport list = lendingService.assembleClassSummaryReport( new Long(33724), new Date(), clientid);
 //assembleOverdueBookReport
-		JAXBContext context = JAXBContext.newInstance(OverdueBookReport.class);
+		JAXBContext context = JAXBContext.newInstance(ClassSummaryReport.class);
 		Marshaller m = context.createMarshaller();
 		m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 		
-		m.marshal(list, new File("C:/Temp/obr.xml"));
+		m.marshal(list, new File("C:/Temp/csr.xml"));
 		
 		}
 	
@@ -98,7 +98,7 @@ Long clientid = clientService.getTestClientId();
 		model = classService.loadClassModelById(model.getClassid());
 		
 		
-		BarcodeSheet sheet = barcodeService.assembleBarcodeSheetForClass(model.getSchoolGroup().getId(),  clientid);
+		BarcodeSheet sheet = barcodeService.assembleBarcodeSheetForClass(model.getSchoolGroup().getId(),  clientid, null);
 		
 		JAXBContext context = JAXBContext.newInstance(BarcodeSheet.class);
 		Marshaller m = context.createMarshaller();
@@ -121,14 +121,14 @@ Long clientid = clientService.getTestClientId();
 			Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, out);
 
 			//Setup Transformer
-			Source xsltSrc = new StreamSource(new File("C:/Temp/mydsr.xsl"));
+			Source xsltSrc = new StreamSource(new File("C:/Temp/csr-en.xsl"));
 			Transformer transformer = tFactory.newTransformer(xsltSrc);
 
 			//Make sure the XSL transformation's result is piped through to FOP
 			Result res = new SAXResult(fop.getDefaultHandler());
 
 			//Setup input
-			Source src = new StreamSource(new File("C:/Temp/dsr.xml"));
+			Source src = new StreamSource(new File("C:/Temp/csr.xml"));
 
 
 			//Start the transformation and rendering process

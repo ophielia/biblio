@@ -341,7 +341,7 @@ public class BookModel  implements Serializable {
 	}
 
 	public String getEditMode() {
-		return editMode;
+		return editMode!=null?editMode:"";
 	}
 
 	public void setEditMode(String editMode) {

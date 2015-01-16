@@ -269,6 +269,24 @@ public class BookController {
 		return "book/show";
 	}
 
+	@RequestMapping(value = "/editall/{id}", method = RequestMethod.GET, produces = "text/html")
+	public String showEditBookForm(@PathVariable("id") Long id, Model uiModel,
+			HttpServletRequest httpServletRequest, Principal principal) {
+	
+		BookModel model = new BookModel();
+		if (id != null) {
+			model = catalogService.loadBookModel(id);
+		}
+	
+		uiModel.addAttribute("bookModel", model);
+	
+		String returnview="book/edit";
+		if (model.getDetailstatus().longValue()== CatalogService.DetailStatus.DETAILNOTFOUND) {
+			returnview = "book/editall";
+		}
+		return returnview;
+	}	
+	
 	@RequestMapping(value = "/editall/{id}", method = RequestMethod.POST, produces = "text/html")
 	public String saveEditAll(
 			@ModelAttribute("bookModel") BookModel bookModel,

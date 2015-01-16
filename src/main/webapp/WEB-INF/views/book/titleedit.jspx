@@ -65,7 +65,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 </script>
 
 
-<spring:url value="/book/updatebook" var="actionurl"/>
+<spring:url value="/books/updatebook" var="actionurl"/>
 
 <h1>${pagetitle}</h1>
 
@@ -85,6 +85,10 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 					${lauthor}:
 					<form:input type="text" path="authorname"></form:input>
 				</div>
+
+				<div>
+	${lisbn}:  <form:input path="isbnentry" type="text" ></form:input><br />
+	</div>				
 				<div>
 					<form:input type="hidden" path="shelfclass"></form:input>
 					<br /> ${lclassification}:
@@ -143,9 +147,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 	<div>
 	${ldetailstatus}: ${detailstatusLkup[bookModel.book.detailstatus]}
 	</div>
-	<div>
-	${lisbn}: ${bookModel.book.isbn10}/<br />${bookModel.book.isbn13}
-	</div>
+
 	
 		
 </div>

@@ -270,7 +270,7 @@ public class PDFController {
 	public void generateClassBarcodeSheet(
 			@RequestParam("classId") Long classId, Model uiModel,
 			HttpServletRequest request, HttpServletRequest httpServletRequest,
-			HttpServletResponse response, Principal principal)
+			HttpServletResponse response, Principal principal,Locale locale)
 			throws FOPException, JAXBException, TransformerException,
 			IOException, ServletException {
 		ClientDao client = clientService.getCurrentClient(principal);
@@ -281,7 +281,7 @@ public class PDFController {
 
 		if (classId != null) {
 
-			BarcodeSheet sheet = barcodeService.assembleBarcodeSheetForClass(classId, clientkey);
+			BarcodeSheet sheet = barcodeService.assembleBarcodeSheetForClass(classId, clientkey, locale);
 
 			ByteArrayOutputStream out = new ByteArrayOutputStream();
 			try {

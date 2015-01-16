@@ -80,9 +80,11 @@ public class BookModelValidator {
 			// but this only if detailstatus is not found (could be that the
 			// isbn has been entered, and a search will be made...
 			if (BookModel.getBook().getDetailstatus().longValue()==CatalogService.DetailStatus.DETAILNOTFOUND) {
-				String enteredtitle = BookModel.getTitle();
-				if (enteredtitle == null || enteredtitle.trim().length()==0) {
-					bindingResult.rejectValue("title", "error_entertitle");
+				if (BookModel.getIsbnentry()==null) {
+					String enteredtitle = BookModel.getTitle();
+					if (enteredtitle == null || enteredtitle.trim().length()==0) {
+						bindingResult.rejectValue("title", "error_entertitle");
+					}
 				}
 			}
 		}
