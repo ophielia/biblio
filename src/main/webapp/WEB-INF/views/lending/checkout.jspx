@@ -22,30 +22,6 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 
 
 
-<style>
-.selectspan {
-display: inline-block;
-overflow: hidden;
-padding: 5px;
-color: #e7e5e5;
-margin-left: 20px;
-margin-right: 20px;
-background-color: #A2BA77;
-} 
-
-
-.selectspanactive {
-display: inline-block;
-overflow: hidden;
-padding: 5px;
-color: #e7e5e5;
-margin-left: 20px;
-margin-right: 20px;
-background-color: #648C1D;
-}
-    
-
-</style>
 
 <spring:url value="/lending/checkout" var="studentactionurl"/>
 <spring:url value="/pdfwrangler/classsummary" var="reporturl"/>

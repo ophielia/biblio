@@ -36,6 +36,7 @@
         <intercept-url pattern="/generatebarcode/**" access="isAuthenticated()" />
         <intercept-url pattern="/testdata/**" access="isAuthenticated()" />
         <intercept-url pattern="/assignbarcode/**" access="isAuthenticated()" />
+        <intercept-url pattern="/dashboard/**" access="isAuthenticated()" />
         <intercept-url pattern="/admin/search/**" access="isAuthenticated()" />
         <intercept-url pattern="/userlogins/**" access="isAuthenticated()" />
         <intercept-url pattern="/search/**" access="isAuthenticated()" />
