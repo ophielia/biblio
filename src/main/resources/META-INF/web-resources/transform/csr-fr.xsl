@@ -101,6 +101,6 @@
 
 
 <xsl:template name="nonecheckedout">
-	      <fo:table-cell number-columns-spanned="5"  xsl:use-attribute-sets="myBorder"><fo:block>Aucune livre retourné</fo:block></fo:table-cell>
+	      <fo:table-cell number-columns-spanned="5"  xsl:use-attribute-sets="myBorder"><fo:block>Aucune livre emprunté</fo:block></fo:table-cell>
 </xsl:template>
 </xsl:stylesheet>

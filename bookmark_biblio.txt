@@ -5,17 +5,15 @@ Branch - denim - new look and feel
 redo adding books
 
 db to heroku
-----> redo look and feel
-	uniform buttons (possibly a smaller one??)
-	no silly arrow boxes.... (roo relic)
-	logo, and checkout return symbols
-	clear table for filters
-	adjust therebutnotthere...
-	put menu css into alt
-	adjust load-scripts (get rid of hmenu, mystandard)
-	move images back into main folder
-	move menu back into main folder
-	in general - looking good!!
+
+	
+	tomorrow night
+	merge branch
+	small bugfixes - 
+		login user - don't list superadmins - and cancel create new validates - doesn't back out..
+		consistent order for classes, logins
+	redo books	
+	all online
 	
 new look and feel online
 
@@ -46,13 +44,25 @@ images throughout app - assign code - code success - verify - lists - checkout
 make obr.xsl with include....(like csr)
 Dashboard with checked out stats, classification stats, school / student stats
 rethink - cancel / wait for save on book until after search????
-
+set order retrieving classes for class overview - same order each time.
 
 ---- begin commit changes ----
 
 done - Get rid of roo
 done - Get domain name online
-
+done - adjust therebutnotthere...
+done - put menu css into alt
+done - adjust load-scripts (get rid of hmenu, mystandard)
+done - move images back into main folder
+done - move menu back into main folder
+done - uniform buttons (possibly a smaller one??)
+done - no silly arrow boxes.... (roo relic)
+done - logo
+done - clear table for filters
+done - redo look and feel
+done - checkout return symbols
+done - in general - looking good!!
+done - put new look and feel in default.
 
 ---- end commit changes ----
 

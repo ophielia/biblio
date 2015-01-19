@@ -24,19 +24,19 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <spring:url value="/classes/manage" var="actionurl"/>
 <form:form action="${actionurl}" id="editclass" method="POST" >
 
-<div>
-<span><input id="save" name="increment" type="submit" value="${aincrement}"/> </span>
-<span> ${mincrement}</span>
+<div >
+<div style="float:left"><input class="linkbutton" id="save" name="increment" type="submit" value="${aincrement}"/> </div>
+<div> ${mincrement}</div>
 </div>
-
-<div>
-<span><input id="save" name="clearlists" type="submit" value="${aclearlists}"/> </span>
-<span> ${mclearlists}</span>
+<hr />
+<div style="clear:both">
+<div style="float:left"><input  class="linkbutton" id="save" name="clearlists" type="submit" value="${aclearlists}"/> </div>
+<div> ${mclearlists}</div>
 </div>
-
-<div>
-<span><input id="save" name="toremove" type="submit" value="${aremovestudents}"/> </span>
-<span> ${mremovestudents}</span>
+<hr />
+<div style="clear:both">
+<div style="float:left"><input  class="linkbutton" id="save" name="toremove" type="submit" value="${aremovestudents}"/> </div>
+<div> ${mremovestudents}</div>
 </div>
 </form:form>
 

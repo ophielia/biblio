@@ -139,11 +139,11 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <div>${msgsuccess}</div>
 </c:if>
 <h2>${lclassof} ${classModel.teacher.firstname} ${classModel.teacher.lastname}</h2>
-<span> <a href="${overviewurl}">${loverview}</a></span>
+<span> <a class="linkbutton" href="${overviewurl}">${loverview}</a></span>
 <span style="float:right">
-<span style="margin-left:10px" id="addnew">${anewstudent}</span>
-<span style="margin-left:10px" id="unassignedsel">${aexiststudent}</span>
-<span style="margin-left:10px" id="removesel">${aremovestudent}</span>
+<span style="margin-left:10px" class="selectspanactive" id="addnew">${anewstudent}</span>
+<span style="margin-left:10px" class="selectspanactive" id="unassignedsel">${aexiststudent}</span>
+<span style="margin-left:10px" class="selectspanactive" id="removesel">${aremovestudent}</span>
 </span>
 
 <hr style="clear:both"/>
@@ -162,7 +162,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <tr>
 <td>${tmp.firstname} ${tmp.lastname}</td>
 <td>${sectionLkup[tmp.sectionkey]}</td>
-<td><spring:url value="/classes/editstudent/${tmp.id}" var="editurl"/><a href="${editurl}">Edit</a></td>
+<td><spring:url value="/classes/editstudent/${tmp.id}" var="editurl"/><a class="linkbutton" href="${editurl}">Edit</a></td>
 </tr>
 </c:forEach>
 </c:when>
@@ -183,8 +183,9 @@ ${lsection}
 	</c:forEach>
 </form:select>
 <br />
-	<input id="save" name="addnew" type="submit" value="${anewstudent}"/> 
-	<input id="cancelNew" type="submit" value="${bcancel}"/> 
+<br />
+	<input class="linkbutton" id="save" name="addnew" type="submit" value="${anewstudent}"/> 
+	<input class="linkbutton" id="cancelNew" type="submit" value="${bcancel}"/> 
 </div>
 
 
@@ -211,8 +212,8 @@ ${lsection}
 </tbody>
 </table>
 
-	<input id="save" name="addstudents" type="submit" value="${aexiststudent}"/> 
-	<input id="cancelAssign" type="submit" value="${bcancel}"/> 
+	<input id="save" class="linkbutton" name="addstudents" type="submit" value="${aexiststudent}"/> 
+	<input id="cancelAssign" class="linkbutton" type="submit" value="${bcancel}"/> 
 </div>
 
 <div id="toremove" style="display:none">
@@ -222,7 +223,6 @@ ${lsection}
 <td></td>
 <td>${lname}</td>
 <td>${lsection}</td>
-<td></td>
 </tr>
 </thead>
 <tbody>
@@ -232,14 +232,13 @@ ${lsection}
 					<form:input path="tridref[${stdtstatus.index}]" value="${tmp.id}" type="hidden"></form:input></td>
 <td>${tmp.firstname} ${tmp.lastname}</td>
 <td>${sectionLkup[tmp.sectionkey]}</td>
-<td></td>
 </tr>
 </c:forEach>
 </tbody>
 </table>
 
-	<input id="save" name="removestudents" type="submit" value="${aremovestudent}"/> 
-	<input id="cancelRemove" type="submit" value="${bcancel}"/> 
+	<input id="save" class="linkbutton" name="removestudents" type="submit" value="${aremovestudent}"/> 
+	<input id="cancelRemove" class="linkbutton" type="submit" value="${bcancel}"/> 
 </div>
 
 

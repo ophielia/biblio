@@ -29,7 +29,7 @@ ${lclass}: <select id="classId" name="classId">
 </select>
 	<br />
 	
-	<input id="submit" name="submit" type="submit" value="${bgen}"></input>
+	<input class="linkbutton" id="submit" name="submit" type="submit" value="${bgen}"></input>
 
 
 </form:form>

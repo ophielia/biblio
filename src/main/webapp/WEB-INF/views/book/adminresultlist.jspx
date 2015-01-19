@@ -21,7 +21,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <spring:message code="label_book_publisher" htmlEscape="false" var="lpublisher"/>    
 <spring:message code="action_updateclass" htmlEscape="false" var="lscupdate"/>    
 <spring:message code="action_updatestatus" htmlEscape="false" var="lupdstatus"/>    
-
+<spring:message code="select_emptyoption" htmlEscape="false" var="lemptyselect"/>
 <spring:message code="label_book_clientbookid" htmlEscape="false" var="lclientbookid"/>    
 <spring:message code="label_book_classification" htmlEscape="false" var="lshelfclass"/>    
 <spring:message code="label_book_status" htmlEscape="false" var="lstatus"/>    
@@ -101,85 +101,63 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 	          
 	        	// Create our widget and place it
 	            var widget = new ShelfClassSelectWidget({displayId:'${shelfclass.id}',jsontext:'${classJson}',
-	            	showtext: true,updatenodename:"shelfclasskey",imagebasedir:'${imagebasedir}'}).placeAt(classiContainer);
+	            	showtext: true,updatenodename:"shelfclasskey",showemptyselect:true,emptyselecttext:'${lemptyselect}',imagebasedir:'${imagebasedir}'}).placeAt(classiContainer);
 		}); 
 </script>
 
 
 <form:form action="${actionurl}" id="resultlist" method="PUT" modelAttribute="bookListModel">
 
-<table>
-<THEAD>
-<tr>
-<td>${lkeyword}</td>
-<td>${ltitle}</td>
-<td>${lauthor}</td>
-<td>${lpublisher}</td>
-</tr>
-</THEAD>
-<tbody>
+		<table class="clear">
+			<tbody>
 				<tr>
-					<td>
-						<form:input path="keyword" type="text"></form:input>
-					</td>
-					<td>
-						<form:input path="title" type="text"></form:input>
-					</td>
-					<td>
-						<form:input path="author" type="text"></form:input>
-					</td>
-					<td>
-						<form:input path="publisher" type="text"></form:input>
-					</td>
+					<td>${lkeyword}</td>
+					<td>${ltitle}</td>
+					<td>${lauthor}</td>
+					<td>${lpublisher}</td>
 				</tr>
 				<tr>
-					<td>
-						${lshelfclass}
-					</td>
-					<td>
-						${lstatus}
-					</td>
-					<td>${ldetailstatus}
-					</td>		
-					<td>${lbooktype}
-					</td>
-					
-				</tr>					
+					<td><form:input path="keyword" type="text"></form:input></td>
+					<td><form:input path="title" type="text"></form:input></td>
+					<td><form:input path="author" type="text"></form:input></td>
+					<td><form:input path="publisher" type="text"></form:input></td>
+				</tr>
 				<tr>
-					<td>
-							<form:input path="shelfclasskey" type="hidden"></form:input>
-							<!--  use this var to get the id of the currently selected classification -->
-							<span id="imageselectbox"></span>
-					</td>
-					<td>
-						<form:select path="status">
-							<form:option value="" label="${lemptyoption}" />
-							<c:forEach items="${statusLkup}" var="tmp" >
-   								<form:option value="${tmp.key}"  label="${tmp.value}"/>
-							</c:forEach>
-						</form:select>
-					</td>
-										<td><form:select path="detailstatus">
-							<form:option value="" label="${lemptyoption}" />
-							<c:forEach items="${detailstatusLkup}" var="tmp" >
-   								<form:option value="${tmp.key}"  label="${tmp.value}"/>
-							</c:forEach>
-						</form:select>
-					</td>
-										
-					<td>										<form:select path="booktype">
-							<form:option value="" label="${lemptyoption}" />
-							<c:forEach items="${booktypeLkup}" var="tmp" >
-   								<form:option value="${tmp.key}"  label="${tmp.value}"/>
-							</c:forEach>
-						</form:select>
-					</td>
+					<td>${lshelfclass}</td>
+					<td>${lstatus}</td>
+					<td>${ldetailstatus}</td>
+					<td>${lbooktype}</td>
 
-				</tr>				
+				</tr>
+				<tr>
+					<td><form:input path="shelfclasskey" type="hidden"></form:input>
+						<!--  use this var to get the id of the currently selected classification -->
+						<span id="imageselectbox"></span></td>
+					<td><form:select path="status">
+							<form:option value="" label="${lemptyoption}" />
+							<c:forEach items="${statusLkup}" var="tmp">
+								<form:option value="${tmp.key}" label="${tmp.value}" />
+							</c:forEach>
+						</form:select></td>
+					<td><form:select path="detailstatus">
+							<form:option value="" label="${lemptyoption}" />
+							<c:forEach items="${detailstatusLkup}" var="tmp">
+								<form:option value="${tmp.key}" label="${tmp.value}" />
+							</c:forEach>
+						</form:select></td>
+
+					<td><form:select path="booktype">
+							<form:option value="" label="${lemptyoption}" />
+							<c:forEach items="${booktypeLkup}" var="tmp">
+								<form:option value="${tmp.key}" label="${tmp.value}" />
+							</c:forEach>
+						</form:select></td>
+
+				</tr>
 			</tbody>
-</table>
+		</table>
 		<spring:message code="button_search" htmlEscape="false" var="search_button"/>
-        <input id="searchbutton" type="submit" value="${search_button}"/>
+        <input class="linkbutton" id="searchbutton" type="submit" value="${search_button}"/>
        <br />
 <hr />
 <br />
@@ -190,7 +168,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 						<form:option value="${tmp.key}"  label="${tmp.value}"/>
 		</c:forEach>
 	</form:select>	 
-<input id="updateStatus" type="submit" name="updatestatus" value="${lupdstatus}"/>
+<input class="linkbutton" id="updateStatus" type="submit" name="updatestatus" value="${lupdstatus}"/>
 <span style="float:right"> 
 	<form:select path="shelfclassUpdate" id="shelfclassentry">
 	<option id="" label="- - Select - - " />
@@ -198,7 +176,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 	<form:option value="${tmp.key}" label="${tmp.value.description}" />
 	</c:forEach>
 	</form:select>
-	<input id="shelfclassUpdate" name="updateshelfclass" type="submit" value="${lscupdate}"/>   
+	<input class="linkbutton" id="shelfclassUpdate" name="updateshelfclass" type="submit" value="${lscupdate}"/>   
 </span>
 
 		<TABLE>

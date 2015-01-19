@@ -26,8 +26,7 @@
   <util:language label="English" locale="en"/>
     <util:language label="Deubuilderh" locale="fr"/>
     </span>
-  <util:theme/>
 
-  <spring:url value="/resources/images/springsource-logo.png" var="logo"/>
+
 
 </div>

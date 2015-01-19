@@ -97,7 +97,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 
 
 			</div>
-	<div   ><spring:url value="/book?form" var="linkurl"/>
+	<div   ><spring:url value="/books?form" var="linkurl"/>
 	<a href="${linkurl}" class="linkbutton" id="showaddl">${bcancel}</a>
 	<span>				<input class="linkbutton" id="save" name="save" type="submit" 
 						value="${bsaveand}" /></span>

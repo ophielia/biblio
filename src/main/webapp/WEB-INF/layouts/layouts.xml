@@ -6,19 +6,19 @@
 <tiles-definitions>
 
   <definition name="default" template="/WEB-INF/layouts/default.jspx">
-    <put-attribute name="header" value="/WEB-INF/views/denim/header.jspx" />
+    <put-attribute name="header" value="/WEB-INF/views/header.jspx" />
     <put-attribute name="hmenu" value="/WEB-INF/views/hmenu.jspx" />
     <put-attribute name="footer" value="/WEB-INF/views/footer.jspx" />
   </definition>
 
   <definition name="public" template="/WEB-INF/layouts/default.jspx">
-    <put-attribute name="header" value="/WEB-INF/views/denim/header.jspx" />
+    <put-attribute name="header" value="/WEB-INF/views/header.jspx" />
     <put-attribute name="hmenu" value="/WEB-INF/views/hmenu.jspx" />
     <put-attribute name="footer" value="/WEB-INF/views/footer.jspx" />
   </definition>
   
   <definition name="denim" template="/WEB-INF/layouts/denim.jspx">
-    <put-attribute name="header" value="/WEB-INF/views/denim/header.jspx" />
+    <put-attribute name="header" value="/WEB-INF/views/header.jspx" />
      <put-attribute name="hmenu" value="/WEB-INF/views/hmenu.jspx" />
     <put-attribute name="footer" value="/WEB-INF/views/footer.jspx" />
   </definition>  

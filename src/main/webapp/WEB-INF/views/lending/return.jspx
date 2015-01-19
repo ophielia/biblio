@@ -94,7 +94,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <td>${checkedout.booktitle} </td>
 <td>${checkedout.author} </td>
 
-<td><input id="rtn${checkedout.loanrecordid}" type="submit" value="${breturn}" /></td>
+<td><input class="linkbutton" id="rtn${checkedout.loanrecordid}" type="submit" value="${breturn}" /></td>
 </tr>
 </c:forEach>
 

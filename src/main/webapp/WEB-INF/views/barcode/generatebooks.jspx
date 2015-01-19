@@ -31,7 +31,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 		<br />
 	
 	
-	<input id="submit" name="submit" type="submit" value="${bgen}"></input>
+	<input id="submit" class="linkbutton" name="submit" type="submit" value="${bgen}"></input>
 
 
 </form:form>

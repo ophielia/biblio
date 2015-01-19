@@ -9,7 +9,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
 
-<spring:message code="label_login" htmlEscape="false" var="llogin"/>    
+<spring:message code="label_login_user" htmlEscape="false" var="llogin"/>    
 <spring:message code="global_menu_new" arguments="${llogin}" htmlEscape="false" var="pagetitle"/>
 <spring:message code="label_login_passwordverify" htmlEscape="false" var="lpasswordverify"/>
 <spring:message code="label_login_rolename" htmlEscape="false" var="lrolename"/>
@@ -75,13 +75,13 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <div>
 <form:errors id="username_errors" class="errors" path="username" /> 
 ${lusername}:<form:input path="username" type="text" ></form:input><form:input path="clientkey" type="hidden" ></form:input>
-<a id="changepass">${bchange}</a>
+<a id="changepass" class="linkbutton" >${bchange}</a>
 </div>
 <span id="passelements">
 <div>
 <form:errors id="textpassword_errors" class="errors" path="textpassword" /> 
 ${ltextpassword}:<form:input path="textpassword" type="text" ></form:input>
-<a id="cancelpass">${bpwdcancel}</a>
+<a id="cancelpass"  class="linkbutton">${bpwdcancel}</a>
 </div>
 <div>
 <form:errors id="passwordverify_errors" class="errors" path="passwordverify" /> 
@@ -97,8 +97,8 @@ ${lrolename}:						<form:select path="rolename">
 						</form:select>
 </div>
 
-	<input id="save" name="save" type="submit" value="${bsave}"/> 
-	<input id="cancel" name="cancel" type="submit" value="${bcancel}"/> 
+	<input id="save" class="linkbutton" name="save" type="submit" value="${bsave}"/> 
+	<input id="cancel" class="linkbutton" name="cancel" type="submit" value="${bcancel}"/> 
 </form:form>
 
 </div>

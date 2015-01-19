@@ -35,9 +35,10 @@ ${lsection}
 	</c:forEach>
 </form:select>
 <br />
-<form:input path="studentid" type="hidden"></form:input>
-	<input id="save" name="addnew" type="submit" value="${bsave}"/> 
-	<input id="cancel" type="submit" value="${bcancel}"/> 
+<br />
+<form:input path="studentid" type="hidden" ></form:input>
+	<input id="save" class="linkbutton" name="addnew" type="submit" value="${bsave}"/> 
+	<input id="cancel" class="linkbutton" type="submit" value="${bcancel}"/> 
 </div>
 
 </form:form>

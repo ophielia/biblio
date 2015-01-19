@@ -47,8 +47,8 @@ ${lrolename}:						<form:select path="rolename">
 						</form:select>
 </div>
 
-	<input id="save" name="save" type="submit" value="${bsave}"/> 
-	<input id="cancel" name="cancel" type="submit" value="${bcancel}"/> 
+	<input id="save"  class="linkbutton" name="save" type="submit" value="${bsave}"/> 
+	<input id="cancel"  class="linkbutton" name="cancel" type="submit" value="${bcancel}"/> 
 </form:form>
 
 </div>

@@ -116,7 +116,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <tbody>
 <tr>
 <td colspan="4" align="center">
-<input id="co${lendingModel.classinfo[lendingModel.classid].id}" type="submit" value="${bcheckoutforclass}" />
+<input class="linkbutton" id="co${lendingModel.classinfo[lendingModel.classid].id}" type="submit" value="${bcheckoutforclass}" />
 </td>
 </tr>
 <c:forEach items="${lendingModel.studentList}" var="student">
@@ -127,7 +127,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 
 <spring:url value="/classes/delete/${sclass.id}?form" var="deleteurl"/>
 <spring:url value="/classes/display/${sclass.id}?form" var="editurl"/>
-<td><input id="co${student.id}" type="submit" value="${bcheckout}" /></td>
+<td><input class="linkbutton" id="co${student.id}" type="submit" value="${bcheckout}" /></td>
 </tr>
 </c:forEach>
 

@@ -65,7 +65,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 </tbody>
 </table>
 
-	<input id="save" name="toremove" type="submit" value="${aremovestudent}"/> 
+	<input id="save" class="linkbutton" name="toremove" type="submit" value="${aremovestudent}"/> 
 </div>
 
 

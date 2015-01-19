@@ -9,7 +9,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
     
-<spring:message code="label_login" htmlEscape="false" var="llogin"/>
+<spring:message code="label_login_user" htmlEscape="false" var="llogin"/>
 <spring:message code="label_login_title"  arguments="${clientname}" htmlEscape="false" var="ltitle"/>
 <spring:message code="label_login_username" htmlEscape="false" var="lusername"/>
 <spring:message code="label_login_role" htmlEscape="false" var="lrole"/>
@@ -46,7 +46,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 </table>
 
 <spring:url value="/userlogins/create?form" var="createurl"/>
-<a href="${createurl}">${lcreate}</a>
+<a class="linkbutton" href="${createurl}">${lcreate}</a>
 </div>
 
 
