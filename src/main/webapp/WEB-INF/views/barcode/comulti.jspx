@@ -9,8 +9,6 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
 
-<link rel="stylesheet" href="/biblio/resources/mydojo/widget/css/ShelfClassWidget.css" media="screen"></link>
-<link rel="stylesheet" href="/biblio/resources/mydojo/widget/css/ShelfClassSelectWidget.css" media="screen"></link>
 
 <spring:message code="label_lending_borrower" htmlEscape="false" var="lborrower"/>
 <spring:message code="label_lending_class" htmlEscape="false" var="lclass"/>

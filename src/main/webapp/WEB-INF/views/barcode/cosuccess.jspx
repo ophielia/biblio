@@ -9,8 +9,6 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
 
-<link rel="stylesheet" href="/biblio/resources/mydojo/widget/css/ShelfClassWidget.css" media="screen"></link>
-<link rel="stylesheet" href="/biblio/resources/mydojo/widget/css/ShelfClassSelectWidget.css" media="screen"></link>
 
 <spring:message code="label_barcode_success" htmlEscape="false" var="pagetitle"/>
 <spring:message code="msg_barcode_checkoutsuccess" arguments="${personname};${booktitle};${bookauthor}" htmlEscape="false" argumentSeparator=";" var="msg"/>
@@ -45,7 +43,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <form:errors id="errors" class="errors" path="*" />
 <div style="height:150px">
 <form:errors path="code"></form:errors>
- <form:input class="therebutnot" type="text" path="code"></form:input><br/>
+ <form:input class="therebutnot" autocomplete="off" type="text" path="code"></form:input><br/>
 <spring:url var="checkedout" value="/resources/images/happyface.gif" />
 <img width="475px" src="${checkedout}" style="float:left"/>
 <div><p class="bigandbold">${msg }</p></div>

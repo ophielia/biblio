@@ -17,8 +17,10 @@ db to heroku
 	
 	last bugs - 
 		modify book doesn't save with isbn 9782867268915 
+		also - validation - check length of barcodes.
 		editall verify....
 		overdue books - last name (or first initial of)
+		emprunter message - bigandbold
 	
 new look and feel online
 
@@ -57,6 +59,9 @@ verify book - nice and thick!
 ability to edit author
 advanced search - NO classification
 pagination
+focus on username on login
+autocomplete off everywhere
+little icon....
 
 ---- begin commit changes ----
 
