@@ -31,6 +31,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 			return stripped;
 		}
 	focusUtil.focus(dom.byId("code"));
+	dojo.byId("code").value="";
 	});
  
 
@@ -44,7 +45,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <form:errors id="errors" class="errors" path="*" />
 <div style="height:150px">
 <form:errors path="code"></form:errors>
- <form:input class="therebutnot" type="text" path="code"></form:input><br/>
+ <form:input class="therebutnot" type="text" path="code"  autocomplete="off"></form:input><br/>
 <c:choose>
 <c:when test="${isbook}">
 <spring:message code="msg_barcode_verifybook" arguments="${title}" htmlEscape="false" var="msgverify"/>
@@ -56,7 +57,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <spring:message code="msg_barcode_verifyperson" arguments="${personname}"  htmlEscape="false" var="msgverify"/>
 </c:when>
 </c:choose>
-${msgverify }
+<p class="bigandbold">${msgverify }</p>
 	
 
 </div>

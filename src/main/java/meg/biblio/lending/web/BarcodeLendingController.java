@@ -303,7 +303,7 @@ public class BarcodeLendingController {
 						// put book title and author and image (if available) in model
 						String title = book.getTitle();
 						String author = book.getAuthorsAsString();
-						Boolean noauthor = author.trim().length()>0;
+						Boolean noauthor = author.trim().length()==0;
 						String imagelink = book.getImagelink();
 						uiModel.addAttribute("title",title);
 						uiModel.addAttribute("author",author);

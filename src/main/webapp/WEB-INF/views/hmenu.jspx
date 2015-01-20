@@ -8,7 +8,9 @@
 	<jsp:output omit-xml-declaration="yes" />
 
 	<ul id="nav">
-		<li><moo:menulink label="menu_catalog" url="/search" />
+
+				<sec:authorize access="isAuthenticated()">
+							<li><moo:menulink label="menu_catalog" url="/search" />
 			<ul>
 				<li><moo:menulink label="menu_createbook" url="/books?form" /></li>
 				<li><moo:menulink label="menu_search" url="/search" /></li>
@@ -62,7 +64,16 @@
 
 			</ul></li>
 
-		<li><moo:menulink label="menu_login" url="/login" /></li>
+				</sec:authorize>
+				<sec:authorize access="isAnonymous()">
+						<li style="margin-left: 750px;"><moo:menulink label="menu_login" url="/login" /></li>
+				</sec:authorize>
+
+
+
+
+
+
 
 	</ul>
 

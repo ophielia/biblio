@@ -8,18 +8,17 @@ db to heroku
 	
 	tomorrow night
 	merge branch
-	small bugfixes - 
-		test - login user - don't list superadmins - and cancel create new validates - doesn't back out..
-		test - consistent order for classes, logins
-		done - lock down admin pages for admin
-		done - Edit info box in different color
-		done - "No title" books go to full edit
-		done - Return by class - Severus de classe	
-		done - error assign code to book - title, then isbn.	
+	
 	redo books	
 	all online
 	
 	assign success through add books....
+	
+	
+	last bugs - 
+		modify book doesn't save with isbn 9782867268915 
+		editall verify....
+		overdue books - last name (or first initial of)
 	
 new look and feel online
 
@@ -55,10 +54,20 @@ possiblity to delete logins
 allow admin to enable / disable logins
 some shortcut to assigning code....
 verify book - nice and thick!
+ability to edit author
+advanced search - NO classification
+pagination
 
 ---- begin commit changes ----
 
-
+	small bugfixes - 
+		test - login user - don't list superadmins - and cancel create new validates - doesn't back out..
+		test - consistent order for classes, logins
+		done - lock down admin pages for admin
+		done - Edit info box in different color
+		done - "No title" books go to full edit
+		done - Return by class - Severus de classe	
+		done - error assign code to book - title, then isbn.
 
 ---- end commit changes ----
 
