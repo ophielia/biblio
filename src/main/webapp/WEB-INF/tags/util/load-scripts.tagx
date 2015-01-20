@@ -26,9 +26,15 @@
     <c:out value="${fn:replace(plocale, '_', '-')}" default="en" />
   </c:set>
 
+<c:set var="baseURL" value="${pageContext.request.localAddr}"/>
+<c:set var="mydojoURL" value="/resources/mydojo"/>
+<c:if test="${fn:startsWith(pageContext.request.localAddr, '0:0')}" > 
+<c:set var="mydojoURL" value="/biblio/resources/mydojo"/>
+</c:if>
+
   <script type="text/javascript">var djConfig = {parseOnLoad: false,packages: [
                                                                	            { name: "dojo", location: "//yandex.st/dojo/1.9.1/dojo" },
-                                                            	            { name: "mydojo", location: "/biblio/resources/mydojo" }
+                                                            	            { name: "mydojo", location: "${mydojoURL}" }
                                                             	        ], isDebug: true, locale: '${fn:toLowerCase(userLocale)}'};</script>
 
   <script src="${dojo_url}" type="text/javascript"><!-- required for FF3 and Opera --></script>
