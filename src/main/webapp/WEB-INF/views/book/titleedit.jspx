@@ -127,7 +127,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 
 
 		</div>
-		<div style="padding: 13px;">
+		<div class="accentbox">
 <!-- accent box -->
 <div>
 	${clientname} ${lnumber}: ${bookModel.book.clientbookid}<form:input type="hidden" path="bookid"></form:input>

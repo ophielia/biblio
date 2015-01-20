@@ -159,6 +159,14 @@ color: #7390B1;
 	float: right;
 }
 
+div.accentbox {
+background-color:#C2C2A3;
+width: 35%;float: right;
+border: 1px dotted grey;
+padding: 5px;
+margin: 10px;
+}
+
 table.navigation {
 	border: 0px;
 }
@@ -543,9 +551,11 @@ text-decoration: none;
 }
 
 .therebutnot {
-	border: 0px;
-color: white;
-outline:none;/**/
+  position: absolute !important;
+  height: 1px;
+  width: 1px;
+  overflow: hidden;
+  clip: rect(1px,1px,1px,1px);
 }
 
 .bigandbold {

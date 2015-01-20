@@ -500,7 +500,7 @@ public class ClassManagementServiceTest {
 		ClientDao client = clientService.getClientForKey(1L);
 		// get all schoolgroups for client
 		List<SchoolGroupDao> schoolgroups = sgroupRepo
-				.findSchoolGroupByClient(client);
+				.findSchoolGroupsByClient(client, new Sort("id"));
 		// count them
 		int comparison = schoolgroups.size();
 		// service call

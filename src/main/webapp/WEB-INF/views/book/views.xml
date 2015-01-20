@@ -16,6 +16,11 @@
     <definition extends="default" name="book/editbook">
         <put-attribute name="body" value="/WEB-INF/views/book/editbook.jspx"/>
     </definition>    
+    
+    <definition extends="default" name="book/assignsuccess">
+        <put-attribute name="body" value="/WEB-INF/views/book/assignsuccess.jspx"/>
+    </definition>    
+            
         
     <definition extends="default" name="book/assigncode">
         <put-attribute name="body" value="/WEB-INF/views/book/assigncode.jspx"/>

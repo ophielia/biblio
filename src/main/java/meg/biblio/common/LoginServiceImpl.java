@@ -10,6 +10,7 @@ import meg.biblio.common.db.dao.RoleDao;
 import meg.biblio.common.db.dao.UserLoginDao;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.StandardPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -115,7 +116,7 @@ public class LoginServiceImpl implements LoginService {
 			dblogin.setPassword(result);
 		}
 
-		dblogin.setEnabled(account.getEnabled());
+		
 		dblogin.setUsername(account.getUsername());
 
 		if (account.getRolename() != null) {
@@ -146,10 +147,14 @@ public class LoginServiceImpl implements LoginService {
 	}
 
 	@Override
-	public List<UserLoginDao> getUsersForClient(Long clientkey) {
+	public List<UserLoginDao> getUsersForClient(Long clientkey, boolean includesuperadmin) {
 		ClientDao client = clientService.getClientForKey(clientkey);
-
-		return accountRepository.findUsersByClient(client);
+		if (includesuperadmin) {
+			return accountRepository.findAllUsersByClient(client, new Sort("username"));
+		} else {
+			return accountRepository.findUsersForClient(client, new Sort("username"));
+		}
+		
 	}
 
 	@Override

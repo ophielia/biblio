@@ -30,10 +30,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttributes;
 
 import flexjson.JSONSerializer;
 
 @RequestMapping("/books")
+@SessionAttributes("bookModel")
 @Controller
 public class BookController {
 
@@ -72,7 +74,7 @@ public class BookController {
 		bookModel.setShelfclass(classification);
 		bookModel.setCreatenewid(new Boolean(true));
 		bookModel.setStatus(CatalogService.Status.SHELVED);
-
+		bookModel.setAssignedcode(null);
 		uiModel.addAttribute("bookModel", bookModel);
 
 		String shortname = client.getShortname();
@@ -211,6 +213,7 @@ public class BookController {
 		} 
 		
 		// return view - returns either to display book, or to assign code
+		bookModel.setAssignedcode(null);
 		uiModel.addAttribute("bookModel",bookModel);
 		Boolean showbarcode = client.getUsesBarcodes()!=null && client.getUsesBarcodes();
 		uiModel.addAttribute("showbarcodes",showbarcode);
@@ -240,19 +243,19 @@ public class BookController {
 		// validation - has this barcode already been assigned??
 		bookValidator.validateAssignCodeToBook(code,bindingResult);
 		if (bindingResult.hasErrors()) {
+			BookModel model = catalogService.loadBookModel(bookModel.getBook().getId());
 			bookModel.setAssignedcode(null);
 			uiModel.addAttribute("bookModel",bookModel);
-			return "book/isbnedit";
+			return "book/assigncode";
 		}
 		
 		// service call - assignCodeToBook
 		catalogService.assignCodeToBook(code, bookid);
 		// load book model
 		BookModel model = catalogService.loadBookModel(bookid);
-		uiModel.addAttribute("bookModel",bookModel);
-		// redirect to display book page
-		String redirect = "/books/display/" + bookModel.getBookid();
-		return "redirect:" + redirect;
+		uiModel.addAttribute("bookModel",model);
+		// go to success page
+		return "book/assignsuccess";
 	}
   
 	@RequestMapping(value = "/display/{id}", method = RequestMethod.GET, produces = "text/html")

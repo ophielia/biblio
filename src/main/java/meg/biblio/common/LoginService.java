@@ -21,7 +21,7 @@ public interface LoginService {
 
 	UserLoginDao createNewUserLogin(UserLoginDao account, Long clientkey);
 
-	List<UserLoginDao> getUsersForClient(Long clientkey);
+	List<UserLoginDao> getUsersForClient(Long clientkey, boolean includesuperadmin);
 
 	ClientDao getClientForUsername(String username);
 }

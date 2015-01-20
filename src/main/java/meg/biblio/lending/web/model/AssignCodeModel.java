@@ -40,11 +40,11 @@ private String editmode;
 	}
 
 	public Long getBookid() {
-		return bookid;
+		return book!=null?book.getId():null;
 	}
 
 	public void setBookid(Long bookid) {
-		this.bookid = bookid;
+		if (book!=null){this.bookid = bookid;};
 	}
 
 	public String getNewbooknr() {

@@ -102,7 +102,7 @@ public class LoginController {
 		ClientDao client = clientService.getCurrentClient(principal);
 		Long clientkey = client.getId();
 		// get users for client
-		List<UserLoginDao> users = accountService.getUsersForClient(clientkey);
+		List<UserLoginDao> users = accountService.getUsersForClient(clientkey, false);
 		// put in model
 		uiModel.addAttribute("users",users);
 		// return list view

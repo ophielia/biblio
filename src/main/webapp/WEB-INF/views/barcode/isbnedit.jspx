@@ -62,7 +62,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 </script>
 
 
-<spring:url value="/books/updatebook" var="actionurl"/>
+<spring:url value="/assignbarcode/updatebook" var="actionurl"/>
 
 <h1>${pagetitle}</h1>
 <p>${msginstr}</p>
@@ -114,7 +114,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 	
 	
 			</div>
-			<div style="padding: 13px;">
+			<div class="accentbox">
 
 <!-- accent box -->
 <div>

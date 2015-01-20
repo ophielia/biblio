@@ -33,6 +33,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 			return stripped;
 		}
 	focusUtil.focus(dom.byId("assignedcode"));
+	dojo.byId("assignedcode").value="";
 	});
  
 
@@ -47,7 +48,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <form:form action="${actionurl}" id="generatebookcodes" method="POST" modelAttribute="assignCodeModel">
 
 <div style="height:150px">
-<form:errors path="assignedcode"></form:errors>
+<form:errors id="errors" class="errors" path="*" />	
  <form:input class="therebutnot" type="text" path="assignedcode"></form:input><br/>
 
 

@@ -87,9 +87,9 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 	${lisbn}:  <form:input path="isbn10" type="text" ></form:input><br />
 	</div>
 </div>
-<div style="background-color: #C2C2A3;width: 35%;float: right;border: 1px dotted grey;padding: 5px;margin: 10px;">
+<div class="accentbox">
 <!-- accent box -->
-	<div>
+	<div >
 	${lclientbookid}: ${bookModel.clientbookid}<form:input type="hidden" path="bookid"></form:input>
 	</div>
 	
@@ -145,7 +145,13 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <c:if test="${bookModel.isbn10!=null}">${lisbn10}: ${bookModel.isbn10} | </c:if>
 <c:if test="${bookModel.isbn13!=null}">${lisbn13}: ${bookModel.isbn13} | </c:if>
 </div>
-<input id="save" name="save" type="submit" value="${bsave}"/> 
-
+<input id="save" class="linkbutton" name="save" type="submit" value="${bsave}"/> 
+<c:if test="${bookModel.detailstatus== 3}" >
+		<spring:url value="/books/choosedetails/${bookModel.bookId}"
+			var="chooseurl" />
+			<spring:message code="action_choosedetail" htmlEscape="false" var="adetail"/>
+		<br />
+		<a class="linkbutton" href="${chooseurl}">${adetail}</a>
+</c:if>
 </form:form>
 </div>

@@ -32,6 +32,7 @@ import meg.biblio.search.BookSearchCriteria;
 import meg.biblio.search.SearchService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -84,7 +85,7 @@ public class TestDataServiceImpl implements TestDataService {
 
 		
 		// delete from schoolgroup
-		List<SchoolGroupDao> sgdelete =sgRepo.findSchoolGroupByClient(client);
+		List<SchoolGroupDao> sgdelete =sgRepo.findSchoolGroupsByClient(client, new Sort("id"));
 		List<SchoolGroupDao> sgnewdel =new ArrayList<SchoolGroupDao>();
 		for (SchoolGroupDao sg:sgdelete) {
 			sg.setTeacherlist(null);
@@ -110,7 +111,7 @@ public class TestDataServiceImpl implements TestDataService {
 		studentRepo.delete(newdel);	
 		
 		// now, delete from schoolgroup
-		sgnewdel =sgRepo.findSchoolGroupByClient(client);
+		sgnewdel =sgRepo.findSchoolGroupsByClient(client,new Sort("id"));
 		sgRepo.delete(sgnewdel);
 		
 		// and finally, the teachers

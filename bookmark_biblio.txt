@@ -3,17 +3,23 @@ Branch - denim - new look and feel
 
 *** to get ready for demo ***
 redo adding books
-
 db to heroku
 
 	
 	tomorrow night
 	merge branch
 	small bugfixes - 
-		login user - don't list superadmins - and cancel create new validates - doesn't back out..
-		consistent order for classes, logins
+		test - login user - don't list superadmins - and cancel create new validates - doesn't back out..
+		test - consistent order for classes, logins
+		done - lock down admin pages for admin
+		done - Edit info box in different color
+		done - "No title" books go to full edit
+		done - Return by class - Severus de classe	
+		done - error assign code to book - title, then isbn.	
 	redo books	
 	all online
+	
+	assign success through add books....
 	
 new look and feel online
 
@@ -45,24 +51,14 @@ make obr.xsl with include....(like csr)
 Dashboard with checked out stats, classification stats, school / student stats
 rethink - cancel / wait for save on book until after search????
 set order retrieving classes for class overview - same order each time.
+possiblity to delete logins
+allow admin to enable / disable logins
+some shortcut to assigning code....
+verify book - nice and thick!
 
 ---- begin commit changes ----
 
-done - Get rid of roo
-done - Get domain name online
-done - adjust therebutnotthere...
-done - put menu css into alt
-done - adjust load-scripts (get rid of hmenu, mystandard)
-done - move images back into main folder
-done - move menu back into main folder
-done - uniform buttons (possibly a smaller one??)
-done - no silly arrow boxes.... (roo relic)
-done - logo
-done - clear table for filters
-done - redo look and feel
-done - checkout return symbols
-done - in general - looking good!!
-done - put new look and feel in default.
+
 
 ---- end commit changes ----
 
@@ -440,6 +436,24 @@ done - error online csr when only one class has books checked out - french and e
 	error occurs when nothing checked out, but returned, or overdue exist.
 	returned books not showing up, and page break not happening between classes. (no overdue)
 done - validation - add books - looking for title when not necessary
+
+*** DENIM BRANCH (look and feel) ****
+
+done - Get rid of roo
+done - Get domain name online
+done - adjust therebutnotthere...
+done - put menu css into alt
+done - adjust load-scripts (get rid of hmenu, mystandard)
+done - move images back into main folder
+done - move menu back into main folder
+done - uniform buttons (possibly a smaller one??)
+done - no silly arrow boxes.... (roo relic)
+done - logo
+done - clear table for filters
+done - redo look and feel
+done - checkout return symbols
+done - in general - looking good!!
+done - put new look and feel in default.
 
 
 

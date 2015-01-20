@@ -12,7 +12,7 @@
 			<ul>
 				<li><moo:menulink label="menu_createbook" url="/books?form" /></li>
 				<li><moo:menulink label="menu_search" url="/search" /></li>
-				<li><moo:menulink label="menu_adminsearch" url="/admin/search" /></li>
+				
 			</ul></li>
 		<li><moo:menulink label="menu_lending" url="/lending/checkout" />
 			<ul>
@@ -34,12 +34,12 @@
 				<!-- <li><moo:menulink label="menu_import" url="/import?form" /></li> -->
 				<li><moo:menulink label="menu_dashboard" url="/dashboard" /></li>
 
-
+				<li><moo:menulink label="menu_adminsearch" url="/admin/search" /></li>
+				
 				<li><moo:menulink label="menu_classlist" url="/classes" /></li>
+				<sec:authorize ifAnyGranted='ROLE_ADMIN,ROLE_SUPERADMIN'>
 				<li><moo:menulink label="menu_classmanage"
-						url="/classes/manage" /></li>
-				<li><moo:menulink label="menu_loginlist" url="/userlogins" /></li>
-
+						url="/classes/manage" /></li></sec:authorize>
 
 				<li><moo:menulink label="menu_barcodes_generate"
 						url="/generatebarcode/books" />
@@ -55,6 +55,10 @@
 
 				<li><moo:menulink label="menu_barcodes_verifybarcode" url="/barcode/checkout/verify" /></li>
 
+
+				<sec:authorize ifAnyGranted='ROLE_ADMIN,ROLE_SUPERADMIN'>
+				<li><moo:menulink label="menu_loginlist" url="/userlogins" /></li>
+</sec:authorize>
 
 			</ul></li>
 

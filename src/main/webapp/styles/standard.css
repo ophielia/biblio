@@ -163,6 +163,16 @@ table.navigation {
 	border: 0px;
 }
 
+
+div.accentbox {
+background-color: #7390B1;
+width: 35%;
+float: right;
+border: 1px solid #2E537D;
+padding: 5px;
+margin: 10px;
+}
+
 label {
 	width:100px;
 	float:left;
@@ -543,9 +553,11 @@ text-decoration: none;
 }
 
 .therebutnot {
-	border: 0px;
-color: white;
-outline:none;/**/
+  position: absolute !important;
+  height: 1px;
+  width: 1px;
+  overflow: hidden;
+  clip: rect(1px,1px,1px,1px);
 }
 
 .bigandbold {

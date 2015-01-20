@@ -270,7 +270,7 @@ public class ClassManagementServiceImpl implements ClassManagementService {
 	public List<SchoolGroupDao> getClassesForClient(Long clientkey) {
 		ClientDao client = clientService.getClientForKey(clientkey);
 	
-		List<SchoolGroupDao> classes =  sgroupRepo.findSchoolGroupByClient(client);
+		List<SchoolGroupDao> classes =  sgroupRepo.findSchoolGroupsByClient(client, new Sort("id"));
 		
 		for (SchoolGroupDao sclass:classes) {
 			List<TeacherDao> teachers = teacherRepo.findActiveTeachersForClientAndClass(client,sclass);
@@ -286,18 +286,16 @@ public class ClassManagementServiceImpl implements ClassManagementService {
 	public SchoolGroupDao getClassForClient(Long classid, Long clientid) {
 		ClientDao client = clientService.getClientForKey(clientid);
 		
-		List<SchoolGroupDao> classes =  sgroupRepo.findSchoolGroupByClient(client);
-		
-		for (SchoolGroupDao sclass:classes) {
-			if (sclass.getId().longValue()==classid.longValue() ) {
-				List<TeacherDao> teachers = teacherRepo.findActiveTeachersForClientAndClass(client,sclass);
-				sclass.setTeacherlist(teachers);
-				List<StudentDao> students = getStudentsForClass(sclass,client);
-				sclass.setStudents(students);
-				return sclass;
-			}
+		SchoolGroupDao sclass = sgroupRepo.findOne(classid);
+		if (sclass.getClient()==null || sclass.getClient().getId()!=clientid) {
+			return null;	
 		}
-		return null;
+		List<TeacherDao> teachers = teacherRepo.findActiveTeachersForClientAndClass(client,sclass);
+		sclass.setTeacherlist(teachers);
+		List<StudentDao> students = getStudentsForClass(sclass,client);
+		sclass.setStudents(students);
+		
+		return sclass;
 	}
 
 	@Override

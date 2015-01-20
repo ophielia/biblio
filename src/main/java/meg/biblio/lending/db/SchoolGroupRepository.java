@@ -4,6 +4,7 @@ import java.util.List;
 import meg.biblio.common.db.dao.ClientDao;
 import meg.biblio.lending.db.dao.SchoolGroupDao;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.roo.addon.layers.repository.jpa.RooJpaRepository;
@@ -12,5 +13,7 @@ import org.springframework.roo.addon.layers.repository.jpa.RooJpaRepository;
 public interface SchoolGroupRepository {
 	
 	@Query("select r from SchoolGroupDao as r where r.client = :client")
-	List<SchoolGroupDao> findSchoolGroupByClient(@Param("client") ClientDao client);	
+	List<SchoolGroupDao> findSchoolGroupsByClient(@Param("client") ClientDao client, Sort sort);
+
+
 }

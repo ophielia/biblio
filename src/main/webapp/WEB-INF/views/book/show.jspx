@@ -5,6 +5,7 @@ xmlns:c="http://java.sun.com/jsp/jstl/core"
 xmlns:spring="http://www.springframework.org/tags" 
 xmlns:form="http://www.springframework.org/tags/form" 
 xmlns:fmt="http://java.sun.com/jsp/jstl/fmt" 
+xmlns:sec="http://www.springframework.org/security/tags" 
 xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
@@ -78,7 +79,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 	${ldescription}: ${bookModel.description}
 	</div>		
 </div>
-<div style="background-color: #C2C2A3;width: 35%;float: right;border: 1px dotted grey;padding: 5px;margin: 10px;">
+<div class="accentbox" >
 <!-- accent box -->
 	<div>
 	${lclientbookid}: ${bookModel.clientbookid}
@@ -115,6 +116,13 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <c:if test="${bookModel.isbn13!=null}">${lisbn13}: ${bookModel.isbn13} | </c:if>
 </div>
 
+<div>
+<sec:authorize ifAnyGranted='ROLE_ADMIN,ROLE_SUPERADMIN'>
+<spring:url value="/books/editall/${bookModel.bookid}" var="editlink"/>
+<spring:message code="entity_edit" htmlEscape="false" var="bedit"/>
+<a class="linkbutton" href="${editlink }">${bedit}</a>
+</sec:authorize>
+</div>
 
 
 </div>

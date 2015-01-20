@@ -15,12 +15,10 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <spring:message code="button_generate" htmlEscape="false" var="bgen"/>
 <spring:message code="button_cancel" htmlEscape="false" var="bcancel"/>
 <spring:message code="label_barcode_success" htmlEscape="false" var="pagetitle"/>
-<spring:message code="label_barcode_assignexist" htmlEscape="false" var="lexistlink"/>
-<spring:message code="label_barcode_assignnew" htmlEscape="false" var="lnewlink"/>
-<spring:message code="msg_barcode_successargs" arguments="${assignCodeModel.book.title}" htmlEscape="false" var="msgsuccss"/>
+<spring:message code="label_barcode_codesuccessnext" htmlEscape="false" var="lnewlink"/>
+<spring:message code="msg_barcode_successargs" arguments="${bookModel.book.title}" htmlEscape="false" var="msgsuccss"/>
 
-<spring:url value="/assignbarcode/enternewbook" var="nextnew"/>
-<spring:url value="/assignbarcode/enterbook" var="nextexist"/>
+<spring:url value="/books?form" var="nextnew"/>
 
 
 
@@ -40,4 +38,9 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 
 </div>
 <div style="clear:both"></div>
+
+				
+
+
+
 </div>
