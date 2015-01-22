@@ -46,7 +46,7 @@
 				<xsl:variable name="dt" select="checkedout" />
 				<fo:block>Bonjour, &#xA;</fo:block>
 				<fo:block space-after="1cm" space-before="1cm">
-				 <xsl:value-of select="firstname_borrower" /> a emprunte le livre, "<xsl:value-of select="booktitle" />" le <xsl:value-of select="concat(
+				 <xsl:value-of select="firstname_borrower" /><xsl:text>&#xA0;</xsl:text><xsl:value-of select="lastname_borrower" /><xsl:text>&#xA0;</xsl:text>a emprunte le livre, "<xsl:value-of select="booktitle" />" le <xsl:value-of select="concat(
                       substring($dt, 9, 2),
                       '/',
                       substring($dt, 6, 2),

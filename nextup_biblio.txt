@@ -1,0 +1,76 @@
+To Think About:
+bookstatus - processing - after book bought, but before it's shelved (waiting for cover, for example). Screen to enter when shelved??
+changing/reassigning barcode for book - build a front door?
+client in indexing? necessary??
+public version - what features / changes are necessary??
+flexible classify for other clients
+
+
+Back-End Fine Points:
+createCatalogEntryFromBookModel - graceful handling of exception calling google books api
+assignBookDetails - graceful handling of exception
+save book AFTER detail search (in case bad isbn was entered.....)
+add language to indexing - check use of deleted words - java?? database??  
+set up selenium tests
+
+
+Front-End:
+focus on username on login
+autocomplete off everywhere
+verify book code - nice and thick!
+check-all in admin search
+check cancel throughout class pages
+good favicon.ico
+plus, REALLY long sessions
+default language french
+take away themes
+
+
+Bug Fixes: 
+blank artist names - lots of them??  should be only one???
+details fill in - add language in assign details! don't want to use nl!!
+
+Features: 
+Client Editing (user, and superadmin)
+	superadmin - wear hat.... (for client)
+	allow admin to enable / disable / delete logins
+	superadmin create new/edit clients
+	settings page for admin (client version of editing their own client)
+	testdata/manage - easy access
+	
+Inventory:
+	barcode and non-barcode version
+	create lists - all but lost
+	print lists by classification
+	enter found books by classification
+	resolve inventory - books which weren't found - update status to not found - inventory
+	save results from resolve - books which weren't found
+	print result list
+	barcode inventory entry
+	inventory progress page
+
+Show / Hide Barcode depending upon client setting (tag library)	
+	
+history of daily summary (for a previous day)
+
+has barcode shown in all show/edit books, searched by in admin list
+
+ability to edit author
+
+Detail Search Rework
+	split out search calls into separate manager
+	move book into book and book details - search book details as first search
+	some sort of count / sorting for progressive fill ( don't always search first the books which have been searched (and failed) many times)
+	build in amazon search
+	some sort of driving search logic - which one first?  stop after first, second? progressive fill?
+	images throughout app - assign code - code success - verify - lists - checkout ( new search will have images?? i hope???)
+	
+Fill out Dashboard - checked out stats, classification stats, school / student stats
+
+pagination on search results
+
+import with format including isbn
+
+??usersort of books with ASC and DESC in selectkeys.
+
+Location! - Albas room, esther's room, etc.

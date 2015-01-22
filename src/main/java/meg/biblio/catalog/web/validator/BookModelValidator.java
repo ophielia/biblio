@@ -93,6 +93,8 @@ public class BookModelValidator {
 	public void validateAssignCodeToBook(String code, BindingResult errors) {
 		if (code==null) {
 			errors.rejectValue("assignedcode","error_barcode_nocode");
+		} else if (!isValidCode(code)) {
+			errors.rejectValue("assignedcode", "error_barcode_badcode");
 		} else {
 			// check whether code has already been used
 			BookDao book = bookRepo.findBookByBarcode(code);
@@ -100,6 +102,16 @@ public class BookModelValidator {
 				errors.rejectValue("assignedcode", "error_barcode_alreadyused");
 			}
 		}
-	}	
+	}
+	
+	private boolean isValidCode(String code) {
+		boolean isvalid=false;
+		// does code start with B?
+		isvalid=code.startsWith("B");
+		// does code have a length of 14?
+		isvalid = isvalid && code.trim().length()==14;
+		return isvalid;
+	}
+
 	
 }

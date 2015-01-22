@@ -45,7 +45,7 @@
 			</fo:block>
 			<fo:block margin-bottom="15mm" border-width="1mm" border-bottom-style="dotted" padding-bottom="15mm" space-after="5mm">
 				<xsl:variable name="dt" select="checkedout" />
-				<fo:block>Hello <xsl:value-of select="firstname_borrower" />! &#xA;</fo:block>
+				<fo:block>Hello <xsl:value-of select="firstname_borrower" /><xsl:text>&#xA0;</xsl:text><xsl:value-of select="lastname_borrower" />! &#xA;</fo:block>
 				<fo:block space-after="1cm" space-before="1cm">
 				Your book,
 				<fo:inline font-style="italic">

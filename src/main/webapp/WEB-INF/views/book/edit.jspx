@@ -89,14 +89,9 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 	</div>
 	
 	<div>
-	<c:set var="showver" value="${lnvfd}" />
-	<c:if test="${bookModel.shelfclassverified}">
-	<c:set var="showver" value="" />
-	</c:if>
+
 	<form:input type="hidden" path="shelfclass"></form:input><br />
-	${lclassification}	
-	<c:if test="${not empty bookModel.shelfclass}">
-	(${showver})</c:if>: 
+	${lclassification}: 
 	
 	
 	<!--  use this var to get the id of the currently selected classification -->

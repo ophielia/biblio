@@ -49,7 +49,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 
 <div style="height:150px">
 <form:errors id="errors" class="errors" path="*" />	
- <form:input class="therebutnot" type="text" path="assignedcode"></form:input>
+ <form:input class="therebutnot" type="text" path="assignedcode"  autocomplete="off"></form:input>
  
  <form:input type="hidden" path="bookid"></form:input><br/>
 

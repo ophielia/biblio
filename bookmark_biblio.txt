@@ -1,78 +1,20 @@
-Branch - denim - new look and feel
-				      
+Branch - MASTER - online for demo
+
 
 *** to get ready for demo ***
-redo adding books
-db to heroku
+ 
+assigncode to book which already has assigned.
 
-	
-	tomorrow night
-	merge branch
-	
-	redo books	
-	all online
-	
-	assign success through add books....
-	
-	
-	last bugs - 
-		modify book doesn't save with isbn 9782867268915 
-		also - validation - check length of barcodes.
-		editall verify....
-		overdue books - last name (or first initial of)
-		emprunter message - bigandbold
-	
-new look and feel online
+OFFLINE - make cards for users and books
 
-
-little bugs to note
-create new login error.	
-
-
-Heroku Issues - 
-memory!
-
-Before Run-through
-
-
-Product Advertising API 
-
-5 min tasks (ha!! :-)
-add language to indexing
-check cancel throughout class page
-plus, REALLY long sessions
-
-later features
-superadmin pages - create / edit clients, testdata page access
-check-all in admin search
-has code in all show/edit books, admin list
-changing/reassigning barcode for book
-images throughout app - assign code - code success - verify - lists - checkout
-make obr.xsl with include....(like csr)
-Dashboard with checked out stats, classification stats, school / student stats
-rethink - cancel / wait for save on book until after search????
-set order retrieving classes for class overview - same order each time.
-possiblity to delete logins
-allow admin to enable / disable logins
-some shortcut to assigning code....
-verify book - nice and thick!
-ability to edit author
-advanced search - NO classification
-pagination
-focus on username on login
-autocomplete off everywhere
-little icon....
 
 ---- begin commit changes ----
 
-	small bugfixes - 
-		test - login user - don't list superadmins - and cancel create new validates - doesn't back out..
-		test - consistent order for classes, logins
-		done - lock down admin pages for admin
-		done - Edit info box in different color
-		done - "No title" books go to full edit
-		done - Return by class - Severus de classe	
-		done - error assign code to book - title, then isbn.
+done - also - validation - check length of barcodes.
+done - editall verify....
+done - overdue books - last name (or first initial of)
+done - emprunter message - bigandbold
+done - modify book doesn't save with isbn 9782867268915
 
 ---- end commit changes ----
 
@@ -80,10 +22,47 @@ little icon....
 
 ----- begin branch changes ----
 
+done - redo adding books
+done - db to heroku
+done - small bugfixes - 
+test - login user - don't list superadmins - and cancel create new validates - doesn't back out..
+test - consistent order for classes, logins
+done - lock down admin pages for admin
+done - Edit info box in different color
+done - "No title" books go to full edit
+done - Return by class - Severus de classe 
+done - error assign code to book - title, then isbn.
 
 
 
 ---- end branch changes ----
+
+
+
+******* NOTES ******
+
+1. Testing filling in books after import of details... Separate Google calls into their own
+service, which then can be mocked - and isolated for the test.
+
+2. Indexing would be nice in future as aspect watching object implementing TextIndex or the like. Not doing
+for now, because not really necessary. Feels too pretty for initial implementation. 
+
+3. think about it - clientbookid not necessary if using bar codes. (use clientbookid instead)  how to handle client book ids??  strings? numbers??
+
+4. at some point -- different checkout modules. Making by class, with barcode - possibly by student? (like the grand mareschale??)
+
+
+******* LATER DEVPT ******
+
+
+
+
+
+
+
+
+
+
 
 ----- begin complete history ----
 
@@ -112,9 +91,9 @@ done - add processing to locationstatus...., and unknown to booktype
 done - make method to copy into founddetails
 done - make method to copy into bookdao
 done - make a real query!
-done -  make actual logic - single found, multiple found, none found
+done - make actual logic - single found, multiple found, none found
 done - industry identifiers
-done -  test searchService findAuthor method
+done - test searchService findAuthor method
 done - implement copyCompleteDetailsIntoBook
 done - add "old" entries in testCopyDetailsAuthor
 done - test copyAuthorsIntoBook method CS
@@ -135,7 +114,7 @@ done - createCatalogEntryFromBookModel - add artist handling / db
 done - revisit enter book - single line author, illustrator - fill in details afterwards
 done - tie in fill in details in controller
 done - page for assigning details...
-done - problems assigning details page - assigndetail id is null, book id is null.  ponder
+done - problems assigning details page - assigndetail id is null, book id is null. ponder
 done - debug empty publisher in assigndetails.
 done - debug author not saved in addEntry (CS)
 done - block out 3 divs - main info, shelving info, additional details (underneath)
@@ -157,7 +136,7 @@ done - put "real" clientkey in controller
 done - what about some sort of number - imported and errors to be shown on new page
 done - make page
 done - make it green - test CSI createCatalogEntriesFromList
-done - CSI create..FromList - needs two things - check for duplicates  (, and escape apostrophes (check and see if this is necessary))
+done - CSI create..FromList - needs two things - check for duplicates (, and escape apostrophes (check and see if this is necessary))
 nevermind - test SSI findBookByClientId
 done - add to menu
 done - try it out
@@ -170,14 +149,14 @@ done - remove displays from BookModel
 done - correct show.jspx to not send Disps.
 done - remove disps from BookModel
 done - check classification - only english stuart little is classified, 
-done -   and it's classified incorrectly!!!
+done - and it's classified incorrectly!!!
 done - test - client book id in existing add book
 
 ** MASTER WIDGET **
 
 done - basic rendering is done. now need to 1) wire up to clicks and 2) do initial set on image - setCurrentId or the like...
 done - check in, merge branch into master
-done - select widget  ShelfClassSelect 
+done - select widget ShelfClassSelect 
 done - need to pass in - jsonText, input to be updated, change
 done - next try SelectWidget alone without any contained widgets
 done - mock up - wiping out and in is done
@@ -193,7 +172,7 @@ done - reset isDebug to false in load-scripts when done.
 
 done - entities created, test made and failing
 done - make test green!
-done - delete existing words before adding again!!  :-)
+done - delete existing words before adding again!! :-)
 done - make BookSearchCriteria
 done - begin building SSI.findBooksForCriteria()
 done - backend search done for title, author, shelfclass, keyword.
@@ -215,8 +194,8 @@ done - add on change resubmit to sortby box.
 done - results.jsp - get rid of unused javascript
 done - change Edit to Display or show - using polite label
 nevermind - make author search into author / illustrator search
-done - back end -  classification, status, detail status, title, author, publisher
-done - back end -  booktypedone - display, same as user search
+done - back end - classification, status, detail status, title, author, publisher
+done - back end - booktypedone - display, same as user search
 done - new controller - detailsearch
 done - new jsp - adminsearch
 done - getting clients up and running - make implementations look at dao
@@ -224,17 +203,17 @@ done - admin search - search by classification, status, detail status, title, au
 done - sort by headers
 skipping - update status, classification by checkbox
 done - copy jsps out of way of crazy updates
-done - SSI breakoutByBookField - returns HashMap - field, sum, receives field as parameter	
-done - cast difficulty for bookid as number....	
+done - SSI breakoutByBookField - returns HashMap - field, sum, receives field as parameter 
+done - cast difficulty for bookid as number.... 
 done - dashboard - total in catalog, breakout by status - fancy stuff later on
 done - make controller
 done - make jsp
 done - admin search - make shelfclass select nice - 
-done  -	widget - show passed key
-done - 	put select option on top
-done - 	make sure "select" shows.... on page load- move to widget
-done -	plus - toggle for showtext
-done -	plus - toggle for add empty select
+done - widget - show passed key
+done - put select option on top
+done - make sure "select" shows.... on page load- move to widget
+done - plus - toggle for showtext
+done - plus - toggle for add empty select
 done - 17 edit classification, status, book type, language
 
 ** MASTER SECURITY **
@@ -256,10 +235,10 @@ done - try login page
 
 **** CLASSES ****
 
-done - create new class list		   
+done - create new class list 
 done - structure - LendingService
-done - make  SchoolGroupController
-done - relationship student -> class	
+done - make SchoolGroupController
+done - relationship student -> class 
 done - class list, new class page
 done - addstudent backend and test skeletons are done
 done - write tests, addnew and remove
@@ -267,17 +246,17 @@ done - make tests green, addnew and remove
 done - test, and implement assignStudentToClass
 done - test written
 done - implement assignStudentsToClass
-done - edit class page - 	cancel for  different entries, 
-done - edit class page - 	appropriate text for submit buttons
+done - edit class page - cancel for different entries, 
+done - edit class page - appropriate text for submit buttons
 done - edit class page - appropriate sorting....
 done - page - class list - with add class showing teacher name, student count, display link
 done - display page is really display/edit with - add student function, clear student list function, change teacher
-done -  display page - add ability to add students
+done - display page - add ability to add students
 done - also - delete a class (deletes teacher, unattaches students)
 done - begin work on front end for classes
 done - edit class page - add edit student,
 done - fix messages - edit, and appropriate title
-done - add save function!!  (cancel....) 
+done - add save function!! (cancel....) 
 done - classlist page - add delete class
 done - fill in controller
 done - fill in page
@@ -287,28 +266,28 @@ done - validations - SGC, addNewStudent
 
 **** LENDING BRANCH *****
 
-done - 	test/implement lendBook
-done - 	test/implement returnBook
+done - test/implement lendBook
+done - test/implement returnBook
 done - run once without transaction to insert test data - for checkout - returns, we're on our own!!
 done - create LendingRecordDisplay
 done - create sql LendingRecordDisplay 
 done - create LendingSearchCriteria
-done - trouble with authors and books - multiple authors will produce multiple lines for loan record.  Solve this by making it into a tuple - lrd, book.then postprocess query results adding book to lrd.  ugly, but no more time for this!!!add isteacher to sql, LRD
+done - trouble with authors and books - multiple authors will produce multiple lines for loan record. Solve this by making it into a tuple - lrd, book.then postprocess query results adding book to lrd. ugly, but no more time for this!!!add isteacher to sql, LRD
 done - begin work on sqls
-done - 	then - LendingSearchService, Lending display objects, LendingSearchCriteria
+done - then - LendingSearchService, Lending display objects, LendingSearchCriteria
 done - add Where clause to LSS
 done - mockup of controller to flesh out LS calls
 done - -- for querying type --- in person, define type @Column(name="ENTITY_TYPE",insertable=false,updatable=false)
 done - -- puzzle - multiple authors doesn't lead to multiple lines....
-done -   	CMSI - getStudentsForClass test / implement / test
-done -	LoginSI - getClientForUsername test / implementt / test
-done -	CMSI getClassInfoForClient test / implement / test
-done -	LSI - getCheckedOutBooksForClass test / implement / test
-done - 	LSI - getCheckedOutBooksForUser test / implement / test
+done - CMSI - getStudentsForClass test / implement / test
+done - LoginSI - getClientForUsername test / implementt / test
+done - CMSI getClassInfoForClient test / implement / test
+done - LSI - getCheckedOutBooksForClass test / implement / test
+done - LSI - getCheckedOutBooksForUser test / implement / test
 done - NOTE - don't delete teachers - set to inactive!! used in loanhistory...
-done - 	LSI getAllCheckedOutForClient
-done - 	LSI getAllOverdueForClient
-done - 	LSI getLendingLimitForUser
+done - LSI getAllCheckedOutForClient
+done - LSI getAllOverdueForClient
+done - LSI getLendingLimitForUser
 done - test and implement new backend methods....
 done - begin putting together pages, and wiring to controller
 done - beginning - front end. first pass ugly - blasting through pages, and then prettify
@@ -320,7 +299,7 @@ done - checkout - works
 done - return pages
 done - first pass checkedout
 done - first pass overdue summary
-done -  graceful exit when session has timed out
+done - graceful exit when session has timed out
 done - oh- update status of book upon checkout and return
 done - clear book / bookid after checkout
 done - clear bookid after book is found
@@ -336,9 +315,9 @@ done - selectbook.jspx
 done - make the pages polite (and bilingual)
 done - validations - borrower, book
 done - add checkout for teacher
-done  - good solution started with FO, and JAXB. POC  done
-done - 	get xsls into correct spots.
-done - 	flesh out overdue report
+done - good solution started with FO, and JAXB. POC done
+done - get xsls into correct spots.
+done - flesh out overdue report
 done - get generated into correct spots - not at all, actually! No thanks!!
 later - create java TotalSummaryReport
 done - begin work on report xsl 
@@ -363,18 +342,18 @@ done - choosedetails isbn -
 done - new controller method which searches by isbn
 done - backend which dumps single book into founddetails
 done - BS - assembleBarcodeSheetForBooks implemented and tested
-done - started  - fill out BarcodeSheet to produce xml
-nevermind - 	make rows for barcode sheet 
-done - 	containing element for barcodes				      
+done - started - fill out BarcodeSheet to produce xml
+nevermind - make rows for barcode sheet 
+done - containing element for barcodes 
 done - assembleBarcodeSheetForClass test / implement / test
 done - add messages - from context
-done - 	books done, but ugly
+done - books done, but ugly
 done - bring sheets to front end
-done - 	class - using select for class, int messages
-done - 	finish books - add select, int messages
+done - class - using select for class, int messages
+done - finish books - add select, int messages
 done - test import lockdown
-done - begin assigncodestobook backend	
-done - success page  need to make it pretty!!
+done - begin assigncodestobook backend 
+done - success page need to make it pretty!!
 done - success page i18 messages / labels
 done - ??? isbn that doesn't return results.....
 done - issues - choosebook - no default....
@@ -385,15 +364,15 @@ done - returnBookByBookid, backend for LendingService returnByBookId()
 done - ensure all pages are there (from view)
 done - titleedit - add validation for title
 done - basic programming assign codes to book done - 
-done -   problem with imagebase in widget
-done -   layout of pages
-done -   run-through for new book - current null pointer exception
+done - problem with imagebase in widget
+done - layout of pages
+done - run-through for new book - current null pointer exception
 done - validation
 done - /admin locked
-done  test - new - code not found - title and assign code
+done test - new - code not found - title and assign code
 done - assignedbarcode - check in new bookk - already exists. (save extra clicks)
 done - cancel button to isbnedit, editbook, titleedit
-done - general - this has already been assigned.  add - Please try a different barcode	
+done - general - this has already been assigned. add - Please try a different barcode 
 done - test - existing - no code - code found - assign code
 done - test - existing - no code - code not found - assign code
 done - test - new - code found - assign code
@@ -406,16 +385,16 @@ done - if book exists - no title error.... (newbook)
 
 **** MASTER - Bugfixes before demo ******
 done - make summary page (checkout and returns)
-done - LendingServiceImpl  - coding and testing DailySummary
+done - LendingServiceImpl - coding and testing DailySummary
 done - making xml
 done - making xsl (french translation)
 done - changes done on paper
 done - take it for a (bumpy) test drive...
 done - default to new number.... create page
-done -  move / change assigncode to add new book
-done -  change link name if no barcodes
+done - move / change assigncode to add new book
+done - change link name if no barcodes
 done - reintegrate into bookcontroller
-done -  create page - no isbn available button not working
+done - create page - no isbn available button not working
 done - Install language
 done - French translations class summary report
 done - tweaking multicheckout, barcode
@@ -424,14 +403,14 @@ done - remove images from catalog display
 done - all classifications for french missing!
 done - assign code - isbn not available broken
 
-done -  Verify code page
-done -  run through entering new books.
-done -  get online
+done - Verify code page
+done - run through entering new books.
+done - get online
 done - French translations, Web
-done - 	last - application.messages
-done - 	check all reports
+done - last - application.messages
+done - check all reports
 done - Petite biblio domain
-done -  Rework menu
+done - Rework menu
 done - Test data class
 done - Test data
 done - encoding - funny characters
@@ -440,15 +419,15 @@ done - /classes lockdown
 done - book display in verify - pass correct arguments - show image, if available.
 done - Get rid of NewBookController and friends
 done - attribute code - on load to isbn nr
-done - test - isbn in add book   ... in createNewBook (BookController) and analog for assign code, add isbn to titleedit, and always redirect there if details aren't found....
+done - test - isbn in add book ... in createNewBook (BookController) and analog for assign code, add isbn to titleedit, and always redirect there if details aren't found....
 done - pdfwrangler not in french - class codes
-done - multico -> different person -> book already checked out -> goes back to multico page with "success" message AND error message!  
-	different person from multico should throw error - message - finish your checkout first!! with tips
+done - multico -> different person -> book already checked out -> goes back to multico page with "success" message AND error message! 
+different person from multico should throw error - message - finish your checkout first!! with tips
 done - edit link broken from detailed search
 done - broken link - add book (bookController)
 done - error online csr when only one class has books checked out - french and english
-	error occurs when nothing checked out, but returned, or overdue exist.
-	returned books not showing up, and page break not happening between classes. (no overdue)
+error occurs when nothing checked out, but returned, or overdue exist.
+returned books not showing up, and page break not happening between classes. (no overdue)
 done - validation - add books - looking for title when not necessary
 
 *** DENIM BRANCH (look and feel) ****
@@ -474,38 +453,3 @@ done - put new look and feel in default.
 
 ----- end complete history ----
 
-******* LATER DEVPT ******
-
-bookstatus - processing - after book bought, but before it's shelved (waiting for cover, for example).  Screen to enter when shelved??
-not now - usecase 16.5 findOrCreateArtist - to reuse names in db
-not now - usecase 16.5 artist name handling in general not done - needs handling in CS
-puzzle - how to insert a validator into controller test - basically, just do a different test to test Validator.  Stand alone test.
-createCatalogEntryFromBookModel - graceful handling of exception calling google books api
-assignBookDetails - graceful handling of exception
-superadmin - wear hat.... (for client)
-LATER - ONE daily summary for all classes.  Handling of checkedout on reports run after date must include display and history....
-
-******* NOTES ******
-
-1. Testing filling in books after import of details... Separate Google calls into their own
-   service, which then can be mocked - and isolated for the test.
-   
-2. Indexing would be nice in future as aspect watching object implementing TextIndex or the like.  Not doing
-   for now, because not really necessary.  Feels too pretty for initial implementation. 
-   
-3. ignored words by client!!     
-
-4. usersort of books with ASC and DESC in selectkeys.
-
-5. details fill in - add language in assign details!  don't want to use nl!!
-
-6. not needed - handled programatically - with sql.later - client setting for uses numbers for ids - to be enforced in validation, and used for sorting in  SSI
-
-7. for later - limit of results, pagination 
-
-8. think about it - clientbookid not necessary if using bar codes.  (use clientbookid instead)
-
-9. at some point -- different checkout modules.  Making by class, with barcode - possibly by student? (like the grand mareschale??)
-
-10. somewhat quick - filter (with select buttons, like for class, or in a select) in return page - show class only, student only, or all
-******* USE CASE MASTER ******
