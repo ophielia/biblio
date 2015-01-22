@@ -18,12 +18,14 @@ Front-End:
 focus on username on login
 autocomplete off everywhere
 verify book code - nice and thick!
+checkout person page with code - nice and thick!
 check-all in admin search
 check cancel throughout class pages
 good favicon.ico
 plus, REALLY long sessions
 default language french
 take away themes
+Better navigation - menu "down to bottom" and icons in pages with main functions.
 
 
 Bug Fixes: 
@@ -50,6 +52,10 @@ Inventory:
 	inventory progress page
 
 Show / Hide Barcode depending upon client setting (tag library)	
+
+History for Student
+
+History for Book
 	
 history of daily summary (for a previous day)
 
@@ -74,3 +80,14 @@ import with format including isbn
 ??usersort of books with ASC and DESC in selectkeys.
 
 Location! - Albas room, esther's room, etc.
+
+
+
+Bigger Development questions:
+how to generalize for other schools?  
+
+other institutions??
+
+private user??
+
+

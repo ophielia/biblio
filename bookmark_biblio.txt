@@ -2,19 +2,13 @@ Branch - MASTER - online for demo
 
 
 *** to get ready for demo ***
- 
-assigncode to book which already has assigned.
+initial version ready!!
 
-OFFLINE - make cards for users and books
+OFFLINE - finish making cards for users and books
 
 
 ---- begin commit changes ----
 
-done - also - validation - check length of barcodes.
-done - editall verify....
-done - overdue books - last name (or first initial of)
-done - emprunter message - bigandbold
-done - modify book doesn't save with isbn 9782867268915
 
 ---- end commit changes ----
 
@@ -32,6 +26,12 @@ done - Edit info box in different color
 done - "No title" books go to full edit
 done - Return by class - Severus de classe 
 done - error assign code to book - title, then isbn.
+done - also - validation - check length of barcodes.
+done - editall verify....
+done - overdue books - last name (or first initial of)
+done - emprunter message - bigandbold
+done - modify book doesn't save with isbn 9782867268915
+not now - think about this.... in edit page?? it's own page?? assigncode to book which already has assigned.
 
 
 
