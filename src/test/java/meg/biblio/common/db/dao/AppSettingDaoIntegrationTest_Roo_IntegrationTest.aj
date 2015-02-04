@@ -121,16 +121,4 @@ privileged aspect AppSettingDaoIntegrationTest_Roo_IntegrationTest {
         Assert.assertNotNull("Expected 'AppSettingDao' identifier to no longer be null", obj.getId());
     }
     
-    @Test
-    public void AppSettingDaoIntegrationTest.testDelete() {
-        AppSettingDao obj = dod.getRandomAppSettingDao();
-        Assert.assertNotNull("Data on demand for 'AppSettingDao' failed to initialize correctly", obj);
-        Long id = obj.getId();
-        Assert.assertNotNull("Data on demand for 'AppSettingDao' failed to provide an identifier", id);
-        obj = appSettingRepository.findOne(id);
-        appSettingRepository.delete(obj);
-        appSettingRepository.flush();
-        Assert.assertNull("Failed to remove 'AppSettingDao' with identifier '" + id + "'", appSettingRepository.findOne(id));
-    }
-    
 }

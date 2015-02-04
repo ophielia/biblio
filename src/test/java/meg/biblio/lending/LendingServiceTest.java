@@ -215,49 +215,22 @@ public class LendingServiceTest {
 
 	@Test
 	public void testReturn() {
-		// get default client
-		ClientDao client = clientService.getClientForKey(1L);
-		Long clientid = client.getId();
+		Long clientid = clientService.getTestClientId();
+		// checkout book (book1id) to user (student3id)
+		LoanRecordDao lr = lendingService.checkoutBook(bookid1, student3id, clientid);
+		
+		// service call
+		LoanHistoryDao lh = lendingService.returnBook(lr.getId(), clientid);
 
-		// get loanrecords - and select one
-		LoanRecordDao selected = null;
-		List<LoanRecordDao> checkedout = lrRepo.findForClient(client);
-		for (LoanRecordDao lr : checkedout) {
-			if (lr != null) {
-				selected = lr;
-			}
-		}
-		if (selected != null) {
-			// holdinfo
-			PersonDao person = selected.getBorrower();
-			BookDao book = selected.getBook();
-			Long loanrecordid = selected.getId();
-			// service call
-			LoanHistoryDao lhist = lendingService.returnBook(selected.getId(),
-					clientid);
-
-			// ensure - loan record no longer exists
-			LoanRecordDao testnull = lrRepo.findOne(loanrecordid);
-			Assert.assertNull(testnull);
-			// loanhistory record exists, with return date of today, studentid
-			// and bookid as in loan record
-			boolean found = false;
-			List<LoanHistoryDao> returned = lhRepo.findForClient(client);
-			for (LoanHistoryDao record : returned) {
-				if (record.getId().longValue() == lhist.getId().longValue()) {
-					found = true;
-					Assert.assertEquals(person.getId(), record.getBorrower()
-							.getId());
-					Assert.assertEquals(book.getId(), record.getBook().getId());
-					// check string here...
-					break;
-				}
-			}
-			Assert.assertTrue(found);
-		} else {
-			// should fail - nothing checkedout, so can't return
-			Assert.assertEquals(new Long(3), new Long(4));
-		}
+		Assert.assertNotNull(lh);
+		Assert.assertEquals(student3id,lh.getBorrower().getId());
+		Assert.assertEquals(bookid1,lh.getBook().getId());
+		
+		// now, check status of book
+		BookDao booktest = bookRepo.findOne(bookid1);
+		
+		Assert.assertNotEquals(new Long(CatalogService.Status.CHECKEDOUT), booktest.getStatus());
+	
 	}
 
 	@Test

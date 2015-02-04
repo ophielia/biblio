@@ -1,8 +1,10 @@
 Branch - MASTER - online for demo
 
+maven tests ....
+ClassManagementServiceTest
+LendingServiceTest
+RoleDaoIntegrationTest
 
-*** to get ready for demo ***
-initial version ready!!
 
 OFFLINE - finish making cards for users and books
 
@@ -53,6 +55,46 @@ for now, because not really necessary. Feels too pretty for initial implementati
 
 
 ******* LATER DEVPT ******
+
+DEMO 1.0
+
+Back-End Fine Points:
+	createCatalogEntryFromBookModel - graceful handling of exception calling google books api
+	assignBookDetails - graceful handling of exception
+	save book AFTER detail search (in case bad isbn was entered.....)
+
+Front-End:
+	focus on username on login
+	autocomplete off everywhere
+	verify book code - nice and thick!
+	checkout person page with code - nice and thick!
+	check-all in admin search
+	default language french
+	take away themes
+	Better navigation - menu "down to bottom" and icons in pages with main functions.
+
+
+Bug Fixes: 
+	blank artist names - lots of them??  should be only one???
+	details fill in - add language in assign details! don't want to use nl!!
+
+Features: 
+	Client Editing (user, and superadmin)
+		superadmin - wear hat.... (for client)
+		allow admin to enable / disable / delete logins
+		superadmin create new/edit clients
+		settings page for admin (client version of editing their own client)
+		testdata/manage - easy access
+	
+	Detail Search Rework
+		split out search calls into separate manager
+		move book into book and book details - search book details as first search
+		some sort of count / sorting for progressive fill ( don't always search first the books which have been searched (and failed) many times)
+		build in amazon search
+		some sort of driving search logic - which one first?  stop after first, second? progressive fill?
+		images throughout app - assign code - code success - verify - lists - checkout ( new search will have images?? i hope???)
+	
+	pagination on search results
 
 
 

@@ -62,6 +62,14 @@ public class ReportGeneratorTest {
 	private FopFactory fopFactory = FopFactory.newInstance();
 	private TransformerFactory tFactory = TransformerFactory.newInstance();
 
+	
+	@Test
+	public void markerMethod() {
+		
+	}
+	
+	
+	/* Basically a development tool - not a test!!  
 	@Test
 	public void testMakeAnXml() throws JAXBException {
 		Long clientid = clientService.getTestClientId();
@@ -147,7 +155,7 @@ Long clientid = clientService.getTestClientId();
 
 
 	}
-
+*/
 	
 /*
 	@Autowired

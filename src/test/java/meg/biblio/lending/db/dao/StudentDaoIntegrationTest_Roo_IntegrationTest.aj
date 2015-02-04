@@ -121,16 +121,4 @@ privileged aspect StudentDaoIntegrationTest_Roo_IntegrationTest {
         Assert.assertNotNull("Expected 'StudentDao' identifier to no longer be null", obj.getId());
     }
     
-    @Test
-    public void StudentDaoIntegrationTest.testDelete() {
-        StudentDao obj = dod.getRandomStudentDao();
-        Assert.assertNotNull("Data on demand for 'StudentDao' failed to initialize correctly", obj);
-        Long id = obj.getId();
-        Assert.assertNotNull("Data on demand for 'StudentDao' failed to provide an identifier", id);
-        obj = studentRepository.findOne(id);
-        studentRepository.delete(obj);
-        studentRepository.flush();
-        Assert.assertNull("Failed to remove 'StudentDao' with identifier '" + id + "'", studentRepository.findOne(id));
-    }
-    
 }

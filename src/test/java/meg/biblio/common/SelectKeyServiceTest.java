@@ -32,6 +32,7 @@ public class SelectKeyServiceTest {
 
 	@Before
 	public void setup() {
+
 		// create key for testing
 		SelectKeyDao key = new SelectKeyDao();
 		key.setLookup(testkey);
@@ -43,6 +44,7 @@ public class SelectKeyServiceTest {
 		newval.setDisplay("one");
 		newval.setLanguagekey("en");
 		newval.setValue("1");
+		newval.setSelectkey(key);
 		values.add(newval);
 		newval = new SelectValueDao();
 		newval.setActive(true);
@@ -50,6 +52,7 @@ public class SelectKeyServiceTest {
 		newval.setDisplay("two");
 		newval.setLanguagekey("en");
 		newval.setValue("2");
+		newval.setSelectkey(key);
 		values.add(newval);
 		newval = new SelectValueDao();
 		newval.setActive(true);
@@ -57,6 +60,7 @@ public class SelectKeyServiceTest {
 		newval.setDisplay("three");
 		newval.setLanguagekey("en");
 		newval.setValue("3");
+		newval.setSelectkey(key);
 		values.add(newval);
 		// now, same values in french
 		newval = new SelectValueDao();
@@ -65,6 +69,7 @@ public class SelectKeyServiceTest {
 		newval.setDisplay("un");
 		newval.setLanguagekey("fr");
 		newval.setValue("1");
+		newval.setSelectkey(key);
 		values.add(newval);
 		newval = new SelectValueDao();
 		newval.setActive(true);
@@ -72,6 +77,7 @@ public class SelectKeyServiceTest {
 		newval.setDisplay("deux");
 		newval.setLanguagekey("fr");
 		newval.setValue("2");
+		newval.setSelectkey(key);
 		values.add(newval);
 		newval = new SelectValueDao();
 		newval.setActive(true);
@@ -79,16 +85,19 @@ public class SelectKeyServiceTest {
 		newval.setDisplay("trois");
 		newval.setLanguagekey("fr");
 		newval.setValue("3");
+		newval.setSelectkey(key);
 		values.add(newval);
 		// now - all values to the key
 		key.setSelectvalues(values);
 
 		// save the key
-		keyRepo.saveAndFlush(key);
+		key = keyRepo.save(key);
+
 	}
 
 	@Test
 	public void testGetDisplayAsHash() {
+
 		HashMap<Long, String> displays = selectService.getDisplayHashForKey(
 				testkey, "en");
 

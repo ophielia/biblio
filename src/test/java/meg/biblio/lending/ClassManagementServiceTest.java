@@ -322,7 +322,7 @@ public class ClassManagementServiceTest {
 		SchoolGroupDao resultgroup = sgroupRepo.findOne(classid);
 		TeacherDao resultteacher = teacherRepo.findOne(teacherid);
 		Assert.assertNull(resultgroup);
-		Assert.assertNull(resultteacher);
+		Assert.assertFalse(resultteacher.getActive());
 
 		for (StudentDao student : studentids) {
 			StudentDao check = studentRepo.findOne(student.getId());
@@ -411,7 +411,8 @@ public class ClassManagementServiceTest {
 		// Assert - all classes for client have no students
 		List<SchoolGroupDao> classes = classService.getClassesForClient(1L);
 		for (SchoolGroupDao sclass : classes) {
-			Assert.assertNull(sclass.getStudents());
+			int size = sclass.getStudents()==null?0:sclass.getStudents().size();
+			Assert.assertEquals(0,size);
 		}
 
 		// Assert students all have no classes
