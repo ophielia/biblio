@@ -13,7 +13,7 @@ import javax.validation.ConstraintViolationException;
 import meg.biblio.catalog.db.FoundWordsDao;
 import meg.biblio.catalog.db.FoundWordsDaoDataOnDemand;
 import meg.biblio.catalog.db.FoundWordsRepository;
-import meg.biblio.catalog.db.dao.BookDaoDataOnDemand;
+import meg.biblio.catalog.db.dao.BookDetailDaoDataOnDemand;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -26,7 +26,7 @@ privileged aspect FoundWordsDaoDataOnDemand_Roo_DataOnDemand {
     private List<FoundWordsDao> FoundWordsDaoDataOnDemand.data;
     
     @Autowired
-    BookDaoDataOnDemand FoundWordsDaoDataOnDemand.bookDaoDataOnDemand;
+    BookDetailDaoDataOnDemand FoundWordsDaoDataOnDemand.bookDetailDaoDataOnDemand;
     
     @Autowired
     FoundWordsRepository FoundWordsDaoDataOnDemand.foundWordsRepository;

@@ -23,7 +23,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -128,8 +127,8 @@ public class AssignBarcodeController {
 		// choose return view (isbnedit if no details, otherwise editbook)
 		assignCodeModel.setEditMode(EditMode.editbook);
 		String returnview = "barcode/editbook";
-		if (book.getDetailstatus().longValue() != CatalogService.DetailStatus.DETAILFOUND) {
-			if (book.getTitle()!=null && book.getTitle().equals(CatalogService.titledefault)) {
+		if (book.getBookdetail().getDetailstatus().longValue() != CatalogService.DetailStatus.DETAILFOUND) {
+			if (book.getBookdetail().getTitle()!=null && book.getBookdetail().getTitle().equals(CatalogService.titledefault)) {
 				assignCodeModel.setTitle("");
 				assignCodeModel.setEditMode(EditMode.title);
 				uiModel.addAttribute("assignCodeModel",assignCodeModel);
@@ -172,8 +171,8 @@ public class AssignBarcodeController {
 		// choose return view (isbnedit if no details, otherwise editbook)
 		assignCodeModel.setEditMode(EditMode.editbook);
 		String returnview = "barcode/editbook";
-		if (book.getDetailstatus().longValue() != CatalogService.DetailStatus.DETAILFOUND) {
-			if (book.getTitle()!=null && book.getTitle().equals(CatalogService.titledefault)) {
+		if (book.getBookdetail().getDetailstatus().longValue() != CatalogService.DetailStatus.DETAILFOUND) {
+			if (book.getBookdetail().getTitle()!=null && book.getBookdetail().getTitle().equals(CatalogService.titledefault)) {
 				assignCodeModel.setTitle("");
 				assignCodeModel.setEditMode(EditMode.title);
 				uiModel.addAttribute("assignCodeModel",assignCodeModel);
@@ -240,8 +239,8 @@ public class AssignBarcodeController {
 		// choose return view (isbnedit if no details, otherwise editbook)
 		assignCodeModel.setEditMode(EditMode.editbook);
 		String returnview = "barcode/editbook";
-		if (book.getDetailstatus().longValue() != CatalogService.DetailStatus.DETAILFOUND) {
-			if (book.getTitle()!=null && book.getTitle().equals(CatalogService.titledefault)) {
+		if (book.getBookdetail().getDetailstatus().longValue() != CatalogService.DetailStatus.DETAILFOUND) {
+			if (book.getBookdetail().getTitle()!=null && book.getBookdetail().getTitle().equals(CatalogService.titledefault)) {
 				assignCodeModel.setTitle("");
 				assignCodeModel.setEditMode(EditMode.title);
 				uiModel.addAttribute("assignCodeModel",assignCodeModel);
@@ -301,7 +300,7 @@ public class AssignBarcodeController {
 		
 		// update book - if changed
 		// fill in details if not detailfound, and isbn exists
-		boolean fillindetails = model.getBook().hasIsbn() && !(model.getDetailstatus().longValue()==CatalogService.DetailStatus.DETAILFOUND);
+		boolean fillindetails = model.hasIsbn() && !(model.getDetailstatus().longValue()==CatalogService.DetailStatus.DETAILFOUND);
 		try {
 			model = catalogService.updateCatalogEntryFromBookModel(clientid, model, fillindetails);
 			assignCodeModel.setBook(model.getBook());

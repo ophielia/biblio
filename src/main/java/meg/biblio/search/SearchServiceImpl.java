@@ -21,6 +21,7 @@ import meg.biblio.catalog.CatalogService;
 import meg.biblio.catalog.db.FoundWordsDao;
 import meg.biblio.catalog.db.dao.ArtistDao;
 import meg.biblio.catalog.db.dao.BookDao;
+import meg.biblio.catalog.db.dao.BookDetailDao;
 import meg.biblio.catalog.db.dao.PublisherDao;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -244,6 +245,7 @@ public class SearchServiceImpl implements SearchService {
 		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
 		CriteriaQuery<BookDao> c = cb.createQuery(BookDao.class);
 		Root<BookDao> bookroot = c.from(BookDao.class);
+		Join<BookDao,BookDetailDao> bookdetail= bookroot.join("bookdetail");
 		c.select(bookroot);
 
 	
@@ -252,7 +254,7 @@ public class SearchServiceImpl implements SearchService {
 			
 			// get where clause
 			Expression sortexpr = null;
-			List<Predicate> whereclause = getPredicatesForCriteria(criteria,cb,bookroot,sortexpr);
+			List<Predicate> whereclause = getPredicatesForCriteria(criteria,cb,bookroot,bookdetail, sortexpr);
 			
 			// adding where clause
 			c.where(cb.and(whereclause.toArray(new Predicate[whereclause.size()])));
@@ -262,12 +264,12 @@ public class SearchServiceImpl implements SearchService {
 			List<Expression> exprlist = new ArrayList<Expression>();
 			if (sortexpr==null) {
 				if (criteria.getOrderby()==BookSearchCriteria.OrderBy.AUTHOR) {
-					Join<BookDao, ArtistDao> authorjoin = bookroot.join("authors");
+					Join<BookDao, ArtistDao> authorjoin = bookdetail.join("authors");
 					sortexpr=authorjoin.get("lastname");
 				} else if (criteria.getOrderby()==BookSearchCriteria.OrderBy.DATEADDED) {
 					sortexpr=bookroot.get("createdon");
 				} else if (criteria.getOrderby()==BookSearchCriteria.OrderBy.TITLE) {
-					sortexpr=bookroot.get("title");
+					sortexpr=bookdetail.get("title");
 				} else if (criteria.getOrderby()==BookSearchCriteria.OrderBy.SHELFCLASS) {
 					sortexpr=bookroot.get("shelfclass");
 				} else if (criteria.getOrderby()==BookSearchCriteria.OrderBy.BOOKID) {
@@ -281,7 +283,7 @@ public class SearchServiceImpl implements SearchService {
 					sortexpr=bookroot.get("detailstatus");
 				} else  {
 					// default
-					sortexpr=bookroot.get("title");
+					sortexpr=bookdetail.get("title");
 				}  
 			} 
 			exprlist.add(sortexpr);
@@ -330,19 +332,20 @@ public class SearchServiceImpl implements SearchService {
 		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
 		CriteriaQuery<Tuple> c = cb.createQuery(Tuple.class);
 		Root<BookDao> bookroot = c.from(BookDao.class);
-		Join<BookDao,FoundWordsDao> foundwords = bookroot.join("foundwords"); 
+		Join<BookDao, BookDetailDao> bookdetail = bookroot.join("bookdetail");
+		Join<BookDetailDao,FoundWordsDao> foundwords = bookdetail.join("foundwords"); 
 		Expression sumExpression = cb.sum(foundwords.<Number>get("countintext"));
 		Expression countExpression = cb.count(foundwords.<Number>get("word"));
 		Expression factorExp = cb.quot(countExpression,listsize);
 		Expression pertExp = cb.prod(factorExp,sumExpression);
-		c.multiselect(bookroot, sumExpression,countExpression,pertExp)
-		.groupBy(bookroot);
+		c.multiselect(bookroot,bookdetail, sumExpression,countExpression,pertExp)
+		.groupBy(bookroot,bookdetail);
 		
 		if (criteria != null) {
 
 			// get where clause
 			Expression sortexpr = null;
-			List<Predicate> whereclause = getPredicatesForCriteria(criteria,cb,bookroot,sortexpr);
+			List<Predicate> whereclause = getPredicatesForCriteria(criteria,cb,bookroot,bookdetail, sortexpr);
 			
 			// add keyword(s) to where clause
 			if (keywordlist!=null) {
@@ -370,7 +373,7 @@ public class SearchServiceImpl implements SearchService {
 				} else if (criteria.getOrderby()==BookSearchCriteria.OrderBy.DATEADDED) {
 					sortexpr=bookroot.get("createdon");
 				} else if (criteria.getOrderby()==BookSearchCriteria.OrderBy.TITLE) {
-					sortexpr=bookroot.get("title");
+					sortexpr=bookdetail.get("title");
 				} else if (criteria.getOrderby()==BookSearchCriteria.OrderBy.SHELFCLASS) {
 					sortexpr=bookroot.get("shelfclass");
 				} else if (criteria.getOrderby()==BookSearchCriteria.OrderBy.BOOKID) {
@@ -384,7 +387,7 @@ public class SearchServiceImpl implements SearchService {
 					sortexpr=bookroot.get("detailstatus");
 				} else  {
 					// default
-					sortexpr=bookroot.get("title");
+					sortexpr=bookdetail.get("title");
 				}  
 			} 
 			orderlist.add(sortexpr);
@@ -484,7 +487,7 @@ public class SearchServiceImpl implements SearchService {
 	}
 
 	private List<Predicate> getPredicatesForCriteria(
-			BookSearchCriteria criteria, CriteriaBuilder cb, Root<BookDao> bookroot, Expression sortexpr) {
+			BookSearchCriteria criteria, CriteriaBuilder cb, Root<BookDao> bookroot, Join<BookDao, BookDetailDao> bookdetail, Expression sortexpr) {
 		// put together where clause
 		List<Predicate> whereclause = new ArrayList<Predicate>();
 
@@ -498,7 +501,7 @@ public class SearchServiceImpl implements SearchService {
 			ParameterExpression<String> param = cb.parameter(String.class,
 					"title");
 			whereclause
-					.add(cb.like(cb.lower(bookroot.<String> get("title")), param));
+					.add(cb.like(cb.lower(bookdetail.<String> get("title")), param));
 
 		}
 		// shelfclass
@@ -535,7 +538,7 @@ public class SearchServiceImpl implements SearchService {
 		
 		// author
 		if (criteria.hasAuthor()) {
-			Join<BookDao, ArtistDao> authorjoin = bookroot.join("authors");
+			Join<BookDetailDao, ArtistDao> authorjoin = bookdetail.join("authors");
 			ArtistDao tomatch = catalogService.textToArtistName(criteria
 					.getAuthor());
 			// where firstname = firstname and middlename = middlename and
@@ -576,7 +579,7 @@ public class SearchServiceImpl implements SearchService {
 		}
 		// publisher
 		if (criteria.hasPublisher()) {
-			Join<BookDao, PublisherDao> publishjoin = bookroot
+			Join<BookDetailDao, PublisherDao> publishjoin = bookdetail
 					.join("publisher");
 
 			ParameterExpression<String> param = cb.parameter(String.class,

@@ -8,7 +8,6 @@ import java.util.List;
 import meg.biblio.catalog.CatalogService;
 import meg.biblio.catalog.db.dao.ArtistDao;
 import meg.biblio.catalog.db.dao.BookDao;
-import meg.biblio.catalog.db.dao.PublisherDao;
 import meg.biblio.catalog.web.model.BookModel;
 import meg.biblio.common.db.ImportBookRepository;
 import meg.biblio.common.db.dao.ImportBookDao;
@@ -22,7 +21,6 @@ import meg.tools.imp.MapperFactory;
 import meg.tools.imp.utils.Placeholder;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -137,25 +135,25 @@ public class ImportManager {
 					if (title.length()>0) {
 						// if doesn't exist and has title- put newbook in toimport list
 						BookDao book = new BookDao();
-						book.setClientbookid(newbook.getClientbookid());
-						book.setTitle(title);
+						BookModel model = new BookModel(book);
+						model.setClientbookid(newbook.getClientbookid());
+						model.setTitle(title);
 						if (newbook.getAuthor()!=null && newbook.getAuthor().trim().length()>0 ) {
 							List<ArtistDao> authors=new ArrayList<ArtistDao>();
 							ArtistDao author = catalogService.textToArtistName(newbook.getAuthor().trim());
 							authors.add(author);
-							book.setAuthors(authors);
+							model.setAuthors(authors);
 						}
 						if (newbook.getIllustrator()!=null && newbook.getIllustrator().trim().length()>0) {
 							List<ArtistDao> illustrators=new ArrayList<ArtistDao>();
 							ArtistDao illustrator = catalogService.textToArtistName(newbook.getIllustrator().trim());
 							illustrators.add(illustrator);
-							book.setIllustrators(illustrators);
+							model.setIllustrators(illustrators);
 						}
 						if (newbook.getPublisher()!=null && newbook.getPublisher().trim().length()>0) {
-							PublisherDao publisher=catalogService.findPublisherForName(newbook.getPublisher());
-							book.setPublisher(publisher);
+							model.setPublisher(newbook.getPublisher().trim());
 						}						
-						BookModel model = new BookModel(book);
+						
 						toimport.add(model);
 						
 					}else {

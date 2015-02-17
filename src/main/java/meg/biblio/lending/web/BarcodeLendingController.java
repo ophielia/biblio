@@ -6,8 +6,10 @@ import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 
+import meg.biblio.catalog.CatalogService;
 import meg.biblio.catalog.db.BookRepository;
 import meg.biblio.catalog.db.dao.BookDao;
+import meg.biblio.catalog.db.dao.BookDetailDao;
 import meg.biblio.common.AppSettingService;
 import meg.biblio.common.BarcodeService;
 import meg.biblio.common.ClientService;
@@ -55,6 +57,10 @@ public class BarcodeLendingController {
 	@Autowired
 	SelectKeyService keyService;
 
+
+	@Autowired
+	CatalogService catalogService;
+	
 	@Autowired
 	AppSettingService settingService;
 
@@ -108,9 +114,10 @@ public class BarcodeLendingController {
 	private String processBook(String code, BarcodeLendModel barcodeLendModel,
 			Model uiModel, BindingResult bindingErrors, ClientDao client) {
 		// get book for code
-		BookDao book = bookRepo.findBookByBarcode(code);
-
-		if (book != null) {
+		BookDao book = catalogService.findBookByBarcode(code);
+		BookDetailDao bookdetail = book.getBookdetail();
+		
+		if (bookdetail != null) {
 
 			// is checkout ? (do we have a person in model??)
 			boolean ischeckout = barcodeLendModel.getPerson() != null;
@@ -134,13 +141,13 @@ public class BarcodeLendingController {
 			// page
 			String firstname = barcodeLendModel.getPerson() != null ? barcodeLendModel
 					.getPerson().getFulldisplayname() : "";
-			String booktitle = book.getTitle();
-			String bookauthor = book.getAuthorsAsString();
-			String bookimg = book.getImagelink();
+			String booktitle = bookdetail.getTitle();
+			String bookauthor = bookdetail.getAuthorsAsString();
+			String bookimg = bookdetail.getImagelink();
 			if (ischeckout) {
 				Long borrowerid = barcodeLendModel.getPerson().getId();
 				// checkout book
-				lendingService.checkoutBook(book.getId(), borrowerid,
+				lendingService.checkoutBook(bookdetail.getId(), borrowerid,
 						client.getId());
 
 				// ---- put name, book title in uiModel
@@ -174,7 +181,7 @@ public class BarcodeLendingController {
 				// if return - return book and return success page
 				// return book
 				LoanHistoryDao lh = lendingService.returnBookByBookid(
-						book.getId(), client.getId());
+						bookdetail.getId(), client.getId());
 
 				firstname = lh.getBorrower().getFirstname();
 				// ---- put name, book title in uiModel
@@ -301,10 +308,10 @@ public class BarcodeLendingController {
 					// put book title and author and image (if available) in model
 					if (book!=null) {
 						// put book title and author and image (if available) in model
-						String title = book.getTitle();
-						String author = book.getAuthorsAsString();
+						String title = book.getBookdetail().getTitle();
+						String author = book.getBookdetail().getAuthorsAsString();
 						Boolean noauthor = author.trim().length()==0;
-						String imagelink = book.getImagelink();
+						String imagelink = book.getBookdetail().getImagelink();
 						uiModel.addAttribute("title",title);
 						uiModel.addAttribute("author",author);
 						uiModel.addAttribute("imagelink",imagelink);

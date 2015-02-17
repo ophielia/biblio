@@ -73,12 +73,12 @@ public class LoanHistoryDisplay {
 
 	@XmlElement
 	public String getBooktitle() {
-		return this.book.getTitle();
+		return this.book.getBookdetail().getTitle();
 	}
 
 	@XmlElement
 	public String getAuthor() {
-		return this.book.getAuthorsAsString();
+		return this.book.getBookdetail().getAuthorsAsString();
 	}
 
 

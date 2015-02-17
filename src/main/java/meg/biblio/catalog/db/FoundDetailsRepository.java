@@ -10,7 +10,7 @@ import org.springframework.roo.addon.layers.repository.jpa.RooJpaRepository;
 @RooJpaRepository(domainType = FoundDetailsDao.class)
 public interface FoundDetailsRepository {
 
-	@Query("select r from FoundDetailsDao as r where bookid = :id")
+	@Query("select r from FoundDetailsDao as r where bookdetailid = :id")
 	List<FoundDetailsDao> findDetailsForBook(@Param("id") Long id);
 	
 }

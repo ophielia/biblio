@@ -34,7 +34,7 @@ import org.springframework.transaction.annotation.Transactional;
 @ContextConfiguration(locations = "classpath:/META-INF/spring/applicationContext*.xml")
 @RunWith(SpringJUnit4ClassRunner.class)
 @Transactional
-public class CatalogServiceTest {
+public class DetailSearchServiceTest {
 
 	@Autowired
 	CatalogService catalogService;

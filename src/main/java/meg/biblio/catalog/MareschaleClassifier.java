@@ -58,9 +58,9 @@ public class MareschaleClassifier implements Classifier {
 			// get book type
 			Long booktype = book.getType();
 			if (booktype != null) {
-				if (book.getLanguage() != null
-						&& !book.getLanguage().equals("fr")) {
-					String language = book.getLanguage();
+				if (book.getBookdetail().getLanguage() != null
+						&& !book.getBookdetail().getLanguage().equals("fr")) {
+					String language = book.getBookdetail().getLanguage();
 					// english to english
 					if (language.equals("en")) {
 						classification = ClassKey.englishbooks;
@@ -78,8 +78,8 @@ public class MareschaleClassifier implements Classifier {
 				if (booktype != CatalogService.BookType.NONFICTION
 						&& booktype != CatalogService.BookType.REFERENCE) {
 					// catalog as fiction
-					ArtistDao author = book.getAuthors() != null
-							&& book.getAuthors().size() > 0 ? book.getAuthors()
+					ArtistDao author = book.getBookdetail().getAuthors() != null
+							&& book.getBookdetail().getAuthors().size() > 0 ? book.getBookdetail().getAuthors()
 							.get(0) : null;
 					if (author != null && author.getLastname() != null) {
 						String lastname = author.getLastname();

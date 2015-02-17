@@ -9,7 +9,6 @@ import meg.biblio.catalog.db.dao.ArtistDao;
 import meg.biblio.catalog.db.dao.BookDao;
 import meg.biblio.catalog.db.dao.ClassificationDao;
 import meg.biblio.catalog.db.dao.FoundDetailsDao;
-import meg.biblio.catalog.db.dao.PublisherDao;
 import meg.biblio.catalog.web.model.BookModel;
 import meg.biblio.common.db.dao.ClientDao;
 
@@ -54,21 +53,15 @@ public interface CatalogService {
 
 	BookModel loadBookModel(Long id);
 
-	List<BookDao> getAllBooks();
+
 
 	public ArtistDao textToArtistName(String text);
 
 	public List<FoundDetailsDao> getFoundDetailsForBook(Long id);
-	public void classifyBook(Long bookid) throws ClassNotFoundException, InstantiationException, IllegalAccessException;
-	public void assignDetailToBook(Long detailid, Long bookid)
-			throws GeneralSecurityException, IOException;
 
 	void createCatalogEntriesFromList(Long clientkey, List<BookModel> toimport);
 
-	public PublisherDao findPublisherForName(String text);
 
-	public void fillInDetailsForList(List<BookModel> searchobjects)
-			throws GeneralSecurityException, IOException;
 
 	public BookDao saveBook(BookDao book);
 	
@@ -87,9 +80,10 @@ public interface CatalogService {
 
 	BookDao updateBookStatus(Long id, long checkedout);
 
-	BookModel addToFoundDetails(Long clientkey, BookModel dbmodel);
 
 	void assignCodeToBook(String code, Long bookid);
+
+	BookDao findBookByBarcode(String code);
 
 
 

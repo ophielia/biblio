@@ -1,13 +1,45 @@
-Branch - MASTER - online for demo
+Branch - DEMO 1.0 - Demo1
+	DetailSearch rework
+	Client Editing
+	Bugfixes
+	Front End improvements
+	Better navigation
+		
+		
+done - Move to bookdetail
 
-maven tests ....
-ClassManagementServiceTest
-LendingServiceTest
-RoleDaoIntegrationTest
+done - massage tests... (for bookdetail)
+done - CService findBookByClientBookId - load / check BookDetail
+done - CService new - findBookByISBN - load / check BookDetail fill in
 
+tests still open - 
+	done - new BookModelValidatorTest  
+	done - SearchServiceTest
+	done - CatalogServiceTest	
+	done - LendingServiceTest
+	
+	
+done - BookModelValidatorTest 	
+		
+done - extricate search from catalog service
+done - BaseDetailFinder - isEligible		
+GoogleSearch - done
+GoogleSearch - test multi details....
 
-OFFLINE - finish making cards for users and books
+Amazon Search - rework copy authors into bookdetail
+check - move copy authors into book detail to base finder - put into google
+done  - add query switch to amazon - title, author, publisher, isbn
+done - add into founddetails....
+done - complete test of insertAuthorsIntoBookDetail.....
+done - move setDetailStatus in BaseDetailFinder to FinderObj
+put max count in amazon found details....
+----> get findercode in findobj up and going
 
+		
+		
+		
+		
+		
 
 ---- begin commit changes ----
 

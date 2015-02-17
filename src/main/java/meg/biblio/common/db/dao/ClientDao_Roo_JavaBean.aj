@@ -153,4 +153,12 @@ privileged aspect ClientDao_Roo_JavaBean {
         this.usesBarcodes = usesBarcodes;
     }
     
+    public Long ClientDao.getDetailCompleteCode() {
+        return this.detailCompleteCode;
+    }
+    
+    public void ClientDao.setDetailCompleteCode(Long detailCompleteCode) {
+        this.detailCompleteCode = detailCompleteCode;
+    }
+    
 }

@@ -54,5 +54,7 @@ public class ClientDao {
 	private String classsummaryxslbase;
 	
 	private Boolean usesBarcodes;
+	
+	private Long detailCompleteCode;
 }
 

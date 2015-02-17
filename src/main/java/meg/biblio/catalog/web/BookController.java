@@ -10,6 +10,7 @@ import java.util.Locale;
 import javax.servlet.http.HttpServletRequest;
 
 import meg.biblio.catalog.CatalogService;
+import meg.biblio.catalog.DetailSearchService;
 import meg.biblio.catalog.db.dao.ArtistDao;
 import meg.biblio.catalog.db.dao.BookDao;
 import meg.biblio.catalog.db.dao.ClassificationDao;
@@ -42,6 +43,9 @@ public class BookController {
 	@Autowired
 	CatalogService catalogService;
 
+	@Autowired
+	DetailSearchService detSearchService;
+	
 	@Autowired
 	SelectKeyService keyService;
 
@@ -138,8 +142,8 @@ public class BookController {
 		// choose return view (isbnedit if no details, otherwise editbook)
 		bookModel.setEditMode(EditMode.editbook);
 		String returnview = "book/editbook";
-		if (book.getDetailstatus().longValue() != CatalogService.DetailStatus.DETAILFOUND) {
-			if (book.getTitle()!=null && book.getTitle().equals(CatalogService.titledefault)) {
+		if (book.getBookdetail().getDetailstatus().longValue() != CatalogService.DetailStatus.DETAILFOUND) {
+			if (bookModel.getTitle()!=null && bookModel.getTitle().equals(CatalogService.titledefault)) {
 				bookModel.setTitle("");
 				bookModel.setEditMode(EditMode.title);
 				uiModel.addAttribute("bookModel",bookModel);
@@ -203,7 +207,7 @@ public class BookController {
 		
 		// update book - if changed
 		// fill in details if not detailfound, and isbn exists
-		boolean fillindetails = model.getBook().hasIsbn() && !(model.getDetailstatus().longValue()==CatalogService.DetailStatus.DETAILFOUND);
+		boolean fillindetails = model.hasIsbn() && !(model.getDetailstatus().longValue()==CatalogService.DetailStatus.DETAILFOUND);
 		try {
 			model = catalogService.updateCatalogEntryFromBookModel(clientid, model, fillindetails);
 			bookModel.setBook(model.getBook());
@@ -360,7 +364,7 @@ public class BookController {
 			HttpServletRequest httpServletRequest, Principal principal) {
 		// call catalog service
 		try {
-			catalogService.assignDetailToBook(detailid, bookid);
+			detSearchService.assignDetailToBook(detailid, bookid);
 		} catch (GeneralSecurityException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -387,7 +391,7 @@ public class BookController {
 			BookModel dbmodel = catalogService.loadBookModel(id);
 			dbmodel.setIsbn10(isbn);
 			// update book , search for details
-			dbmodel = catalogService.addToFoundDetails(clientkey, dbmodel);
+			dbmodel = detSearchService.fillInDetailsForBook(dbmodel, client);
 			uiModel.addAttribute("bookModel", dbmodel);
 
 			List<FoundDetailsDao> multidetails = catalogService

@@ -30,7 +30,7 @@ privileged aspect FoundDetailsDaoDataOnDemand_Roo_DataOnDemand {
     public FoundDetailsDao FoundDetailsDaoDataOnDemand.getNewTransientFoundDetailsDao(int index) {
         FoundDetailsDao obj = new FoundDetailsDao();
         setAuthors(obj, index);
-        setBookid(obj, index);
+        setBookdetailid(obj, index);
         setDescription(obj, index);
         setIllustrators(obj, index);
         setImagelink(obj, index);
@@ -40,6 +40,7 @@ privileged aspect FoundDetailsDaoDataOnDemand_Roo_DataOnDemand {
         setPublisher(obj, index);
         setPublishyear(obj, index);
         setSearchserviceid(obj, index);
+        setSearchsource(obj, index);
         setTitle(obj, index);
         setType(obj, index);
         return obj;
@@ -50,9 +51,9 @@ privileged aspect FoundDetailsDaoDataOnDemand_Roo_DataOnDemand {
         obj.setAuthors(authors);
     }
     
-    public void FoundDetailsDaoDataOnDemand.setBookid(FoundDetailsDao obj, int index) {
-        Long bookid = new Integer(index).longValue();
-        obj.setBookid(bookid);
+    public void FoundDetailsDaoDataOnDemand.setBookdetailid(FoundDetailsDao obj, int index) {
+        Long bookdetailid = new Integer(index).longValue();
+        obj.setBookdetailid(bookdetailid);
     }
     
     public void FoundDetailsDaoDataOnDemand.setDescription(FoundDetailsDao obj, int index) {
@@ -101,6 +102,11 @@ privileged aspect FoundDetailsDaoDataOnDemand_Roo_DataOnDemand {
     public void FoundDetailsDaoDataOnDemand.setSearchserviceid(FoundDetailsDao obj, int index) {
         String searchserviceid = "searchserviceid_" + index;
         obj.setSearchserviceid(searchserviceid);
+    }
+    
+    public void FoundDetailsDaoDataOnDemand.setSearchsource(FoundDetailsDao obj, int index) {
+        Long searchsource = new Integer(index).longValue();
+        obj.setSearchsource(searchsource);
     }
     
     public void FoundDetailsDaoDataOnDemand.setTitle(FoundDetailsDao obj, int index) {

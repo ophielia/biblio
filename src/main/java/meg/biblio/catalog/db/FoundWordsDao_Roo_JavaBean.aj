@@ -4,16 +4,16 @@
 package meg.biblio.catalog.db;
 
 import meg.biblio.catalog.db.FoundWordsDao;
-import meg.biblio.catalog.db.dao.BookDao;
+import meg.biblio.catalog.db.dao.BookDetailDao;
 
 privileged aspect FoundWordsDao_Roo_JavaBean {
     
-    public BookDao FoundWordsDao.getBook() {
-        return this.book;
+    public BookDetailDao FoundWordsDao.getBookdetail() {
+        return this.bookdetail;
     }
     
-    public void FoundWordsDao.setBook(BookDao book) {
-        this.book = book;
+    public void FoundWordsDao.setBookdetail(BookDetailDao bookdetail) {
+        this.bookdetail = bookdetail;
     }
     
     public String FoundWordsDao.getWord() {

@@ -45,10 +45,10 @@ public class SearchServiceTest {
 		// (sidestep - save in book)
 		BookDao book = new BookDao();
 		book.setClientid(new Long(1));
-		book.setTitle("Little House on the Prarie");
+		book.getBookdetail().setTitle("Little House on the Prarie");
 		List<ArtistDao> authors = new ArrayList<ArtistDao>();
 		authors.add(newart);
-		book.setAuthors(authors);
+		book.getBookdetail().setAuthors(authors);
 		bookRepo.save(book);
 		// put "John Smith" in db
 		newart = new ArtistDao();

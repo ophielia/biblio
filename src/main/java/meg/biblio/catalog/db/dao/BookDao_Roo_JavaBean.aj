@@ -4,12 +4,8 @@
 package meg.biblio.catalog.db.dao;
 
 import java.util.Date;
-import java.util.List;
-import meg.biblio.catalog.db.FoundWordsDao;
-import meg.biblio.catalog.db.dao.ArtistDao;
 import meg.biblio.catalog.db.dao.BookDao;
-import meg.biblio.catalog.db.dao.PublisherDao;
-import meg.biblio.catalog.db.dao.SubjectDao;
+import meg.biblio.catalog.db.dao.BookDetailDao;
 
 privileged aspect BookDao_Roo_JavaBean {
     
@@ -21,92 +17,12 @@ privileged aspect BookDao_Roo_JavaBean {
         this.clientid = clientid;
     }
     
-    public String BookDao.getTitle() {
-        return this.title;
-    }
-    
-    public List<ArtistDao> BookDao.getAuthors() {
-        return this.authors;
-    }
-    
-    public List<ArtistDao> BookDao.getIllustrators() {
-        return this.illustrators;
-    }
-    
-    public List<SubjectDao> BookDao.getSubjects() {
-        return this.subjects;
-    }
-    
-    public void BookDao.setSubjects(List<SubjectDao> subjects) {
-        this.subjects = subjects;
-    }
-    
-    public PublisherDao BookDao.getPublisher() {
-        return this.publisher;
-    }
-    
-    public void BookDao.setPublisher(PublisherDao publisher) {
-        this.publisher = publisher;
-    }
-    
-    public Long BookDao.getPublishyear() {
-        return this.publishyear;
-    }
-    
-    public void BookDao.setPublishyear(Long publishyear) {
-        this.publishyear = publishyear;
-    }
-    
-    public String BookDao.getIsbn10() {
-        return this.isbn10;
-    }
-    
-    public void BookDao.setIsbn10(String isbn10) {
-        this.isbn10 = isbn10;
-    }
-    
-    public String BookDao.getIsbn13() {
-        return this.isbn13;
-    }
-    
-    public void BookDao.setIsbn13(String isbn13) {
-        this.isbn13 = isbn13;
-    }
-    
-    public String BookDao.getLanguage() {
-        return this.language;
-    }
-    
-    public void BookDao.setLanguage(String language) {
-        this.language = language;
-    }
-    
-    public Long BookDao.getType() {
-        return this.type;
-    }
-    
-    public void BookDao.setType(Long type) {
-        this.type = type;
-    }
-    
-    public String BookDao.getDescription() {
-        return this.description;
-    }
-    
     public Long BookDao.getStatus() {
         return this.status;
     }
     
     public void BookDao.setStatus(Long status) {
         this.status = status;
-    }
-    
-    public Long BookDao.getDetailstatus() {
-        return this.detailstatus;
-    }
-    
-    public void BookDao.setDetailstatus(Long detailstatus) {
-        this.detailstatus = detailstatus;
     }
     
     public Long BookDao.getShelfclass() {
@@ -153,28 +69,16 @@ privileged aspect BookDao_Roo_JavaBean {
         this.barcodeid = barcodeid;
     }
     
-    public List<FoundWordsDao> BookDao.getFoundwords() {
-        return this.foundwords;
+    public void BookDao.setBookdetail(BookDetailDao bookdetail) {
+        this.bookdetail = bookdetail;
     }
     
-    public void BookDao.setFoundwords(List<FoundWordsDao> foundwords) {
-        this.foundwords = foundwords;
+    public Long BookDao.getType() {
+        return this.type;
     }
     
-    public Boolean BookDao.getTextchange() {
-        return this.textchange;
-    }
-    
-    public void BookDao.setTextchange(Boolean textchange) {
-        this.textchange = textchange;
-    }
-    
-    public String BookDao.getImagelink() {
-        return this.imagelink;
-    }
-    
-    public void BookDao.setImagelink(String imagelink) {
-        this.imagelink = imagelink;
+    public void BookDao.setType(Long type) {
+        this.type = type;
     }
     
 }

@@ -70,7 +70,7 @@ public class LoanRecordDisplay {
 
 	@XmlElement
 	public String getBooktitle() {
-		return this.book.getTitle();
+		return this.book.getBookdetail().getTitle();
 	}
 
 	@XmlElement
@@ -80,7 +80,7 @@ public class LoanRecordDisplay {
 
 	@XmlElement(name = "bookauthor")
 	public String getAuthor() {
-		return this.book.getAuthorsAsString();
+		return this.book.getBookdetail().getAuthorsAsString();
 	}
 
 	@XmlTransient

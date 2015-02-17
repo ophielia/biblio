@@ -7,6 +7,8 @@ import java.util.List;
 
 import meg.biblio.catalog.db.dao.ArtistDao;
 import meg.biblio.catalog.db.dao.BookDao;
+import meg.biblio.catalog.db.dao.BookDetailDao;
+import meg.biblio.catalog.db.dao.FoundDetailsDao;
 import meg.biblio.catalog.db.dao.PublisherDao;
 import meg.biblio.catalog.db.dao.SubjectDao;
 
@@ -27,16 +29,24 @@ public class BookModel  implements Serializable {
 	private String editMode;
 	private String assignedcode;
 	private Boolean showbarcodelinks;
+	List<FoundDetailsDao> founddetails;
 	
 	// *** constructors ***//
 	public BookModel(BookDao book) {
 		super();
+		if (book.getBookdetail()==null) {
+			BookDetailDao bookdetail = new BookDetailDao();
+			book.setBookdetail(bookdetail);
+		}
 		this.book = book;
 	}
 	
 	public BookModel() {
 		super();
-		this.book = new BookDao();
+		BookDao book = new BookDao();
+		BookDetailDao bookdetail = new BookDetailDao();
+		book.setBookdetail(bookdetail);
+		this.book = book;
 	}
 	
 	// *** getters and setters for book object ***//
@@ -46,6 +56,17 @@ public class BookModel  implements Serializable {
 
 	public void setBook(BookDao book) {
 		this.book = book;
+	}
+
+
+	public void setBookdetail(BookDetailDao bookdetail) {
+		this.book.setBookdetail(bookdetail);
+		
+	}
+	
+	
+	public List<FoundDetailsDao> getFounddetails() {
+		return founddetails;
 	}
 
 	// *** getters and setters for web entry ***//
@@ -93,27 +114,27 @@ public class BookModel  implements Serializable {
 	}
 
 	public void setTitle(String title) {
-		if (title!=null) this.book.setTitle(title);
+		if (title!=null) this.book.getBookdetail().setTitle(title);
 	}
 
 	public void setAuthors(List<ArtistDao> authors) {
-		if (authors!=null) this.book.setAuthors(authors);
+		if (authors!=null) this.book.getBookdetail().setAuthors(authors);
 	}
 
 	public void setIllustrators(List<ArtistDao> illustrators) {
-		if (illustrators!=null) this.book.setIllustrators(illustrators);
+		if (illustrators!=null) this.book.getBookdetail().setIllustrators(illustrators);
 	}
 
 	public void setSubjects(List<SubjectDao> subjects) {
-		if (subjects!=null) this.book.setSubjects(subjects);
+		if (subjects!=null) this.book.getBookdetail().setSubjects(subjects);
 	}
 
 	public void setPublisherkey(PublisherDao publisherkey) {
-		if (publisherkey!=null) this.book.setPublisher(publisherkey);
+		if (publisherkey!=null) this.book.getBookdetail().setPublisher(publisherkey);
 	}
 
 	public void setPublishyear(Long publishyear) {
-		if (publishyear!=null) this.book.setPublishyear(publishyear);
+		if (publishyear!=null) this.book.getBookdetail().setPublishyear(publishyear);
 	}
 
 	public void setIsbn10(String isbn10) {
@@ -121,9 +142,9 @@ public class BookModel  implements Serializable {
 			// remove non numeric characters
 			String str = isbn10.replaceAll("[^\\d.X]", "");
 			if (str.length() > 10) {
-				this.book.setIsbn13(str);
+				this.book.getBookdetail().setIsbn13(str);
 			}
-			this.book.setIsbn10(str);
+			this.book.getBookdetail().setIsbn10(str);
 		}
 	}
 
@@ -132,14 +153,14 @@ public class BookModel  implements Serializable {
 			// remove non numeric characters
 			String str = isbn13.replaceAll("[^\\d.X]", "");
 			if (str.length() > 10) {
-				this.book.setIsbn13(str);
+				this.book.getBookdetail().setIsbn13(str);
 			}
-			this.book.setIsbn10(str);
+			this.book.getBookdetail().setIsbn10(str);
 		}
 	}
 
 	public void setLanguage(String language) {
-		if (language!=null) this.book.setLanguage(language);
+		if (language!=null) this.book.getBookdetail().setLanguage(language);
 	}
 
 	public void setType(Long type) {
@@ -147,7 +168,7 @@ public class BookModel  implements Serializable {
 	}
 
 	public void setDescription(String description) {
-		if (description!=null) this.book.setDescription(description);
+		if (description!=null) this.book.getBookdetail().setDescription(description);
 	}
 
 	public void setStatus(Long status) {
@@ -155,7 +176,7 @@ public class BookModel  implements Serializable {
 	}
 
 	public void setDetailstatus(Long detailstatus) {
-		if (detailstatus!=null) this.book.setDetailstatus(detailstatus);
+		if (detailstatus!=null) this.book.getBookdetail().setDetailstatus(detailstatus);
 	}
 
 	public void setShelfclass(Long shelfclass) {
@@ -183,42 +204,42 @@ public class BookModel  implements Serializable {
 	}
 
 	public String getTitle() {
-		return book.getTitle();
+		return book.getBookdetail().getTitle();
 	}
 
 	public List<ArtistDao> getAuthors() {
-		return book.getAuthors();
+		return book.getBookdetail().getAuthors();
 	}
 
 	public List<ArtistDao> getIllustrators() {
-		return book.getIllustrators();
+		return book.getBookdetail().getIllustrators();
 	}
 
 	public List<SubjectDao> getSubjects() {
-		return book.getSubjects();
+		return book.getBookdetail().getSubjects();
 	}
 
 	public PublisherDao getPublisher() {
-		if (book.getPublisher()!=null) {
-			return book.getPublisher();
+		if (book.getBookdetail().getPublisher()!=null) {
+			return book.getBookdetail().getPublisher();
 		}
 		return new PublisherDao();
 	}
 
 	public Long getPublishyear() {
-		return book.getPublishyear();
+		return book.getBookdetail().getPublishyear();
 	}
 
 	public String getIsbn10() {
-		return book.getIsbn10();
+		return book.getBookdetail().getIsbn10();
 	}
 
 	public String getIsbn13() {
-		return book.getIsbn13();
+		return book.getBookdetail().getIsbn13();
 	}
 
 	public String getLanguage() {
-		return book.getLanguage();
+		return book.getBookdetail().getLanguage();
 	}
 
 	public Long getType() {
@@ -226,7 +247,7 @@ public class BookModel  implements Serializable {
 	}
 
 	public String getDescription() {
-		return book.getDescription();
+		return book.getBookdetail().getDescription();
 	}
 
 	public Long getStatus() {
@@ -236,7 +257,7 @@ public class BookModel  implements Serializable {
 
 	
 	public Long getDetailstatus() {
-		return book.getDetailstatus();
+		return book.getBookdetail().getDetailstatus();
 	}
 
 
@@ -258,7 +279,9 @@ public class BookModel  implements Serializable {
 
 	
 	//***** convenience methods ****//
-
+	public boolean hasIsbn() {
+		return this.book.getBookdetail().hasIsbn();
+	}
 
 	public ArtistDao getMainAuthor() {
 		if (getAuthors()!=null && getAuthors().size()>0) {
@@ -278,12 +301,12 @@ public class BookModel  implements Serializable {
 
 	public void addAuthorToBook(ArtistDao author) {
 		if (author != null) {
-			List<ArtistDao> authors = book.getAuthors();
+			List<ArtistDao> authors = book.getBookdetail().getAuthors();
 			if (authors == null) {
 				authors = new ArrayList<ArtistDao>();
 			}
 			authors.add(author);
-			book.setAuthors(authors);
+			book.getBookdetail().setAuthors(authors);
 		}
 	}
 	
@@ -293,19 +316,19 @@ public class BookModel  implements Serializable {
 			if (!getMainAuthor().getDisplayName().equals(author.getDisplayName())) {
 				List<ArtistDao> authors = new ArrayList<ArtistDao>();
 				authors.add(author);
-				book.setAuthors(authors);
+				book.getBookdetail().setAuthors(authors);
 			}
 		}
 	}	
 
 	public void addIllustratorToBook(ArtistDao illustrator) {
 		if (illustrator != null) {
-			List<ArtistDao> illustrators = book.getIllustrators();
+			List<ArtistDao> illustrators = book.getBookdetail().getIllustrators();
 			if (illustrators == null) {
 				illustrators = new ArrayList<ArtistDao>();
 			}
 			illustrators.add(illustrator);
-			book.setIllustrators(illustrators);
+			book.getBookdetail().setIllustrators(illustrators);
 		}
 	}
 	
@@ -313,7 +336,7 @@ public class BookModel  implements Serializable {
 		if (!getMainIllustrator().getDisplayName().equals(illust.getDisplayName())) {
 			List<ArtistDao> illusts = new ArrayList<ArtistDao>();
 			illusts.add(illust);
-			book.setIllustrators(illusts);
+			book.getBookdetail().setIllustrators(illusts);
 		}
 	}		
 
@@ -321,7 +344,7 @@ public class BookModel  implements Serializable {
 	public void setPublisher(String publishername) {
 		PublisherDao publisher = new PublisherDao();
 		publisher.setName(publishername);
-		book.setPublisher(publisher);
+		book.getBookdetail().setPublisher(publisher);
 	}
 
 	public String getIsbnentry() {
@@ -363,6 +386,14 @@ public class BookModel  implements Serializable {
 	public void setShowbarcodelinks(Boolean showbarcodelinks) {
 		this.showbarcodelinks = showbarcodelinks;
 	}
+
+	public void setFounddetails(List<FoundDetailsDao> founddetails) {
+		this.founddetails = founddetails;
+		
+	}
+
+
+
 
 
 

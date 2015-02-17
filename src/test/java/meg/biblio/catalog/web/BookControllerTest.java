@@ -22,10 +22,8 @@ import meg.biblio.catalog.web.model.BookModel;
 import meg.biblio.catalog.web.validator.BookModelValidator;
 import meg.biblio.common.AppSettingService;
 import meg.biblio.common.ClientService;
-import meg.biblio.common.LoginService;
 import meg.biblio.common.SelectKeyService;
 import meg.biblio.common.db.dao.ClientDao;
-import meg.biblio.common.db.dao.UserLoginDao;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -144,7 +142,6 @@ public class BookControllerTest {
                 HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, 
                 new MockSecurityContext(principal));
 		
-        when(bookService.getAllBooks()).thenReturn(new ArrayList<BookDao>());
 		when(mockClientService.getCurrentClient(any(Principal.class)))
 		.thenReturn(client);
 		
@@ -175,7 +172,7 @@ public class BookControllerTest {
 		book.setId(2222L);
 		List<ArtistDao> authors = new ArrayList<ArtistDao>();
 		authors.add(artist);
-		book.setAuthors(authors);
+		book.getBookdetail().setAuthors(authors);
 		BookModel returnmodel = new BookModel(book);
 
 		Long testclientid = clientService.getTestClientId();
@@ -189,7 +186,6 @@ public class BookControllerTest {
                 HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, 
                 new MockSecurityContext(principal));
 		
-		when(bookService.getAllBooks()).thenReturn(new ArrayList<BookDao>());
 		when(
 				bookService.createCatalogEntryFromBookModel(any(Long.class),
 						any(BookModel.class), any(Boolean.class))).thenReturn(returnmodel);
@@ -226,7 +222,7 @@ public class BookControllerTest {
 		book.setId(2222L);
 		List<ArtistDao> authors = new ArrayList<ArtistDao>();
 		authors.add(artist);
-		book.setAuthors(authors);
+		book.getBookdetail().setAuthors(authors);
 		BookModel returnmodel = new BookModel(book);
 		Long testclientid = clientService.getTestClientId();
 		ClientDao client = clientService.getClientForKey(testclientid);
@@ -239,7 +235,6 @@ public class BookControllerTest {
                 HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, 
                 new MockSecurityContext(principal));
 		
-		when(bookService.getAllBooks()).thenReturn(new ArrayList<BookDao>());
 		when(bookService.loadBookModel(any(Long.class)))
 				.thenReturn(returnmodel);
 		when(mockClientService.getCurrentClient(any(Principal.class)))

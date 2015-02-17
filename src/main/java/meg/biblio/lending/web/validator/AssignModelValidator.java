@@ -83,14 +83,14 @@ public class AssignModelValidator {
 	public void validateUpdateBook(AssignCodeModel assignCodeModel,
 			BindingResult bindingResult) {
 		// called when updating book.  Ensures that book has a title
-		String booktitle=assignCodeModel.getBook().getTitle();
+		String booktitle=assignCodeModel.getBook().getBookdetail().getTitle();
 		if (booktitle ==null ||
 				booktitle.equals(CatalogService.titledefault) || 
 				booktitle.trim().length()==0) {
 			// book doesn't have title  - - ensure that title has been entered in model
 			// but this only if detailstatus is not found (could be that the
 			// isbn has been entered, and a search will be made...
-			if (assignCodeModel.getBook().getDetailstatus().longValue()==CatalogService.DetailStatus.DETAILNOTFOUND) {
+			if (assignCodeModel.getBook().getBookdetail().getDetailstatus().longValue()==CatalogService.DetailStatus.DETAILNOTFOUND) {
 				String enteredtitle = assignCodeModel.getTitle();
 				if (assignCodeModel.getIsbnentry()==null ) {
 					if (enteredtitle == null || enteredtitle.trim().length()==0) {

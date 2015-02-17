@@ -25,23 +25,6 @@ public class BookModelValidator {
 	@Autowired
 	BookRepository bookRepo;
 	
-	public void validateSimpleEntry(BookModel model, BindingResult errors) {
-		BookDao book = model.getBook();
-		
-		// check other standard fields
-		ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-		javax.validation.Validator validator = factory.getValidator();
-		Set<ConstraintViolation<BookDao>> valerrors = validator.validate(book);
-
-		// put JSR-303 errors into standard errors
-		for (ConstraintViolation<BookDao> cv : valerrors) {
-			errors.rejectValue(cv.getPropertyPath().toString(),
-					cv.getMessageTemplate());
-
-		}
-
-	}
-
 	public void validateNewBookEntry(BookModel model, BindingResult errors,ClientDao client) {
 
 		
@@ -69,19 +52,19 @@ public class BookModelValidator {
 
 	}
 	
-	public void validateUpdateBook(BookModel BookModel,
+	public void validateUpdateBook(BookModel bookModel,
 			BindingResult bindingResult) {
 		// called when updating book.  Ensures that book has a title
-		String booktitle=BookModel.getBook().getTitle();
+		String booktitle=bookModel.getTitle();
 		if (booktitle ==null ||
 				booktitle.equals(CatalogService.titledefault) || 
 				booktitle.trim().length()==0) {
 			// book doesn't have title  - - ensure that title has been entered in model
 			// but this only if detailstatus is not found (could be that the
 			// isbn has been entered, and a search will be made...
-			if (BookModel.getBook().getDetailstatus().longValue()==CatalogService.DetailStatus.DETAILNOTFOUND) {
-				if (BookModel.getIsbnentry()==null) {
-					String enteredtitle = BookModel.getTitle();
+			if (bookModel.getBook().getBookdetail().getDetailstatus().longValue()==CatalogService.DetailStatus.DETAILNOTFOUND) {
+				if (bookModel.getIsbnentry()==null) {
+					String enteredtitle = bookModel.getTitle();
 					if (enteredtitle == null || enteredtitle.trim().length()==0) {
 						bindingResult.rejectValue("title", "error_entertitle");
 					}

@@ -16,7 +16,7 @@ import javax.validation.ConstraintViolationException;
 import meg.biblio.catalog.db.BookRepository;
 import meg.biblio.catalog.db.dao.BookDao;
 import meg.biblio.catalog.db.dao.BookDaoDataOnDemand;
-import meg.biblio.catalog.db.dao.PublisherDaoDataOnDemand;
+import meg.biblio.catalog.db.dao.BookDetailDaoDataOnDemand;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -29,7 +29,7 @@ privileged aspect BookDaoDataOnDemand_Roo_DataOnDemand {
     private List<BookDao> BookDaoDataOnDemand.data;
     
     @Autowired
-    PublisherDaoDataOnDemand BookDaoDataOnDemand.publisherDaoDataOnDemand;
+    BookDetailDaoDataOnDemand BookDaoDataOnDemand.bookDetailDaoDataOnDemand;
     
     @Autowired
     BookRepository BookDaoDataOnDemand.bookRepository;
@@ -41,17 +41,9 @@ privileged aspect BookDaoDataOnDemand_Roo_DataOnDemand {
         setClientbookidsort(obj, index);
         setClientid(obj, index);
         setCreatedon(obj, index);
-        setDescription(obj, index);
-        setDetailstatus(obj, index);
-        setImagelink(obj, index);
-        setIsbn10(obj, index);
-        setIsbn13(obj, index);
-        setLanguage(obj, index);
-        setPublishyear(obj, index);
         setShelfclass(obj, index);
         setShelfclassverified(obj, index);
         setStatus(obj, index);
-        setTitle(obj, index);
         setType(obj, index);
         return obj;
     }
@@ -81,44 +73,6 @@ privileged aspect BookDaoDataOnDemand_Roo_DataOnDemand {
         obj.setCreatedon(createdon);
     }
     
-    public void BookDaoDataOnDemand.setDescription(BookDao obj, int index) {
-        String description = "description_" + index;
-        if (description.length() > 2000) {
-            description = description.substring(0, 2000);
-        }
-        obj.setDescription(description);
-    }
-    
-    public void BookDaoDataOnDemand.setDetailstatus(BookDao obj, int index) {
-        Long detailstatus = new Integer(index).longValue();
-        obj.setDetailstatus(detailstatus);
-    }
-    
-    public void BookDaoDataOnDemand.setImagelink(BookDao obj, int index) {
-        String imagelink = "imagelink_" + index;
-        obj.setImagelink(imagelink);
-    }
-    
-    public void BookDaoDataOnDemand.setIsbn10(BookDao obj, int index) {
-        String isbn10 = "isbn10_" + index;
-        obj.setIsbn10(isbn10);
-    }
-    
-    public void BookDaoDataOnDemand.setIsbn13(BookDao obj, int index) {
-        String isbn13 = "isbn13_" + index;
-        obj.setIsbn13(isbn13);
-    }
-    
-    public void BookDaoDataOnDemand.setLanguage(BookDao obj, int index) {
-        String language = "language_" + index;
-        obj.setLanguage(language);
-    }
-    
-    public void BookDaoDataOnDemand.setPublishyear(BookDao obj, int index) {
-        Long publishyear = new Integer(index).longValue();
-        obj.setPublishyear(publishyear);
-    }
-    
     public void BookDaoDataOnDemand.setShelfclass(BookDao obj, int index) {
         Long shelfclass = new Integer(index).longValue();
         obj.setShelfclass(shelfclass);
@@ -132,11 +86,6 @@ privileged aspect BookDaoDataOnDemand_Roo_DataOnDemand {
     public void BookDaoDataOnDemand.setStatus(BookDao obj, int index) {
         Long status = new Integer(index).longValue();
         obj.setStatus(status);
-    }
-    
-    public void BookDaoDataOnDemand.setTitle(BookDao obj, int index) {
-        String title = "title_" + index;
-        obj.setTitle(title);
     }
     
     public void BookDaoDataOnDemand.setType(BookDao obj, int index) {

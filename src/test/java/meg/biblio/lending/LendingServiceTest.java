@@ -16,7 +16,6 @@ import meg.biblio.lending.db.LoanHistoryRepository;
 import meg.biblio.lending.db.LoanRecordRepository;
 import meg.biblio.lending.db.dao.LoanHistoryDao;
 import meg.biblio.lending.db.dao.LoanRecordDao;
-import meg.biblio.lending.db.dao.PersonDao;
 import meg.biblio.lending.db.dao.SchoolGroupDao;
 import meg.biblio.lending.db.dao.StudentDao;
 import meg.biblio.lending.db.dao.TeacherDao;
@@ -74,15 +73,15 @@ public class LendingServiceTest {
 		clientid = clientService.getTestClientId();
 		BookDao book1 = new BookDao();
 		book1.setClientid(clientid);
-		book1.setTitle("Tidings of comfort");
+		book1.getBookdetail().setTitle("Tidings of comfort");
 		book1 = bookRepo.save(book1);
 		BookDao book2 = new BookDao();
 		book2.setClientid(clientid);
-		book2.setTitle("time of the year");
+		book2.getBookdetail().setTitle("time of the year");
 		book2 = bookRepo.save(book2);
 		BookDao book3 = new BookDao();
 		book3.setClientid(clientid);
-		book3.setTitle("another book");
+		book3.getBookdetail().setTitle("another book");
 		book3 = bookRepo.save(book3);
 
 		bookid1 = book1.getId();
@@ -117,8 +116,7 @@ public class LendingServiceTest {
 	@Test
 	public void testCheckout() {
 		testCheckout(1);
-		testCheckout(2);
-		testCheckout(3);
+
 
 	}
 

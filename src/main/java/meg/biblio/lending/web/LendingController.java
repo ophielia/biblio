@@ -269,7 +269,7 @@ public class LendingController {
 
 		// when removing checkout success page
 		// put title directly into uiModel
-		String booktitle = book.getTitle();
+		String booktitle = book.getBookdetail().getTitle();
 		uiModel.addAttribute("booktitle", booktitle);
 		populateLendingModel(model, uiModel);
 		

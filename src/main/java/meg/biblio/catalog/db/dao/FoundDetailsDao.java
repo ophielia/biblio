@@ -1,7 +1,7 @@
 package meg.biblio.catalog.db.dao;
 import javax.persistence.Column;
-import javax.persistence.Lob;
 import javax.persistence.Table;
+
 import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.jpa.entity.RooJpaEntity;
 import org.springframework.roo.addon.tostring.RooToString;
@@ -12,7 +12,7 @@ import org.springframework.roo.addon.tostring.RooToString;
 @Table(name="found_details")
 public class FoundDetailsDao {
 	
-	private Long bookid;
+	private Long bookdetailid;
 	private String title;
 	private String authors;
 	private String illustrators;
@@ -26,7 +26,7 @@ public class FoundDetailsDao {
 	private String type;
 	private String imagelink;
 	private String searchserviceid;
-	
+	private Long searchsource;
 
 	public void setDescription(String description) {
 		if (description!=null && description.length()>1510) {

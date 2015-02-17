@@ -7,12 +7,12 @@ import meg.biblio.catalog.db.dao.FoundDetailsDao;
 
 privileged aspect FoundDetailsDao_Roo_JavaBean {
     
-    public Long FoundDetailsDao.getBookid() {
-        return this.bookid;
+    public Long FoundDetailsDao.getBookdetailid() {
+        return this.bookdetailid;
     }
     
-    public void FoundDetailsDao.setBookid(Long bookid) {
-        this.bookid = bookid;
+    public void FoundDetailsDao.setBookdetailid(Long bookdetailid) {
+        this.bookdetailid = bookdetailid;
     }
     
     public String FoundDetailsDao.getTitle() {
@@ -105,6 +105,14 @@ privileged aspect FoundDetailsDao_Roo_JavaBean {
     
     public void FoundDetailsDao.setSearchserviceid(String searchserviceid) {
         this.searchserviceid = searchserviceid;
+    }
+    
+    public Long FoundDetailsDao.getSearchsource() {
+        return this.searchsource;
+    }
+    
+    public void FoundDetailsDao.setSearchsource(Long searchsource) {
+        this.searchsource = searchsource;
     }
     
 }

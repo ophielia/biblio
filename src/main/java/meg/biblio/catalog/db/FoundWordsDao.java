@@ -3,6 +3,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import meg.biblio.catalog.db.dao.BookDao;
+import meg.biblio.catalog.db.dao.BookDetailDao;
 
 import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.jpa.entity.RooJpaEntity;
@@ -15,7 +16,7 @@ import org.springframework.roo.addon.tostring.RooToString;
 public class FoundWordsDao {
 	
 	@ManyToOne
-	private BookDao book;
+	private BookDetailDao bookdetail;
 	private String word;
 	private Integer countintext;
 }
