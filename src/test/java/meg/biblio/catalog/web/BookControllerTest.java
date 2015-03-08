@@ -163,55 +163,7 @@ public class BookControllerTest {
 
 	}
 
-	@Test
-	public void createEntry() throws Exception {
-		BookDaoDataOnDemand cdod = new BookDaoDataOnDemand();
-		ArtistDaoDataOnDemand adod = new ArtistDaoDataOnDemand();
-		BookDao book = cdod.getNewTransientBookDao(0);
-		ArtistDao artist = adod.getNewTransientArtistDao(0);
-		book.setId(2222L);
-		List<ArtistDao> authors = new ArrayList<ArtistDao>();
-		authors.add(artist);
-		book.getBookdetail().setAuthors(authors);
-		BookModel returnmodel = new BookModel(book);
 
-		Long testclientid = clientService.getTestClientId();
-		ClientDao client = clientService.getClientForKey(testclientid);
-		
-		UsernamePasswordAuthenticationToken principal = 
-                this.getPrincipal("test");
-
-        MockHttpSession session = new MockHttpSession();
-        session.setAttribute(
-                HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, 
-                new MockSecurityContext(principal));
-		
-		when(
-				bookService.createCatalogEntryFromBookModel(any(Long.class),
-						any(BookModel.class), any(Boolean.class))).thenReturn(returnmodel);
-		when(mockClientService.getCurrentClient(any(Principal.class)))
-		.thenReturn(client);
-
-		
-		
-		
-		
-
-		this.mockMvc
-				.perform(
-						post("/books/newbook")
-						.session(session)
-								.accept(MediaType.TEXT_HTML)
-								.param("title", "title")
-								.param("aFname", "first")
-								.param("aMname", "middle")
-								.param("aLname", "last")
-								.header("content-type",
-										"application/x-www-form-urlencoded"))
-				.andExpect(status().isOk())
-				.andExpect(view().name("book/isbnedit"));
-
-	}
 
 	@Test
 	public void getDisplayModel() throws Exception {

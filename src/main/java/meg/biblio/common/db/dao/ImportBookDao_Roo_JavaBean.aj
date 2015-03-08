@@ -47,6 +47,30 @@ privileged aspect ImportBookDao_Roo_JavaBean {
         this.publisher = publisher;
     }
     
+    public String ImportBookDao.getIsbn10() {
+        return this.isbn10;
+    }
+    
+    public void ImportBookDao.setIsbn10(String isbn10) {
+        this.isbn10 = isbn10;
+    }
+    
+    public String ImportBookDao.getIsbn13() {
+        return this.isbn13;
+    }
+    
+    public void ImportBookDao.setIsbn13(String isbn13) {
+        this.isbn13 = isbn13;
+    }
+    
+    public String ImportBookDao.getBarcode() {
+        return this.barcode;
+    }
+    
+    public void ImportBookDao.setBarcode(String barcode) {
+        this.barcode = barcode;
+    }
+    
     public String ImportBookDao.getError() {
         return this.error;
     }

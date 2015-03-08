@@ -42,7 +42,6 @@ privileged aspect BookDetailDaoDataOnDemand_Roo_DataOnDemand {
         setLanguage(obj, index);
         setListedtype(obj, index);
         setPublishyear(obj, index);
-        setSearchwisbn(obj, index);
         setTitle(obj, index);
         return obj;
     }
@@ -93,11 +92,6 @@ privileged aspect BookDetailDaoDataOnDemand_Roo_DataOnDemand {
     public void BookDetailDaoDataOnDemand.setPublishyear(BookDetailDao obj, int index) {
         Long publishyear = new Integer(index).longValue();
         obj.setPublishyear(publishyear);
-    }
-    
-    public void BookDetailDaoDataOnDemand.setSearchwisbn(BookDetailDao obj, int index) {
-        Boolean searchwisbn = true;
-        obj.setSearchwisbn(searchwisbn);
     }
     
     public void BookDetailDaoDataOnDemand.setTitle(BookDetailDao obj, int index) {

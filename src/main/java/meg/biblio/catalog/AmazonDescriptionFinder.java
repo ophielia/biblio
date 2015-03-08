@@ -7,7 +7,6 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -32,16 +31,11 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import com.google.api.services.books.model.Volume;
-import com.google.api.services.books.model.Volume.VolumeInfo;
-import com.google.api.services.books.model.Volume.VolumeInfo.IndustryIdentifiers;
-
 @Component
-public class AmazonDetailFinder extends AmazonBaseFinder {
+public class AmazonDescriptionFinder extends AmazonBaseFinder {
 
 	@Autowired
 	AppSettingService settingService;
@@ -61,12 +55,12 @@ public class AmazonDetailFinder extends AmazonBaseFinder {
 	}
 
 	/* Get actual class name to be printed on */
-	static Logger log = Logger.getLogger(AmazonDetailFinder.class.getName());
+	static Logger log = Logger.getLogger(AmazonDescriptionFinder.class.getName());
 
 	Boolean lookupwithamazon;
 	String apikeyid;
 	String apisecretkey;
-	Long identifier = 3L;
+	Long identifier = 5L;
 
 	private String apiassociatetag;
 
@@ -77,117 +71,162 @@ public class AmazonDetailFinder extends AmazonBaseFinder {
 	 * US: ecs.amazonaws.com CA: ecs.amazonaws.ca UK: ecs.amazonaws.co.uk DE:
 	 * ecs.amazonaws.de FR: ecs.amazonaws.fr JP: ecs.amazonaws.jp
 	 */
-	private static final String ENDPOINT = "ecs.amazonaws.fr";
+	private static final String ENDPOINT = "ecs.amazonaws.com";
 
+	protected boolean isEnabled() throws Exception {
+		if (lookupwithamazon == null) {
+			lookupwithamazon = settingService
+					.getSettingAsBoolean("biblio.amazondescription.turnedon");
+		}
+		return lookupwithamazon;
+	}
 
-
+	@Override
+	protected boolean isEligible(FinderObject findobj) throws Exception {
+		// Eligible to be run 1) no description, 2) isbn, title, and author are
+		// available, 3) thus far only one result has been found, and 4) otherwise
+		// eligible (super.isEligible)
+		if (!super.isEligible(findobj)) {
+			return false;
+		}
+		if (findobj.getSearchStatus()==CatalogService.DetailStatus.MULTIDETAILSFOUND ||
+				findobj.getSearchStatus()==CatalogService.DetailStatus.DETAILNOTFOUND) {
+			return false;
+		}
+		
+		boolean hasdesc = findobj.getBookdetail().getDescription()!=null &&findobj.getBookdetail().getDescription().trim().length()>0;
+		boolean prereqs = findobj.getBookdetail().hasIsbn();
+		if (prereqs) {
+			 prereqs=findobj.getBookdetail().getTitle()!=null && findobj.getBookdetail().getTitle().trim().length()>0;
+		}
+		if (prereqs) {
+			prereqs = findobj.getBookdetail().getAuthorsAsString()!=null && findobj.getBookdetail().getAuthorsAsString().trim().length()>0;	
+		}
+		
+		return prereqs && !hasdesc;
+	}	
+	
 	protected Long getIdentifier() throws Exception {
 		return identifier;
 	}
 
-	@Override
-	public List<FinderObject> findDetailsForList(List<FinderObject> objects,
-			long clientcomplete, Integer batchsearchmax) throws Exception {
-		// check enabled
-		if (isEnabled()) {
 
-			// go through list
-			for (FinderObject findobj : objects) {
-				// check eligibility for object (eligible and not complete)
-				if (isEligible(findobj)
-						&& !resultsComplete(findobj, clientcomplete)) {
-					// do search
-					findobj = searchLogic(findobj);
-					// log, process search
-					findobj.logFinderRun(getIdentifier());
-				}
-				// build in  tiny pause to not exceed requests per second
-				try {
-				    Thread.sleep(200);                 //1000 milliseconds is one second.
-				} catch(InterruptedException ex) {
-				    Thread.currentThread().interrupt();
-				}
-			} // end list loop
+
+	protected FinderObject searchLogic(FinderObject findobj) throws Exception {
+		BookDetailDao bookdetail = findobj.getBookdetail();
+		if (apikeyid == null) {
+			apikeyid = settingService.getSettingAsString("biblio.am.keyd");
 		}
-		// pass to next in chain, or return
-		if (getNext() != null) {
-			objects = getNext().findDetailsForList(objects, clientcomplete,
-					batchsearchmax);
+		if (apisecretkey == null) {
+			apisecretkey = settingService.getSettingAsString("biblio.am.keys");
+
+		}
+		if (apiassociatetag == null) {
+			apiassociatetag = settingService
+					.getSettingAsString("biblio.am.atag");
 		}
 
-		return objects;
+		AmazonSignedRequestHelper helper;
+		try {
+			helper = AmazonSignedRequestHelper.getInstance(ENDPOINT, apikeyid,
+					apisecretkey);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+
+		Map<String, String> params = new HashMap<String, String>();
+		// common params
+		params.put("Service", "AWSECommerceService");
+		params.put("Version", "2009-03-31");
+		params.put("ResponseGroup", "Large");
+		params.put("AssociateTag", apiassociatetag);
+		params.put("SearchIndex", "Books");
+		
+		// add params by search type (isbn, or other (title, author, publisher)
+		// searching by title and author
+		String title = bookdetail.getTitle();
+		String artist=null;
+		if (bookdetail.getAuthors()!=null && bookdetail.getAuthors().size()>0) {
+			artist = bookdetail.getAuthors().get(0).getDisplayName();
+		} else {
+			if (bookdetail.getIllustrators()!=null && bookdetail.getIllustrators().size()>0) {
+				artist = bookdetail.getAuthors().get(0).getDisplayName();
+			}
+		}
+		
+		// now put in parameters
+		params.put("Title", title);
+		if (artist!=null) {
+			params.put("Author", artist);	
+		}
+		// standard parameters
+		params.put("Operation", "ItemSearch");
+		
 	
-	}
+		String requestUrl = helper.sign(params);
 
-	private BookDetailDao mergeFoundIntoBookDetail(FoundDetailsDao found,
-			BookDetailDao bookdetail) {
-		// copy basic info into bookdetail
-		String title = found.getTitle();
-		String imagelink = found.getImagelink();
-		String isbn10 = found.getIsbn10();
-		String isbn13 = found.getIsbn13();
-		String publisher = found.getPublisher();
-		Long publishyear = found.getPublishyear();
-		String language = found.getLanguage();
-		String description = found.getDescription();
-		String authors = found.getAuthors();
+		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+		DocumentBuilder db = dbf.newDocumentBuilder();
+		Document doc = db.parse(requestUrl);
+
+		Transformer transformer = TransformerFactory.newInstance()
+				.newTransformer();
+		OutputStream out = new BufferedOutputStream(new FileOutputStream(
+				new File("C:/Temp/myfile.xml")));
+		Result output = new StreamResult(out);
+
+		Source input = new DOMSource(doc);
+		transformer.setOutputProperty(
+				"{http://xml.apache.org/xslt}indent-amount", "2");
+		transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+		transformer.transform(input, output);
+
 		
-		
-		// set title
-		bookdetail.setTitle(title);
-		bookdetail.setImagelink(imagelink);
-
-		// isbn- 10 or 13
-		if (isbn10 != null) {
-			bookdetail.setIsbn10(isbn10);
-		}
-		if (isbn13 != null) {
-			bookdetail.setIsbn10(isbn13);
-		}
-
-
-		// publisher
-		if (publisher != null && bookdetail.getPublisher() == null) {
-			PublisherDao pub = findPublisherForName(publisher);
-			bookdetail.setPublisher(pub);
-		}
-
-		// publishyear
-		if (publishyear != null) {
-			bookdetail.setPublishyear(new Long(publishyear));
-		}
-
-		// language
-		if (language != null) {
-			bookdetail.setLanguage(language);
-		}
-
-		// description
-		if (description.trim().length() > 0) {
-			String origdesc = bookdetail.getDescription();
-			if (origdesc == null
-					|| origdesc.trim().length() < description.length()) {
-				bookdetail.setDescription(description);
+		// make list of Item documents (Item nodes from returned request as entire document)
+		List<Document> items = new ArrayList<Document>();
+		// get Item nodes from returned documents
+		NodeList itemnodes = doc.getElementsByTagName("Item");
+		// make each node into a new document
+		if (itemnodes!=null) {
+			for (int i=0;i<itemnodes.getLength();i++) {
+				Node node = itemnodes.item(i);
+				Document newDocument = db.newDocument();
+				Node imported = newDocument.importNode(node, true);
+				newDocument.appendChild(imported);
+				// add document to the list
+				items.add(newDocument);
 			}
 		}
 
-		// authors
-		// break into a list
-		if (authors!=null) {
-			String[] autharray = authors.split(",");
-			List<String> authorlist = new ArrayList<String>();
-			for (int i=0;i<autharray.length;i++) {
-				String toadd = autharray[i];
-				if (toadd!=null && toadd.trim().length()>0) {
-					authorlist.add(toadd.trim());
+		// process item documents into bookdetails
+		List<FoundDetailsDao> copiedinfo = copyResultsIntoFoundDetails(items);
+		
+		// process list according to size - (one, none, or multiple results found)
+		if (copiedinfo !=null) {
+			String description = "";
+			for (FoundDetailsDao detail:copiedinfo) {
+				String founddescription = detail.getDescription();
+				if (founddescription!=null && founddescription.trim().length()>0){
+					if (founddescription.length()>description.length()) {
+						description=founddescription;
+					}
 				}
 			}
-			bookdetail = insertAuthorsIntoBookDetail(authorlist, bookdetail);
+			if (description.trim().length()>0) {
+				findobj.getBookdetail().setDescription(description);
+			}
 		}
 		
-		// return bookdetail
-		return bookdetail;
+		// return finderobject
+		return findobj;
+
 	}
+
+	
+
+
+
 
 	private List<FoundDetailsDao> copyResultsIntoFoundDetails(List<Document> items) throws Exception {
 		if (items!=null && items.size()>0) {
@@ -275,7 +314,7 @@ public class AmazonDetailFinder extends AmazonBaseFinder {
 						fd.setPublishyear(new Long(publishyear));
 					} else if (publishyear.contains("?")) {
 						// do nothing - vague year
-					} else {
+					} else if (publishyear.length()>0){
 						fd.setPublishyear(new Long(publishyear));
 					}
 				}

@@ -4,10 +4,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import meg.biblio.catalog.CatalogService;
 import meg.biblio.catalog.db.ArtistRepository;
 import meg.biblio.catalog.db.BookRepository;
 import meg.biblio.catalog.db.dao.ArtistDao;
 import meg.biblio.catalog.db.dao.BookDao;
+import meg.biblio.common.ClientService;
+import meg.biblio.common.db.dao.ClientDao;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -17,6 +20,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
+
+import antlr.CSharpCodeGenerator;
 
 @ContextConfiguration(locations = "classpath:/META-INF/spring/applicationContext*.xml")
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -29,6 +34,8 @@ public class SearchServiceTest {
 	@Autowired
 	ArtistRepository artistRepo;
 
+	@Autowired
+	ClientService clientService;
 
 	@Autowired
 	BookRepository bookRepo;
@@ -48,6 +55,7 @@ public class SearchServiceTest {
 		book.getBookdetail().setTitle("Little House on the Prarie");
 		List<ArtistDao> authors = new ArrayList<ArtistDao>();
 		authors.add(newart);
+		book.getBookdetail().setDetailstatus(CatalogService.DetailStatus.NODETAIL);
 		book.getBookdetail().setAuthors(authors);
 		bookRepo.save(book);
 		// put "John Smith" in db
@@ -121,6 +129,15 @@ public class SearchServiceTest {
 		List<BookDao> foundbooks = searchService.findBooksForCriteria(criteria, 1L);
 		Assert.assertNotNull(foundbooks);
 	}
+	
+	@Test
+	public void testSearchNoDetails() {
+		Long clientkey = clientService.getTestClientId();
+		ClientDao client = clientService.getClientForKey(clientkey);
+		
+		List<BookDao> nodetails = searchService.findBooksWithoutDetails(100, client);
+		Assert.assertNotNull(nodetails);
+	}	
 	
 	@Test
 	public void testAuthorSearchByCriteria() {

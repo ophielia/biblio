@@ -108,7 +108,7 @@ public class CatalogServiceImpl implements CatalogService {
 	}
 
 	@Override
-	public void createCatalogEntriesFromList(Long clientkey,
+	public List<BookModel> createCatalogEntriesFromList(Long clientkey,
 			List<BookModel> toimport) {
 		List<BookModel> createdobjects = new ArrayList<BookModel>();
 		
@@ -125,7 +125,7 @@ public class CatalogServiceImpl implements CatalogService {
 			createdobjects.add(result);
 		}
 
-
+		return createdobjects;
 
 	}
 

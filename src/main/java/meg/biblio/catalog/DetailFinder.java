@@ -8,8 +8,8 @@ public interface DetailFinder {
 
 	FinderObject findDetails(FinderObject findobj, long clientcomplete) throws Exception;
 
-	List<BookModel> findDetailsForList(List<BookModel> models,
-			long clientcomplete, Integer batchsearchmax);
+	List<FinderObject> findDetailsForList(List<FinderObject> forsearch,
+			long clientcomplete, Integer batchsearchmax)  throws Exception;
 
 	
 }

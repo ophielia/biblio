@@ -23,6 +23,7 @@ import meg.biblio.catalog.db.dao.ArtistDao;
 import meg.biblio.catalog.db.dao.BookDao;
 import meg.biblio.catalog.db.dao.BookDetailDao;
 import meg.biblio.catalog.db.dao.PublisherDao;
+import meg.biblio.common.db.dao.ClientDao;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -124,18 +125,23 @@ public class SearchServiceImpl implements SearchService {
 
 	}
 	
-	public List<BookDao> findBooksWithoutDetails(int max) {
+	public List<BookDao> findBooksWithoutDetails(int max, ClientDao client) {
 		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
 		CriteriaQuery<BookDao> c = cb.createQuery(BookDao.class);
 		Root<BookDao> exp = c.from(BookDao.class);
+		Join<BookDao,BookDetailDao> bookdetail= exp.join("bookdetail");
 		c.select(exp);		
 		
 			// get where clause
 			List<Predicate> whereclause = new ArrayList<Predicate>();
 			
-			Expression<Long> path = exp.get("detailstatus");
+			Expression<Long> path = bookdetail.get("detailstatus");
 			Predicate predicate = cb.equal(path,new Long(CatalogService.DetailStatus.NODETAIL));
 			whereclause.add(predicate);
+			
+			Expression<Long> path2 = exp.get("clientid");
+			Predicate predicate2 = cb.equal(path2,client.getId());
+			whereclause.add(predicate2);
 			
 			// creating the query
 			c.where(cb.and(whereclause.toArray(new Predicate[whereclause.size()])));

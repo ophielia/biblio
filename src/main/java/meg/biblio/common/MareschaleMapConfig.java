@@ -42,6 +42,21 @@ public class MareschaleMapConfig implements MapConfig {
 		map.setSetterMethod("setPublisher");
 		mappings.add(map);
 		
+		map = new FieldMapping();
+		map.setFromFieldTag("field6");
+		map.setSetterMethod("setIsbn10");
+		mappings.add(map);		
+
+		map = new FieldMapping();
+		map.setFromFieldTag("field7");
+		map.setSetterMethod("setIsbn13");
+		mappings.add(map);				
+		
+		map = new FieldMapping();
+		map.setFromFieldTag("field8");
+		map.setSetterMethod("setBarcode");
+		mappings.add(map);	
+		
 		return mappings;
 	}
 

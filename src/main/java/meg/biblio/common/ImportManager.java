@@ -1,15 +1,19 @@
 package meg.biblio.common;
 
 import java.io.File;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import meg.biblio.catalog.CatalogService;
+import meg.biblio.catalog.DetailSearchService;
 import meg.biblio.catalog.db.dao.ArtistDao;
 import meg.biblio.catalog.db.dao.BookDao;
 import meg.biblio.catalog.web.model.BookModel;
 import meg.biblio.common.db.ImportBookRepository;
+import meg.biblio.common.db.dao.ClientDao;
 import meg.biblio.common.db.dao.ImportBookDao;
 import meg.biblio.search.SearchService;
 import meg.tools.imp.FileConfig;
@@ -45,6 +49,9 @@ public class ImportManager {
 	
 	@Autowired
 	SearchService searchService;
+	
+	@Autowired
+	DetailSearchService detailSearchService;
 	
 	@Autowired
 	ImportBookRepository importRepo;
@@ -92,10 +99,11 @@ public class ImportManager {
 	}
 
 	
-	public HashMap<String,Integer>  importBookList(Long clientkey, String filestr) {
+	public HashMap<String,Integer>  importBookList(Long clientkey, String filestr) throws Exception, IOException {
 		// get configs for client
 		FileConfig config=null;
 		MapConfig mapconfig=null;
+		ClientDao client = clientService.getClientForKey(clientkey);
 		try {
 			config = clientService
 					.getFileConfigForClient(clientkey);
@@ -153,7 +161,15 @@ public class ImportManager {
 						if (newbook.getPublisher()!=null && newbook.getPublisher().trim().length()>0) {
 							model.setPublisher(newbook.getPublisher().trim());
 						}						
-						
+						if (newbook.getIsbn10()!=null && newbook.getIsbn10().trim().length()>0) {
+							model.setIsbn10(newbook.getIsbn10().trim());
+						}
+						if (newbook.getIsbn13()!=null && newbook.getIsbn13().trim().length()>0) {
+							model.setIsbn13(newbook.getIsbn13().trim());
+						}
+						if (newbook.getBarcode()!=null && newbook.getBarcode().trim().length()>0) {
+							model.setBarcode(newbook.getBarcode().trim());
+						}						
 						toimport.add(model);
 						
 					}else {
@@ -175,8 +191,16 @@ public class ImportManager {
 		Integer errorssize=new Integer(errors.size());
 		
 		// persist list of bookmodels
-		catalogService.createCatalogEntriesFromList(clientkey,toimport);
+		toimport = catalogService.createCatalogEntriesFromList(clientkey,toimport);
 
+		// search for details for list
+		List<BookModel> details = detailSearchService.fillInDetailsForBookList(toimport, client);
+		if (details!=null) {
+			for (BookModel model:details) {
+				catalogService.updateCatalogEntryFromBookModel(clientkey, model, false);
+			}
+		}
+		
 		// persist any duplicates
 		importRepo.save(errors);
 		

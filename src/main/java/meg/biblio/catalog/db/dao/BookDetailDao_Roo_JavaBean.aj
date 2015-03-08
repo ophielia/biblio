@@ -91,14 +91,6 @@ privileged aspect BookDetailDao_Roo_JavaBean {
         this.detailstatus = detailstatus;
     }
     
-    public boolean BookDetailDao.isSearchwisbn() {
-        return this.searchwisbn;
-    }
-    
-    public void BookDetailDao.setSearchwisbn(boolean searchwisbn) {
-        this.searchwisbn = searchwisbn;
-    }
-    
     public void BookDetailDao.setFinderlog(Long finderlog) {
         this.finderlog = finderlog;
     }

@@ -1,4 +1,5 @@
 package meg.biblio.catalog.web;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.Principal;
 import java.util.HashMap;
@@ -50,7 +51,16 @@ public class UploadController {
 	   uiModel.asMap().clear();
 	   
 	   // import the file here....
-	   HashMap<String,Integer> importresults = importManager.importBookList(clientkey, filestr);
+	   HashMap<String, Integer> importresults=new HashMap<String,Integer>();
+	try {
+		importresults = importManager.importBookList(clientkey, filestr);
+	} catch (IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	} catch (Exception e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
 	   
 	   bookImportModel.setImportListSize(importresults.get(ImportManager.Results.listsize));   
 	   bookImportModel.setImportedSize(importresults.get(ImportManager.Results.importsize));		

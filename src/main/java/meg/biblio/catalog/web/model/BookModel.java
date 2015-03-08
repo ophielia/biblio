@@ -392,6 +392,10 @@ public class BookModel  implements Serializable {
 		
 	}
 
+	public void setBarcode(String barcodeid) {
+		this.book.setBarcodeid(barcodeid);
+	}
+
 
 
 

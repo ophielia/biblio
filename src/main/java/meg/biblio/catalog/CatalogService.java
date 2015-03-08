@@ -59,7 +59,7 @@ public interface CatalogService {
 
 	public List<FoundDetailsDao> getFoundDetailsForBook(Long id);
 
-	void createCatalogEntriesFromList(Long clientkey, List<BookModel> toimport);
+	List<BookModel> createCatalogEntriesFromList(Long clientkey, List<BookModel> toimport);
 
 
 

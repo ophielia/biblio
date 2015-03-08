@@ -30,9 +30,12 @@ privileged aspect ImportBookDaoDataOnDemand_Roo_DataOnDemand {
     public ImportBookDao ImportBookDaoDataOnDemand.getNewTransientImportBookDao(int index) {
         ImportBookDao obj = new ImportBookDao();
         setAuthor(obj, index);
+        setBarcode(obj, index);
         setClientbookid(obj, index);
         setError(obj, index);
         setIllustrator(obj, index);
+        setIsbn10(obj, index);
+        setIsbn13(obj, index);
         setPublisher(obj, index);
         setTitle(obj, index);
         return obj;
@@ -41,6 +44,11 @@ privileged aspect ImportBookDaoDataOnDemand_Roo_DataOnDemand {
     public void ImportBookDaoDataOnDemand.setAuthor(ImportBookDao obj, int index) {
         String author = "author_" + index;
         obj.setAuthor(author);
+    }
+    
+    public void ImportBookDaoDataOnDemand.setBarcode(ImportBookDao obj, int index) {
+        String barcode = "barcode_" + index;
+        obj.setBarcode(barcode);
     }
     
     public void ImportBookDaoDataOnDemand.setClientbookid(ImportBookDao obj, int index) {
@@ -56,6 +64,16 @@ privileged aspect ImportBookDaoDataOnDemand_Roo_DataOnDemand {
     public void ImportBookDaoDataOnDemand.setIllustrator(ImportBookDao obj, int index) {
         String illustrator = "illustrator_" + index;
         obj.setIllustrator(illustrator);
+    }
+    
+    public void ImportBookDaoDataOnDemand.setIsbn10(ImportBookDao obj, int index) {
+        String isbn10 = "isbn10_" + index;
+        obj.setIsbn10(isbn10);
+    }
+    
+    public void ImportBookDaoDataOnDemand.setIsbn13(ImportBookDao obj, int index) {
+        String isbn13 = "isbn13_" + index;
+        obj.setIsbn13(isbn13);
     }
     
     public void ImportBookDaoDataOnDemand.setPublisher(ImportBookDao obj, int index) {

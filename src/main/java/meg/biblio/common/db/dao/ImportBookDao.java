@@ -13,6 +13,9 @@ public class ImportBookDao {
 	private String author;
 	private String illustrator;
 	private String publisher;
+	private String isbn10;
+	private String isbn13;
+	private String barcode;
 	private String error;
 	
 }

@@ -5,6 +5,7 @@ import java.util.List;
 
 import meg.biblio.catalog.db.dao.ArtistDao;
 import meg.biblio.catalog.db.dao.BookDao;
+import meg.biblio.common.db.dao.ClientDao;
 
 
 public interface SearchService {
@@ -18,7 +19,7 @@ public interface SearchService {
 
 	public List<Long> findBookIdByClientId(String clientbookid);
 	
-	public List<BookDao> findBooksWithoutDetails(int maxresults);
+	public List<BookDao> findBooksWithoutDetails(int maxresults, ClientDao client);
 
 	List<BookDao> findBooksForCriteria(BookSearchCriteria criteria,
 			Long clientid);

@@ -69,7 +69,6 @@ public class BookDetailDao {
 	@OneToMany(mappedBy = "bookdetail",cascade = CascadeType.ALL, fetch=FetchType.LAZY)
 	private List<FoundWordsDao> foundwords;
 	private Long detailstatus;
-	private boolean searchwisbn;
 	private Long finderlog;
 	private Long listedtype;
 	@Transient
@@ -154,4 +153,6 @@ public class BookDetailDao {
         }
     	return this.illustrators;
     }
+
+
 }

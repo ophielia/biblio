@@ -87,7 +87,20 @@ public class AmazonDetailFinderTest {
 		// check call
 		Assert.assertNotNull(findobj);
 		Assert.assertFalse(findobj.getSearchStatus() == CatalogService.DetailStatus.NODETAIL);
-		Assert.assertEquals(new Long(3), bookdetail.getFinderlog());
+		//Assert.assertEquals(new Long(3), findobj.get());
+		
+		// by isbn
+		book = new BookDao();
+		book.getBookdetail().setIsbn13("9782211011716");
+
+		findobj = new FinderObject(book.getBookdetail());
+
+		// service call
+		findobj = amazonSearch.searchLogic(findobj);
+		bookdetail = findobj.getBookdetail();
+		Assert.assertNotNull(findobj);
+		Assert.assertFalse(findobj.getSearchStatus() == CatalogService.DetailStatus.NODETAIL);
+		Assert.assertNotNull(bookdetail.getTitle());
 	}
 
 	@Test

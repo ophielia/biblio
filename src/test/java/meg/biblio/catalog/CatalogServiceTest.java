@@ -146,7 +146,7 @@ public class CatalogServiceTest {
 		Assert.assertNotNull(result.getBookid());
 		Assert.assertNotNull(result.getClientid());
 		Assert.assertNotNull(result.getAuthors());
-		Assert.assertNull(result.getIllustrators());
+		Assert.assertTrue(result.getIllustrators().size()==0);
 		// test authors
 		ArtistDao artist = result.getAuthors().get(0);
 		Assert.assertEquals(artistid, artist.getId());

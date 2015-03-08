@@ -10,51 +10,54 @@ import meg.biblio.catalog.db.dao.ArtistDao;
 import meg.biblio.catalog.db.dao.BookDetailDao;
 import meg.biblio.search.SearchService;
 
-public abstract  class BaseDetailFinder implements DetailFinder {
+public abstract class BaseDetailFinder implements DetailFinder {
 
 	@Autowired
 	SearchService searchService;
-	
+
 	DetailFinder next;
-	
+
 	FinderObject searchLogic(FinderObject findobj) throws Exception {
 		throw new Exception("Implementation Error");
 	}
+
 	protected Long getIdentifier() throws Exception {
 		throw new Exception("Implementation Error");
 	}
-	
+
 	protected boolean isEnabled() throws Exception {
 		throw new Exception("Implementation Error");
 	}
-	
-	
-	
-	
+
 	@Override
-	public FinderObject findDetails(FinderObject findobj, long clientcomplete) throws Exception {
-		
+	public FinderObject findDetails(FinderObject findobj, long clientcomplete)
+			throws Exception {
+
 		// check eligibility
 		boolean iseligible = isEligible(findobj);
 		boolean isenabled = isEnabled();
-		
+
 		// if eligible, run searchlogic
 		if (iseligible && isenabled) {
-		// run logic
+			// log search
+			findobj.logFinderRun(getIdentifier());
+			
+			// run logic
 			findobj = searchLogic(findobj);
-		// check completion
-			boolean complete = resultsComplete(findobj,clientcomplete);
+			// check completion
+			boolean complete = resultsComplete(findobj, clientcomplete);
 			if (!complete) {
-				if (getNext()!=null) {
-					findobj = getNext().findDetails(findobj,clientcomplete);
+				if (getNext() != null) {
+					findobj = getNext().findDetails(findobj, clientcomplete);
 				}
 			}
 		} else {
 			// otherwise, run next search
-			if (getNext()!=null) {
-				findobj = getNext().findDetails(findobj,clientcomplete);
+			if (getNext() != null) {
+				findobj = getNext().findDetails(findobj, clientcomplete);
 			}
 		}
+
 
 		// return finderobject
 		return findobj;
@@ -68,49 +71,55 @@ public abstract  class BaseDetailFinder implements DetailFinder {
 		this.next = next;
 	}
 
-
 	protected boolean isEligible(FinderObject findobj) throws Exception {
-		// Eligible to be run if 1) firsttime search, 2) hasn't used this finder before, or 3) isbn has been added, even if this
+		// Eligible to be run if 1) firsttime search, 2) hasn't used this finder
+		// before, or 3) isbn has been added, even if this
 		// search was previously made
-		if (findobj.isIsbnadded() || findobj.isNew()) return true;
-		BookDetailDao bookdetail = findobj.getBookdetail();
-		
-		boolean searchrun = bookdetail.getFinderlog() % getIdentifier()==0;
-		
+		if (findobj.isNew())
+			return true;
+
+		boolean searchrun = findobj.getCurrentFinderLog() % getIdentifier() == 0;
+
 		return !searchrun;
 	}
 
 	protected boolean resultsComplete(FinderObject findobj, long clientcomplete) {
 		boolean complete = true;
 		BookDetailDao detail = findobj.getBookdetail();
-		
-		if (complete && clientcomplete % DetailSearchService.CompletionTargets.AUTHOR==0) {
+
+		if (complete
+				&& clientcomplete
+						% DetailSearchService.CompletionTargets.AUTHOR == 0) {
 			// check author
 			String authorstring = detail.getAuthorsAsString();
-			complete = (!(authorstring!=null && authorstring.trim().length()>0)); 
+			complete = ((authorstring != null && authorstring.trim().length() > 0));
 		}
-		if (complete && clientcomplete % DetailSearchService.CompletionTargets.TITLE==0) {
+		if (complete
+				&& clientcomplete % DetailSearchService.CompletionTargets.TITLE == 0) {
 			// check title
 			String titlestring = detail.getTitle();
-			complete = (!(titlestring!=null && titlestring.trim().length()>0)) ;
+			complete = ((titlestring != null && titlestring.trim().length() > 0));
 		}
-		if (complete && clientcomplete % DetailSearchService.CompletionTargets.IMAGE==0) {
+		if (complete
+				&& clientcomplete % DetailSearchService.CompletionTargets.IMAGE == 0) {
 			// check image
 			String imagestring = detail.getImagelink();
-			complete = (!(imagestring!=null && imagestring.trim().length()>0)) ;
+			complete = ((imagestring != null && imagestring.trim().length() > 0));
 		}
-		if (complete && clientcomplete % DetailSearchService.CompletionTargets.DESCRIPTION==0) {
+		if (complete
+				&& clientcomplete
+						% DetailSearchService.CompletionTargets.DESCRIPTION == 0) {
 			// check description
 			String descriptionstring = detail.getDescription();
-			complete = (!(descriptionstring!=null && descriptionstring.trim().length()>0)) ;
+			complete = ((descriptionstring != null && descriptionstring.trim()
+					.length() > 0));
 		}
-		
-		
+
 		return complete;
 	}
 
-
-	protected BookDetailDao insertAuthorsIntoBookDetail(List<String> artists, BookDetailDao bookdetail) {
+	protected BookDetailDao insertAuthorsIntoBookDetail(List<String> artists,
+			BookDetailDao bookdetail) {
 		// split authors into authors and illustrators (somewhat arbitrary, but
 		// this is how we'll do it)
 		// convert strings to ArtistDaos....
@@ -134,11 +143,11 @@ public abstract  class BaseDetailFinder implements DetailFinder {
 				ArtistDao author = textToArtistName(rawname);
 				authors.add(author);
 			}
-	
+
 			// get existing authors and illustrators
 			List<ArtistDao> existauth = bookdetail.getAuthors();
 			List<ArtistDao> existillus = bookdetail.getIllustrators();
-	
+
 			// loop through all authors, calling reconcileArtists
 			for (ArtistDao newauthor : authors) {
 				reconcileArtists(newauthor, existauth, existillus);
@@ -147,15 +156,16 @@ public abstract  class BaseDetailFinder implements DetailFinder {
 			for (ArtistDao newillus : illustrators) {
 				reconcileArtists(newillus, existillus, existauth);
 			}
-			
+
 			// set lists in book detail
 			bookdetail.setAuthors(existauth);
 			bookdetail.setIllustrators(existillus);
 		}
-	
+
 		// return book detail
 		return bookdetail;
 	}
+
 	protected ArtistDao textToArtistName(String text) {
 		ArtistDao name = new ArtistDao();
 		boolean nonempty = text != null && text.trim().length() > 0;
@@ -205,7 +215,9 @@ public abstract  class BaseDetailFinder implements DetailFinder {
 		// return name
 		return null;
 	}
-	private void reconcileArtists(ArtistDao newartist, List<ArtistDao> targetlist, List<ArtistDao> checklist) {
+
+	private void reconcileArtists(ArtistDao newartist,
+			List<ArtistDao> targetlist, List<ArtistDao> checklist) {
 		if (newartist != null) {
 			boolean targetexist = false;
 			boolean checkexist = false;
@@ -229,10 +241,10 @@ public abstract  class BaseDetailFinder implements DetailFinder {
 				// replace target list if change made
 				if (targetexist) {
 					targetlist.clear();
-					targetlist.addAll( newtargetlist);
+					targetlist.addAll(newtargetlist);
 				}
 			}
-			
+
 			// exists in checkexist?
 			if (!targetexist) {
 				if (checklist != null) {
@@ -254,11 +266,11 @@ public abstract  class BaseDetailFinder implements DetailFinder {
 					// replace target list if change made
 					if (checkexist) {
 						checklist.clear();
-						checklist.addAll( newchecklist);
+						checklist.addAll(newchecklist);
 					}
 				}
 			}
-	
+
 			// if not present - add to target list
 			if (!targetexist && !checkexist) {
 				newartist = checkArtistInfo(null, newartist);
@@ -266,10 +278,11 @@ public abstract  class BaseDetailFinder implements DetailFinder {
 			}
 		}
 	}
+
 	private ArtistDao checkArtistInfo(ArtistDao existart, ArtistDao newart) {
 		boolean existmorecomplete = false;
 		if (existart != null) {
-	
+
 			existmorecomplete = (existart.hasFirstname() && !newart
 					.hasFirstname());
 			existmorecomplete |= (existart.hasMiddlename() && !newart
@@ -293,6 +306,7 @@ public abstract  class BaseDetailFinder implements DetailFinder {
 		}
 		return existart;
 	}
+
 	private boolean artistsMatch(ArtistDao existart, ArtistDao newartist) {
 		boolean targetexist = false;
 		// check if lastnames match
@@ -312,7 +326,7 @@ public abstract  class BaseDetailFinder implements DetailFinder {
 		}
 		return targetexist;
 	}
-	
+
 	private boolean namesMatch(long matchtype, ArtistDao bookauth,
 			ArtistDao foundauthor) {
 		String bookval = null;
@@ -343,6 +357,7 @@ public abstract  class BaseDetailFinder implements DetailFinder {
 		}
 		return false;
 	}
+
 	private List<String> arrayToList(String[] tokens) {
 		List<String> list = new ArrayList<String>();
 		if (tokens != null) {

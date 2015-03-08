@@ -1,6 +1,7 @@
 package meg.biblio.common;
 
 import java.security.Principal;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -26,4 +27,6 @@ public interface ClientService {
 	public Long getTestClientId();
 
 	public Long getAndIncrementLastBookNr(Long clientkey);
+
+	public List<ClientDao> getAllClients();
 }

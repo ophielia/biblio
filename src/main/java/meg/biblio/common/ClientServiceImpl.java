@@ -1,6 +1,7 @@
 package meg.biblio.common;
 
 import java.security.Principal;
+import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -99,6 +100,11 @@ public class ClientServiceImpl implements ClientService {
 		int deletedCount = query.executeUpdate();
 
 		return maxbook;
+	}
+
+	@Override
+	public List<ClientDao> getAllClients() {
+		return clientRepo.findAll();
 	}
 
 }

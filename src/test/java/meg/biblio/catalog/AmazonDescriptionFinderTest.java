@@ -1,26 +1,12 @@
 package meg.biblio.catalog;
 
-import java.io.IOException;
-import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.List;
 
-import meg.biblio.catalog.CatalogService;
-import meg.biblio.catalog.CatalogServiceImpl;
 import meg.biblio.catalog.db.ArtistRepository;
-import meg.biblio.catalog.db.BookRepository;
-import meg.biblio.catalog.db.FoundWordsDao;
-import meg.biblio.catalog.db.FoundWordsRepository;
-import meg.biblio.catalog.db.IgnoredWordsDao;
-import meg.biblio.catalog.db.IgnoredWordsRepository;
-import meg.biblio.catalog.db.PublisherRepository;
-import meg.biblio.catalog.db.SubjectRepository;
 import meg.biblio.catalog.db.dao.ArtistDao;
 import meg.biblio.catalog.db.dao.BookDao;
 import meg.biblio.catalog.db.dao.BookDetailDao;
-import meg.biblio.catalog.db.dao.PublisherDao;
-import meg.biblio.catalog.web.model.BookModel;
-import meg.biblio.common.ClientService;
 import meg.biblio.search.SearchService;
 
 import org.junit.Assert;
@@ -35,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 @ContextConfiguration(locations = "classpath:/META-INF/spring/applicationContext*.xml")
 @RunWith(SpringJUnit4ClassRunner.class)
 @Transactional
-public class GoogleDetailFinderTest {
+public class AmazonDescriptionFinderTest {
 
 	@Autowired
 	CatalogService catalogService;
@@ -44,35 +30,50 @@ public class GoogleDetailFinderTest {
 	SearchService searchService;
 
 	@Autowired
-	GoogleDetailFinder googleSearch;
+	ArtistRepository artistRepo;
+
+	@Autowired
+	AmazonDetailFinder firstAmazonSearch;
+
+	@Autowired
+	AmazonDescriptionFinder descriptionSearch;
 
 	@Before
 	public void setup() {
-	}
 
+	}
 
 	@Test
 	public void testSearchLogic() throws Exception {
 		BookDao book = new BookDao();
-		book.getBookdetail().setTitle("coco tout nu");
-		ArtistDao author = catalogService.textToArtistName("Monfreid");
-		List<ArtistDao> authors = new ArrayList<ArtistDao>();
-		authors.add(author);
-		book.getBookdetail().setAuthors(authors);
+		book.getBookdetail().setIsbn10("2211221092");
 
 		FinderObject findobj = new FinderObject(book.getBookdetail());
-		
 
-		// service call
-		findobj = googleSearch.findDetails(findobj,210);
+		// service call to first amazon search (we need something which doesn't have a description)
+		findobj = firstAmazonSearch.searchLogic(findobj);
 		BookDetailDao bookdetail = findobj.getBookdetail();
-		
+
 		// check call
 		Assert.assertNotNull(findobj);
 		Assert.assertFalse(findobj.getSearchStatus() == CatalogService.DetailStatus.NODETAIL);
-		Assert.assertEquals(new Long(2), findobj.getCurrentFinderLog());
+		Assert.assertTrue(bookdetail.getDescription()==null || bookdetail.getDescription().trim().length()==0);
+		Assert.assertTrue(bookdetail.getTitle()!=null && bookdetail.getTitle().trim().length()>0);
+		
+		// ok - nothing found - let's put it through the description finder
+		findobj = descriptionSearch.findDetails(findobj, 210);
+		
+		// check call - run should be logged (this should be eligible)
+		// and description shouldn't be null
+		Assert.assertNotNull(findobj);
+		Assert.assertTrue(findobj.getCurrentFinderLog() % descriptionSearch.getIdentifier() ==0);
+		Assert.assertNotNull(findobj.getBookdetail().getDescription());
+		Assert.assertTrue(findobj.getBookdetail().getDescription().length()>0);
+		
+	
+	
 	}
 
-	
+
 
 }
