@@ -374,6 +374,11 @@
 			<artifactId>spring-security-taglibs</artifactId>
 			<version>${spring-security.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>4.3.6</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>

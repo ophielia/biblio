@@ -26,14 +26,55 @@ done - BaseDetailFinder - isEligible
 GoogleSearch - done
 GoogleSearch - test multi details....
 
-Amazon Search - rework copy authors into bookdetail
-check - move copy authors into book detail to base finder - put into google
+done - Amazon Search - rework copy authors into bookdetail
+done - move copy authors into book detail to base finder - put into google
 done  - add query switch to amazon - title, author, publisher, isbn
 done - add into founddetails....
 done - complete test of insertAuthorsIntoBookDetail.....
 done - move setDetailStatus in BaseDetailFinder to FinderObj
 put max count in amazon found details....
-----> get findercode in findobj up and going
+done - get findercode in findobj up and going
+done - Recheck set detail status multi
+done - Make eligible look at find object
+done - Set status - moves book detail to ft if status is detail found
+done - Find object log search Add to list of longs
+done - Update previous search (findobj)
+done - Get current search log
+
+take care of listed type - type....
+in process - import - with barcode and isbn/ean
+
+---> Next up - three new searches (finders)
+	1 - offlinesearch - looks in existing book details
+	2 - amazondescriptionsearch - searches amazon by name and title to find comlete description
+	3 - dewey finder - https://platform.worldcat.org/api-explorer/Classify
+	
+done - amazondescriptionsearch coded
+test amazondescriptionsearch
+
+	
+import - needs to do offline search for everything before saving.  Then online
+search for batch maximum after save.
+
+fix problem that imported books aren't saved with a detail status	
+
+LEAVE THE BNF ALONE!!!!
+	
+	
+Notes:  
+	1. Search problems. Some ISBNs aren't finding results - possibly a 
+	language glitch. Also, many descriptions aren't filled in.  And lastly, 
+	still don't have a source for classification.  BNF search could solve this,
+	but is very difficult to crack.  Don't want to spend the time now.  So, for
+	now, we'll do an amazon description search for books which have isbns, but
+	no descriptions to find a more complete description.  Except for the classification
+	problem, this shouldn't have a big impact, because the isbns which aren't returning
+	are mostly books for which i copied the isbn.  Maybe I got a bad one (isbn for different
+	language).  Really need the bnf search, but don't have time to crack it now. WorldCat 
+	could be an option as well.  But need focus and progress now.
+			bnf - look through worldcat.  bnf web scraping?  needs work.	
+
+
 
 		
 		
