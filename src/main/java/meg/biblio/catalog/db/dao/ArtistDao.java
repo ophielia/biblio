@@ -42,5 +42,18 @@ public class ArtistDao {
 		String displayname = display.toString();
 		
 		return displayname.trim();
-	}	
+	}
+	
+	public void copyFrom(ArtistDao artist) {
+		if (artist.lastname != null) {
+			this.lastname = artist.lastname;
+		}
+		if (artist.firstname != null) {
+			this.firstname = artist.firstname;
+		}
+		if (artist.middlename != null) {
+			this.middlename = artist.middlename;
+		}
+
+	}
 }

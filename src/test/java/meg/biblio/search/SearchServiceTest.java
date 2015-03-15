@@ -1,14 +1,19 @@
 package meg.biblio.search;
 
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import meg.biblio.catalog.BookIdentifier;
 import meg.biblio.catalog.CatalogService;
 import meg.biblio.catalog.db.ArtistRepository;
+import meg.biblio.catalog.db.BookDetailRepository;
 import meg.biblio.catalog.db.BookRepository;
 import meg.biblio.catalog.db.dao.ArtistDao;
 import meg.biblio.catalog.db.dao.BookDao;
+import meg.biblio.catalog.db.dao.BookDetailDao;
 import meg.biblio.common.ClientService;
 import meg.biblio.common.db.dao.ClientDao;
 
@@ -21,8 +26,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import antlr.CSharpCodeGenerator;
-
 @ContextConfiguration(locations = "classpath:/META-INF/spring/applicationContext*.xml")
 @RunWith(SpringJUnit4ClassRunner.class)
 @Transactional
@@ -34,6 +37,9 @@ public class SearchServiceTest {
 	@Autowired
 	ArtistRepository artistRepo;
 
+	@Autowired
+	BookDetailRepository bookDetRepo;	
+	
 	@Autowired
 	ClientService clientService;
 
@@ -259,6 +265,24 @@ public class SearchServiceTest {
 		
 	}		
 	
-	
+
+	@Test
+	public void testFindBooksForIdentifier() throws GeneralSecurityException, IOException {
+		// insert bookdetail with title and ean 1111111111111
+		BookDetailDao bookdetail = new BookDetailDao();
+		bookdetail.setTitle("--");
+		bookdetail.setIsbn13("1111111111111");
+		bookdetail = bookDetRepo.save(bookdetail);
+
+		BookIdentifier bi = new BookIdentifier();
+		bi.setEan("1111111111111");
+
+		// service call
+		BookDetailDao result = searchService.findBooksForIdentifier(bi);
+
+		// Assert result not null, and id match
+		Assert.assertNotNull(result);
+		Assert.assertEquals(bookdetail.getId(),result.getId());
+	}
 	
 	}

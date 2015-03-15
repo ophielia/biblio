@@ -6,83 +6,33 @@ Branch - DEMO 1.0 - Demo1
 	Better navigation
 		
 		
-done - Move to bookdetail
 
-done - massage tests... (for bookdetail)
-done - CService findBookByClientBookId - load / check BookDetail
-done - CService new - findBookByISBN - load / check BookDetail fill in
-
-tests still open - 
-	done - new BookModelValidatorTest  
-	done - SearchServiceTest
-	done - CatalogServiceTest	
-	done - LendingServiceTest
-	
-	
-done - BookModelValidatorTest 	
-		
-done - extricate search from catalog service
-done - BaseDetailFinder - isEligible		
-GoogleSearch - done
 GoogleSearch - test multi details....
-
-done - Amazon Search - rework copy authors into bookdetail
-done - move copy authors into book detail to base finder - put into google
-done  - add query switch to amazon - title, author, publisher, isbn
-done - add into founddetails....
-done - complete test of insertAuthorsIntoBookDetail.....
-done - move setDetailStatus in BaseDetailFinder to FinderObj
 put max count in amazon found details....
-done - get findercode in findobj up and going
-done - Recheck set detail status multi
-done - Make eligible look at find object
-done - Set status - moves book detail to ft if status is detail found
-done - Find object log search Add to list of longs
-done - Update previous search (findobj)
-done - Get current search log
+add ark codes
+reflect code / class / type changes in search
 
-take care of listed type - type....
-in process - import - with barcode and isbn/ean
-
----> Next up - three new searches (finders)
-	1 - offlinesearch - looks in existing book details
-	2 - amazondescriptionsearch - searches amazon by name and title to find comlete description
-	3 - dewey finder - https://platform.worldcat.org/api-explorer/Classify
-	
-done - amazondescriptionsearch coded
-test amazondescriptionsearch
-
-	
-import - needs to do offline search for everything before saving.  Then online
+--->import - needs to do offline search for everything before saving.  Then online
 search for batch maximum after save.
-
-fix problem that imported books aren't saved with a detail status	
-
-LEAVE THE BNF ALONE!!!!
 	
+client codes as bar codes
+rework front end of add book
+	assign code separate from save, and dependant upon client assign code type
+	save goes back to add book
+	save shows book code and processing status
+eventually - will need to program for isbn codes - translate codes to hyphens.
+eventually - check scheduledFillInDetails... DetailSearch	
 	
-Notes:  
-	1. Search problems. Some ISBNs aren't finding results - possibly a 
-	language glitch. Also, many descriptions aren't filled in.  And lastly, 
-	still don't have a source for classification.  BNF search could solve this,
-	but is very difficult to crack.  Don't want to spend the time now.  So, for
-	now, we'll do an amazon description search for books which have isbns, but
-	no descriptions to find a more complete description.  Except for the classification
-	problem, this shouldn't have a big impact, because the isbns which aren't returning
-	are mostly books for which i copied the isbn.  Maybe I got a bad one (isbn for different
-	language).  Really need the bnf search, but don't have time to crack it now. WorldCat 
-	could be an option as well.  But need focus and progress now.
-			bnf - look through worldcat.  bnf web scraping?  needs work.	
-
-
-
-		
-		
-		
-		
-		
 
 ---- begin commit changes ----
+
+done - SearchService findBooksForIdentifier - build in or statement.....
+done -  begin CatalogService saveBookDetail - save authors carefully (detached)
+done - add saveBookDetail to saveBook - hopefully get rid of detached errors in save	
+done - 	bookmark - in detailservice for copying bookdetail and in catalog service
+done - import - with barcode and isbn/ean
+done - fix problem that imported books which aren't looked up aren't saved with a detail status		
+done - offlinesearch - looks in existing book details
 
 
 ---- end commit changes ----
@@ -107,6 +57,41 @@ done - overdue books - last name (or first initial of)
 done - emprunter message - bigandbold
 done - modify book doesn't save with isbn 9782867268915
 not now - think about this.... in edit page?? it's own page?? assigncode to book which already has assigned.
+done - Amazon Search - rework copy authors into bookdetail
+done - move copy authors into book detail to base finder - put into google
+done  - add query switch to amazon - title, author, publisher, isbn
+done - add into founddetails....
+done - complete test of insertAuthorsIntoBookDetail.....
+done - move setDetailStatus in BaseDetailFinder to FinderObj
+done - get findercode in findobj up and going
+done - Recheck set detail status multi
+done - Make eligible look at find object
+done - Set status - moves book detail to ft if status is detail found
+done - Find object log search Add to list of longs
+done - Update previous search (findobj)
+done - Get current search log
+done - new BookModelValidatorTest  
+done - SearchServiceTest
+done - CatalogServiceTest	
+done - LendingServiceTest
+done - BookModelValidatorTest 	
+done - extricate search from catalog service
+done - BaseDetailFinder - isEligible		
+done - GoogleSearch - done
+done - Move to bookdetail
+done - massage tests... (for bookdetail)
+done - CService findBookByClientBookId - load / check BookDetail
+done - CService new - findBookByISBN - load / check BookDetail fill in
+done - BNF search working - parse out data
+done - break text by <b> 
+done - large swipe take care of listed type - type....
+done -  adding addl codes to book detail in DetailSearchManager....
+done - import books with Jour de lessive - currently works in normal detail search, but not import
+done -   BNF - rework - 1) book by isbn 2) look for addl codes 3) do catalog search
+done -  some sort of problem - not being added in import books.
+done -  check import books
+done - amazondescriptionsearch coded
+useless! -  amazondescriptionsearch
 
 
 
@@ -126,6 +111,7 @@ for now, because not really necessary. Feels too pretty for initial implementati
 
 4. at some point -- different checkout modules. Making by class, with barcode - possibly by student? (like the grand mareschale??)
 
+5. Search problems. will need to implement z59.  later date.	
 
 ******* LATER DEVPT ******
 

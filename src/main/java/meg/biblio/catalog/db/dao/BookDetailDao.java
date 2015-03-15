@@ -27,8 +27,8 @@ import org.springframework.roo.addon.tostring.RooToString;
 @RooJpaEntity
 @Table(name="bookdetail")
 public class BookDetailDao {
-	
-	
+
+
 	@NotNull
 	@Size(min=1,message="field_required")
 	private String title;
@@ -72,16 +72,16 @@ public class BookDetailDao {
 	private Long finderlog;
 	private Long listedtype;
 	private String shelfclass;
-	
+
 	@Transient
 	private Boolean textchange=new Boolean(false);
-	
-	
+
+
 	public boolean hasIsbn() {
 		boolean hasisbn = (isbn10!=null && isbn10.length()>0) || (isbn13!=null &&isbn13.length()>0);
 		return hasisbn;
 	}
-	
+
 	public String getAuthorsAsString() {
 		if (this.authors!=null && this.authors.size()>0) {
 			StringBuffer authorlist = new StringBuffer();
@@ -94,7 +94,7 @@ public class BookDetailDao {
 		}
 		return "";
 	}
-	
+
 	public String getIllustratorsAsString() {
 		if (this.illustrators!=null && this.illustrators.size()>0) {
 			StringBuffer illustratorlist = new StringBuffer();
@@ -107,7 +107,7 @@ public class BookDetailDao {
 		}
 		return "";
 	}
-	
+
 
 	public void setAuthors(List<ArtistDao> authors) {
         if (this.authors != authors) setTextchange(true);
@@ -117,7 +117,7 @@ public class BookDetailDao {
 	public void setDescription(String description) {
 		if (this.description != description) setTextchange(true);
 		if (description!=null && description.length()>1510) {
-			this.description = description.substring(0,1510);	
+			this.description = description.substring(0,1510);
 		}
 		this.description = description;
     }
@@ -129,15 +129,15 @@ public class BookDetailDao {
 
 	public void setTitle(String title) {
 		if (this.title != title) setTextchange(true);
-		
+
 		this.title = title;
     }
 
-	
+
 
 	public Long getFinderlog() {
         if (this.finderlog!=null) {
-        	return this.finderlog;	
+        	return this.finderlog;
         }
 		return 1L;
     }
@@ -157,30 +157,60 @@ public class BookDetailDao {
     }
 
 	public boolean hasAuthor() {
-		
+
 		return this.authors!=null && this.authors.size()>0;
 	}
-	
-	public BookDetailDao clone() {
-		BookDetailDao copy = new BookDetailDao();
-		
-		copy.authors=authors;
-		copy.foundwords=foundwords;
-		copy.detailstatus=detailstatus;
-		copy.finderlog=finderlog;
-		copy.listedtype=listedtype;
-		copy.publishyear=publishyear;
-		copy.publisher=publisher;
-		copy.description=description;
-		copy.imagelink=imagelink;
-		copy.isbn10=isbn10;
-		copy.isbn13=isbn13;
-		copy.language=language;
-		copy.shelfclass=shelfclass;
-		copy.title=title;
-		
-		return copy;
-	}
 
+	public void copyFrom(BookDetailDao copyfrom) {
+		if (copyfrom != null) {
+			if (copyfrom.authors != null) {
+				this.authors = copyfrom.authors;
+			}
+			if (copyfrom.foundwords != null) {
+				this.foundwords = copyfrom.foundwords;
+			}
+			if (copyfrom.detailstatus != null) {
+				this.detailstatus = copyfrom.detailstatus;
+			}
+			if (copyfrom.finderlog != null) {
+				this.finderlog = copyfrom.finderlog;
+			}
+			if (copyfrom.listedtype != null) {
+				this.listedtype = copyfrom.listedtype;
+			}
+			if (copyfrom.publishyear != null) {
+				this.publishyear = copyfrom.publishyear;
+			}
+			if (copyfrom.publisher != null) {
+				this.publisher = copyfrom.publisher;
+			}
+
+			if (copyfrom.description != null) {
+				this.description = copyfrom.description;
+			}
+
+			if (copyfrom.imagelink != null) {
+				this.imagelink = copyfrom.imagelink;
+			}
+			if (copyfrom.isbn10 != null) {
+				this.isbn10 = copyfrom.isbn10;
+			}
+			if (copyfrom.isbn13 != null) {
+				this.isbn13 = copyfrom.isbn13;
+			}
+			if (copyfrom.language != null) {
+				this.language = copyfrom.language;
+			}
+
+			if (copyfrom.shelfclass != null) {
+				this.shelfclass = copyfrom.shelfclass;
+			}
+
+			if (copyfrom.title != null) {
+				this.title = copyfrom.title;
+			}
+
+		}
+	}
 
 }

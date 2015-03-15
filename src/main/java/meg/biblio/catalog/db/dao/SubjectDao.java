@@ -11,4 +11,13 @@ import org.springframework.roo.addon.tostring.RooToString;
 @Table(name="subject")
 public class SubjectDao {
 	private String listing;
+	
+	
+	public void copyFrom(SubjectDao copyfrom) {
+		if (copyfrom!=null) {
+			if (copyfrom.listing != null) {
+				this.listing = copyfrom.listing;
+			}
+		}
+	}
 }

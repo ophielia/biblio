@@ -40,6 +40,9 @@ public class DetailSearchServiceTest {
 
 	@Autowired
 	DetailSearchService detSearchService;
+	
+	@Autowired
+	SearchService searchService;	
 
 	@Autowired
 	ClientService clientService;
@@ -70,7 +73,34 @@ public class DetailSearchServiceTest {
 		Assert.assertNotNull(detail.getAuthors());
 		Assert.assertTrue(detail.getAuthors().size()>0);
 	}
-	
+
+	@Test
+	public void testFillInDetailsForBookAddlCodes() {
+		// make book model
+		Long clientid = clientService.getTestClientId();
+		BookModel book = new BookModel();
+		book.setClientid(clientid);
+		book.setIsbn10("9782211206464");
+		ClientDao client = clientService.getClientForKey(clientid);
+		// service call
+		book = detSearchService.fillInDetailsForBook(book, client);
+		// ensure bookdetail not null
+		BookDetailDao detail = book.getBook().getBookdetail();
+		Assert.assertNotNull(detail);
+		// ensure finderlog, searchstatus filled in
+		Assert.assertNotNull(detail.getFinderlog());
+		Assert.assertNotNull(detail.getDetailstatus());
+		// ensure imagelink, authors available
+		Assert.assertNotNull(detail.getImagelink());
+		Assert.assertNotNull(detail.getAuthors());
+		Assert.assertTrue(detail.getAuthors().size()>0);
+		// test to see if additional code is there (it should be)
+		BookIdentifier bi = new BookIdentifier();
+		bi.setEan("9782211208901");
+		BookDetailDao result = searchService.findBooksForIdentifier(bi);
+		Assert.assertNotNull(result);
+	}
+
 	
 	@Test
 	public void testFillInDetailsForBookList() {
@@ -152,7 +182,7 @@ public class DetailSearchServiceTest {
 		book1.setClientid(clientid);
 		book1.setIsbn13("9782211206464");
 		models.add(book1);
-		
+
 		ClientDao client = clientService.getClientForKey(clientid);
 		// service call
 		models= detSearchService.fillInDetailsForBookList(models, client);
@@ -161,6 +191,8 @@ public class DetailSearchServiceTest {
 		Assert.assertEquals(1,models.size());
 		BookModel model = models.get(0);
 		Assert.assertNotNull(model.getDescription());
+		
+		
 	}
 
 

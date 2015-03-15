@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import meg.biblio.catalog.db.ArtistRepository;
+import meg.biblio.catalog.db.BookDetailRepository;
 import meg.biblio.catalog.db.BookRepository;
 import meg.biblio.catalog.db.ClassificationRepository;
 import meg.biblio.catalog.db.FoundDetailsRepository;
@@ -40,11 +41,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class CatalogServiceImpl implements CatalogService {
 
-	
-	  /* Get actual class name to be printed on */
-	  static Logger log = Logger.getLogger(
-			  CatalogServiceImpl.class.getName());
-	  
+	/* Get actual class name to be printed on */
+	static Logger log = Logger.getLogger(CatalogServiceImpl.class.getName());
+
 	@Autowired
 	SelectKeyService keyService;
 
@@ -58,16 +57,17 @@ public class CatalogServiceImpl implements CatalogService {
 	BookRepository bookRepo;
 
 	@Autowired
-	FoundDetailsRepository foundRepo;
-	
-	@Autowired
-	FoundWordsRepository indexRepo;	
+	BookDetailRepository bookDetailRepo;
 
-	
-	
 	@Autowired
-	IgnoredWordsRepository ignoredRepo;	
-	
+	FoundDetailsRepository foundRepo;
+
+	@Autowired
+	FoundWordsRepository indexRepo;
+
+	@Autowired
+	IgnoredWordsRepository ignoredRepo;
+
 	@Autowired
 	ArtistRepository artistRepo;
 
@@ -91,7 +91,8 @@ public class CatalogServiceImpl implements CatalogService {
 	@Override
 	public BookModel createCatalogEntryFromBookModel(Long clientkey,
 			BookModel model, Boolean createclientbookid) {
-		BookDao book = createBookFromBookModel(clientkey, model, createclientbookid);
+		BookDao book = createBookFromBookModel(clientkey, model,
+				createclientbookid);
 		Long bookid = book.getId();
 
 		// reload book in bookmodel
@@ -100,7 +101,7 @@ public class CatalogServiceImpl implements CatalogService {
 		// return bookmodel
 		return result;
 	}
-	
+
 	@Override
 	public BookModel createCatalogEntryFromBookModel(Long clientkey,
 			BookModel model) {
@@ -111,7 +112,7 @@ public class CatalogServiceImpl implements CatalogService {
 	public List<BookModel> createCatalogEntriesFromList(Long clientkey,
 			List<BookModel> toimport) {
 		List<BookModel> createdobjects = new ArrayList<BookModel>();
-		
+
 		// go through list of BookModels, persisting them
 		for (BookModel imported : toimport) {
 
@@ -134,7 +135,7 @@ public class CatalogServiceImpl implements CatalogService {
 		// get book from repo
 		BookDao book = bookRepo.findOne(id);
 		BookDetailDao bookdetail = book.getBookdetail();
-		
+
 		if (bookdetail != null) {
 			// get authors, subjects and illustrators
 			List<ArtistDao> authors = bookdetail.getAuthors();
@@ -156,14 +157,12 @@ public class CatalogServiceImpl implements CatalogService {
 		return new BookModel();
 	}
 
-
-
-
 	public BookDao saveBook(BookDao book) {
 		BookDetailDao bookdetail = book.getBookdetail();
 		boolean bookchange = bookdetail.getTextchange();
 
-		
+		bookdetail = saveBookDetail(bookdetail);
+		book.setBookdetail(bookdetail);
 		BookDao saved = bookRepo.save(book);
 		if (bookchange) {
 			indexBooktext(saved);
@@ -173,35 +172,38 @@ public class CatalogServiceImpl implements CatalogService {
 		return saved;
 	}
 
-
 	private void indexBooktext(BookDao savebook) {
 		BookDetailDao saved = savebook.getBookdetail();
-		log.debug("indexing for bookdetailid:" + saved.getId() + "; description:" + saved.getDescription());
+		log.debug("indexing for bookdetailid:" + saved.getId()
+				+ "; description:" + saved.getDescription());
 		List<FoundWordsDao> todelete = indexRepo.findWordsForBookDetail(saved);
 		indexRepo.delete(todelete);
-		
+
 		// make counting hash
-		HashMap<String,Integer> wordcounts = new HashMap<String,Integer>();
+		HashMap<String, Integer> wordcounts = new HashMap<String, Integer>();
 		List<FoundWordsDao> foundwords = new ArrayList<FoundWordsDao>();
 
-		// mash up all text fields together - title, description, subjects, authors, illustrators
+		// mash up all text fields together - title, description, subjects,
+		// authors, illustrators
 		StringBuffer charles = new StringBuffer(saved.getTitle());
-		if (saved.getDescription()!=null) {charles.append(" ").append(saved.getDescription());}
-		if (saved.getSubjects()!=null) {
-			for (SubjectDao subject:saved.getSubjects()) {
-				charles.append(" ").append(subject.getListing());	
+		if (saved.getDescription() != null) {
+			charles.append(" ").append(saved.getDescription());
+		}
+		if (saved.getSubjects() != null) {
+			for (SubjectDao subject : saved.getSubjects()) {
+				charles.append(" ").append(subject.getListing());
 			}
 		}
-		if (saved.getAuthors()!=null) {
-			for (ArtistDao author:saved.getAuthors()) {
-				charles.append(" ").append(author.getDisplayName());	
+		if (saved.getAuthors() != null) {
+			for (ArtistDao author : saved.getAuthors()) {
+				charles.append(" ").append(author.getDisplayName());
 			}
 		}
-		if (saved.getIllustrators()!=null) {
-			for (ArtistDao author:saved.getIllustrators()) {
-				charles.append(" ").append(author.getDisplayName());	
+		if (saved.getIllustrators() != null) {
+			for (ArtistDao author : saved.getIllustrators()) {
+				charles.append(" ").append(author.getDisplayName());
 			}
-		}		
+		}
 
 		// split all text into words
 		String mashup = charles.toString();
@@ -209,12 +211,12 @@ public class CatalogServiceImpl implements CatalogService {
 		String cleanmashup = mashup.replaceAll("[^a-zA-Z'éèàùâêîôûëïç ]", " ");
 		// split by space
 		String[] words = cleanmashup.split(" ");
-		
+
 		// go through all words, counting each
-		for (int i=0;i<words.length;i++) {
+		for (int i = 0; i < words.length; i++) {
 			String word = words[i];
 			word = word.toLowerCase().trim();
-			if (word.length()>0) {
+			if (word.length() > 0) {
 				// count this word....
 				if (wordcounts.containsKey(word)) {
 					// add to count
@@ -227,44 +229,42 @@ public class CatalogServiceImpl implements CatalogService {
 				}
 			}
 		}
-		
+
 		// double all words with apostrophes
-		HashMap<String,Integer> noapostrophes = new HashMap<String,Integer>();
-		for (String word:wordcounts.keySet()) {
+		HashMap<String, Integer> noapostrophes = new HashMap<String, Integer>();
+		for (String word : wordcounts.keySet()) {
 			// go through all keys in wordcounts
 			// if word contains apostrophe
 			if (word.contains("'")) {
 				// get count
 				Integer count = wordcounts.get(word);
-		
+
 				// replace apostrophe with space
 				String noapos = word.replaceAll("'", " ");
 				// split on space
 				String[] noaposparts = noapos.split(" ");
 				// add each part to repeat hash with same count
-				for (int i=0;i<noaposparts.length;i++) {
+				for (int i = 0; i < noaposparts.length; i++) {
 					String newword = noaposparts[i].trim();
 					noapostrophes.put(newword, count);
 				}
 			}
 		}
 		// add all repeat hash values and keys to wordcount
-		for (String word:noapostrophes.keySet()) {
-			Integer count = noapostrophes.get(word); 
+		for (String word : noapostrophes.keySet()) {
+			Integer count = noapostrophes.get(word);
 			wordcounts.put(word, count);
 		}
-		
-		
-		
-		// get ignoredwords 
+
+		// get ignoredwords
 		List<String> toignore = new ArrayList<String>();
 		List<IgnoredWordsDao> ignoredlist = ignoredRepo.findAll();
-		for (IgnoredWordsDao ignore:ignoredlist) {
+		for (IgnoredWordsDao ignore : ignoredlist) {
 			toignore.add(ignore.getWord());
 		}
-		
+
 		// now, save counted words - book, word, countintext
-		for (String word:wordcounts.keySet()) {
+		for (String word : wordcounts.keySet()) {
 			if (word.length() > 1) {
 				if (!toignore.contains(word)) {
 					Integer count = wordcounts.get(word);
@@ -277,13 +277,11 @@ public class CatalogServiceImpl implements CatalogService {
 			}
 		}
 		// persist
-		if (foundwords.size()>0) {
+		if (foundwords.size() > 0) {
 			indexRepo.save(foundwords);
 		}
 
 	}
-
-
 
 	public ArtistDao textToArtistName(String text) {
 		ArtistDao name = new ArtistDao();
@@ -367,10 +365,11 @@ public class CatalogServiceImpl implements CatalogService {
 	public HashMap<Long, ClassificationDao> getShelfClassHash(Long clientkey,
 			String lang) {
 		lang = getShortLangCode(lang);
-		HashMap<Long, ClassificationDao> resulthash=new HashMap<Long, ClassificationDao>();
-		List<ClassificationDao> shelfclasses =classRepo.findByClientidAndLanguage(clientkey, lang);
-		if (shelfclasses!=null) {
-			for (ClassificationDao shelfclass:shelfclasses) {
+		HashMap<Long, ClassificationDao> resulthash = new HashMap<Long, ClassificationDao>();
+		List<ClassificationDao> shelfclasses = classRepo
+				.findByClientidAndLanguage(clientkey, lang);
+		if (shelfclasses != null) {
+			for (ClassificationDao shelfclass : shelfclasses) {
 				resulthash.put(shelfclass.getKey(), shelfclass);
 			}
 		}
@@ -378,34 +377,35 @@ public class CatalogServiceImpl implements CatalogService {
 	}
 
 	@Override
-	public List<ClassificationDao> getShelfClassList(Long clientkey,
-			String lang) {
+	public List<ClassificationDao> getShelfClassList(Long clientkey, String lang) {
 		lang = getShortLangCode(lang);
-		List<ClassificationDao> shelfclasses =classRepo.findByClientidAndLanguage(clientkey, lang);
+		List<ClassificationDao> shelfclasses = classRepo
+				.findByClientidAndLanguage(clientkey, lang);
 		return shelfclasses;
 	}
 
-	
 	private String getShortLangCode(String lang) {
-		if (lang==null) {return null;}
-		if (lang.startsWith("en")) return "en";
-		if (lang.startsWith("fr")) return "fr";
+		if (lang == null) {
+			return null;
+		}
+		if (lang.startsWith("en"))
+			return "en";
+		if (lang.startsWith("fr"))
+			return "fr";
 		return "en";
 	}
 
-
-
-
-	private BookDao createBookFromBookModel(Long clientkey, BookModel model, Boolean createid) {
+	private BookDao createBookFromBookModel(Long clientkey, BookModel model,
+			Boolean createid) {
 		// get book
 		BookDao book = model.getBook();
 
 		// get book detail
 		BookDetailDao bookdetail = book.getBookdetail();
-		
+
 		// get founddetails
 		List<FoundDetailsDao> founddetails = model.getFounddetails();
-		
+
 		// add clientkey
 		book.setClientid(clientkey);
 
@@ -416,12 +416,11 @@ public class CatalogServiceImpl implements CatalogService {
 			// set max bookid in book
 			book.setClientbookid(maxbookid.toString());
 		}
-		
-		
+
 		// add default entries for status, detail status, type
 		book.setStatus(Status.PROCESSING);
 		book.setCreatedon(new Date());
-		if (bookdetail.getDetailstatus()==null) {
+		if (bookdetail.getDetailstatus() == null) {
 			bookdetail.setDetailstatus(CatalogService.DetailStatus.NODETAIL);
 		}
 
@@ -470,34 +469,30 @@ public class CatalogServiceImpl implements CatalogService {
 					.getName());
 			bookdetail.setPublisher(pub);
 		}
-		
-		if (bookdetail.hasIsbn()&& (bookdetail.getTitle()==null || bookdetail.getTitle().trim().length()==0)) {
+
+		if (bookdetail.hasIsbn()
+				&& (bookdetail.getTitle() == null || bookdetail.getTitle()
+						.trim().length() == 0)) {
 			bookdetail.setTitle(CatalogService.titledefault);
 		}
 
-
-		
-		
 		// persist book
 		book.setBookdetail(bookdetail);
 		BookDao saved = saveBook(book);
-		
+
 		// save found details here, if there
 		bookdetail = book.getBookdetail();
-		if (founddetails!=null) {
+		if (founddetails != null) {
 			// set bookdetail in FoundDetail and save
 			List<FoundDetailsDao> details = model.getFounddetails();
-			for (FoundDetailsDao det:details) {
+			for (FoundDetailsDao det : details) {
 				det.setBookdetailid(bookdetail.getId());
 				foundRepo.save(det);
 			}
-		}		
+		}
 		return saved;
 
 	}
-
-
-
 
 	private List<String> arrayToList(String[] tokens) {
 		List<String> list = new ArrayList<String>();
@@ -514,44 +509,44 @@ public class CatalogServiceImpl implements CatalogService {
 			List<Long> toupdate) {
 		List<BookDao> books = bookRepo.findAll(toupdate);
 		List<BookDao> tosave = new ArrayList<BookDao>();
-		if (books!=null) {
-			for (BookDao book:books) {
+		if (books != null) {
+			for (BookDao book : books) {
 				book.setClientshelfcode(shelfclassUpdate);
 				tosave.add(book);
 			}
 		}
-		if (tosave.size()>0) {
+		if (tosave.size() > 0) {
 			bookRepo.save(tosave);
 		}
-		
+
 	}
-	
 
 	@Override
 	public void assignStatusToBooks(Long statusUpdate, List<Long> toupdate) {
 		List<BookDao> books = bookRepo.findAll(toupdate);
 		List<BookDao> tosave = new ArrayList<BookDao>();
-		if (books!=null) {
-			for (BookDao book:books) {
+		if (books != null) {
+			for (BookDao book : books) {
 				book.setStatus(statusUpdate);
 				tosave.add(book);
 			}
 		}
-		if (tosave.size()>0) {
+		if (tosave.size() > 0) {
 			bookRepo.save(tosave);
 		}
-		
-	}	
-	
+
+	}
+
 	@Override
 	public BookModel updateCatalogEntryFromBookModel(Long clientkey,
-			BookModel model, Boolean fillindetails) throws GeneralSecurityException, IOException {
+			BookModel model, Boolean fillindetails)
+			throws GeneralSecurityException, IOException {
 		// get book
 		BookDao book = model.getBook();
 		book.setClientid(clientkey);
-		
+
 		// if book is not null, save it
-		if (book!=null) {
+		if (book != null) {
 			book = saveBook(book);
 		}
 
@@ -559,13 +554,13 @@ public class CatalogServiceImpl implements CatalogService {
 		return toreturn;
 	}
 
-
 	@Override
 	public BookDao findBookByClientBookId(String bookid, ClientDao client) {
 		// call repository
-		List<BookDao> books = bookRepo.findBookByClientAssignedId(bookid.trim(), client.getId());
+		List<BookDao> books = bookRepo.findBookByClientAssignedId(
+				bookid.trim(), client.getId());
 		// return results
-		if (books!=null && books.size()>0) {
+		if (books != null && books.size() > 0) {
 			return books.get(0);
 		}
 		return null;
@@ -575,13 +570,13 @@ public class CatalogServiceImpl implements CatalogService {
 	public BookDao updateBookStatus(Long bookid, long status) {
 		// get book
 		BookDao book = bookRepo.findOne(bookid);
-		
+
 		// set status
 		book.setStatus(new Long(status));
-		
+
 		// save book
 		book = bookRepo.save(book);
-		
+
 		// return book
 		return book;
 	}
@@ -608,12 +603,116 @@ public class CatalogServiceImpl implements CatalogService {
 
 	@Override
 	public BookDetailDao saveBookDetail(BookDetailDao newdetail) {
+		if (newdetail != null) {
+			// refresh authors (avoid detached object problem)
+			List<ArtistDao> authors = new ArrayList<ArtistDao>();
+			if (newdetail.getAuthors() != null) {
+				for (ArtistDao detailauth : newdetail.getAuthors()) {
+					if (detailauth.getId() != null) {
+						// get from db
+						ArtistDao dbauth = artistRepo.findOne(detailauth
+								.getId());
+						// copy into db from bookdetail
+						dbauth.copyFrom(detailauth);
+						// add to persist list
+						authors.add(dbauth);
+					} else {
+						authors.add(detailauth);
+					}
+				}
+				newdetail.setAuthors(authors);
+			}
 
+			// refresh illustrators (avoid detached object problem)
+			List<ArtistDao> illustrators = new ArrayList<ArtistDao>();
+			if (newdetail.getIllustrators() != null) {
+				for (ArtistDao detailillus : newdetail.getIllustrators()) {
+					if (detailillus.getId() != null) {
+						// get from db
+						ArtistDao dbauth = artistRepo.findOne(detailillus
+								.getId());
+						// copy into db from bookdetail
+						dbauth.copyFrom(detailillus);
+						// add to persist list
+						illustrators.add(dbauth);
+					} else {
+						illustrators.add(detailillus);
+					}
+				}
+				newdetail.setIllustrators(illustrators);
+			}
 
-		// start here.....
+			// refresh subjects
+			List<SubjectDao> subjects = new ArrayList<SubjectDao>();
+			if (newdetail.getSubjects() != null) {
+				for (SubjectDao sbjt : newdetail.getSubjects()) {
+					if (sbjt.getId() != null) {
+						// get from db
+						SubjectDao dbsbjt = subjectRepo.findOne(sbjt.getId());
+						// copy changes into db object
+						dbsbjt.copyFrom(sbjt);
+						// add to persist list
+						subjects.add(dbsbjt);
+					} else {
+						// add to persist list
+						subjects.add(sbjt);
+					}
+				}
+				newdetail.setSubjects(subjects);
+			}
+
+			// refresh found words
+			List<FoundWordsDao> foundwords = new ArrayList<FoundWordsDao>();
+			if (newdetail.getFoundwords() != null) {
+				for (FoundWordsDao fwords : newdetail.getFoundwords()) {
+					if (fwords.getId() != null) {
+						// get from db
+						FoundWordsDao dbfw = indexRepo.findOne(fwords.getId());
+						// copy changes into db object
+						dbfw.copyFrom(fwords);
+						// add to persist list
+						foundwords.add(dbfw);
+					} else {
+						// add to persist list
+						foundwords.add(fwords);
+					}
+				}
+				newdetail.setFoundwords(foundwords);
+			}
+
+			// publisher
+			if (newdetail.getPublisher() != null) {
+				if (newdetail.getPublisher().getId() != null) {
+					if (newdetail.getPublisher().getId() != null) {
+						// pull publisher from db
+						PublisherDao dbpub = pubRepo.findOne(newdetail
+								.getPublisher().getId());
+						dbpub.copyFrom(newdetail.getPublisher());
+						newdetail.setPublisher(dbpub);
+					}
+				}
+			}
+
+			// get from db if already persisted
+			if (newdetail.getId() != null) {
+				// get from db
+				BookDetailDao bookdetail = bookDetailRepo.findOne(newdetail
+						.getId());
+				// copy from newdetail
+				bookdetail.copyFrom(newdetail);
+				// save and return
+				bookdetail = bookDetailRepo.save(bookdetail);
+				return bookdetail;
+
+			}
+
+			// save and return
+			// save and return
+			newdetail = bookDetailRepo.save(newdetail);
+			return newdetail;
+
+		}
 		return null;
 	}
-
-
 
 }

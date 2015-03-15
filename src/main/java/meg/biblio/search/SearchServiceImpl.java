@@ -293,7 +293,7 @@ public class SearchServiceImpl implements SearchService {
 			if (ean!=null) {
 				q.setParameter("ean",ean.trim());
 			}
-			if (ean!=null) {
+			if (isbn!=null) {
 				q.setParameter("isbn",isbn.trim());
 			}
 

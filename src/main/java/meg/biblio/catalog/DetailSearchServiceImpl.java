@@ -20,7 +20,6 @@ import meg.biblio.search.SearchService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -52,6 +51,9 @@ public class DetailSearchServiceImpl implements DetailSearchService {
 
 	@Autowired
 	GoogleDetailFinder googleFinder;
+	
+	@Autowired
+	InternalDetailFinder internalFinder;	
 
 	@Autowired
 	AmazonDetailFinder amazonFinder;
@@ -139,27 +141,8 @@ public class DetailSearchServiceImpl implements DetailSearchService {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			// check for additional details
-			if (findobj.getAddlcodes()!=null && !findobj.getAddlcodes().isEmpty()) {
-				// go ahead and save these other codes as additional book details, 
-				// (even though it could be that the original book isn't saved - we have
-				// more info for later on....)
-				for (BookIdentifier bi:findobj.getAddlcodes()) {
-					BookDetailDao newdetail = searchService.findBooksForIdentifier(bi);
-					if (newdetail!=null) continue;
-					newdetail = (BookDetailDao) detail.clone();
-					if (bi.getEan()!=null) {
-						newdetail.setIsbn13(bi.getEan());
-					}
-					if (bi.getIsbn()!=null) {
-						newdetail.setIsbn10(bi.getIsbn());
-					}
-					if (bi.getPublishyear()!=null) {
-						newdetail.setPublishyear(bi.getPublishyear());
-					}
-					catalogService.saveBookDetail(newdetail);
-				}
-			}
+			// check for addl codes
+			checkAndSaveAdditionalCodes(findobj);
 		} else if (detail.getDetailstatus() == CatalogService.DetailStatus.MULTIDETAILSFOUND) {
 			// put found details into bookmodel
 			List<FoundDetailsDao> founddetails = findobj.getMultiresults();
@@ -168,6 +151,34 @@ public class DetailSearchServiceImpl implements DetailSearchService {
 
 		// return book model
 		return model;
+	}
+
+	private void checkAndSaveAdditionalCodes(FinderObject findobj) {
+		BookDetailDao detail = findobj.getBookdetail();
+		// check for additional details
+					if (findobj.getAddlcodes()!=null && !findobj.getAddlcodes().isEmpty()) {
+						// go ahead and save these other codes as additional book details, 
+						// (even though it could be that the original book isn't saved - we have
+						// more info for later on....)
+						for (BookIdentifier bi:findobj.getAddlcodes()) {
+							BookDetailDao newdetail = searchService.findBooksForIdentifier(bi);
+							if (newdetail!=null) continue;
+							newdetail = new BookDetailDao();
+
+							newdetail.copyFrom(detail); 
+							if (bi.getEan()!=null) {
+								newdetail.setIsbn13(bi.getEan());
+							}
+							if (bi.getIsbn()!=null) {
+								newdetail.setIsbn10(bi.getIsbn());
+							}
+							if (bi.getPublishyear()!=null) {
+								newdetail.setPublishyear(bi.getPublishyear());
+							}
+							catalogService.saveBookDetail(newdetail);
+						}
+					}
+		
 	}
 
 	@Override
@@ -225,8 +236,9 @@ public class DetailSearchServiceImpl implements DetailSearchService {
 				detail.setFinderlog(findobj.getCurrentFinderLog());
 				bmodel.setBookdetail(detail);
 				// put results of finder object in model
-
 				toreturn.add(bmodel);
+				// check for addlcodes
+				checkAndSaveAdditionalCodes(findobj);
 			}
 
 			return toreturn;
@@ -271,6 +283,7 @@ public class DetailSearchServiceImpl implements DetailSearchService {
 	private DetailFinder createFinderChain() {
 		amazonFinder.setNext(bnfFinder);
 		googleFinder.setNext(amazonFinder);
+		internalFinder.setNext(googleFinder);
 		return googleFinder;
 	}
 

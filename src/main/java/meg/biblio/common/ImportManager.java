@@ -190,6 +190,8 @@ public class ImportManager {
 		Integer importsize=new Integer(toimport.size());
 		Integer errorssize=new Integer(errors.size());
 		
+		// do offline search for all books
+		
 		// persist list of bookmodels
 		toimport = catalogService.createCatalogEntriesFromList(clientkey,toimport);
 
