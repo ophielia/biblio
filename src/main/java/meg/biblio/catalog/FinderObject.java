@@ -19,6 +19,7 @@ public class FinderObject {
 	private Long previousfinders = 1L;
 	private List<Long> findersrun;
 	private Long tempident;
+	private List<BookIdentifier> addlcodes;
 
 	public FinderObject(BookDetailDao detail) {
 		// determine if this is a firsttime search, or if an old search, if
@@ -230,6 +231,15 @@ public class FinderObject {
 	public Long getTempIdent() {
 		return tempident;
 	}
+
+	public void addAddlIdentifiers(List<BookIdentifier> addlcodes) {
+		this.addlcodes = addlcodes;
+	}
+
+	public List<BookIdentifier> getAddlcodes() {
+		return addlcodes;
+	}
+	
 	
 	
 

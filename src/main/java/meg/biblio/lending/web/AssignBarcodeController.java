@@ -64,7 +64,7 @@ public class AssignBarcodeController {
 		ClientDao client = clientService.getCurrentClient(principal);
 
 		// clear model, place in uiModel
-		Long classification = assignCodeModel.getShelfclass();
+		Long classification = assignCodeModel.getShelfcode();
 		assignCodeModel = new AssignCodeModel();
 		assignCodeModel.setShelfclass(classification);
 		assignCodeModel.setStatus(CatalogService.Status.SHELVED);
@@ -85,7 +85,7 @@ public class AssignBarcodeController {
 		ClientDao client = clientService.getCurrentClient(principal);
 
 		// clear model, place in uiModel
-		Long classification = assignCodeModel.getShelfclass();
+		Long classification = assignCodeModel.getShelfcode();
 		assignCodeModel = new AssignCodeModel();
 		assignCodeModel.setShelfclass(classification);
 		assignCodeModel.setCreatenewid(true);
@@ -281,7 +281,7 @@ public class AssignBarcodeController {
 		}
 		
 		// update book - gather classification, isbn
-		Long classification=assignCodeModel.getShelfclass();
+		Long classification=assignCodeModel.getShelfcode();
 		String isbn = assignCodeModel.getIsbnentry();
 		Long status = assignCodeModel.getStatus();
 		String title =assignCodeModel.getTitle();
@@ -289,7 +289,7 @@ public class AssignBarcodeController {
 		
 		// put book into model
 		BookModel model = catalogService.loadBookModel(assignCodeModel.getBook().getId());
-		if (classification!=null) model.setShelfclass(classification);
+		if (classification!=null) model.setShelfcode(classification);
 		if (status!=null) model.setStatus(status);
 		if (isbn!=null) model.setIsbn10(isbn);
 		if (title!=null) model.setTitle(title);

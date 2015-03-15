@@ -103,6 +103,14 @@ privileged aspect BookDetailDao_Roo_JavaBean {
         this.listedtype = listedtype;
     }
     
+    public String BookDetailDao.getShelfclass() {
+        return this.shelfclass;
+    }
+    
+    public void BookDetailDao.setShelfclass(String shelfclass) {
+        this.shelfclass = shelfclass;
+    }
+    
     public Boolean BookDetailDao.getTextchange() {
         return this.textchange;
     }

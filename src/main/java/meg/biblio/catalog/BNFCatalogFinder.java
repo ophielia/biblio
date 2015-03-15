@@ -1,50 +1,26 @@
 package meg.biblio.catalog;
 
-import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.URI;
-import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Result;
-import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 
 import meg.biblio.catalog.db.PublisherRepository;
 import meg.biblio.catalog.db.SubjectRepository;
+import meg.biblio.catalog.db.dao.ArtistDao;
 import meg.biblio.catalog.db.dao.BookDetailDao;
-import meg.biblio.catalog.db.dao.FoundDetailsDao;
-import meg.biblio.catalog.db.dao.PublisherDao;
 import meg.biblio.common.AppSettingService;
 import meg.biblio.search.SearchService;
 
-import org.apache.http.Header;
-import org.apache.http.HeaderElement;
-import org.apache.http.HttpEntity;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.http.client.ResponseHandler;
-import org.apache.http.client.entity.GzipDecompressingEntity;
-import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -52,10 +28,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
-import com.google.api.services.books.model.Volume;
-import com.google.api.services.books.model.Volume.VolumeInfo;
-import com.google.api.services.books.model.Volume.VolumeInfo.IndustryIdentifiers;
 
 @Component
 public class BNFCatalogFinder extends BaseDetailFinder {
@@ -76,13 +48,16 @@ public class BNFCatalogFinder extends BaseDetailFinder {
 	static Logger log = Logger.getLogger(BNFCatalogFinder.class.getName());
 
 	Boolean lookupwithbnf;
-	Long identifier=7L;
-	
-	static final String dataquery_isbn13="SELECT DISTINCT ?link WHERE { ?question rdfs:seeAlso ?link. ?question bnf-onto:EAN \"REPLACE\". }";
-	static final String dataquery_isbn10="SELECT DISTINCT ?link WHERE { ?question rdfs:seeAlso ?link. ?question bnf-onto:ISBN \"REPLACE\". }";
-	static final String databnfrequest="http://data.bnf.fr/sparql?default-graph-uri=&query=REPLACE&should-sponge=&format=xml&timeout=0&debug=on";
+	Long identifier = 7L;
 
+	static final String dataquery_titleauthor = "SELECT DISTINCT ?link ?ean ?isbn ?date WHERE { ?manifestation dcterms:title \"TITLE\". ?manifestation rdarelationships:expressionManifested ?expression. ?manifestation bnf-onto:EAN ?ean. ?manifestation dcterms:publisher ?date. ?manifestation bnf-onto:isbn ?isbn. ?manifestation rdfs:seeAlso ?link. ?expression marcrel:aut ?person. ?person foaf:name \"AUTHOR\". }";
+	static final String dataquery_isbn13 = "SELECT DISTINCT ?link WHERE { ?question rdfs:seeAlso ?link. ?question bnf-onto:EAN \"REPLACE\". }";
+	static final String dataquery_isbn10 = "SELECT DISTINCT ?link WHERE { ?question rdfs:seeAlso ?link. ?question bnf-onto:ISBN \"REPLACE\". }";
+	static final String databnfrequest = "http://data.bnf.fr/sparql?default-graph-uri=&query=REPLACE&should-sponge=&format=xml&timeout=0&debug=on";
 
+	static final String beginparse = "<!--Contenu de la notice-->";
+	static final String newlinemarker = "!|!";
+	static final String newlinemarkersplit = "\\!\\|\\!";
 
 	protected boolean isEnabled() throws Exception {
 		if (lookupwithbnf == null) {
@@ -91,15 +66,16 @@ public class BNFCatalogFinder extends BaseDetailFinder {
 		}
 		return lookupwithbnf;
 	}
-	
+
 	@Override
 	protected boolean isEligible(FinderObject findobj) throws Exception {
-		// Eligible to be run if ISBN or EAN is available
-		if (findobj.getBookdetail().hasIsbn())
+		// Eligible to be run if both author and title are available
+		if (findobj.getBookdetail().hasAuthor()
+				&& findobj.getBookdetail().getTitle() != null)
 			return true;
 
 		return false;
-	}	
+	}
 
 	protected Long getIdentifier() throws Exception {
 		return identifier;
@@ -121,12 +97,6 @@ public class BNFCatalogFinder extends BaseDetailFinder {
 					// log, process search
 					findobj.logFinderRun(getIdentifier());
 				}
-				// build in  tiny pause to not exceed requests per second
-				try {
-				    Thread.sleep(200);                 //1000 milliseconds is one second.
-				} catch(InterruptedException ex) {
-				    Thread.currentThread().interrupt();
-				}
 			} // end list loop
 		}
 		// pass to next in chain, or return
@@ -136,18 +106,141 @@ public class BNFCatalogFinder extends BaseDetailFinder {
 		}
 
 		return objects;
-	
+
+	}
+
+	protected HashMap<String, String> findAlternateIdentifiers(
+			FinderObject findobj, String authornameoverride)
+			throws Exception {
+		HashMap<String, String> ean2link = new HashMap<String, String>();
+		BookDetailDao bookdetail = findobj.getBookdetail();
+		
+		// add params - title and author
+		String querystring = "";
+		String value = "";
+		querystring = dataquery_titleauthor;
+		// replace string in query with values
+		String title = bookdetail.getTitle();
+		List<ArtistDao> authors = bookdetail.getAuthors();
+		String author = "";
+		if (authornameoverride!=null) {
+			author = authornameoverride;
+		} else {
+			if (authors != null && authors.size() > 0) {
+				author = authors.get(0).getDisplayName();
+			}
+			if (author.length() == 0) {
+				// need author to get additional codes
+				return null;
+			}
+		}
+		querystring = querystring.replace("TITLE", title);
+		querystring = querystring.replace("AUTHOR", author);
+		querystring = URLEncoder.encode(querystring, "UTF-8");
+
+		String requestUrl = databnfrequest.replace("REPLACE", querystring);
+
+		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+		DocumentBuilder db = dbf.newDocumentBuilder();
+		Document doc = db.parse(requestUrl);
+
+		// get catalog uri from response
+		NodeList eanresults = doc.getElementsByTagName("result");
+		String requestedean = bookdetail.getIsbn13() != null ? bookdetail
+				.getIsbn13().trim() : "";
+		String catalogurl = null;
+
+		List<BookIdentifier> addlcodes = new ArrayList<BookIdentifier>();
+		if (eanresults != null) {
+
+			for (int i = 0; i < eanresults.getLength(); i++) {
+
+				Node node = eanresults.item(i);
+				if (node.getNodeType() == Node.ELEMENT_NODE) {
+					Element resultel = (Element) node;
+					NodeList children = resultel
+							.getElementsByTagName("binding");
+					String link = null;
+					String ean = null;
+					String isbn = null;
+					String date = null;
+					for (int j = 0; j < children.getLength(); j++) {
+						Node bindingnode = children.item(j);
+						// BookIdentifier bi = new BookIdentifier();
+						if (bindingnode.getNodeType() == Node.ELEMENT_NODE) {
+							Element bindingel = (Element) bindingnode;
+							String type = bindingel.getAttribute("name");
+							if (type != null) {
+								if (type.equals("link")) {
+									Node linknode = bindingel
+											.getElementsByTagName("uri")
+											.item(0);
+									if (linknode != null) {
+										link = linknode.getTextContent();
+									}
+								} else if (type.equals("ean")) {
+									Node eannode = bindingel
+											.getElementsByTagName("literal")
+											.item(0);
+									if (eannode != null) {
+										ean = eannode.getTextContent();
+									}
+								} else if (type.equals("isbn")) {
+									Node isbnnode = bindingel
+											.getElementsByTagName("literal")
+											.item(0);
+									if (isbnnode != null) {
+										isbn = isbnnode.getTextContent();
+									}
+								} else if (type.equals("date")) {
+									Node datenode = bindingel
+											.getElementsByTagName("literal")
+											.item(0);
+									if (datenode != null) {
+										date = datenode.getTextContent();
+									}
+								}
+							}
+						}
+					} // end children loop
+						// process results
+					String cleandate = parseOutDate(date);
+
+					// fill ean2link hash
+					if (requestedean.equals(ean.trim())) {
+						catalogurl = link.trim();
+					} else {
+						// put values in hash
+						ean2link.put(ean.trim(), link.trim());
+						// create book identifiers
+						BookIdentifier bi = new BookIdentifier();
+						bi.setEan(ean);
+						bi.setIsbn(isbn);
+						if (cleandate.length() == 4) {
+							bi.setPublishyear(new Long(cleandate));
+						}
+						addlcodes.add(bi);
+					}
+				}// end result loop
+			}
+			if (addlcodes!=null && addlcodes.size()>0) {
+				findobj.addAddlIdentifiers(addlcodes);
+			}
+			
+		}
+		return ean2link;
 	}
 
 	protected FinderObject searchLogic(FinderObject findobj) throws Exception {
 		BookDetailDao bookdetail = findobj.getBookdetail();
-		
+		boolean addlcodessearch = false;
+		// lookup by isbn
 		// add params by search type (isbn, or other (title, author, publisher)
-		String querystring ="";
+		String querystring = "";
 		if (bookdetail.hasIsbn()) {
 			String value = "";
 			// doing an isbn search
-			if (bookdetail.getIsbn13()!=null) {
+			if (bookdetail.getIsbn13() != null) {
 				querystring = dataquery_isbn13;
 				value = bookdetail.getIsbn13().trim();
 			} else {
@@ -157,397 +250,248 @@ public class BNFCatalogFinder extends BaseDetailFinder {
 			}
 			// replace string in query with value
 			querystring = querystring.replace("REPLACE", value);
-			querystring = URLEncoder.encode(querystring,"UTF-8");
+			querystring = URLEncoder.encode(querystring, "UTF-8");
 		} else {
-			// returning - this somehow got here without and isbn - can't run this without isbn....
+			// returning - this somehow got here without and isbn - can't run
+			// this without isbn....
 			findobj.setSearchStatus(CatalogService.DetailStatus.NODETAIL);
 			return findobj;
 		}
-	
+
 		String requestUrl = databnfrequest.replace("REPLACE", querystring);
-		
+
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 		DocumentBuilder db = dbf.newDocumentBuilder();
 		Document doc = db.parse(requestUrl);
 
-		Transformer transformer = TransformerFactory.newInstance()
-				.newTransformer();
-		OutputStream out = new BufferedOutputStream(new FileOutputStream(
-				new File("C:/Temp/myfile.xml")));
-		Result output = new StreamResult(out);
-
-		Source input = new DOMSource(doc);
-		transformer.setOutputProperty(
-				"{http://xml.apache.org/xslt}indent-amount", "2");
-		transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-		transformer.transform(input, output);
-
 		// get catalog uri from response
 		Node node = doc.getElementsByTagName("uri").item(0);
-		String catalogurl= node != null ? node.getTextContent() : "";
-		
+		String catalogurl = node != null ? node.getTextContent() : null;
+
+		// if no catalogurl, look for additional codes
+		HashMap<String, String> addlcodes = null;
+		if (catalogurl == null) {
+			addlcodessearch = true;
+			addlcodes = findAlternateIdentifiers(findobj, null);
+			if (addlcodes != null && addlcodes.size() > 0) {
+				for (String key : addlcodes.keySet()) {
+					catalogurl = addlcodes.get(key);
+					break;
+				}
+			}
+		}
+
 		// now, lets get this record....
-	    HashMap<String,String> results=new HashMap<String,String>();
+		if (catalogurl != null) {
+			HashMap<String, String> results = new HashMap<String, String>();
+			String alternateauthor=null;
+			
+			// now, lets get this record....
+			CloseableHttpClient httpclient = HttpClients.createDefault();
+			try {
+				HttpGet httpget = new HttpGet(catalogurl);
 
-CloseableHttpClient httpclient = HttpClients.createDefault();
-try {
-HttpGet httpget = new HttpGet(catalogurl);
+				// Create a response handler
+				ResponseHandler<String> responseHandler = new BasicResponseHandler();
+				String responseBody = httpclient.execute(httpget,
+						responseHandler);
+				processResponse(responseBody, results);
 
-    // Create a response handler
-    ResponseHandler<String> responseHandler = new BasicResponseHandler();
-    String responseBody = httpclient.execute(httpget, responseHandler);
-     processResponse(responseBody,results);
+				if (results.size()>0) {
+					findobj.setSearchStatus(CatalogService.DetailStatus.DETAILFOUND);
+				}
+				// nab this authors name here, just in case
+				alternateauthor = stripAfterText("(", results.get("Auteur(s)"));
+				alternateauthor = stripAfterText(newlinemarker, alternateauthor);
+				alternateauthor = normalizeArtistName(alternateauthor);
+				
+				// put results into bookdetail
+				resultsIntoDetail(results, findobj);
+			} finally {
+				// When HttpClient instance is no longer needed,
+				// shut down the connection manager to ensure
+				// immediate deallocation of all system resources
+				httpclient.getConnectionManager().shutdown();
+			}
 
-} finally {
-    // When HttpClient instance is no longer needed,
-    // shut down the connection manager to ensure
-    // immediate deallocation of all system resources
-    httpclient.getConnectionManager().shutdown();
-}	
-		
+			// get additional codes for title and author
+			if (!addlcodessearch && alternateauthor!=null) {
+				addlcodes = findAlternateIdentifiers(findobj, alternateauthor);
+			}
+		}
 
-
-				// return bookdetail
+		// return findobj
 		return findobj;
 	}
 
-	
-	protected void processResponse(String responseBody,HashMap<String, String> results) {
-String beginparse="<!--Contenu de la notice-->";
-		if (responseBody!=null) {
+	private String parseOutDate(String rawdate) {
+		// strip before comma
+		String cleaning = "";
+		int commaloc = rawdate.indexOf(",");
+		if (commaloc >= 0) {
+			cleaning = rawdate.substring(commaloc + 1);
+		} else {
+			cleaning = rawdate;
+		}
+		// strip all non number characters
+		cleaning = cleaning.replaceAll("[^\\d.X]", "");
+		// trim and return
+		return cleaning.trim();
+	}
+
+	private void resultsIntoDetail(HashMap<String, String> results,
+			FinderObject findobj) {
+		BookDetailDao bdetail = findobj.getBookdetail();
+		List<String> addlauthors = new ArrayList<String>(); 
+		List<String> addlillustrators = new ArrayList<String>(); 
+		if (results != null) {
+			for (String key : results.keySet()) {
+				if (key.toLowerCase().equals("indice(s) dewey")) {
+					String value = stripAfterText(" ", results.get(key));
+					// set the shelf class here...
+				} else if (key.toLowerCase().equals("autre(s) auteur(s)")) {
+					if (results.get(key) != null) {
+						// split on linebreak
+						String[] addl = results.get(key).split(
+								newlinemarkersplit);
+						// for each line - divide on last period author, role
+						for (int i = 0; i < addl.length; i++) {
+							String toparse = addl[i];
+							int lastperiod = toparse.lastIndexOf(".");
+							if (lastperiod >= 0) {
+								String rawartist = toparse.substring(0,
+										lastperiod);
+								String rawrole = toparse
+										.substring(lastperiod + 1);
+
+								// processing author - strip after (
+								rawartist = stripAfterText("(", rawartist);
+								// normalize author name
+								String artist = normalizeArtistName(rawartist);
+								// add to book detail depending upon role
+
+								if (rawrole.toLowerCase().contains("auteur")) {
+									addlauthors.add(artist);
+								} else if (rawrole.toLowerCase().contains(
+										"illustrateur")) {
+									// add to illustrators
+									addlillustrators.add(artist);
+								}
+							}
+						}
+					}
+				} else if (key.toLowerCase().equals("auteur(s)")) {
+					String value = stripAfterText("(", results.get(key));
+					// normalize author name
+					value = normalizeArtistName(value);
+					// set in author....
+					bdetail = addArtistToAuthors(value, bdetail);
+				} else if (key.toLowerCase().equals("sujet(s)")) {
+					List<String> subjects = new ArrayList<String>();
+					String value = stripAfterText(newlinemarkersplit,
+							results.get(key));
+					String[] rawsubjects = value.split("--");
+					for (int i = 0; i < rawsubjects.length; i++) {
+						subjects.add(rawsubjects[i].trim());
+					}
+					bdetail = insertSubjectsIntoBookDetail(subjects, bdetail);
+				} else if (key.toLowerCase().equals("résumé")) {
+					String value = stripAfterText(newlinemarkersplit,
+							results.get(key));
+					value = stripAfterText("[", value);
+					bdetail.setDescription(value);
+				}
+			}
+			
+			// now, add addlauthors and illustrators
+			if (addlauthors !=null ) {
+				for (String artist:addlauthors) {
+					bdetail = addArtistToAuthors(artist,
+							bdetail);
+				}
+			}
+			if (addlillustrators !=null ) {
+				for (String artist:addlillustrators) {
+					bdetail = addArtistToAuthors(artist,
+							bdetail);
+				}
+			}
+
+		}
+	}
+
+	private String stripAfterText(String stripafter, String tostrip) {
+		int location = tostrip.indexOf(stripafter);
+		if (location > 0) {
+			tostrip = tostrip.substring(0, location - 1);
+		}
+		return tostrip;
+	}
+
+	private void processResponse(String responseBody,
+			HashMap<String, String> results) {
+
+		if (responseBody != null) {
 			// Strip away chaff
 			int begin = responseBody.indexOf(beginparse);
-			int end = responseBody.indexOf("</td>",begin);
-			String interesting = responseBody.substring(begin + beginparse.length(),end);
-			
-			String[] chunks = interesting.split("<br />");
-			if (chunks!=null) {
-				for (int i=0;i<chunks.length;i++) {
-					// remove tags
-					String tagfree = removeTags(chunks[i]);
-					if (tagfree.contains(":")) {
-						String[] keyvalue = tagfree.split(":");
-						String key = keyvalue[0].trim();
-						String value = keyvalue[1].trim();
-						results.put(key, value);
+			int end = responseBody.indexOf("</td>", begin);
+			String interesting = responseBody.substring(
+					begin + beginparse.length(), end);
+			// replace br with linebreak markers
+			interesting = interesting.replace("<br />", newlinemarker);
+			// strip &#160;
+			interesting = interesting.replace("&#160;", "");
+			String[] chunks = interesting.split("<b>");
+			if (chunks != null) {
+				for (int i = 0; i < chunks.length; i++) {
+					String raw = chunks[i];
+					if (raw != null && raw.trim().length() > 0) {
+
+						// remove tags
+						String tagfree = removeTags(chunks[i]);
+						// unescape html characters
+						tagfree = StringEscapeUtils.unescapeHtml4(tagfree);
+						if (tagfree.contains(":")) {
+							String[] keyvalue = tagfree.split(":");
+							String key = keyvalue[0].trim();
+							String value = keyvalue[1].trim();
+							results.put(key, value);
+						}
 					}
 				}
 			}
 		}
 
-		
 	}
 
-	protected String removeTags(String string) {
+	private String removeTags(String string) {
 		StringBuffer tagfree = new StringBuffer();
 		boolean intag = false;
-		for (int i=0;i<string.length();i++) {
+		for (int i = 0; i < string.length(); i++) {
 			char examine = string.charAt(i);
 			if (intag) {
-				// check if we have an end tag 
+				// check if we have an end tag
 				if (examine == '>') {
-						// end of tag
-						// if so, set intag to false
-						intag=false;
+					// end of tag
+					// if so, set intag to false
+					intag = false;
 				}
 				// if so, set intag to false
 			} else {
 				// check if new tag is starting
 				if (examine == '<') {
 					// if so, set intag to true
-					intag=true;
+					intag = true;
 				} else {
 					// write char to tagfree
 					tagfree.append(examine);
 				}
 
-
 			}
-			
+
 		}
 		return tagfree.toString();
 
 	}
-
-	private void oow() {
-/*
-		// make list of Item documents (Item nodes from returned request as entire document)
-		List<Document> items = new ArrayList<Document>();
-		// get Item nodes from returned documents
-		NodeList itemnodes = doc.getElementsByTagName("Item");
-		// make each node into a new document
-		if (itemnodes!=null) {
-			for (int i=0;i<itemnodes.getLength();i++) {
-				Node node = itemnodes.item(i);
-				Document newDocument = db.newDocument();
-				Node imported = newDocument.importNode(node, true);
-				newDocument.appendChild(imported);
-				// add document to the list
-				items.add(newDocument);
-			}
-		}
-
-		// process item documents into bookdetails
-		List<FoundDetailsDao> copiedinfo = copyResultsIntoFoundDetails(items);
-		
-		// process list according to size - (one, none, or multiple results found)
-		if (copiedinfo !=null) {
-			if (copiedinfo.size()==0) {
-				findobj.setSearchStatus(CatalogService.DetailStatus.DETAILNOTFOUND);	
-			} else if (copiedinfo.size()==1){
-				findobj.setSearchStatus(CatalogService.DetailStatus.DETAILFOUND);
-				FoundDetailsDao found = copiedinfo.get(0);
-				bookdetail = mergeFoundIntoBookDetail(found,bookdetail);
-				findobj.setBookdetail(bookdetail);
-			} else {
-				findobj.setSearchStatus(CatalogService.DetailStatus.MULTIDETAILSFOUND);
-				findobj.setMultiresults(copiedinfo);
-			}
-		}else {
-			// no detail found in data
-			findobj.setSearchStatus(CatalogService.DetailStatus.DETAILNOTFOUND);
-		}
-		
-		
-		// return finderobject
-		return findobj;
-*/
-	}
-
-	
-	private BookDetailDao mergeFoundIntoBookDetail(FoundDetailsDao found,
-			BookDetailDao bookdetail) {
-		// copy basic info into bookdetail
-		String title = found.getTitle();
-		String imagelink = found.getImagelink();
-		String isbn10 = found.getIsbn10();
-		String isbn13 = found.getIsbn13();
-		String publisher = found.getPublisher();
-		Long publishyear = found.getPublishyear();
-		String language = found.getLanguage();
-		String description = found.getDescription();
-		String authors = found.getAuthors();
-		
-		
-		// set title
-		bookdetail.setTitle(title);
-		bookdetail.setImagelink(imagelink);
-
-		// isbn- 10 or 13
-		if (isbn10 != null) {
-			bookdetail.setIsbn10(isbn10);
-		}
-		if (isbn13 != null) {
-			bookdetail.setIsbn10(isbn13);
-		}
-
-
-		// publisher
-		if (publisher != null && bookdetail.getPublisher() == null) {
-			PublisherDao pub = findPublisherForName(publisher);
-			bookdetail.setPublisher(pub);
-		}
-
-		// publishyear
-		if (publishyear != null) {
-			bookdetail.setPublishyear(new Long(publishyear));
-		}
-
-		// language
-		if (language != null) {
-			bookdetail.setLanguage(language);
-		}
-
-		// description
-		if (description.trim().length() > 0) {
-			String origdesc = bookdetail.getDescription();
-			if (origdesc == null
-					|| origdesc.trim().length() < description.length()) {
-				bookdetail.setDescription(description);
-			}
-		}
-
-		// authors
-		// break into a list
-		if (authors!=null) {
-			String[] autharray = authors.split(",");
-			List<String> authorlist = new ArrayList<String>();
-			for (int i=0;i<autharray.length;i++) {
-				String toadd = autharray[i];
-				if (toadd!=null && toadd.trim().length()>0) {
-					authorlist.add(toadd.trim());
-				}
-			}
-			bookdetail = insertAuthorsIntoBookDetail(authorlist, bookdetail);
-		}
-		
-		return bookdetail;
-	}
-	private List<FoundDetailsDao> copyResultsIntoFoundDetails(List<Document> items) throws Exception {
-		if (items!=null && items.size()>0) {
-			List<FoundDetailsDao> results = new ArrayList<FoundDetailsDao>();
-			for (Document itemdoc:items) {
-				FoundDetailsDao fd = new FoundDetailsDao();
-				fd.setSearchsource(getIdentifier());
-				
-				// gather info
-				Node node = itemdoc.getElementsByTagName("ASIN").item(0);
-				String catalognr= node != null ? node.getTextContent() : "";
-				
-				node = itemdoc.getElementsByTagName("Title").item(0);
-				String title = node != null ? node.getTextContent() : "";
-
-				NodeList nodes = itemdoc.getElementsByTagName("MediumImage");
-				node = getChildnode("URL", nodes);
-				String imagelink = node != null ? node.getChildNodes().item(0)
-						.getTextContent() : "";
-
-				nodes = itemdoc.getElementsByTagName("Content");
-				String description = "";
-				for (int i = 0; i < nodes.getLength(); i++) {
-					Node nd = nodes.item(i);
-					String parentnm = nd.getParentNode() != null ? nd.getParentNode()
-							.getLocalName() : "";
-					if (parentnm != null && parentnm.equals("EditorialReview")) {
-						String newd = nd.getTextContent();
-						description = newd.length() > description.length() ? newd
-								: description;
-					}
-				}
-
-				nodes = itemdoc.getElementsByTagName("ISBN");
-				node = nodes.item(0);
-				String isbn = node != null ? node.getTextContent() : "";
-
-				nodes = itemdoc.getElementsByTagName("Language");
-				node = getChildnode("Name", nodes);
-				String rawlanguage = node != null ? node.getTextContent() : "";
-
-				node = itemdoc.getElementsByTagName("Publisher").item(0);
-				String publisher = node != null ? node.getTextContent() : "";
-
-				node = itemdoc.getElementsByTagName("PublicationDate").item(0);
-				String publishyear = node != null ? node.getTextContent() : "";
-
-				nodes = itemdoc.getElementsByTagName("Author");
-				List<String> authors = new ArrayList<String>();
-				for (int i = 0; i < nodes.getLength(); i++) {
-					Node nd = nodes.item(i);
-					authors.add(nd.getTextContent());
-				}
-
-				// continue to next document, if no isbn listed
-				if (isbn==null || isbn.trim().length()==0) {
-					continue;
-				}
-				
-				// copy info into book detail
-				// set title
-				fd.setTitle(title);
-				fd.setImagelink(imagelink);
-
-				// isbn- 10 or 13
-				if (isbn != null) {
-					String str = isbn.replaceAll("[^\\d.X]", "");
-					if (str.length() > 10) {
-						fd.setIsbn13(str);
-					}
-					fd.setIsbn10(str);
-				}
-
-				// publisher
-				if (publisher != null && fd.getPublisher() == null) {
-					fd.setPublisher(publisher);
-				}
-
-				// publishyear
-				if (publishyear != null) {
-					if (publishyear.contains("-")) {
-						// chop off after dash
-						publishyear = publishyear
-								.substring(0, publishyear.indexOf("-"));
-						fd.setPublishyear(new Long(publishyear));
-					} else if (publishyear.contains("?")) {
-						// do nothing - vague year
-					} else {
-						fd.setPublishyear(new Long(publishyear));
-					}
-				}
-
-				// language
-				if (rawlanguage != null) {
-					if (rawlanguage.equals("Français")) {
-						fd.setLanguage("fr");
-					} else if (rawlanguage.equals("Anglais")) {
-						fd.setLanguage("en");
-					}
-					// MM else - help with this else!! some kind of lookup!
-				}
-
-				// description
-				fd.setDescription(description);
-
-				// authors
-				StringBuilder authorbuilder = new StringBuilder();
-				if (authors != null) {
-					for (String author : authors) {
-						authorbuilder.append(author).append(",");
-					}
-				}
-				if (authorbuilder.length() > 1) {
-					authorbuilder.setLength(authorbuilder.length() - 1);
-				}
-				fd.setAuthors(authorbuilder.toString());
-		
-				// add catalog nr
-				fd.setSearchserviceid(catalognr);
-				
-				// add bookdetail to result list
-				results.add(fd);
-				
-			}// end of loop through items
-			return results;
-		}
-		return null;
-	}
-
-
-	private Node getChildnode(String nodename, NodeList nodes) {
-		for (int i = 0; i < nodes.getLength(); i++) {
-			Node nd = nodes.item(i);
-			NodeList children = nd.getChildNodes();
-			for (int j = 0; j < children.getLength(); j++) {
-				Node nnd = children.item(j);
-				if (nnd != null) {
-					String name = nnd.getNodeName();
-					if (name != null && name.equals(nodename)) {
-						return nnd;
-					}
-				}
-			}
-
-		}
-		return null;
-	}
-
-	private PublisherDao findPublisherForName(String text) {
-		if (text != null) {
-			// clean up text
-			text = text.trim();
-			// query db
-			List<PublisherDao> foundlist = pubRepo.findPublisherByName(text
-					.toLowerCase());
-			if (foundlist != null && foundlist.size() > 0) {
-				return foundlist.get(0);
-			} else {
-				// if nothing found, make new PublisherDao
-				PublisherDao pub = new PublisherDao();
-				pub.setName(text);
-				return pub;
-			}
-		}
-		return null;
-	}
-
 
 }

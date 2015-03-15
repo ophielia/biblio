@@ -287,7 +287,7 @@ public class AmazonDetailFinderTest {
 		bdillus.add(c_p_a_obj);
 		bd.setIllustrators(bdillus);
 
-		artists.add(c_p_a);
+		artists.add(c_p_a_obj.getDisplayName());
 		// service call
 		bd = amazonSearch.insertAuthorsIntoBookDetail(artists, bd);
 		// should have 1 illustrator, 1 author

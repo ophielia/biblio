@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import meg.biblio.catalog.CatalogService;
 import meg.biblio.catalog.db.dao.ArtistDao;
 import meg.biblio.catalog.db.dao.BookDao;
 import meg.biblio.catalog.db.dao.BookDetailDao;
@@ -164,7 +165,15 @@ public class BookModel  implements Serializable {
 	}
 
 	public void setType(Long type) {
-		if (type!=null) this.book.setType(type);
+		if (type!=null) {
+			// save type in book, for client
+			this.book.setClientbooktype(type);
+			if (type==CatalogService.BookType.FICTION ||
+					type == CatalogService.BookType.NONFICTION) {
+				// fiction or non-fiction - save through to the bookdetail
+				this.book.getBookdetail().setListedtype(type);
+			}
+		}
 	}
 
 	public void setDescription(String description) {
@@ -179,12 +188,8 @@ public class BookModel  implements Serializable {
 		if (detailstatus!=null) this.book.getBookdetail().setDetailstatus(detailstatus);
 	}
 
-	public void setShelfclass(Long shelfclass) {
-		if (shelfclass!=null) this.book.setShelfclass(shelfclass);
-	}
-
-	public void setShelfclassverified(Boolean shelfclassverified) {
-		if (shelfclassverified!=null) this.book.setShelfclassverified(shelfclassverified);
+	public void setShelfcode(Long shelfclass) {
+		if (shelfclass!=null) this.book.setClientshelfcode(shelfclass);
 	}
 
 	public void setCreatedon(Date createdon) {
@@ -243,7 +248,10 @@ public class BookModel  implements Serializable {
 	}
 
 	public Long getType() {
-		return book.getType();
+		// check for type in book first (client specific)
+		if (book.getClientbooktype()!=null) return book.getClientbooktype();
+		// and then in bookdetail
+		return book.getBookdetail().getListedtype();
 	}
 
 	public String getDescription() {
@@ -261,12 +269,8 @@ public class BookModel  implements Serializable {
 	}
 
 
-	public Long getShelfclass() {
-		return book.getShelfclass();
-	}
-
-	public Boolean getShelfclassverified() {
-		return book.getShelfclassverified();
+	public Long getShelfcode() {
+		return book.getClientshelfcode();
 	}
 
 	public Date getCreatedon() {

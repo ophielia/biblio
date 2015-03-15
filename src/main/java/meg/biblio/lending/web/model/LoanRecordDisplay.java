@@ -85,7 +85,7 @@ public class LoanRecordDisplay {
 
 	@XmlTransient
 	public Long getShelfclass() {
-		return this.book.getShelfclass();
+		return this.book.getClientshelfcode();
 	}
 
 	@XmlElement

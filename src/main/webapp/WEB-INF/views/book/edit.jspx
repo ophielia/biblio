@@ -41,7 +41,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <script type="text/javascript">
 
  
- <c:set var="shelfclass" value="${classHash[bookModel.shelfclass]}" />
+ <c:set var="shelfclass" value="${classHash[bookModel.shelfcode]}" />
  require(
 		  ["mydojo/widget/ShelfClassSelectWidget","dojo/dom", "dojo/domReady!"],
 		    function( ShelfClassSelectWidget,dom){

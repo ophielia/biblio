@@ -17,6 +17,7 @@ import javax.persistence.criteria.ParameterExpression;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import meg.biblio.catalog.BookIdentifier;
 import meg.biblio.catalog.CatalogService;
 import meg.biblio.catalog.db.FoundWordsDao;
 import meg.biblio.catalog.db.dao.ArtistDao;
@@ -246,6 +247,65 @@ public class SearchServiceImpl implements SearchService {
 	}
 	
 	
+	@Override
+	public BookDetailDao findBooksForIdentifier(BookIdentifier bi) {
+		if (bi!=null) {
+		// ean , isbn
+		String ean = bi.getEan();
+		String isbn = bi.getIsbn();
+		
+		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+		CriteriaQuery<BookDetailDao> c = cb.createQuery(BookDetailDao.class);
+		Root<BookDetailDao> bookroot = c.from(BookDetailDao.class);
+		c.select(bookroot);
+
+	
+			
+			
+			// get where clause
+			Expression sortexpr = null;
+			List<Predicate> whereclause = new ArrayList<Predicate>();
+			boolean hasean=false;
+			// ean
+			if (ean!=null) {
+				ParameterExpression<String> param = cb.parameter(String.class,
+						"ean");
+				whereclause
+						.add(cb.like(cb.lower(bookroot.<String> get("isbn13")), param));
+				hasean=true;
+			}
+			if (isbn!=null) {
+				ParameterExpression<String> param = cb.parameter(String.class,
+						"isbn");
+					whereclause
+					.add(cb.like(cb.lower(bookroot.<String> get("isbn10")), param));
+			}
+			
+			// adding where clause
+			c.where(cb.and(whereclause.toArray(new Predicate[whereclause.size()])));
+			
+	
+			// creating the query
+			TypedQuery<BookDetailDao> q = entityManager.createQuery(c);
+
+			// setting the parameters
+			// title
+			if (ean!=null) {
+				q.setParameter("ean",ean.trim());
+			}
+			if (ean!=null) {
+				q.setParameter("isbn",isbn.trim());
+			}
+
+			List<BookDetailDao> results = q.getResultList();
+			if (results!=null && results.size()>0) {
+				return results.get(0);
+			}
+		}
+		return null;
+	}
+
+
 	private List<BookDao> findBooksNoKeyword(BookSearchCriteria criteria, Long clientid) {
 		
 		CriteriaBuilder cb = entityManager.getCriteriaBuilder();

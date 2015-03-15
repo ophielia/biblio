@@ -6,14 +6,19 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import meg.biblio.catalog.AmazonDetailFinder.NameMatchType;
+import meg.biblio.catalog.db.SubjectRepository;
 import meg.biblio.catalog.db.dao.ArtistDao;
 import meg.biblio.catalog.db.dao.BookDetailDao;
+import meg.biblio.catalog.db.dao.SubjectDao;
 import meg.biblio.search.SearchService;
 
 public abstract class BaseDetailFinder implements DetailFinder {
 
 	@Autowired
 	SearchService searchService;
+
+	@Autowired
+	SubjectRepository subjectRepo;
 
 	DetailFinder next;
 
@@ -41,7 +46,7 @@ public abstract class BaseDetailFinder implements DetailFinder {
 		if (iseligible && isenabled) {
 			// log search
 			findobj.logFinderRun(getIdentifier());
-			
+
 			// run logic
 			findobj = searchLogic(findobj);
 			// check completion
@@ -57,7 +62,6 @@ public abstract class BaseDetailFinder implements DetailFinder {
 				findobj = getNext().findDetails(findobj, clientcomplete);
 			}
 		}
-
 
 		// return finderobject
 		return findobj;
@@ -166,6 +170,128 @@ public abstract class BaseDetailFinder implements DetailFinder {
 		return bookdetail;
 	}
 
+	protected BookDetailDao addArtistToAuthors(String artist,
+			BookDetailDao bookdetail) {
+		// split authors into authors and illustrators (somewhat arbitrary, but
+		// this is how we'll do it)
+		// convert strings to ArtistDaos....
+		List<ArtistDao> authors = new ArrayList<ArtistDao>();
+		List<ArtistDao> illustrators = new ArrayList<ArtistDao>();
+		if (artist != null) {
+
+			ArtistDao newauthor = textToArtistName(artist.trim());
+
+			// get existing authors and illustrators
+			List<ArtistDao> existauth = bookdetail.getAuthors();
+			List<ArtistDao> existillus = bookdetail.getIllustrators();
+
+			// reconcileArtists - with option to replace if found in "wrong"
+			// list
+			reconcileArtists(newauthor, existauth, existillus, true);
+
+			// set lists in book detail
+			bookdetail.setAuthors(existauth);
+			bookdetail.setIllustrators(existillus);
+		}
+
+		// return book detail
+		return bookdetail;
+	}
+
+	protected BookDetailDao addArtistToIllustrators(String artist,
+			BookDetailDao bookdetail) {
+		if (artist != null) {
+			ArtistDao newauthor = textToArtistName(artist.trim());
+
+			// get existing authors and illustrators
+			List<ArtistDao> existauth = bookdetail.getAuthors();
+			List<ArtistDao> existillus = bookdetail.getIllustrators();
+
+			// reconcileArtists - with option to replace if found in "wrong"
+			// list
+			reconcileArtists(newauthor, existillus, existauth, true);
+
+			// set lists in book detail
+			bookdetail.setAuthors(existauth);
+			bookdetail.setIllustrators(existillus);
+		}
+
+		// return book detail
+		return bookdetail;
+	}
+
+	/**
+	 * Transforms format of author "lastname, firstname" into
+	 * "firstname lastname"
+	 * 
+	 * @param artist
+	 * @return
+	 */
+	protected String normalizeArtistName(String artist) {
+		if (artist != null) {
+			int commaloc = artist.indexOf(",");
+			if (commaloc > 0) {
+				String beforecomma = artist.substring(0, commaloc);
+				String aftercomma = artist.substring(commaloc + 1);
+				return aftercomma.trim() + " " + beforecomma.trim();
+			}
+		}
+		return artist;
+	}
+
+	protected BookDetailDao insertSubjectsIntoBookDetail(
+			List<String> subjectstrings, BookDetailDao bookdetail) {
+		if (subjectstrings != null && subjectstrings.size() > 0) {
+
+			// get existing list of subjects
+			List<SubjectDao> subjects = bookdetail.getSubjects();
+			if (subjects == null)
+				subjects = new ArrayList<SubjectDao>();
+
+			// set up list of existing subjects - string of subject as key
+			List<String> existing = new ArrayList<String>();
+			for (SubjectDao subject : subjects) {
+				existing.add(subject.getListing().toLowerCase().trim());
+			}
+
+			// go through subject strings
+			for (String newsubject : subjectstrings) {
+				if (!existing.contains(newsubject.toLowerCase().trim())) {
+					// if new string doesn't exist in the hash, add it
+					// to add it, call findSubjectForString - to pull existing
+					// subject by name from db
+					SubjectDao newdao = findSubjectForString(newsubject);
+					subjects.add(newdao);
+				}
+
+			}
+
+			// set subjects in bookdetail
+			bookdetail.setSubjects(subjects);
+		}
+		return bookdetail;
+
+	}
+
+	private SubjectDao findSubjectForString(String text) {
+		if (text != null) {
+			// clean up text
+			text = text.trim();
+			// query db
+			List<SubjectDao> foundlist = subjectRepo.findSubjectByText(text
+					.toLowerCase());
+			if (foundlist != null && foundlist.size() > 0) {
+				return foundlist.get(0);
+			} else {
+				// if nothing found, make new PublisherDao
+				SubjectDao pub = new SubjectDao();
+				pub.setListing(text);
+				return pub;
+			}
+		}
+		return null;
+	}
+
 	protected ArtistDao textToArtistName(String text) {
 		ArtistDao name = new ArtistDao();
 		boolean nonempty = text != null && text.trim().length() > 0;
@@ -218,12 +344,19 @@ public abstract class BaseDetailFinder implements DetailFinder {
 
 	private void reconcileArtists(ArtistDao newartist,
 			List<ArtistDao> targetlist, List<ArtistDao> checklist) {
+		reconcileArtists(newartist, targetlist, checklist, false);
+	}
+
+	private void reconcileArtists(ArtistDao newartist,
+			List<ArtistDao> targetlist, List<ArtistDao> checklist,
+			boolean replaceintarget) {
+		List<ArtistDao> newtargetlist = new ArrayList<ArtistDao>();
 		if (newartist != null) {
 			boolean targetexist = false;
 			boolean checkexist = false;
 			// exists in targetlist?
 			if (targetlist != null) {
-				List<ArtistDao> newtargetlist = new ArrayList<ArtistDao>();
+
 				for (ArtistDao existart : targetlist) {
 					if (targetexist) {
 						// just filling in the new list
@@ -246,7 +379,9 @@ public abstract class BaseDetailFinder implements DetailFinder {
 			}
 
 			// exists in checkexist?
-			if (!targetexist) {
+			if (!targetexist || replaceintarget) {
+				boolean replacechecklist = false; // to signal delete was
+													// made....
 				if (checklist != null) {
 					List<ArtistDao> newchecklist = new ArrayList<ArtistDao>();
 					for (ArtistDao existart : checklist) {
@@ -256,15 +391,29 @@ public abstract class BaseDetailFinder implements DetailFinder {
 						} else {
 							checkexist = artistsMatch(existart, newartist);
 							if (checkexist) {
+								// in "wrong" list....
+								replacechecklist = true;
 								// check completion - fill in
 								ArtistDao artist = checkArtistInfo(existart,
 										newartist);
-								newchecklist.add(artist);
+								
+								if (replaceintarget) {
+								// if hadn't been found in targetlist, add to
+								// targetlist, and delete from checklist
+								// if had been found, delete from checklist,
+								// don't add to targetlist
+								// note - deleting by not adding to newchecklist
+								if (!targetexist) {
+									targetlist.add(artist);
+								}
+								} else {
+									newchecklist.add(artist);
+								}
 							}
 						}
 					}
 					// replace target list if change made
-					if (checkexist) {
+					if (replacechecklist) {
 						checklist.clear();
 						checklist.addAll(newchecklist);
 					}

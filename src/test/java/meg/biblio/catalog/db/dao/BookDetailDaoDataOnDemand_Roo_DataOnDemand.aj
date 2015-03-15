@@ -42,6 +42,7 @@ privileged aspect BookDetailDaoDataOnDemand_Roo_DataOnDemand {
         setLanguage(obj, index);
         setListedtype(obj, index);
         setPublishyear(obj, index);
+        setShelfclass(obj, index);
         setTitle(obj, index);
         return obj;
     }
@@ -92,6 +93,11 @@ privileged aspect BookDetailDaoDataOnDemand_Roo_DataOnDemand {
     public void BookDetailDaoDataOnDemand.setPublishyear(BookDetailDao obj, int index) {
         Long publishyear = new Integer(index).longValue();
         obj.setPublishyear(publishyear);
+    }
+    
+    public void BookDetailDaoDataOnDemand.setShelfclass(BookDetailDao obj, int index) {
+        String shelfclass = "shelfclass_" + index;
+        obj.setShelfclass(shelfclass);
     }
     
     public void BookDetailDaoDataOnDemand.setTitle(BookDetailDao obj, int index) {

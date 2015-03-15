@@ -201,6 +201,7 @@ public class AmazonBaseFinder extends BaseDetailFinder {
 		DocumentBuilder db = dbf.newDocumentBuilder();
 		Document doc = db.parse(requestUrl);
 
+		/*
 		Transformer transformer = TransformerFactory.newInstance()
 				.newTransformer();
 		OutputStream out = new BufferedOutputStream(new FileOutputStream(
@@ -212,7 +213,7 @@ public class AmazonBaseFinder extends BaseDetailFinder {
 				"{http://xml.apache.org/xslt}indent-amount", "2");
 		transformer.setOutputProperty(OutputKeys.INDENT, "yes");
 		transformer.transform(input, output);
-
+*/
 		
 		// make list of Item documents (Item nodes from returned request as entire document)
 		List<Document> items = new ArrayList<Document>();

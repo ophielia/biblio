@@ -132,13 +132,36 @@ public class DetailSearchServiceTest {
 		// ensure list not null
 		Assert.assertNotNull(models);
 		Assert.assertEquals(10,models.size());
+		int description = 0;
 		for (BookModel model:models) {
 			BookDetailDao detail = model.getBook().getBookdetail();
 			Assert.assertFalse(detail.getDetailstatus() == CatalogService.DetailStatus.NODETAIL);
 			Assert.assertNotNull(detail.getFinderlog());
 			Assert.assertNotNull(detail.getDetailstatus());
-
+			if (detail.getDescription()!=null) description++;
 		}
+		Assert.assertTrue(description>2);
 	}
+
+	@Test
+	public void testFillInDetailsForBookListBadAuthor() {
+		// make book models
+		Long clientid = clientService.getTestClientId();
+		List<BookModel> models = new ArrayList<BookModel>();
+		BookModel book1 = new BookModel();
+		book1.setClientid(clientid);
+		book1.setIsbn13("9782211206464");
+		models.add(book1);
+		
+		ClientDao client = clientService.getClientForKey(clientid);
+		// service call
+		models= detSearchService.fillInDetailsForBookList(models, client);
+		// ensure list not null
+		Assert.assertNotNull(models);
+		Assert.assertEquals(1,models.size());
+		BookModel model = models.get(0);
+		Assert.assertNotNull(model.getDescription());
+	}
+
 
 }

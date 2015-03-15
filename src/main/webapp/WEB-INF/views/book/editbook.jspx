@@ -48,7 +48,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <script type="text/javascript">
 
  
- <c:set var="scobj" value="${classHash[bookModel.shelfclass]}" />
+ <c:set var="scobj" value="${classHash[bookModel.shelfcode]}" />
  require(
 		  ["mydojo/widget/ShelfClassSelectWidget","dojo/dom", "dojo/domReady!"],
 		    function( ShelfClassSelectWidget,dom){
@@ -57,7 +57,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 	          
 	        	// Create our widget and place it
 	            var widget = new ShelfClassSelectWidget({displayId:'${scobj.id}',jsontext:'${classJson}',
-	            	updatenodename:"shelfclass", showemptyselect:true,emptyselecttext:'${lemptyselect}',imagebasedir:'${imagebasedir}'}).placeAt(classiContainer);
+	            	updatenodename:"shelfcode", showemptyselect:true,emptyselecttext:'${lemptyselect}',imagebasedir:'${imagebasedir}'}).placeAt(classiContainer);
 		});
  
  
@@ -76,7 +76,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 				style="background-color: #C2C2A3; border: 1px dotted grey; padding: 5px; margin: 10px;">
 				<div>
 
-	<form:input type="hidden" path="shelfclass"></form:input><br />
+	<form:input type="hidden" path="shelfcode"></form:input><br />
 	${lclassification}: 
 	
 	
@@ -108,9 +108,9 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <br />
 <br />	
 
-<div><c:if test="${bookModel.book.detailstatus!=null}">${ldetailstatus}: ${detailstatusLkup[bookModel.book.detailstatus]} |  </c:if>
-<c:if test="${bookModel.book.isbn10!=null}">${lisbn10}: ${bookModel.book.isbn10} | </c:if>
-<c:if test="${bookModel.book.isbn13!=null}">${lisbn13}: ${bookModel.book.isbn13}  </c:if></div>
+<div><c:if test="${bookModel.detailstatus!=null}">${ldetailstatus}: ${detailstatusLkup[bookModel.detailstatus]} |  </c:if>
+<c:if test="${bookModel.isbn10!=null}">${lisbn10}: ${bookModel.isbn10} | </c:if>
+<c:if test="${bookModel.isbn13!=null}">${lisbn13}: ${bookModel.isbn13}  </c:if></div>
 
 
 
@@ -125,35 +125,35 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 
 	</div>
 		<div>
-	${ltitle}:${bookModel.book.title}<br />
+	${ltitle}:${bookModel.title}<br />
 	</div>
 	<div>
-	${lauthor}: ${bookModel.book.authorsAsString}
+	${lauthor}: ${bookModel.book.bookdetail.authorsAsString}
 	</div>
 	<div>
-	${lillustrator}: ${bookModel.book.illustratorsAsString}
+	${lillustrator}: ${bookModel.book.bookdetail.illustratorsAsString}
 	</div>
 	<div>
 	${lpublisher}:  <c:if test="${!empty book.publisher}">${bookModel.book.publisher.name}</c:if>
 	</div>	
 		<div>
-	${lbooktype}:${bookTypeLkup[bookModel.book.type]}
+	${lbooktype}:${bookTypeLkup[bookModel.type]}
 						
 	</div>	
 	<div>
-	${llanguage}:${langLkup[bookModel.book.language]}
+	${llanguage}:${langLkup[bookModel.language]}
 			
 	</div>	
 		<div>
-		${ldetailstatus}: ${detailstatusLkup[bookModel.book.detailstatus]}
+		${ldetailstatus}: ${detailstatusLkup[bookModel.detailstatus]}
 		</div>
 		<div>
-		${lisbn}: ${bookModel.book.isbn10}/<br />${bookModel.book.isbn13}
+		${lisbn}: ${bookModel.isbn10}/<br />${bookModel.isbn13}
 		</div>
 
 </div>
 <div style="width:100%;clear:both;padding-top:25px">
-${ldescription}: ${bookModel.book.description}
+${ldescription}: ${bookModel.description}
 </div>
 
 </form:form>

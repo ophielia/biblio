@@ -73,9 +73,9 @@ public class BookController {
 		ClientDao client = clientService.getCurrentClient(principal);
 
 		// clear model, place in uiModel
-		Long classification = bookModel.getShelfclass();
+		Long classification = bookModel.getShelfcode();
 		bookModel = new BookModel();
-		bookModel.setShelfclass(classification);
+		bookModel.setShelfcode(classification);
 		bookModel.setCreatenewid(new Boolean(true));
 		bookModel.setStatus(CatalogService.Status.SHELVED);
 		bookModel.setAssignedcode(null);
@@ -132,8 +132,11 @@ public class BookController {
 		if (artist!=null) {
 			model.setAuthorInBook(artist);
 		}
-		model = catalogService.createCatalogEntryFromBookModel(clientid, model,
-				createclientbookid);
+		
+		// want to find the details for this book ,but not save it yet...
+		model = detSearchService.fillInDetailsForBook(model, client);
+		//model = catalogService.createCatalogEntryFromBookModel(clientid, model,
+			//	createclientbookid);
 		// book-> BookModel -> uiModel
 		BookDao book = model.getBook();
 		bookModel.setBook(book);
@@ -172,26 +175,6 @@ public class BookController {
 			HttpServletRequest httpServletRequest, BindingResult bindingResult,Principal principal) {
 		ClientDao client = clientService.getCurrentClient(principal);
 		Long clientid = client.getId();
-
-		// update book - gather classification, isbn
-		Long classification=bookModel.getShelfclass();
-		String isbn = bookModel.getIsbnentry();
-		Long status = bookModel.getStatus();
-		String title =bookModel.getTitle();
-		String author = bookModel.getAuthorname();
-		
-		// put book into model
-		BookModel model = catalogService.loadBookModel(bookModel.getBook().getId());
-		if (classification!=null) model.setShelfclass(classification);
-		if (status!=null) model.setStatus(status);
-		if (isbn!=null) model.setIsbn10(isbn);
-		if (title!=null) model.setTitle(title);
-		ArtistDao artist = catalogService.textToArtistName(author);
-		if (artist!=null) {
-			model.setAuthorInBook(artist);
-		}
-		// now, put this model updated book into the (session) book model
-		bookModel.setBook(model.getBook());
 		
 		bookValidator.validateUpdateBook(bookModel,bindingResult);
 		if (bindingResult.hasErrors()) {
@@ -207,17 +190,15 @@ public class BookController {
 		
 		// update book - if changed
 		// fill in details if not detailfound, and isbn exists
-		boolean fillindetails = model.hasIsbn() && !(model.getDetailstatus().longValue()==CatalogService.DetailStatus.DETAILFOUND);
+		boolean fillindetails = false;//model.hasIsbn() && !(model.getDetailstatus().longValue()==CatalogService.DetailStatus.DETAILFOUND);
 		try {
-			model = catalogService.updateCatalogEntryFromBookModel(clientid, model, fillindetails);
-			bookModel.setBook(model.getBook());
+			bookModel = catalogService.createCatalogEntryFromBookModel(clientid, bookModel, false);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 
 		
 		// return view - returns either to display book, or to assign code
-		bookModel.setAssignedcode(null);
 		uiModel.addAttribute("bookModel",bookModel);
 		Boolean showbarcode = client.getUsesBarcodes()!=null && client.getUsesBarcodes();
 		uiModel.addAttribute("showbarcodes",showbarcode);
@@ -323,7 +304,7 @@ public class BookController {
 			if (illustrator != null)
 				model.setIllustratorInBook(author);
 			model.setType(bookModel.getType());
-			model.setShelfclass(bookModel.getShelfclass());
+			model.setShelfcode(bookModel.getShelfcode());
 			model.setStatus(bookModel.getStatus());
 			model.setLanguage(bookModel.getLanguage());
 

@@ -420,8 +420,10 @@ public class CatalogServiceImpl implements CatalogService {
 		
 		// add default entries for status, detail status, type
 		book.setStatus(Status.PROCESSING);
-		book.setType(BookType.UNKNOWN);
 		book.setCreatedon(new Date());
+		if (bookdetail.getDetailstatus()==null) {
+			bookdetail.setDetailstatus(CatalogService.DetailStatus.NODETAIL);
+		}
 
 		// handle authors and illustrators by
 		// retrieving any existing artists from db
@@ -514,7 +516,7 @@ public class CatalogServiceImpl implements CatalogService {
 		List<BookDao> tosave = new ArrayList<BookDao>();
 		if (books!=null) {
 			for (BookDao book:books) {
-				book.setShelfclass(shelfclassUpdate);
+				book.setClientshelfcode(shelfclassUpdate);
 				tosave.add(book);
 			}
 		}
@@ -602,6 +604,14 @@ public class CatalogServiceImpl implements CatalogService {
 	public BookDao findBookByBarcode(String barcode) {
 		BookDao book = bookRepo.findBookByBarcode(barcode);
 		return book;
+	}
+
+	@Override
+	public BookDetailDao saveBookDetail(BookDetailDao newdetail) {
+
+
+		// start here.....
+		return null;
 	}
 
 

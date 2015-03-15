@@ -42,9 +42,6 @@ public class GoogleDetailFinder extends BaseDetailFinder {
 	@Autowired
 	PublisherRepository pubRepo;
 
-	@Autowired
-	SubjectRepository subjectRepo;
-
 	/* Get actual class name to be printed on */
 	static Logger log = Logger.getLogger(GoogleDetailFinder.class.getName());
 
@@ -263,7 +260,7 @@ public class GoogleDetailFinder extends BaseDetailFinder {
 		// file categories into subjects - if containing fiction, assign type
 		List<String> categories = info.getCategories();
 		if (categories != null) {
-			List<SubjectDao> subjects = new ArrayList<SubjectDao>();
+			List<String> subjects = new ArrayList<String>();
 			for (String category : categories) {
 				// clean it up
 				if (category.toLowerCase().contains("nonfiction")) {
@@ -273,10 +270,14 @@ public class GoogleDetailFinder extends BaseDetailFinder {
 					bookdetail.setListedtype(CatalogService.BookType.FICTION);
 
 				}
-				SubjectDao subject = findSubjectForString(category);
-				subjects.add(subject);
+				
+				subjects.add(category);
+			}
+			if (subjects.size()>0) {
+				insertSubjectsIntoBookDetail(subjects, bookdetail);
 			}
 		}
+		
 		// add image link
 		String imagelink = info.getImageLinks() != null ? info.getImageLinks()
 				.getThumbnail() : null;
@@ -385,23 +386,6 @@ public class GoogleDetailFinder extends BaseDetailFinder {
 		return details;
 	}
 
-	private SubjectDao findSubjectForString(String text) {
-		if (text != null) {
-			// clean up text
-			text = text.trim();
-			// query db
-			List<SubjectDao> foundlist = subjectRepo.findSubjectByText(text
-					.toLowerCase());
-			if (foundlist != null && foundlist.size() > 0) {
-				return foundlist.get(0);
-			} else {
-				// if nothing found, make new PublisherDao
-				SubjectDao pub = new SubjectDao();
-				pub.setListing(text);
-				return pub;
-			}
-		}
-		return null;
-	}
+
 
 }

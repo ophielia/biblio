@@ -25,20 +25,20 @@ privileged aspect BookDao_Roo_JavaBean {
         this.status = status;
     }
     
-    public Long BookDao.getShelfclass() {
-        return this.shelfclass;
+    public Long BookDao.getClientshelfcode() {
+        return this.clientshelfcode;
     }
     
-    public void BookDao.setShelfclass(Long shelfclass) {
-        this.shelfclass = shelfclass;
+    public void BookDao.setClientshelfcode(Long clientshelfcode) {
+        this.clientshelfcode = clientshelfcode;
     }
     
-    public Boolean BookDao.getShelfclassverified() {
-        return this.shelfclassverified;
+    public String BookDao.getClientshelfclass() {
+        return this.clientshelfclass;
     }
     
-    public void BookDao.setShelfclassverified(Boolean shelfclassverified) {
-        this.shelfclassverified = shelfclassverified;
+    public void BookDao.setClientshelfclass(String clientshelfclass) {
+        this.clientshelfclass = clientshelfclass;
     }
     
     public Date BookDao.getCreatedon() {
@@ -73,12 +73,12 @@ privileged aspect BookDao_Roo_JavaBean {
         this.bookdetail = bookdetail;
     }
     
-    public Long BookDao.getType() {
-        return this.type;
+    public Long BookDao.getClientbooktype() {
+        return this.clientbooktype;
     }
     
-    public void BookDao.setType(Long type) {
-        this.type = type;
+    public void BookDao.setClientbooktype(Long clientbooktype) {
+        this.clientbooktype = clientbooktype;
     }
     
 }

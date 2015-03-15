@@ -11,7 +11,8 @@ public class AssignCodeModel {
 	private String existbooknr;
 	private Boolean createnewid;
 	private String isbnentry;
-	private Long shelfclass;
+	private String shelfclass;
+	private Long shelfcode;
 	private String assignedcode;
 private Long status;
 private String editmode;	
@@ -25,7 +26,7 @@ private String editmode;
 	public void setBook(BookDao book) {
 		this.book = book;
 		if (this.shelfclass==null) {
-			this.shelfclass=this.book.getShelfclass();
+			this.shelfclass=this.book.getClientshelfclass();
 		}
 	}
 
@@ -95,12 +96,12 @@ private String editmode;
 		this.isbnentry = isbnentry;
 	}
 
-	public Long getShelfclass() {
-		return shelfclass;
+	public Long getShelfcode() {
+		return shelfcode;
 	}
 
-	public void setShelfclass(Long shelfclass) {
-		this.shelfclass = shelfclass;
+	public void setShelfclass(Long shelfcode) {
+		this.shelfcode = shelfcode;
 	}
 
 	public String getAssignedcode() {

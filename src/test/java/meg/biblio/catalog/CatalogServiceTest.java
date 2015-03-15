@@ -373,7 +373,7 @@ public class CatalogServiceTest {
 		BookModel model = catalogService.loadBookModel(pubtestid);
 		
 		// change classification, booktype, status, and language
-		model.setShelfclass(5L);
+		model.setShelfcode(5L);
 		model.setType(CatalogService.BookType.FOREIGNLANGUAGE);
 		model.setLanguage("EN");
 		model.setStatus(CatalogService.Status.CHECKEDOUT);
@@ -386,7 +386,7 @@ public class CatalogServiceTest {
 		Assert.assertEquals(new Long(CatalogService.BookType.FOREIGNLANGUAGE), model.getType());
 		Assert.assertEquals(new Long(CatalogService.Status.CHECKEDOUT), model.getStatus());
 		Assert.assertEquals("EN", model.getLanguage());
-		Assert.assertEquals(new Long(5), model.getShelfclass());
+		Assert.assertEquals(new Long(5), model.getShelfcode());
 		
 	}
 

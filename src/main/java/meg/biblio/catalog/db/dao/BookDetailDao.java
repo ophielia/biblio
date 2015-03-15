@@ -71,6 +71,8 @@ public class BookDetailDao {
 	private Long detailstatus;
 	private Long finderlog;
 	private Long listedtype;
+	private String shelfclass;
+	
 	@Transient
 	private Boolean textchange=new Boolean(false);
 	
@@ -153,6 +155,32 @@ public class BookDetailDao {
         }
     	return this.illustrators;
     }
+
+	public boolean hasAuthor() {
+		
+		return this.authors!=null && this.authors.size()>0;
+	}
+	
+	public BookDetailDao clone() {
+		BookDetailDao copy = new BookDetailDao();
+		
+		copy.authors=authors;
+		copy.foundwords=foundwords;
+		copy.detailstatus=detailstatus;
+		copy.finderlog=finderlog;
+		copy.listedtype=listedtype;
+		copy.publishyear=publishyear;
+		copy.publisher=publisher;
+		copy.description=description;
+		copy.imagelink=imagelink;
+		copy.isbn10=isbn10;
+		copy.isbn13=isbn13;
+		copy.language=language;
+		copy.shelfclass=shelfclass;
+		copy.title=title;
+		
+		return copy;
+	}
 
 
 }

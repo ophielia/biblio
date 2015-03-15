@@ -3,8 +3,10 @@ package meg.biblio.search;
 import java.util.HashMap;
 import java.util.List;
 
+import meg.biblio.catalog.BookIdentifier;
 import meg.biblio.catalog.db.dao.ArtistDao;
 import meg.biblio.catalog.db.dao.BookDao;
+import meg.biblio.catalog.db.dao.BookDetailDao;
 import meg.biblio.common.db.dao.ClientDao;
 
 
@@ -27,5 +29,7 @@ public interface SearchService {
 	HashMap<Long, Long> breakoutByBookField(long bookkey, Long clientid);
 
 	Long getBookCount(Long clientid);
+
+	public BookDetailDao findBooksForIdentifier(BookIdentifier bi);
 
 }

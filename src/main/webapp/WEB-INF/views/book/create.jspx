@@ -9,9 +9,6 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
 
-<link rel="stylesheet" href="${imagebasedir}/resources/mydojo/widget/css/ShelfClassWidget.css" media="screen"></link>
-<link rel="stylesheet" href="${imagebasedir}/resources/mydojo/widget/css/ShelfClassSelectWidget.css" media="screen"></link>
-
 <spring:message code="button_generate" htmlEscape="false" var="bgen"/>
 <spring:message code="button_cancel" htmlEscape="false" var="bcancel"/>
 <spring:message code="label_barcode_assignnew" htmlEscape="false" var="pagetitle"/>

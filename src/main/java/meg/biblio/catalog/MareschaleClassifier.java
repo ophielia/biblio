@@ -3,6 +3,7 @@ package meg.biblio.catalog;
 import meg.biblio.catalog.CatalogService.BookType;
 import meg.biblio.catalog.db.dao.ArtistDao;
 import meg.biblio.catalog.db.dao.BookDao;
+import meg.biblio.catalog.db.dao.BookDetailDao;
 
 public class MareschaleClassifier implements Classifier {
 
@@ -43,90 +44,75 @@ public class MareschaleClassifier implements Classifier {
 
 	@Override
 	public BookDao classifyBook(BookDao book) {
+		BookDetailDao bookdetail = book.getBookdetail();
 		// only a classification guess. will need to be verified
-		// unless a book is marked as non-fiction, it's classified as
-		// fiction, since that's the only classification that can really
-		// be done automatically. If it's non-fiction, the classification is
-		// left blank
 		Long classification = null;
 
-		// don't classify if it has a shelfclass which has been verified
-		boolean dontprocess = book.getShelfclassverified() != null
-				&& book.getShelfclassverified();
-		if (!dontprocess) {
+		// get book type
+		Long booktype = bookdetail.getListedtype();
+		if (booktype != null) {
+			if (book.getBookdetail().getLanguage() != null
+					&& !book.getBookdetail().getLanguage().equals("fr")) {
+				String language = book.getBookdetail().getLanguage();
+				// english to english
+				if (language.equals("en")) {
+					classification = ClassKey.englishbooks;
+					book.setClientbooktype(new Long(BookType.FOREIGNLANGUAGE));
+				} else if (language.equals("de")) {
+					classification = ClassKey.germanbooks;
+					book.setClientbooktype(new Long(BookType.FOREIGNLANGUAGE));
+				} else if (language.equals("it")) {
+					classification = ClassKey.italianbooks;
+					book.setClientbooktype(new Long(BookType.FOREIGNLANGUAGE));
+				}
+			} else
 
-			// get book type
-			Long booktype = book.getType();
-			if (booktype != null) {
-				if (book.getBookdetail().getLanguage() != null
-						&& !book.getBookdetail().getLanguage().equals("fr")) {
-					String language = book.getBookdetail().getLanguage();
-					// english to english
-					if (language.equals("en")) {
-						classification = ClassKey.englishbooks;
-						book.setType(new Long(BookType.FOREIGNLANGUAGE));
-					} else if (language.equals("de")) {
-						classification = ClassKey.germanbooks;
-						book.setType(new Long(BookType.FOREIGNLANGUAGE));
-					} else if (language.equals("it")) {
-						classification = ClassKey.italianbooks;
-						book.setType(new Long(BookType.FOREIGNLANGUAGE));
-					}
-				} else
-
-				// if not non-fiction - classify according to author's last name
-				if (booktype != CatalogService.BookType.NONFICTION
-						&& booktype != CatalogService.BookType.REFERENCE) {
-					// catalog as fiction
-					ArtistDao author = book.getBookdetail().getAuthors() != null
-							&& book.getBookdetail().getAuthors().size() > 0 ? book.getBookdetail().getAuthors()
-							.get(0) : null;
-					if (author != null && author.getLastname() != null) {
-						String lastname = author.getLastname();
-						String firstinit = lastname.substring(0, 1).trim()
-								.toLowerCase();
-						if (firstinit.equals("a") || firstinit.equals("b")) {
-							classification = ClassKey.fict_ab;
-						} else if (firstinit.equals("c")
-								|| firstinit.equals("d")) {
-							classification = ClassKey.fict_cd;
-						} else if (firstinit.equals("e")
-								|| firstinit.equals("f")
-								|| firstinit.equals("g")) {
-							classification = ClassKey.fict_efg;
-						} else if (firstinit.equals("h")
-								|| firstinit.equals("i")
-								|| firstinit.equals("j")) {
-							classification = ClassKey.fict_hijkl;
-						} else if (firstinit.equals("k")
-								|| firstinit.equals("l")) {
-							classification = ClassKey.fict_hijkl;
-						} else if (firstinit.equals("m")
-								|| firstinit.equals("n")) {
-							classification = ClassKey.fict_mnop;
-						} else if (firstinit.equals("o")
-								|| firstinit.equals("p")) {
-							classification = ClassKey.fict_mnop;
-						} else if (firstinit.equals("q")
-								|| firstinit.equals("r")) {
-							classification = ClassKey.fict_qrst;
-						} else if (firstinit.equals("s")
-								|| firstinit.equals("t")) {
-							classification = ClassKey.fict_qrst;
-						} else if (firstinit.equals("u")
-								|| firstinit.equals("v")) {
-							classification = ClassKey.fict_uvwxyz;
-						} else if (firstinit.equals("w")
-								|| firstinit.equals("x")) {
-							classification = ClassKey.fict_uvwxyz;
-						} else if (firstinit.equals("y")
-								|| firstinit.equals("z")) {
-							classification = ClassKey.fict_uvwxyz;
-						}
+			// if not non-fiction - classify according to author's last name
+			if (booktype != CatalogService.BookType.NONFICTION
+					&& booktype != CatalogService.BookType.REFERENCE) {
+				// catalog as fiction
+				ArtistDao author = book.getBookdetail().getAuthors() != null
+						&& book.getBookdetail().getAuthors().size() > 0 ? book
+						.getBookdetail().getAuthors().get(0) : null;
+				if (author != null && author.getLastname() != null) {
+					String lastname = author.getLastname();
+					String firstinit = lastname.substring(0, 1).trim()
+							.toLowerCase();
+					if (firstinit.equals("a") || firstinit.equals("b")) {
+						classification = ClassKey.fict_ab;
+					} else if (firstinit.equals("c") || firstinit.equals("d")) {
+						classification = ClassKey.fict_cd;
+					} else if (firstinit.equals("e") || firstinit.equals("f")
+							|| firstinit.equals("g")) {
+						classification = ClassKey.fict_efg;
+					} else if (firstinit.equals("h") || firstinit.equals("i")
+							|| firstinit.equals("j")) {
+						classification = ClassKey.fict_hijkl;
+					} else if (firstinit.equals("k") || firstinit.equals("l")) {
+						classification = ClassKey.fict_hijkl;
+					} else if (firstinit.equals("m") || firstinit.equals("n")) {
+						classification = ClassKey.fict_mnop;
+					} else if (firstinit.equals("o") || firstinit.equals("p")) {
+						classification = ClassKey.fict_mnop;
+					} else if (firstinit.equals("q") || firstinit.equals("r")) {
+						classification = ClassKey.fict_qrst;
+					} else if (firstinit.equals("s") || firstinit.equals("t")) {
+						classification = ClassKey.fict_qrst;
+					} else if (firstinit.equals("u") || firstinit.equals("v")) {
+						classification = ClassKey.fict_uvwxyz;
+					} else if (firstinit.equals("w") || firstinit.equals("x")) {
+						classification = ClassKey.fict_uvwxyz;
+					} else if (firstinit.equals("y") || firstinit.equals("z")) {
+						classification = ClassKey.fict_uvwxyz;
 					}
 				}
-				book.setShelfclass(classification);
 			}
+			book.setClientshelfcode(classification);
+		}
+
+		book.setClientshelfclass(bookdetail.getShelfclass());
+		if (book.getClientbooktype()==null) {
+			book.setClientbooktype(bookdetail.getListedtype());
 		}
 		return book;
 	}

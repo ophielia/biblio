@@ -33,6 +33,9 @@ public class DetailSearchServiceImpl implements DetailSearchService {
 	AppSettingService settingService;
 
 	@Autowired
+	CatalogService catalogService;
+	
+	@Autowired
 	SearchService searchService;
 
 	@Autowired
@@ -43,12 +46,18 @@ public class DetailSearchServiceImpl implements DetailSearchService {
 
 	@Autowired
 	BookRepository bookRepo;
+	
+	@Autowired
+	GeneralClassifier generalClassifier;
 
 	@Autowired
 	GoogleDetailFinder googleFinder;
 
 	@Autowired
 	AmazonDetailFinder amazonFinder;
+
+	@Autowired
+	BNFCatalogFinder bnfFinder;
 
 	DetailFinder finderchain;
 
@@ -130,6 +139,27 @@ public class DetailSearchServiceImpl implements DetailSearchService {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			// check for additional details
+			if (findobj.getAddlcodes()!=null && !findobj.getAddlcodes().isEmpty()) {
+				// go ahead and save these other codes as additional book details, 
+				// (even though it could be that the original book isn't saved - we have
+				// more info for later on....)
+				for (BookIdentifier bi:findobj.getAddlcodes()) {
+					BookDetailDao newdetail = searchService.findBooksForIdentifier(bi);
+					if (newdetail!=null) continue;
+					newdetail = (BookDetailDao) detail.clone();
+					if (bi.getEan()!=null) {
+						newdetail.setIsbn13(bi.getEan());
+					}
+					if (bi.getIsbn()!=null) {
+						newdetail.setIsbn10(bi.getIsbn());
+					}
+					if (bi.getPublishyear()!=null) {
+						newdetail.setPublishyear(bi.getPublishyear());
+					}
+					catalogService.saveBookDetail(newdetail);
+				}
+			}
 		} else if (detail.getDetailstatus() == CatalogService.DetailStatus.MULTIDETAILSFOUND) {
 			// put found details into bookmodel
 			List<FoundDetailsDao> founddetails = findobj.getMultiresults();
@@ -204,7 +234,7 @@ public class DetailSearchServiceImpl implements DetailSearchService {
 		return null;
 	}
 
-	@Scheduled(fixedRate = 60000)
+	//@Scheduled(fixedRate = 60000)
 	private void scheduledFillInDetails() {
 		Integer batchsearchmax = settingService
 				.getSettingAsInteger("biblio.google.batchsearchmax");
@@ -239,6 +269,7 @@ public class DetailSearchServiceImpl implements DetailSearchService {
 	}
 
 	private DetailFinder createFinderChain() {
+		amazonFinder.setNext(bnfFinder);
 		googleFinder.setNext(amazonFinder);
 		return googleFinder;
 	}
@@ -247,10 +278,16 @@ public class DetailSearchServiceImpl implements DetailSearchService {
 		if (book != null) {
 			if (book.getBookdetail().getDetailstatus()
 					.equals(CatalogService.DetailStatus.DETAILFOUND)) {
+				// get general classifier
+				book = generalClassifier.classifyBook(book);
+
 				if (book.getClientid() != null) {
 					Classifier classifier = clientService
 							.getClassifierForClient(clientkey);
-					book = classifier.classifyBook(book);
+					if (classifier != null) {
+						book = classifier.classifyBook(book);
+					}
+
 				}
 			}
 		}

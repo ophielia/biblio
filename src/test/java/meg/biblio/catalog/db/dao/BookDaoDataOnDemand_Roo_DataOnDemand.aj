@@ -39,12 +39,12 @@ privileged aspect BookDaoDataOnDemand_Roo_DataOnDemand {
         setBarcodeid(obj, index);
         setClientbookid(obj, index);
         setClientbookidsort(obj, index);
+        setClientbooktype(obj, index);
         setClientid(obj, index);
+        setClientshelfclass(obj, index);
+        setClientshelfcode(obj, index);
         setCreatedon(obj, index);
-        setShelfclass(obj, index);
-        setShelfclassverified(obj, index);
         setStatus(obj, index);
-        setType(obj, index);
         return obj;
     }
     
@@ -63,9 +63,24 @@ privileged aspect BookDaoDataOnDemand_Roo_DataOnDemand {
         obj.setClientbookidsort(clientbookidsort);
     }
     
+    public void BookDaoDataOnDemand.setClientbooktype(BookDao obj, int index) {
+        Long clientbooktype = new Integer(index).longValue();
+        obj.setClientbooktype(clientbooktype);
+    }
+    
     public void BookDaoDataOnDemand.setClientid(BookDao obj, int index) {
         Long clientid = new Integer(index).longValue();
         obj.setClientid(clientid);
+    }
+    
+    public void BookDaoDataOnDemand.setClientshelfclass(BookDao obj, int index) {
+        String clientshelfclass = "clientshelfclass_" + index;
+        obj.setClientshelfclass(clientshelfclass);
+    }
+    
+    public void BookDaoDataOnDemand.setClientshelfcode(BookDao obj, int index) {
+        Long clientshelfcode = new Integer(index).longValue();
+        obj.setClientshelfcode(clientshelfcode);
     }
     
     public void BookDaoDataOnDemand.setCreatedon(BookDao obj, int index) {
@@ -73,24 +88,9 @@ privileged aspect BookDaoDataOnDemand_Roo_DataOnDemand {
         obj.setCreatedon(createdon);
     }
     
-    public void BookDaoDataOnDemand.setShelfclass(BookDao obj, int index) {
-        Long shelfclass = new Integer(index).longValue();
-        obj.setShelfclass(shelfclass);
-    }
-    
-    public void BookDaoDataOnDemand.setShelfclassverified(BookDao obj, int index) {
-        Boolean shelfclassverified = Boolean.TRUE;
-        obj.setShelfclassverified(shelfclassverified);
-    }
-    
     public void BookDaoDataOnDemand.setStatus(BookDao obj, int index) {
         Long status = new Integer(index).longValue();
         obj.setStatus(status);
-    }
-    
-    public void BookDaoDataOnDemand.setType(BookDao obj, int index) {
-        Long type = new Integer(index).longValue();
-        obj.setType(type);
     }
     
     public BookDao BookDaoDataOnDemand.getSpecificBookDao(int index) {

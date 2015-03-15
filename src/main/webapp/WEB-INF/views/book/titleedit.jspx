@@ -49,7 +49,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <script type="text/javascript">
 
  
- <c:set var="scobj" value="${classHash[bookModel.shelfclass]}" />
+ <c:set var="scobj" value="${classHash[bookModel.shelfcode]}" />
  require(
 		  ["mydojo/widget/ShelfClassSelectWidget","dojo/dom", "dojo/domReady!"],
 		    function( ShelfClassSelectWidget,dom){
@@ -58,7 +58,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 	          
 	        	// Create our widget and place it
 	            var widget = new ShelfClassSelectWidget({displayId:'${scobj.id}',jsontext:'${classJson}',
-	            	updatenodename:"shelfclass", showemptyselect:true,emptyselecttext:'${lemptyselect}',imagebasedir:'${imagebasedir}'}).placeAt(classiContainer);
+	            	updatenodename:"shelfcode", showemptyselect:true,emptyselecttext:'${lemptyselect}',imagebasedir:'${imagebasedir}'}).placeAt(classiContainer);
 		});
  
  
@@ -90,7 +90,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 	${lisbn}:  <form:input path="isbnentry" type="text" ></form:input><br />
 	</div>				
 				<div>
-					<form:input type="hidden" path="shelfclass"></form:input>
+					<form:input type="hidden" path="shelfcode"></form:input>
 					<br /> ${lclassification}:
 
 
@@ -141,18 +141,18 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 						
 	</div>	
 	<div>
-	${llanguage}:${langLkup[bookModel.book.language]}
+	${llanguage}:${langLkup[bookModel.language]}
 			
 	</div>
 	<div>
-	${ldetailstatus}: ${detailstatusLkup[bookModel.book.detailstatus]}
+	${ldetailstatus}: ${detailstatusLkup[bookModel.detailstatus]}
 	</div>
 
 	
 		
 </div>
 <div style="width:100%;clear:both;padding-top:5px">
-${ldescription}: ${bookModel.book.description}
+${ldescription}: ${bookModel.description}
 </div>
 
 </form:form>

@@ -80,14 +80,14 @@ public class MareschaleClassifierTest {
 		book1.getBookdetail().setAuthors(authors);
 		book1.getBookdetail().setDetailstatus(CatalogService.DetailStatus.DETAILFOUND);
 		book1.getBookdetail().setLanguage("fr");
-		book1.setType(CatalogService.BookType.UNKNOWN);
+		book1.getBookdetail().setListedtype(CatalogService.BookType.UNKNOWN);
 
 		// service call
 		classifier.classifyBook(book1);
 		
 		// test
 		Assert.assertNotNull(book1);
-		Assert.assertNull(book1.getShelfclass());
+		Assert.assertNull(book1.getClientshelfclass());
 
 		// create and save book
 		// book - with statusid detail found, language fr, and book type unknown
@@ -103,13 +103,13 @@ public class MareschaleClassifierTest {
 		book1.getBookdetail().setAuthors(authors);
 		book1.getBookdetail().setDetailstatus(CatalogService.DetailStatus.DETAILFOUND);
 		book1.getBookdetail().setLanguage("fr");
-		book1.setType(CatalogService.BookType.UNKNOWN);
+		book1.getBookdetail().setListedtype(CatalogService.BookType.UNKNOWN);
 
 		// service call
 		classifier.classifyBook(book1);
 		// test
 		Assert.assertNotNull(book1);
-		Assert.assertTrue(29L==book1.getShelfclass());
+		Assert.assertTrue(29L==book1.getClientshelfcode());
 		
 		// create and save book
 		// book - with statusid detail found, language en, and book type unknown
@@ -123,13 +123,13 @@ public class MareschaleClassifierTest {
 		book1.getBookdetail().setAuthors(authors);
 		book1.getBookdetail().setDetailstatus(CatalogService.DetailStatus.DETAILFOUND);
 		book1.getBookdetail().setLanguage("en");
-		book1.setType(CatalogService.BookType.UNKNOWN);
+		book1.getBookdetail().setListedtype(CatalogService.BookType.UNKNOWN);
 
 		// service call
 		classifier.classifyBook(book1);
 		// test
 		Assert.assertNotNull(book1);
-		Assert.assertTrue(5L==book1.getShelfclass());
+		Assert.assertTrue(5L==book1.getClientshelfcode());
 		
 		
 		// create and save book
@@ -144,13 +144,13 @@ public class MareschaleClassifierTest {
 		book1.getBookdetail().setAuthors(authors);
 		book1.getBookdetail().setDetailstatus(CatalogService.DetailStatus.DETAILFOUND);
 		book1.getBookdetail().setLanguage("fr");
-		book1.setType(CatalogService.BookType.NONFICTION);
+		book1.getBookdetail().setListedtype(CatalogService.BookType.NONFICTION);
 
 		// service call
 		classifier.classifyBook(book1);
 		// test
 		Assert.assertNotNull(book1);
-		Assert.assertNull(book1.getShelfclass());
+		Assert.assertNull(book1.getClientshelfclass());
 		
 		
 		

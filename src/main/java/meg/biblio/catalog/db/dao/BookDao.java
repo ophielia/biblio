@@ -19,15 +19,15 @@ public class BookDao {
 private Long clientid;
 private Long status;
 
-private Long shelfclass;
-private Boolean shelfclassverified;
+private Long clientshelfcode;
+private String clientshelfclass;
 private Date createdon;
 private String clientbookid;
 private Long clientbookidsort;
 private String barcodeid;
 @OneToOne(cascade = CascadeType.ALL, fetch=FetchType.EAGER)/*@JoinColumn(name="ID")*/
 private BookDetailDao bookdetail;
-private Long type;
+private Long clientbooktype;
 
 	public void setClientbookid(String clientbookid) {
         this.clientbookid = clientbookid;
