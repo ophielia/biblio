@@ -2,6 +2,7 @@ package meg.biblio.common;
 
 import java.util.Locale;
 
+import meg.biblio.common.db.dao.ClientDao;
 import meg.biblio.common.report.BarcodeSheet;
 
 
@@ -20,4 +21,6 @@ public interface BarcodeService {
 
 	BarcodeSheet assembleBarcodeSheetForBooks(int barcodecnt, Long clientid,
 			Locale locale);
+
+	String getBookBarcodeForClientid(ClientDao client, String clientbookid);
 }

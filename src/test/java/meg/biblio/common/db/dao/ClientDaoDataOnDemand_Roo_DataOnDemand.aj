@@ -34,6 +34,7 @@ privileged aspect ClientDaoDataOnDemand_Roo_DataOnDemand {
         setClasssummaryxslbase(obj, index);
         setClientnr(obj, index);
         setDetailCompleteCode(obj, index);
+        setIdForBarcode(obj, index);
         setImagepath(obj, index);
         setImportfileconfig(obj, index);
         setImportmapconfig(obj, index);
@@ -73,6 +74,11 @@ privileged aspect ClientDaoDataOnDemand_Roo_DataOnDemand {
     public void ClientDaoDataOnDemand.setDetailCompleteCode(ClientDao obj, int index) {
         Long detailCompleteCode = new Integer(index).longValue();
         obj.setDetailCompleteCode(detailCompleteCode);
+    }
+    
+    public void ClientDaoDataOnDemand.setIdForBarcode(ClientDao obj, int index) {
+        Boolean idForBarcode = Boolean.TRUE;
+        obj.setIdForBarcode(idForBarcode);
     }
     
     public void ClientDaoDataOnDemand.setImagepath(ClientDao obj, int index) {

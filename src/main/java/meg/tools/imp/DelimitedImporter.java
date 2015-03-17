@@ -105,13 +105,14 @@ public class DelimitedImporter extends AbstractImporter {
 		// increment past beginning lines, if necessary
 		int linenumber = this.config.getStartLine();
 		int currentline = 0;
+		if (linenumber>0 ) {
 		String discard = bufread.readLine();
-		while (discard != null && currentline < linenumber - 2) {
+		while (discard != null && currentline < linenumber) {
 			// do nothing, just discarding some lines
 			discard = bufread.readLine();
 			currentline++;
 		}
-
+		}
 		// retrieve formats
 		FieldFormat[] formats = config.getFieldFormats();
 

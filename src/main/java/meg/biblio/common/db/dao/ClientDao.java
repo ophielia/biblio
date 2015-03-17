@@ -56,5 +56,7 @@ public class ClientDao {
 	private Boolean usesBarcodes;
 	
 	private Long detailCompleteCode;
+	
+	private Boolean idForBarcode;
 }
 

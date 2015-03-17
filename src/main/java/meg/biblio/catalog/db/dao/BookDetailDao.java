@@ -72,6 +72,7 @@ public class BookDetailDao {
 	private Long finderlog;
 	private Long listedtype;
 	private String shelfclass;
+	private String ark;
 
 	@Transient
 	private Boolean textchange=new Boolean(false);

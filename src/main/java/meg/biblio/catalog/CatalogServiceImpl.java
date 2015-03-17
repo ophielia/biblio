@@ -27,6 +27,7 @@ import meg.biblio.catalog.db.dao.PublisherDao;
 import meg.biblio.catalog.db.dao.SubjectDao;
 import meg.biblio.catalog.web.model.BookModel;
 import meg.biblio.common.AppSettingService;
+import meg.biblio.common.BarcodeService;
 import meg.biblio.common.ClientService;
 import meg.biblio.common.SelectKeyService;
 import meg.biblio.common.db.dao.ClientDao;
@@ -82,6 +83,10 @@ public class CatalogServiceImpl implements CatalogService {
 
 	@Autowired
 	AppSettingService settingService;
+	
+
+	@Autowired
+	BarcodeService barcodeService;	
 
 	/**
 	 * Assumes validated BookModel. Saves a book to the database for the first
@@ -397,6 +402,13 @@ public class CatalogServiceImpl implements CatalogService {
 
 	private BookDao createBookFromBookModel(Long clientkey, BookModel model,
 			Boolean createid) {
+		// get configuration for barcodes
+		ClientDao client = clientService.getClientForKey(clientkey);
+		Boolean useclientbookforbarcode = client.getIdForBarcode();
+		if (useclientbookforbarcode==null) {
+			useclientbookforbarcode = true;
+		}
+		
 		// get book
 		BookDao book = model.getBook();
 
@@ -415,6 +427,17 @@ public class CatalogServiceImpl implements CatalogService {
 			Long maxbookid = clientService.getAndIncrementLastBookNr(clientkey);
 			// set max bookid in book
 			book.setClientbookid(maxbookid.toString());
+		}
+		
+		// create barcode from clientbookid if configured
+		// configured - if clientbookid not null, and usesclientforbarcode true
+		if (book.getClientbookid()!=null && useclientbookforbarcode) {
+			// get barcode from clientbookid
+			String barcode = barcodeService.getBookBarcodeForClientid(client, book.getClientbookid());
+			// set in bookdetail
+			if (barcode!=null) {
+				book.setBarcodeid(barcode);
+			}
 		}
 
 		// add default entries for status, detail status, type

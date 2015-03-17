@@ -148,7 +148,6 @@ public class BNFCatalogFinder extends BaseDetailFinder {
 		NodeList eanresults = doc.getElementsByTagName("result");
 		String requestedean = bookdetail.getIsbn13() != null ? bookdetail
 				.getIsbn13().trim() : "";
-		String catalogurl = null;
 
 		List<BookIdentifier> addlcodes = new ArrayList<BookIdentifier>();
 		if (eanresults != null) {
@@ -161,6 +160,7 @@ public class BNFCatalogFinder extends BaseDetailFinder {
 					NodeList children = resultel
 							.getElementsByTagName("binding");
 					String link = null;
+					String ark = null;
 					String ean = null;
 					String isbn = null;
 					String date = null;
@@ -177,6 +177,7 @@ public class BNFCatalogFinder extends BaseDetailFinder {
 											.item(0);
 									if (linknode != null) {
 										link = linknode.getTextContent();
+										ark = parseArkFromUrl(link);
 									}
 								} else if (type.equals("ean")) {
 									Node eannode = bindingel
@@ -207,9 +208,7 @@ public class BNFCatalogFinder extends BaseDetailFinder {
 					String cleandate = parseOutDate(date);
 
 					// fill ean2link hash
-					if (requestedean.equals(ean.trim())) {
-						catalogurl = link.trim();
-					} else {
+					if (!requestedean.equals(ean.trim())) {
 						// put values in hash
 						ean2link.put(ean.trim(), link.trim());
 						// create book identifiers
@@ -219,6 +218,7 @@ public class BNFCatalogFinder extends BaseDetailFinder {
 						if (cleandate.length() == 4) {
 							bi.setPublishyear(new Long(cleandate));
 						}
+						bi.setArk(ark);
 						addlcodes.add(bi);
 					}
 				}// end result loop
@@ -298,6 +298,9 @@ public class BNFCatalogFinder extends BaseDetailFinder {
 				processResponse(responseBody, results);
 
 				if (results.size()>0) {
+					// add ark to bookdetail
+					String ark = parseArkFromUrl(catalogurl);
+					findobj.getBookdetail().setArk(ark);
 					findobj.setSearchStatus(CatalogService.DetailStatus.DETAILFOUND);
 				}
 				// nab this authors name here, just in case
@@ -462,6 +465,16 @@ public class BNFCatalogFinder extends BaseDetailFinder {
 			}
 		}
 
+	}
+
+	private String parseArkFromUrl(String link) {
+		if (link!=null) {
+			int lastslash = link.lastIndexOf("/");
+			if (lastslash>=0) {
+				return link.substring(lastslash+1);
+			}
+		}
+		return null;
 	}
 
 	private String removeTags(String string) {

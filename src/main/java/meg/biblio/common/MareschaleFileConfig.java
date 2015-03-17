@@ -16,7 +16,7 @@ public class MareschaleFileConfig implements FileConfig {
 	}
 
 	public int getStartLine() {
-		return 1;
+		return 0;
 	}
 
 	public FieldFormat[] getFieldFormats() {

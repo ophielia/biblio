@@ -135,7 +135,7 @@ public class CatalogServiceTest {
 		authors = new ArrayList<ArtistDao>();
 		authors.add(author);
 		book.getBookdetail().setAuthors(authors);
-
+		book.setClientbookid("1234567");
 		model = new BookModel(book);
 
 		// service call
@@ -143,6 +143,7 @@ public class CatalogServiceTest {
 
 		// check call
 		Assert.assertNotNull(result);
+		Assert.assertNotNull(result.getBook().getBarcodeid());
 		Assert.assertNotNull(result.getBookid());
 		Assert.assertNotNull(result.getClientid());
 		Assert.assertNotNull(result.getAuthors());

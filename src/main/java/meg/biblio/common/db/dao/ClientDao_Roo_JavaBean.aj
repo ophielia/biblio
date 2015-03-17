@@ -161,4 +161,12 @@ privileged aspect ClientDao_Roo_JavaBean {
         this.detailCompleteCode = detailCompleteCode;
     }
     
+    public Boolean ClientDao.getIdForBarcode() {
+        return this.idForBarcode;
+    }
+    
+    public void ClientDao.setIdForBarcode(Boolean idForBarcode) {
+        this.idForBarcode = idForBarcode;
+    }
+    
 }

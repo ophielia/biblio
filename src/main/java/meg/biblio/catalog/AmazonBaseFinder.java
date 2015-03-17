@@ -1,24 +1,12 @@
 package meg.biblio.catalog;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Result;
-import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 
 import meg.biblio.catalog.db.PublisherRepository;
 import meg.biblio.catalog.db.SubjectRepository;
@@ -32,13 +20,8 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
-import com.google.api.services.books.model.Volume;
-import com.google.api.services.books.model.Volume.VolumeInfo;
-import com.google.api.services.books.model.Volume.VolumeInfo.IndustryIdentifiers;
 
 @Component
 public class AmazonBaseFinder extends BaseDetailFinder {
@@ -330,9 +313,17 @@ public class AmazonBaseFinder extends BaseDetailFinder {
 	}
 
 	private List<FoundDetailsDao> copyResultsIntoFoundDetails(List<Document> items) throws Exception {
+		Integer maxdetails = settingService
+				.getSettingAsInteger("biblio.amazon.maxdetails");	
+		
+		int found = 0;
 		if (items!=null && items.size()>0) {
 			List<FoundDetailsDao> results = new ArrayList<FoundDetailsDao>();
 			for (Document itemdoc:items) {
+				found++;
+				if (found>maxdetails.intValue()) {
+					break;
+				}
 				FoundDetailsDao fd = new FoundDetailsDao();
 				fd.setSearchsource(getIdentifier());
 				

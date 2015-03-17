@@ -45,6 +45,9 @@ public class FinderObject {
 				addToMultiresults(bookdetail);
 			}
 		}
+		if (bookdetail.getId() != null) {
+			setPreviousfinderCode(bookdetail.getFinderlog());
+		}
 	}
 
 	public void addToMultiresults(BookDetailDao bd) {
@@ -156,7 +159,7 @@ public class FinderObject {
 			if (searchstatus.longValue() == CatalogService.DetailStatus.DETAILFOUND) {
 				// copy current bookdetail into multiresults
 				addToMultiresults(bookdetail);
-			}	
+			}
 		} else{
 			searchstatus = newstatus;
 		}
@@ -225,7 +228,7 @@ public class FinderObject {
 
 	public void setTempIdent(Long tempident) {
 		this.tempident = tempident;
-		
+
 	}
 
 	public Long getTempIdent() {
@@ -239,8 +242,8 @@ public class FinderObject {
 	public List<BookIdentifier> getAddlcodes() {
 		return addlcodes;
 	}
-	
-	
-	
+
+
+
 
 }

@@ -39,24 +39,24 @@ public class ImportManager {
 		public static final String duplicatesize="duplicatesize";
 		public static final String noidsize="noidsize";
 		public static final String notitlesize="notitlesize";
-	} 
-	
+	}
+
 	@Autowired
 	ClientService clientService;
 
 	@Autowired
 	CatalogService catalogService;
-	
+
 	@Autowired
 	SearchService searchService;
-	
+
 	@Autowired
 	DetailSearchService detailSearchService;
-	
+
 	@Autowired
 	ImportBookRepository importRepo;
 
-	
+
 
 	private List<Object> importFile(FileConfig config,MapConfig mapconfig, File file) {
 		// Get importer
@@ -98,7 +98,7 @@ public class ImportManager {
 		return importedobjects;
 	}
 
-	
+
 	public HashMap<String,Integer>  importBookList(Long clientkey, String filestr) throws Exception, IOException {
 		// get configs for client
 		FileConfig config=null;
@@ -112,12 +112,12 @@ public class ImportManager {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} 
+		}
 
 		// import file into ImportBookDao
 		List<Object> newbooks = importFile(config, mapconfig, filestr);
 		Integer listsize = new Integer(newbooks.size());
-		
+
 		// go through all books, creating book models
 		// check for duplicates
 		List<BookModel> toimport= new ArrayList<BookModel>();
@@ -132,7 +132,7 @@ public class ImportManager {
 			// note - only books with clientbookids are imported
 			if (clientbookid!=null) {
 				// check for existing clientbookid
-				List<Long> found = searchService.findBookIdByClientId(clientbookid); 
+				List<Long> found = searchService.findBookIdByClientId(clientbookid);
 				if (found!=null && found.size()>0) {
 					// if exists - put newbook in duplicate list
 					errors.add((ImportBookDao)newbookobject);
@@ -160,7 +160,7 @@ public class ImportManager {
 						}
 						if (newbook.getPublisher()!=null && newbook.getPublisher().trim().length()>0) {
 							model.setPublisher(newbook.getPublisher().trim());
-						}						
+						}
 						if (newbook.getIsbn10()!=null && newbook.getIsbn10().trim().length()>0) {
 							model.setIsbn10(newbook.getIsbn10().trim());
 						}
@@ -169,15 +169,15 @@ public class ImportManager {
 						}
 						if (newbook.getBarcode()!=null && newbook.getBarcode().trim().length()>0) {
 							model.setBarcode(newbook.getBarcode().trim());
-						}						
+						}
 						toimport.add(model);
-						
+
 					}else {
 						// no title - this is an error
 						errors.add(newbook);
 						notitle++;
 					}
-					
+
 				}
 			} else {
 				((ImportBookDao)newbookobject).setError("no clientbookid");
@@ -185,13 +185,14 @@ public class ImportManager {
 				noid++;
 			}
 		}
-		
+
 		// gather info
 		Integer importsize=new Integer(toimport.size());
 		Integer errorssize=new Integer(errors.size());
-		
+
 		// do offline search for all books
-		
+		toimport = detailSearchService.doOfflineSearchForBookList(toimport, client);
+
 		// persist list of bookmodels
 		toimport = catalogService.createCatalogEntriesFromList(clientkey,toimport);
 
@@ -202,10 +203,10 @@ public class ImportManager {
 				catalogService.updateCatalogEntryFromBookModel(clientkey, model, false);
 			}
 		}
-		
+
 		// persist any duplicates
 		importRepo.save(errors);
-		
+
 		// put together resulthash
 		HashMap<String,Integer> results = new HashMap<String,Integer>();
 		results.put(Results.listsize,listsize);
@@ -214,7 +215,7 @@ public class ImportManager {
 		results.put(Results.duplicatesize,new Integer(duplicates));
 		results.put(Results.noidsize,new Integer(noid));
 		results.put(Results.notitlesize,new Integer(notitle));
-		
+
 		return results;
 	}
 

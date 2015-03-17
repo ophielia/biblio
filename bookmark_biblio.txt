@@ -8,15 +8,9 @@ Branch - DEMO 1.0 - Demo1
 		
 
 GoogleSearch - test multi details....
-put max count in amazon found details....
-add ark codes
 reflect code / class / type changes in search
 
---->import - needs to do offline search for everything before saving.  Then online
-search for batch maximum after save.
-	
-client codes as bar codes
-rework front end of add book
+---->  rework front end of add book
 	assign code separate from save, and dependant upon client assign code type
 	save goes back to add book
 	save shows book code and processing status
@@ -26,13 +20,11 @@ eventually - check scheduledFillInDetails... DetailSearch
 
 ---- begin commit changes ----
 
-done - SearchService findBooksForIdentifier - build in or statement.....
-done -  begin CatalogService saveBookDetail - save authors carefully (detached)
-done - add saveBookDetail to saveBook - hopefully get rid of detached errors in save	
-done - 	bookmark - in detailservice for copying bookdetail and in catalog service
-done - import - with barcode and isbn/ean
-done - fix problem that imported books which aren't looked up aren't saved with a detail status		
-done - offlinesearch - looks in existing book details
+done - backend client codes as bar codes
+done - import - needs to do offline search for everything before saving.  Then online
+done - search for batch maximum after save.
+done - put max count in amazon found details....
+done - add ark codes	
 
 
 ---- end commit changes ----
@@ -92,6 +84,13 @@ done -  some sort of problem - not being added in import books.
 done -  check import books
 done - amazondescriptionsearch coded
 useless! -  amazondescriptionsearch
+done - SearchService findBooksForIdentifier - build in or statement.....
+done -  begin CatalogService saveBookDetail - save authors carefully (detached)
+done - add saveBookDetail to saveBook - hopefully get rid of detached errors in save	
+done - 	bookmark - in detailservice for copying bookdetail and in catalog service
+done - import - with barcode and isbn/ean
+done - fix problem that imported books which aren't looked up aren't saved with a detail status		
+done - offlinesearch - looks in existing book details
 
 
 

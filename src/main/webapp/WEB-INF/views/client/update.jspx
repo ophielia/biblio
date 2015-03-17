@@ -22,5 +22,6 @@
         <field:input field="lastBookNr" id="c_meg_biblio_common_db_dao_ClientDao_lastBookNr" validationMessageCode="field_invalid_integer" z="U7hBjgtPzwV1qshgnN2UA6So7S8="/>
         <field:checkbox field="usesBarcodes" id="c_meg_biblio_common_db_dao_ClientDao_usesBarcodes" z="/C2cxqoDJyqOsKoFZSaEnH8mOpg="/>
         <field:input field="detailCompleteCode" id="c_meg_biblio_common_db_dao_ClientDao_detailCompleteCode" validationMessageCode="field_invalid_integer" z="wWvvIp7YiMrr8kIM2/CAumRrDTE="/>
+        <field:checkbox field="idForBarcode" id="c_meg_biblio_common_db_dao_ClientDao_idForBarcode" z="r0XV0vvqfMCnKBViuZ6VY//InPU="/>
     </form:update>
 </div>

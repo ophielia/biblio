@@ -6,6 +6,7 @@ public class BookIdentifier {
 	String isbn;
 	String ean;
 	Long publishyear;
+	private String ark;
 	
 	public String getIsbn() {
 		return isbn;
@@ -16,6 +17,10 @@ public class BookIdentifier {
 	public String getEan() {
 		return ean;
 	}
+	
+	public String getArk() {
+		return ark;
+	}
 	public void setEan(String ean) {
 		this.ean = ean;
 	}
@@ -24,6 +29,9 @@ public class BookIdentifier {
 	}
 	public void setPublishyear(Long publishyear) {
 		this.publishyear = publishyear;
+	}
+	public void setArk(String ark) {
+		this.ark = ark;
 	}
 	
 	

@@ -26,5 +26,8 @@ public interface DetailSearchService {
 	public void assignDetailToBook(Long detailid, Long bookid)
 			throws GeneralSecurityException, IOException;
 
+	List<BookModel> doOfflineSearchForBookList(List<BookModel> models,
+			ClientDao client);
+
 	
 }

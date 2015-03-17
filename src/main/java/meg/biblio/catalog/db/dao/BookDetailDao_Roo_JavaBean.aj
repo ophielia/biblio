@@ -111,6 +111,14 @@ privileged aspect BookDetailDao_Roo_JavaBean {
         this.shelfclass = shelfclass;
     }
     
+    public String BookDetailDao.getArk() {
+        return this.ark;
+    }
+    
+    public void BookDetailDao.setArk(String ark) {
+        this.ark = ark;
+    }
+    
     public Boolean BookDetailDao.getTextchange() {
         return this.textchange;
     }

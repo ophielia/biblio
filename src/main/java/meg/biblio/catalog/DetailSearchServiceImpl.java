@@ -33,7 +33,7 @@ public class DetailSearchServiceImpl implements DetailSearchService {
 
 	@Autowired
 	CatalogService catalogService;
-	
+
 	@Autowired
 	SearchService searchService;
 
@@ -45,15 +45,15 @@ public class DetailSearchServiceImpl implements DetailSearchService {
 
 	@Autowired
 	BookRepository bookRepo;
-	
+
 	@Autowired
 	GeneralClassifier generalClassifier;
 
 	@Autowired
 	GoogleDetailFinder googleFinder;
-	
+
 	@Autowired
-	InternalDetailFinder internalFinder;	
+	InternalDetailFinder internalFinder;
 
 	@Autowired
 	AmazonDetailFinder amazonFinder;
@@ -61,14 +61,14 @@ public class DetailSearchServiceImpl implements DetailSearchService {
 	@Autowired
 	BNFCatalogFinder bnfFinder;
 
-	DetailFinder finderchain;
+	
+	
 
 	/* Get actual class name to be printed on */
 	static Logger log = Logger.getLogger(DetailSearchServiceImpl.class
 			.getName());
 
 	public List<FoundDetailsDao> getFoundDetailsForBook(Long id) {
-
 		if (id != null) {
 			BookDao book = bookRepo.findOne(id);
 			if (book != null) {
@@ -106,9 +106,7 @@ public class DetailSearchServiceImpl implements DetailSearchService {
 		FinderObject findobj = new FinderObject(detail);
 
 		// get finderchain
-		if (finderchain == null) {
-			finderchain = createFinderChain();
-		}
+		DetailFinder	finderchain = createFinderChain();
 
 		// run chain
 		try {
@@ -157,7 +155,7 @@ public class DetailSearchServiceImpl implements DetailSearchService {
 		BookDetailDao detail = findobj.getBookdetail();
 		// check for additional details
 					if (findobj.getAddlcodes()!=null && !findobj.getAddlcodes().isEmpty()) {
-						// go ahead and save these other codes as additional book details, 
+						// go ahead and save these other codes as additional book details,
 						// (even though it could be that the original book isn't saved - we have
 						// more info for later on....)
 						for (BookIdentifier bi:findobj.getAddlcodes()) {
@@ -165,7 +163,7 @@ public class DetailSearchServiceImpl implements DetailSearchService {
 							if (newdetail!=null) continue;
 							newdetail = new BookDetailDao();
 
-							newdetail.copyFrom(detail); 
+							newdetail.copyFrom(detail);
 							if (bi.getEan()!=null) {
 								newdetail.setIsbn13(bi.getEan());
 							}
@@ -178,7 +176,7 @@ public class DetailSearchServiceImpl implements DetailSearchService {
 							catalogService.saveBookDetail(newdetail);
 						}
 					}
-		
+
 	}
 
 	@Override
@@ -191,9 +189,7 @@ public class DetailSearchServiceImpl implements DetailSearchService {
 					.getSettingAsInteger("biblio.google.batchsearchmax");
 
 			// get finderchain
-			if (finderchain == null) {
-				finderchain = createFinderChain();
-			}
+			DetailFinder finderchain = createOnlineFinderChain();
 
 			// make list of finderobjects (using batch maximum)
 			HashMap<Long, BookModel> puzzlehash = new HashMap<Long, BookModel>();
@@ -204,6 +200,9 @@ public class DetailSearchServiceImpl implements DetailSearchService {
 			for (BookModel model : models) {
 				if (model != null && model.getBook() != null) {
 					BookDetailDao bd = model.getBook().getBookdetail();
+					if (bd.getFinderlog()!=null && bd.getFinderlog()>0) {
+						continue;
+						}
 					FinderObject obj = new FinderObject(bd);
 					i++;
 					obj.setTempIdent(new Long(i));
@@ -246,6 +245,72 @@ public class DetailSearchServiceImpl implements DetailSearchService {
 		return null;
 	}
 
+
+
+
+	@Override
+		public List<BookModel> doOfflineSearchForBookList(List<BookModel> models,
+				ClientDao client) {
+			if (models != null) {
+				// get ready for search - clientcompletecode
+				long clientcomplete = client.getDetailCompleteCode();
+				Integer batchsearchmax = 99999;
+
+				// get finderchain
+					DetailFinder offlinefinderchain = createOfflineFinderChain();
+
+				// make list of finderobjects (using batch maximum)
+				HashMap<Long, BookModel> puzzlehash = new HashMap<Long, BookModel>();
+				List<FinderObject> forsearch = new ArrayList<FinderObject>();
+				long i = 1;
+				for (BookModel model : models) {
+					if (model != null && model.getBook() != null) {
+						BookDetailDao bd = model.getBook().getBookdetail();
+						FinderObject obj = new FinderObject(bd);
+						i++;
+						obj.setTempIdent(new Long(i));
+						forsearch.add(obj);
+						puzzlehash.put(new Long(i), model);
+					}
+				}
+
+				// run chain
+				try {
+					forsearch = offlinefinderchain.findDetailsForList(forsearch,
+							clientcomplete, batchsearchmax);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+				List<BookModel> toreturn = new ArrayList<BookModel>();
+				for (FinderObject findobj : forsearch) {
+					Long ident = findobj.getTempIdent();
+					if (findobj.getSearchStatus()==null ||
+						findobj.getSearchStatus()==CatalogService.DetailStatus.NODETAIL||
+						findobj.getSearchStatus()==CatalogService.DetailStatus.DETAILNOTFOUND) {
+						// nothing found - just add to return array
+					BookModel bmodel = puzzlehash.get(ident);
+					toreturn.add(bmodel);
+						} else {
+					BookModel bmodel = puzzlehash.get(ident);
+					BookDetailDao detail = findobj.getBookdetail();
+
+					// set detailsearchstatus in bookdetail
+					detail.setDetailstatus(findobj.getSearchStatus());
+					detail.setFinderlog(findobj.getCurrentFinderLog());
+					bmodel.setBookdetail(detail);
+					// put results of finder object in model
+					toreturn.add(bmodel);
+							}
+				}
+
+				return toreturn;
+			}
+			return null;
+	}
+
+
 	//@Scheduled(fixedRate = 60000)
 	private void scheduledFillInDetails() {
 		Integer batchsearchmax = settingService
@@ -270,7 +335,7 @@ public class DetailSearchServiceImpl implements DetailSearchService {
 					}
 					// service call to fill in details
 						fillInDetailsForBookList(adddetails, client);
-						
+
 				}
 
 			}
@@ -286,7 +351,19 @@ public class DetailSearchServiceImpl implements DetailSearchService {
 		internalFinder.setNext(googleFinder);
 		return googleFinder;
 	}
+	
+	private DetailFinder createOfflineFinderChain() {
+		return internalFinder;
+	}	
 
+	private DetailFinder createOnlineFinderChain() {
+		amazonFinder.setNext(bnfFinder);
+		googleFinder.setNext(amazonFinder);
+		return googleFinder;
+	}	
+
+
+	
 	private void classifyBook(Long clientkey, BookDao book) throws Exception {
 		if (book != null) {
 			if (book.getBookdetail().getDetailstatus()
