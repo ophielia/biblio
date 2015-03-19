@@ -82,7 +82,7 @@ public class InternalDetailFinderTest {
 		// check call
 		Assert.assertNotNull(findobj);
 		Assert.assertFalse(findobj.getSearchStatus() == CatalogService.DetailStatus.NODETAIL);
-		Assert.assertEquals(new Long(11), findobj.getCurrentFinderLog());
+		Assert.assertEquals(0L, findobj.getCurrentFinderLog()%11);
 		Assert.assertNotNull(bookdetail);
 	}
 	
@@ -102,7 +102,7 @@ public class InternalDetailFinderTest {
 		Assert.assertNotNull(findobj);
 		Assert.assertNotNull(bookdetail);
 		Assert.assertFalse(findobj.getSearchStatus() == CatalogService.DetailStatus.NODETAIL);
-		Assert.assertEquals(new Long(11), findobj.getCurrentFinderLog());
+		Assert.assertEquals(0L, findobj.getCurrentFinderLog()%11);
 	}	
 
 }

@@ -31,6 +31,8 @@ public class BookModel  implements Serializable {
 	private String assignedcode;
 	private Boolean showbarcodelinks;
 	List<FoundDetailsDao> founddetails;
+	private String shelfclass;
+	private String shelfcode;
 	
 	// *** constructors ***//
 	public BookModel(BookDao book) {
@@ -69,6 +71,10 @@ public class BookModel  implements Serializable {
 	public List<FoundDetailsDao> getFounddetails() {
 		return founddetails;
 	}
+	
+	
+
+
 
 	// *** getters and setters for web entry ***//
 	public Long getAssignDetailId() {
@@ -192,6 +198,10 @@ public class BookModel  implements Serializable {
 		if (shelfclass!=null) this.book.setClientshelfcode(shelfclass);
 	}
 
+	public void setShelfclass(String shelfclass) {
+		if (shelfclass!=null) this.book.setClientshelfclass(shelfclass);
+	}
+	
 	public void setCreatedon(Date createdon) {
 		if (createdon!=null) this.book.setCreatedon(createdon);
 	}
@@ -268,6 +278,17 @@ public class BookModel  implements Serializable {
 		return book.getBookdetail().getDetailstatus();
 	}
 
+	public String getShelfclass() {
+		// returns client shelfclass first, 
+		// otherwise, bookdetail shelfclass
+		if (book.getClientshelfclass()!=null) {
+			return book.getClientshelfclass();
+		}
+		if (book.getBookdetail()!=null) {
+			return book.getBookdetail().getShelfclass();
+		}
+		return null;
+	}
 
 	public Long getShelfcode() {
 		return book.getClientshelfcode();

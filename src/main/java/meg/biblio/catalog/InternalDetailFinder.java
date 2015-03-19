@@ -115,9 +115,10 @@ public class InternalDetailFinder extends BaseDetailFinder {
 		c.select(bookroot);
 
 		// get where clause
-		Expression sortexpr = null;
 		List<Predicate> whereclause = new ArrayList<Predicate>();
-		
+		// always add clientspecific
+		ParameterExpression<Boolean> clientparam = cb.parameter(Boolean.class, "clientspecific");
+		whereclause.add(cb.equal(bookroot.<Boolean> get("clientspecific"), clientparam));
 		// title
 		if (title!=null) {
 			ParameterExpression<String> param = cb.parameter(String.class,
@@ -168,6 +169,7 @@ public class InternalDetailFinder extends BaseDetailFinder {
 		TypedQuery<BookDetailDao> q = entityManager.createQuery(c);
 
 		// setting the parameters
+		q.setParameter("clientspecific", new Boolean(false));
 		// title
 		if (title != null) {
 			q.setParameter("title", title.trim());
@@ -213,6 +215,9 @@ public class InternalDetailFinder extends BaseDetailFinder {
 		// get where clause
 		Expression sortexpr = null;
 		List<Predicate> whereclause = new ArrayList<Predicate>();
+		// always add clientspecific
+		ParameterExpression<Boolean> clientparam = cb.parameter(Boolean.class, "clientspecific");
+		whereclause.add(cb.equal(bookroot.<Boolean> get("clientspecific"), clientparam));
 		// ean
 		if (ean != null) {
 			ParameterExpression<String> param = cb.parameter(String.class,
@@ -234,6 +239,7 @@ public class InternalDetailFinder extends BaseDetailFinder {
 		TypedQuery<BookDetailDao> q = entityManager.createQuery(c);
 
 		// setting the parameters
+		q.setParameter("clientspecific", new Boolean(false));
 		// title
 		if (ean != null) {
 			q.setParameter("ean", ean.trim());

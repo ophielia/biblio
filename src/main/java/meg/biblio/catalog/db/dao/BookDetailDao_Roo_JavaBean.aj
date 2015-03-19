@@ -19,24 +19,12 @@ privileged aspect BookDetailDao_Roo_JavaBean {
         return this.subjects;
     }
     
-    public void BookDetailDao.setSubjects(List<SubjectDao> subjects) {
-        this.subjects = subjects;
-    }
-    
     public PublisherDao BookDetailDao.getPublisher() {
         return this.publisher;
     }
     
-    public void BookDetailDao.setPublisher(PublisherDao publisher) {
-        this.publisher = publisher;
-    }
-    
     public Long BookDetailDao.getPublishyear() {
         return this.publishyear;
-    }
-    
-    public void BookDetailDao.setPublishyear(Long publishyear) {
-        this.publishyear = publishyear;
     }
     
     public String BookDetailDao.getIsbn10() {
@@ -57,10 +45,6 @@ privileged aspect BookDetailDao_Roo_JavaBean {
     
     public String BookDetailDao.getLanguage() {
         return this.language;
-    }
-    
-    public void BookDetailDao.setLanguage(String language) {
-        this.language = language;
     }
     
     public String BookDetailDao.getImagelink() {
@@ -119,12 +103,28 @@ privileged aspect BookDetailDao_Roo_JavaBean {
         this.ark = ark;
     }
     
+    public Boolean BookDetailDao.getClientspecific() {
+        return this.clientspecific;
+    }
+    
+    public void BookDetailDao.setClientspecific(Boolean clientspecific) {
+        this.clientspecific = clientspecific;
+    }
+    
     public Boolean BookDetailDao.getTextchange() {
         return this.textchange;
     }
     
     public void BookDetailDao.setTextchange(Boolean textchange) {
         this.textchange = textchange;
+    }
+    
+    public Boolean BookDetailDao.getClientspecificchange() {
+        return this.clientspecificchange;
+    }
+    
+    public void BookDetailDao.setClientspecificchange(Boolean clientspecificchange) {
+        this.clientspecificchange = clientspecificchange;
     }
     
 }

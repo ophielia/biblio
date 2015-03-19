@@ -17,14 +17,24 @@ reflect code / class / type changes in search
 eventually - will need to program for isbn codes - translate codes to hyphens.
 eventually - check scheduledFillInDetails... DetailSearch	
 	
+	
+immediate: 
+
+---> next - display not working /books/display/62767
+---> clientbookid not saved.  barcode also not saved.	
+---> work out isbnnodetail for search - case where not found by isbn, should search again by title, author
+---> test swap out of clientspecific in CatalogService - formal test - seems to be working....
+---> also - clientspecific swap - only discard db if db is not already clientspecific!
+
+link if not client/barcodes for assign or reassign code
+link for "Search again"
 
 ---- begin commit changes ----
 
-done - backend client codes as bar codes
-done - import - needs to do offline search for everything before saving.  Then online
-done - search for batch maximum after save.
-done - put max count in amazon found details....
-done - add ark codes	
+done - input for description, select for fiction, language
+done - client specific swap out
+
+
 
 
 ---- end commit changes ----
@@ -91,7 +101,11 @@ done - 	bookmark - in detailservice for copying bookdetail and in catalog servic
 done - import - with barcode and isbn/ean
 done - fix problem that imported books which aren't looked up aren't saved with a detail status		
 done - offlinesearch - looks in existing book details
-
+done - backend client codes as bar codes
+done - import - needs to do offline search for everything before saving.  Then online
+done - search for batch maximum after save.
+done - put max count in amazon found details....
+done - add ark codes	
 
 
 ---- end branch changes ----

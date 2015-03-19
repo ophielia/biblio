@@ -58,5 +58,7 @@ public class ClientDao {
 	private Long detailCompleteCode;
 	
 	private Boolean idForBarcode;
+	
+	private Long defaultStatus;
 }
 

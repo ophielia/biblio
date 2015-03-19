@@ -122,15 +122,22 @@ public class BookController {
 		String title = bookModel.getTitle();
 		String author = bookModel.getAuthorname();
 		Boolean createclientbookid = bookModel.getCreatenewid();
-
+		Long status = client.getDefaultStatus();
+		
 		// create book in catalog
 		BookModel model = new BookModel();
+		model.setClientid(clientid);
 		if (cbooknr!=null) model.setClientbookid(cbooknr);
 		if (isbn!=null) model.setIsbn10(isbn);
 		if (title!=null) model.setTitle(title);
 		ArtistDao artist = catalogService.textToArtistName(author);
 		if (artist!=null) {
 			model.setAuthorInBook(artist);
+		}
+		if (status!=null) {
+			model.setStatus(status);
+		}else {
+			model.setStatus(CatalogService.Status.PROCESSING);
 		}
 		
 		// want to find the details for this book ,but not save it yet...
@@ -202,7 +209,13 @@ public class BookController {
 		uiModel.addAttribute("bookModel",bookModel);
 		Boolean showbarcode = client.getUsesBarcodes()!=null && client.getUsesBarcodes();
 		uiModel.addAttribute("showbarcodes",showbarcode);
-		if (showbarcode) {
+		// redirect to display book page
+		String redirect = "/books/display/" + bookModel.getBookid();
+		return "redirect:" + redirect;
+		
+/*
+ * 
+ * 		if (showbarcode) {
 			// return assign code page
 			return "book/assigncode";
 		} else {
@@ -211,8 +224,9 @@ public class BookController {
 			return "redirect:" + redirect;
 			
 		}
-	}
 
+ */
+	}
 	// persist any changes to book (new classification, addition of isbn)
 	@RequestMapping(value = "/assign", method = RequestMethod.POST, produces = "text/html")
 	public String assignCodeToBook(BookModel bookModel,

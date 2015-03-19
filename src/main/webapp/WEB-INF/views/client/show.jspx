@@ -22,5 +22,6 @@
         <field:display field="usesBarcodes" id="s_meg_biblio_common_db_dao_ClientDao_usesBarcodes" object="${clientdao}" z="A1uzShUNL7dgYJeSlxVnLlkufgo="/>
         <field:display field="detailCompleteCode" id="s_meg_biblio_common_db_dao_ClientDao_detailCompleteCode" object="${clientdao}" z="jtJF3qqNVcPx3Tnv86eQhhzmvK4="/>
         <field:display field="idForBarcode" id="s_meg_biblio_common_db_dao_ClientDao_idForBarcode" object="${clientdao}" z="rcTLUy+kQPKaYSRcK0x10VurTJc="/>
+        <field:display field="defaultStatus" id="s_meg_biblio_common_db_dao_ClientDao_defaultStatus" object="${clientdao}" z="sgFCgGWIrwdeXPLK467KRtb+0Rc="/>
     </page:show>
 </div>

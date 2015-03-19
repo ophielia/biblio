@@ -315,13 +315,14 @@ public class AmazonBaseFinder extends BaseDetailFinder {
 	private List<FoundDetailsDao> copyResultsIntoFoundDetails(List<Document> items) throws Exception {
 		Integer maxdetails = settingService
 				.getSettingAsInteger("biblio.amazon.maxdetails");	
+		int maxint = maxdetails!=null?maxdetails.intValue():5;
 		
 		int found = 0;
 		if (items!=null && items.size()>0) {
 			List<FoundDetailsDao> results = new ArrayList<FoundDetailsDao>();
 			for (Document itemdoc:items) {
 				found++;
-				if (found>maxdetails.intValue()) {
+				if (found>maxint) {
 					break;
 				}
 				FoundDetailsDao fd = new FoundDetailsDao();

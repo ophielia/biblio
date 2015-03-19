@@ -34,6 +34,7 @@ privileged aspect BookDetailDaoDataOnDemand_Roo_DataOnDemand {
     public BookDetailDao BookDetailDaoDataOnDemand.getNewTransientBookDetailDao(int index) {
         BookDetailDao obj = new BookDetailDao();
         setArk(obj, index);
+        setClientspecific(obj, index);
         setDescription(obj, index);
         setDetailstatus(obj, index);
         setFinderlog(obj, index);
@@ -51,6 +52,11 @@ privileged aspect BookDetailDaoDataOnDemand_Roo_DataOnDemand {
     public void BookDetailDaoDataOnDemand.setArk(BookDetailDao obj, int index) {
         String ark = "ark_" + index;
         obj.setArk(ark);
+    }
+    
+    public void BookDetailDaoDataOnDemand.setClientspecific(BookDetailDao obj, int index) {
+        Boolean clientspecific = Boolean.TRUE;
+        obj.setClientspecific(clientspecific);
     }
     
     public void BookDetailDaoDataOnDemand.setDescription(BookDetailDao obj, int index) {

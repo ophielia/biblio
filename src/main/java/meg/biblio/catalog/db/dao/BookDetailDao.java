@@ -1,7 +1,6 @@
 package meg.biblio.catalog.db.dao;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.FetchType;
@@ -15,9 +14,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-
 import meg.biblio.catalog.db.FoundWordsDao;
-
 import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.jpa.entity.RooJpaEntity;
 import org.springframework.roo.addon.tostring.RooToString;
@@ -73,9 +70,13 @@ public class BookDetailDao {
 	private Long listedtype;
 	private String shelfclass;
 	private String ark;
+	private Boolean clientspecific;
 
 	@Transient
 	private Boolean textchange=new Boolean(false);
+	@Transient
+	private Boolean clientspecificchange=new Boolean(false);
+
 
 
 	public boolean hasIsbn() {
@@ -111,12 +112,18 @@ public class BookDetailDao {
 
 
 	public void setAuthors(List<ArtistDao> authors) {
-        if (this.authors != authors) setTextchange(true);
+        if (this.authors != authors) {
+        	setTextchange(true);
+        	setClientspecific(true);
+        }
 		this.authors = authors;
     }
 
 	public void setDescription(String description) {
-		if (this.description != description) setTextchange(true);
+		if (this.description != description) {
+        	setTextchange(true);
+        	setClientspecific(true);
+        }
 		if (description!=null && description.length()>1510) {
 			this.description = description.substring(0,1510);
 		}
@@ -124,16 +131,49 @@ public class BookDetailDao {
     }
 
 	public void setIllustrators(List<ArtistDao> illustrators) {
-		if (this.illustrators != illustrators) setTextchange(true);
+		if (this.illustrators != illustrators) {
+        	setTextchange(true);
+        	setClientspecific(true);
+        }
 		this.illustrators = illustrators;
     }
 
 	public void setTitle(String title) {
-		if (this.title != title) setTextchange(true);
+		if (this.title != title) {
+        	setTextchange(true);
+        	setClientspecific(true);
+        }
 
 		this.title = title;
     }
 
+	public void setLanguage(String language) {
+		if (this.language != language) {
+        	setClientspecific(true);
+        }
+		this.language = language;
+    }
+
+	public void setPublisher(PublisherDao publisher) {
+		if (this.publisher != publisher) {
+        	setClientspecific(true);
+        }
+		this.publisher = publisher;
+    }
+
+	public void setPublishyear(Long publishyear) {
+		if (this.publishyear != publishyear) {
+        	setClientspecific(true);
+        }
+		this.publishyear = publishyear;
+    }
+
+	public void setSubjects(List<SubjectDao> subjects) {
+		if (this.subjects != subjects) {
+        	setClientspecific(true);
+        }
+		this.subjects = subjects;
+    }
 
 
 	public Long getFinderlog() {
@@ -158,9 +198,12 @@ public class BookDetailDao {
     }
 
 	public boolean hasAuthor() {
-
 		return this.authors!=null && this.authors.size()>0;
 	}
+	
+	public boolean getHasIllustrator() {
+		return this.illustrators!=null && this.illustrators.size()>0;
+	}	
 
 	public void copyFrom(BookDetailDao copyfrom) {
 		if (copyfrom != null) {
@@ -213,5 +256,6 @@ public class BookDetailDao {
 
 		}
 	}
+
 
 }

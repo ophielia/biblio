@@ -200,7 +200,7 @@ public class DetailSearchServiceImpl implements DetailSearchService {
 			for (BookModel model : models) {
 				if (model != null && model.getBook() != null) {
 					BookDetailDao bd = model.getBook().getBookdetail();
-					if (bd.getFinderlog()!=null && bd.getFinderlog()>0) {
+					if (bd.getFinderlog()!=null && bd.getFinderlog()>1) {
 						continue;
 						}
 					FinderObject obj = new FinderObject(bd);

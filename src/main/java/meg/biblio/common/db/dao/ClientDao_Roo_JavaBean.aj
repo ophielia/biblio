@@ -169,4 +169,12 @@ privileged aspect ClientDao_Roo_JavaBean {
         this.idForBarcode = idForBarcode;
     }
     
+    public Long ClientDao.getDefaultStatus() {
+        return this.defaultStatus;
+    }
+    
+    public void ClientDao.setDefaultStatus(Long defaultStatus) {
+        this.defaultStatus = defaultStatus;
+    }
+    
 }

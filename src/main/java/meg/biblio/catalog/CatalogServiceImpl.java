@@ -83,10 +83,9 @@ public class CatalogServiceImpl implements CatalogService {
 
 	@Autowired
 	AppSettingService settingService;
-	
 
 	@Autowired
-	BarcodeService barcodeService;	
+	BarcodeService barcodeService;
 
 	/**
 	 * Assumes validated BookModel. Saves a book to the database for the first
@@ -405,10 +404,10 @@ public class CatalogServiceImpl implements CatalogService {
 		// get configuration for barcodes
 		ClientDao client = clientService.getClientForKey(clientkey);
 		Boolean useclientbookforbarcode = client.getIdForBarcode();
-		if (useclientbookforbarcode==null) {
+		if (useclientbookforbarcode == null) {
 			useclientbookforbarcode = true;
 		}
-		
+
 		// get book
 		BookDao book = model.getBook();
 
@@ -428,14 +427,15 @@ public class CatalogServiceImpl implements CatalogService {
 			// set max bookid in book
 			book.setClientbookid(maxbookid.toString());
 		}
-		
+
 		// create barcode from clientbookid if configured
 		// configured - if clientbookid not null, and usesclientforbarcode true
-		if (book.getClientbookid()!=null && useclientbookforbarcode) {
+		if (book.getClientbookid() != null && useclientbookforbarcode) {
 			// get barcode from clientbookid
-			String barcode = barcodeService.getBookBarcodeForClientid(client, book.getClientbookid());
+			String barcode = barcodeService.getBookBarcodeForClientid(client,
+					book.getClientbookid());
 			// set in bookdetail
-			if (barcode!=null) {
+			if (barcode != null) {
 				book.setBarcodeid(barcode);
 			}
 		}
@@ -718,18 +718,33 @@ public class CatalogServiceImpl implements CatalogService {
 
 			// get from db if already persisted
 			if (newdetail.getId() != null) {
+				// check whether client specific changes were made. If so, save
+				// into
+				// a new bookdetail object, and discard the database one
+
 				// get from db
 				BookDetailDao bookdetail = bookDetailRepo.findOne(newdetail
 						.getId());
-				// copy from newdetail
-				bookdetail.copyFrom(newdetail);
-				// save and return
-				bookdetail = bookDetailRepo.save(bookdetail);
-				return bookdetail;
-
+				// so, if we're here, we know that a database version is
+				// available which shouldn't be overwritten with client specific changes.
+				// only save if no client specific changes
+				if (!newdetail.getClientspecific()||bookdetail.getClientspecific()) {
+					// copy from newdetail
+					bookdetail.copyFrom(newdetail);
+					// save and return
+					bookdetail = bookDetailRepo.save(bookdetail);
+					return bookdetail;
+				} else {
+					// mark as client specific
+					newdetail.setClientspecific(true);
+				}
+			} else {
+				// this detail hasn't yet been saved.  Save it
+				// as non-client specific, so it can be used as a base
+				// for further searches.
+				newdetail.setClientspecific(false);
 			}
 
-			// save and return
 			// save and return
 			newdetail = bookDetailRepo.save(newdetail);
 			return newdetail;

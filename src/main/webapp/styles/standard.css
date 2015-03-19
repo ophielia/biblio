@@ -163,14 +163,20 @@ table.navigation {
 	border: 0px;
 }
 
+span.stress {
+	font-weight: bold;
+}
 
-div.accentbox {
+div.accentboxlook {
 background-color: #7390B1;
-width: 35%;
-float: right;
 border: 1px solid #2E537D;
 padding: 5px;
 margin: 10px;
+}
+
+div.accentboxlayout {
+width: 35%;
+float: right;
 }
 
 label {

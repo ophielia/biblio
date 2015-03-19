@@ -70,7 +70,7 @@ public class GoogleDetailFinderTest {
 		// check call
 		Assert.assertNotNull(findobj);
 		Assert.assertFalse(findobj.getSearchStatus() == CatalogService.DetailStatus.NODETAIL);
-		Assert.assertEquals(new Long(2), findobj.getCurrentFinderLog());
+		Assert.assertEquals(0L, findobj.getCurrentFinderLog()%2L);
 	}
 
 	

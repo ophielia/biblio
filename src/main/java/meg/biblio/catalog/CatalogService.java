@@ -43,7 +43,7 @@ public interface CatalogService {
 		public static final long DETAILNOTFOUND = 2;
 		public static final long MULTIDETAILSFOUND = 3;
 		public static final long DETAILFOUND = 4;
-		public static final long ISBNFOUND = 5;
+		public static final long DETAILNOTFOUNDWISBN = 5;
 	}
 
 

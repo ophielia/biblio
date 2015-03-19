@@ -33,6 +33,7 @@ privileged aspect ClientDaoDataOnDemand_Roo_DataOnDemand {
         setClassifyimplementation(obj, index);
         setClasssummaryxslbase(obj, index);
         setClientnr(obj, index);
+        setDefaultStatus(obj, index);
         setDetailCompleteCode(obj, index);
         setIdForBarcode(obj, index);
         setImagepath(obj, index);
@@ -69,6 +70,11 @@ privileged aspect ClientDaoDataOnDemand_Roo_DataOnDemand {
     public void ClientDaoDataOnDemand.setClientnr(ClientDao obj, int index) {
         Long clientnr = new Integer(index).longValue();
         obj.setClientnr(clientnr);
+    }
+    
+    public void ClientDaoDataOnDemand.setDefaultStatus(ClientDao obj, int index) {
+        Long defaultStatus = new Integer(index).longValue();
+        obj.setDefaultStatus(defaultStatus);
     }
     
     public void ClientDaoDataOnDemand.setDetailCompleteCode(ClientDao obj, int index) {

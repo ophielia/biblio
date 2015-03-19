@@ -121,16 +121,4 @@ privileged aspect BookDetailDaoIntegrationTest_Roo_IntegrationTest {
         Assert.assertNotNull("Expected 'BookDetailDao' identifier to no longer be null", obj.getId());
     }
     
-    @Test
-    public void BookDetailDaoIntegrationTest.testDelete() {
-        BookDetailDao obj = dod.getRandomBookDetailDao();
-        Assert.assertNotNull("Data on demand for 'BookDetailDao' failed to initialize correctly", obj);
-        Long id = obj.getId();
-        Assert.assertNotNull("Data on demand for 'BookDetailDao' failed to provide an identifier", id);
-        obj = bookDetailRepository.findOne(id);
-        bookDetailRepository.delete(obj);
-        bookDetailRepository.flush();
-        Assert.assertNull("Failed to remove 'BookDetailDao' with identifier '" + id + "'", bookDetailRepository.findOne(id));
-    }
-    
 }

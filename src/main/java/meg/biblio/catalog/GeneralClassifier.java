@@ -18,15 +18,15 @@ public class GeneralClassifier implements Classifier {
 		BookDetailDao bookdetail = book.getBookdetail();
 
 		boolean treatedasfiction = true;
-		if (bookdetail.getListedtype() == CatalogService.BookType.FICTION) {
+		if (bookdetail.getListedtype()!=null && bookdetail.getListedtype() == CatalogService.BookType.FICTION) {
 		} else {
 			// not marked as fiction. So:
 			// assumed fiction, unless
 
 			// shelf class contains numbers
-			String shelfclass ="";
+			String shelfclass =bookdetail.getShelfclass();
 			// MM bookdetail.getShelfClass();
-			if (shelfclass.matches("^[\\d .]*$")) {
+			if (shelfclass!=null && shelfclass.matches("^[\\d .]*$")) {
 				treatedasfiction = false;
 
 			}
@@ -54,7 +54,7 @@ public class GeneralClassifier implements Classifier {
 				if (authors!=null && authors.size()>0) {
 					String author = authors.get(0).getLastname().toUpperCase();
 					int len = author.length()>3?3:author.length();
-					classification = classification + author.substring(0,len-1);
+					classification = classification + author.substring(0,len);
 					bookdetail.setShelfclass(classification);
 				}
 			} else {
@@ -64,6 +64,7 @@ public class GeneralClassifier implements Classifier {
 			}
 		}
 // return book
+		
 		return book;
 	}
 }
