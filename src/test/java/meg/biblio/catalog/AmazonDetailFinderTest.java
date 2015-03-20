@@ -309,4 +309,39 @@ public class AmazonDetailFinderTest {
 
 	}
 
+	
+	@Test
+	public void testISBNNotFoundWrite() throws Exception {
+		BookDao book = new BookDao();
+		book.getBookdetail().setIsbn13("1111111111111");
+		book.getBookdetail().setTitle("coco tout nu");
+		ArtistDao author = catalogService.textToArtistName("Monfreid");
+		List<ArtistDao> authors = new ArrayList<ArtistDao>();
+		authors.add(author);
+		book.getBookdetail().setAuthors(authors);
+
+		FinderObject findobj = new FinderObject(book.getBookdetail());
+
+		// service call
+		findobj = amazonSearch.searchLogic(findobj);
+		Assert.assertTrue(findobj.getSearchStatus() == CatalogService.DetailStatus.DETAILNOTFOUNDWISBN);
+	}
+	
+	@Test
+	public void testISBNNotFoundRead() throws Exception {
+		BookDao book = new BookDao();
+		book.getBookdetail().setIsbn13("1111111111111");
+		book.getBookdetail().setTitle("La petite poule noire");
+		ArtistDao author = catalogService.textToArtistName("Iskender Gider");
+		List<ArtistDao> authors = new ArrayList<ArtistDao>();
+		authors.add(author);
+		book.getBookdetail().setAuthors(authors);
+		book.getBookdetail().setDetailstatus(CatalogService.DetailStatus.DETAILNOTFOUNDWISBN);
+
+		FinderObject findobj = new FinderObject(book.getBookdetail());
+
+		// service call
+		findobj = amazonSearch.searchLogic(findobj);
+		Assert.assertFalse(findobj.getSearchStatus() == CatalogService.DetailStatus.DETAILNOTFOUNDWISBN);
+	}	
 }

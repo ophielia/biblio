@@ -119,12 +119,4 @@ privileged aspect BookDetailDao_Roo_JavaBean {
         this.textchange = textchange;
     }
     
-    public Boolean BookDetailDao.getClientspecificchange() {
-        return this.clientspecificchange;
-    }
-    
-    public void BookDetailDao.setClientspecificchange(Boolean clientspecificchange) {
-        this.clientspecificchange = clientspecificchange;
-    }
-    
 }

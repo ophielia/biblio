@@ -234,6 +234,7 @@ public class BNFCatalogFinder extends BaseDetailFinder {
 	protected FinderObject searchLogic(FinderObject findobj) throws Exception {
 		BookDetailDao bookdetail = findobj.getBookdetail();
 		boolean addlcodessearch = false;
+		boolean isbnsearch = false;
 		// lookup by isbn
 		// add params by search type (isbn, or other (title, author, publisher)
 		String querystring = "";
@@ -251,6 +252,7 @@ public class BNFCatalogFinder extends BaseDetailFinder {
 			// replace string in query with value
 			querystring = querystring.replace("REPLACE", value);
 			querystring = URLEncoder.encode(querystring, "UTF-8");
+isbnsearch = true;
 		} else {
 			// returning - this somehow got here without and isbn - can't run
 			// this without isbn....
@@ -302,6 +304,9 @@ public class BNFCatalogFinder extends BaseDetailFinder {
 					String ark = parseArkFromUrl(catalogurl);
 					findobj.getBookdetail().setArk(ark);
 					findobj.setSearchStatus(CatalogService.DetailStatus.DETAILFOUND);
+				} else {
+						Long searchstatus = isbnsearch?CatalogService.DetailStatus.DETAILNOTFOUNDWISBN:CatalogService.DetailStatus.DETAILNOTFOUND;
+						findobj.setSearchStatus(searchstatus);	
 				}
 				// nab this authors name here, just in case
 				alternateauthor = stripAfterText("(", results.get("Auteur(s)"));
@@ -321,6 +326,9 @@ public class BNFCatalogFinder extends BaseDetailFinder {
 			if (!addlcodessearch && alternateauthor!=null) {
 				addlcodes = findAlternateIdentifiers(findobj, alternateauthor);
 			}
+		} else {
+			// nothing found
+			findobj.setSearchStatus(CatalogService.DetailStatus.DETAILNOTFOUNDWISBN);
 		}
 
 		// return findobj

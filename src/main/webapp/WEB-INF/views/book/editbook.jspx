@@ -99,11 +99,10 @@
 
 
 			<div style="border: 1px dotted grey; padding: 5px; margin: 10px;">
-				<div>
-					<c:if test="${bookModel.clientid!=null}"></c:if>
-					<span class="stress">${clientname} ${lnumber}:</span> ${bookModel.clientid}
-					<form:input type="hidden" path="bookid"></form:input>
-				</div>
+				<c:if test="${bookModel.clientbookid!=null}"><div>
+					<span class="stress">${clientname} ${lnumber}:</span> ${bookModel.clientbookid}
+				</div></c:if>
+				<form:input type="hidden" path="bookid"></form:input>
 				<div>
 					<span class="stress">${ltitle}:</span>${bookModel.title}<br />
 				</div>

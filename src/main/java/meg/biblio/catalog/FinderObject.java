@@ -26,10 +26,14 @@ public class FinderObject {
 		// an isbn has been added since the search was first made
 		if (detail.getId() == null) {
 			isnew = true;
-			detail.setDetailstatus(CatalogService.DetailStatus.NODETAIL);
+			if (detail.getDetailstatus()==null) {
+				detail.setDetailstatus(CatalogService.DetailStatus.NODETAIL);
+			}
 		} else {
 			setPreviousfinderCode(detail.getFinderlog());
+			
 		}
+		setSearchStatus(detail.getDetailstatus());
 		this.bookdetail = detail;
 	}
 
@@ -149,7 +153,13 @@ public class FinderObject {
 		if (searchstatus.longValue() == newstatus.longValue()) {
 			return;
 		}
-		if (newstatus.longValue() == CatalogService.DetailStatus.DETAILNOTFOUND) {
+		if (newstatus.longValue() == CatalogService.DetailStatus.DETAILNOTFOUNDWISBN) {
+			// set only if existing is NODETAIL or detailnot found
+			if (searchstatus.longValue() == CatalogService.DetailStatus.NODETAIL ||
+					searchstatus.longValue() == CatalogService.DetailStatus.DETAILNOTFOUND) {
+				searchstatus = newstatus;
+			}
+		} else if (newstatus.longValue() == CatalogService.DetailStatus.DETAILNOTFOUND) {
 			// set only if existing is NODETAIL
 			if (searchstatus.longValue() == CatalogService.DetailStatus.NODETAIL) {
 				searchstatus = newstatus;

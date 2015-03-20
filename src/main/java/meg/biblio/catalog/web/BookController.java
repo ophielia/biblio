@@ -199,7 +199,7 @@ public class BookController {
 		// fill in details if not detailfound, and isbn exists
 		boolean fillindetails = false;//model.hasIsbn() && !(model.getDetailstatus().longValue()==CatalogService.DetailStatus.DETAILFOUND);
 		try {
-			bookModel = catalogService.createCatalogEntryFromBookModel(clientid, bookModel, false);
+			bookModel = catalogService.createCatalogEntryFromBookModel(clientid, bookModel);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

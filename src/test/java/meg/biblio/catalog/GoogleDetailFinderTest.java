@@ -73,6 +73,21 @@ public class GoogleDetailFinderTest {
 		Assert.assertEquals(0L, findobj.getCurrentFinderLog()%2L);
 	}
 
-	
+	@Test
+	public void testISBNNotFoundWrite() throws Exception {
+		BookDao book = new BookDao();
+		book.getBookdetail().setIsbn13("1111111111111");
+		book.getBookdetail().setTitle("coco tout nu");
+		ArtistDao author = catalogService.textToArtistName("Monfreid");
+		List<ArtistDao> authors = new ArrayList<ArtistDao>();
+		authors.add(author);
+		book.getBookdetail().setAuthors(authors);
+
+		FinderObject findobj = new FinderObject(book.getBookdetail());
+
+		// service call
+		findobj = googleSearch.searchLogic(findobj);
+		Assert.assertTrue(findobj.getSearchStatus() == CatalogService.DetailStatus.DETAILNOTFOUNDWISBN);
+	}
 
 }

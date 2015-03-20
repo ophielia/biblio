@@ -381,7 +381,7 @@ public class BookModel  implements Serializable {
 	}
 
 	public Boolean getCreatenewid() {
-		return createnewid;
+		return createnewid!=null?createnewid:new Boolean(false);
 	}
 
 	public void setCreatenewid(Boolean createnewid) {

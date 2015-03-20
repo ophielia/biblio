@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.persistence.CacheRetrieveMode;
+import javax.persistence.CacheStoreMode;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Tuple;
@@ -19,6 +21,7 @@ import javax.persistence.criteria.Root;
 
 import meg.biblio.catalog.BookIdentifier;
 import meg.biblio.catalog.CatalogService;
+import meg.biblio.catalog.db.BookDetailRepository;
 import meg.biblio.catalog.db.FoundWordsDao;
 import meg.biblio.catalog.db.dao.ArtistDao;
 import meg.biblio.catalog.db.dao.BookDao;
@@ -26,6 +29,7 @@ import meg.biblio.catalog.db.dao.BookDetailDao;
 import meg.biblio.catalog.db.dao.PublisherDao;
 import meg.biblio.common.db.dao.ClientDao;
 
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,6 +43,50 @@ public class SearchServiceImpl implements SearchService {
     
     @Autowired
     private CatalogService catalogService;
+    
+    @Autowired
+    private BookDetailRepository bookDetailRepo;    
+
+    @Override
+    public BookDetailDao findBookDetailBypassCache(Long id) {
+    	BookDetailDao toevict = bookDetailRepo.findOne(id);
+    	if (toevict!=null) {
+    	Session session = (Session) entityManager.getDelegate();
+    	session.evict(toevict);
+    	BookDetailDao newlyretrieved = bookDetailRepo.findOne(id);
+    	return newlyretrieved;
+    	}
+    	return null;
+    	/*
+		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+		CriteriaQuery<BookDetailDao> c = cb.createQuery(BookDetailDao.class);
+		Root<BookDetailDao> exp = c.from(BookDetailDao.class);
+		c.select(exp);
+
+		if (id != null) {
+			// get where clause
+			List<Predicate> whereclause = new ArrayList<Predicate>();
+			Predicate predicate = cb.equal(exp.get("id"),id);
+				whereclause.add(predicate);
+			
+			// creating the query
+			c.where(cb.and(whereclause.toArray(new Predicate[whereclause.size()])));
+			TypedQuery<BookDetailDao> q = entityManager.createQuery(c);
+			q.setHint("javax.persistence.cache.storeMode", CacheStoreMode.BYPASS); 
+			q.setHint("javax.persistence.cache.retrieveMode", CacheRetrieveMode.BYPASS); 
+			
+			
+			List<BookDetailDao> results = q.getResultList();
+			if (results!=null && results.size()>0) {
+				return results.get(0);
+			} else {
+				return null;
+			}
+
+		}
+
+		return null;*/
+	}
 
     
 

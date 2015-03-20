@@ -74,8 +74,7 @@ public class BookDetailDao {
 
 	@Transient
 	private Boolean textchange=new Boolean(false);
-	@Transient
-	private Boolean clientspecificchange=new Boolean(false);
+
 
 
 

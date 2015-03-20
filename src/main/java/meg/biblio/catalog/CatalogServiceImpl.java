@@ -94,9 +94,8 @@ public class CatalogServiceImpl implements CatalogService {
 	 */
 	@Override
 	public BookModel createCatalogEntryFromBookModel(Long clientkey,
-			BookModel model, Boolean createclientbookid) {
-		BookDao book = createBookFromBookModel(clientkey, model,
-				createclientbookid);
+			BookModel model) {
+		BookDao book = createBookFromBookModel(clientkey, model);
 		Long bookid = book.getId();
 
 		// reload book in bookmodel
@@ -107,12 +106,6 @@ public class CatalogServiceImpl implements CatalogService {
 	}
 
 	@Override
-	public BookModel createCatalogEntryFromBookModel(Long clientkey,
-			BookModel model) {
-		return createCatalogEntryFromBookModel(clientkey, model, false);
-	}
-
-	@Override
 	public List<BookModel> createCatalogEntriesFromList(Long clientkey,
 			List<BookModel> toimport) {
 		List<BookModel> createdobjects = new ArrayList<BookModel>();
@@ -120,7 +113,7 @@ public class CatalogServiceImpl implements CatalogService {
 		// go through list of BookModels, persisting them
 		for (BookModel imported : toimport) {
 
-			BookDao saved = createBookFromBookModel(clientkey, imported, false);
+			BookDao saved = createBookFromBookModel(clientkey, imported);
 			Long bookid = saved.getId();
 
 			// reload book in bookmodel
@@ -399,8 +392,9 @@ public class CatalogServiceImpl implements CatalogService {
 		return "en";
 	}
 
-	private BookDao createBookFromBookModel(Long clientkey, BookModel model,
-			Boolean createid) {
+	private BookDao createBookFromBookModel(Long clientkey, BookModel model) {
+		Boolean createid = model.getCreatenewid();
+		model.setCreatenewid(false);
 		// get configuration for barcodes
 		ClientDao client = clientService.getClientForKey(clientkey);
 		Boolean useclientbookforbarcode = client.getIdForBarcode();
@@ -626,7 +620,41 @@ public class CatalogServiceImpl implements CatalogService {
 
 	@Override
 	public BookDetailDao saveBookDetail(BookDetailDao newdetail) {
+		boolean newobject = false;
 		if (newdetail != null) {
+
+			// deal with client specific change.
+			// if the newdetail changes have been made on the main object (not
+			// client specific)
+			// than the newdetail changes should be made on it's own object. It
+			// won't be saved under the
+			// newdetail id, but as a new object, getting a new id
+			// get from db if already persisted
+			if (newdetail.getId() != null) { // only applies if this has been
+												// saved to the db
+				// get from db
+				BookDetailDao bookdetail = searchService
+						.findBookDetailBypassCache(newdetail.getId());
+				// so, if we're here, we know that a database version is
+				// available which shouldn't be overwritten with client specific
+				// changes.
+				// only save if no client specific changes
+				if (!bookdetail.getClientspecific()) {
+					if (newdetail.getClientspecific()) {
+						// save into new client specific detail and return
+						BookDetailDao newclientspecific = new BookDetailDao();
+						// copy from newdetail
+						newclientspecific.copyFrom(newdetail);
+						// save and return
+						newdetail = newclientspecific;
+					}
+				}
+			} else {
+				newobject = true;
+			}
+
+			// refresh objects in bookdetail
+
 			// refresh authors (avoid detached object problem)
 			List<ArtistDao> authors = new ArrayList<ArtistDao>();
 			if (newdetail.getAuthors() != null) {
@@ -716,33 +744,12 @@ public class CatalogServiceImpl implements CatalogService {
 				}
 			}
 
-			// get from db if already persisted
-			if (newdetail.getId() != null) {
-				// check whether client specific changes were made. If so, save
-				// into
-				// a new bookdetail object, and discard the database one
-
-				// get from db
-				BookDetailDao bookdetail = bookDetailRepo.findOne(newdetail
-						.getId());
-				// so, if we're here, we know that a database version is
-				// available which shouldn't be overwritten with client specific changes.
-				// only save if no client specific changes
-				if (!newdetail.getClientspecific()||bookdetail.getClientspecific()) {
-					// copy from newdetail
-					bookdetail.copyFrom(newdetail);
-					// save and return
-					bookdetail = bookDetailRepo.save(bookdetail);
-					return bookdetail;
-				} else {
-					// mark as client specific
-					newdetail.setClientspecific(true);
-				}
-			} else {
-				// this detail hasn't yet been saved.  Save it
+			if (newobject) {
+				// this detail hasn't yet been saved. Save it
 				// as non-client specific, so it can be used as a base
 				// for further searches.
 				newdetail.setClientspecific(false);
+
 			}
 
 			// save and return

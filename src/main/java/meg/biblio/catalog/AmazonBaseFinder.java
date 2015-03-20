@@ -106,6 +106,7 @@ public class AmazonBaseFinder extends BaseDetailFinder {
 	}
 
 	protected FinderObject searchLogic(FinderObject findobj) throws Exception {
+		boolean isbnsearch = false;
 		BookDetailDao bookdetail = findobj.getBookdetail();
 		if (apikeyid == null) {
 			apikeyid = settingService.getSettingAsString("biblio.am.keyd");
@@ -137,7 +138,8 @@ public class AmazonBaseFinder extends BaseDetailFinder {
 		params.put("SearchIndex", "Books");
 		
 		// add params by search type (isbn, or other (title, author, publisher)
-		if (bookdetail.hasIsbn()) {
+		Long currentstatus = findobj.getSearchStatus()!=null?findobj.getSearchStatus():0L;
+		if (bookdetail.hasIsbn()&& currentstatus!=CatalogService.DetailStatus.DETAILNOTFOUNDWISBN) {
 			// doing an isbn search
 			if (bookdetail.getIsbn13()!=null) {
 				params.put("ItemId",bookdetail.getIsbn13());	
@@ -147,6 +149,7 @@ public class AmazonBaseFinder extends BaseDetailFinder {
 				params.put("IdType","ISBN");
 			}
 			params.put("Operation", "ItemLookup");
+			isbnsearch = true;
 		} else {
 			// searching by title, author, and / or publisher
 			String title = bookdetail.getTitle();
@@ -220,7 +223,8 @@ public class AmazonBaseFinder extends BaseDetailFinder {
 		// process list according to size - (one, none, or multiple results found)
 		if (copiedinfo !=null) {
 			if (copiedinfo.size()==0) {
-				findobj.setSearchStatus(CatalogService.DetailStatus.DETAILNOTFOUND);	
+				Long searchstatus = isbnsearch?CatalogService.DetailStatus.DETAILNOTFOUNDWISBN:CatalogService.DetailStatus.DETAILNOTFOUND;
+				findobj.setSearchStatus(searchstatus);	
 			} else if (copiedinfo.size()==1){
 				findobj.setSearchStatus(CatalogService.DetailStatus.DETAILFOUND);
 				FoundDetailsDao found = copiedinfo.get(0);
@@ -232,7 +236,8 @@ public class AmazonBaseFinder extends BaseDetailFinder {
 			}
 		}else {
 			// no detail found in data
-			findobj.setSearchStatus(CatalogService.DetailStatus.DETAILNOTFOUND);
+			Long searchstatus = isbnsearch?CatalogService.DetailStatus.DETAILNOTFOUNDWISBN:CatalogService.DetailStatus.DETAILNOTFOUND;
+			findobj.setSearchStatus(searchstatus);
 		}
 		
 		

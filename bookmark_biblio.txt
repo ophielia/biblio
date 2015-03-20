@@ -5,8 +5,6 @@ Branch - DEMO 1.0 - Demo1
 	Front End improvements
 	Better navigation
 		
-		
-
 GoogleSearch - test multi details....
 reflect code / class / type changes in search
 
@@ -19,20 +17,23 @@ eventually - check scheduledFillInDetails... DetailSearch
 	
 	
 immediate: 
-
 ---> next - display not working /books/display/62767
----> clientbookid not saved.  barcode also not saved.	
+test - clientbookid not saved.  barcode also not saved.	
 ---> work out isbnnodetail for search - case where not found by isbn, should search again by title, author
----> test swap out of clientspecific in CatalogService - formal test - seems to be working....
----> also - clientspecific swap - only discard db if db is not already clientspecific!
+	done -	implement written correctly in finders
+	in process - BNF, Google, and internal left - implement noted correctly in finders
+	implement swapped out in save
+	implement front end "search again" button (verification changes)
+
+
+
 
 link if not client/barcodes for assign or reassign code
 link for "Search again"
 
 ---- begin commit changes ----
-
-done - input for description, select for fiction, language
-done - client specific swap out
+done - clientspecific swap - only discard db if db is not already clientspecific!
+done - swap out of clientspecific in CatalogService - formal test - seems to be working....
 
 
 
@@ -106,6 +107,8 @@ done - import - needs to do offline search for everything before saving.  Then o
 done - search for batch maximum after save.
 done - put max count in amazon found details....
 done - add ark codes	
+done - input for description, select for fiction, language
+done - client specific swap out
 
 
 ---- end branch changes ----

@@ -78,12 +78,14 @@ public class InternalDetailFinder extends BaseDetailFinder {
 	}
 
 	protected FinderObject searchLogic(FinderObject findobj) throws Exception {
+		boolean isbnsearch = false;
 		// determine search type - title/author or isbn
 		BookDetailDao detail = findobj.getBookdetail();
 		List<BookDetailDao> results = new ArrayList<BookDetailDao>();
 		if (detail.getIsbn10() != null || detail.getIsbn13() != null) {
 			// do isbn search
 			results = doIsbnSearch(detail);
+			isbnsearch = true;
 		} else if (detail.hasAuthor() && detail.getTitle() != null) {
 			// do titleauthor search
 			results = doTitleAuthorSearch(detail);
@@ -96,6 +98,10 @@ public class InternalDetailFinder extends BaseDetailFinder {
 			// put first result into findobj
 			BookDetailDao found = results.get(0);
 			findobj.setBookdetail(found);
+		} else {
+			// set detailstatus to not found in book
+			Long searchstatus = isbnsearch?CatalogService.DetailStatus.DETAILNOTFOUNDWISBN:CatalogService.DetailStatus.DETAILNOTFOUND;
+			findobj.setSearchStatus(searchstatus);
 		}
 
 		// return

@@ -106,7 +106,7 @@ public class DetailSearchServiceImpl implements DetailSearchService {
 		FinderObject findobj = new FinderObject(detail);
 
 		// get finderchain
-		DetailFinder	finderchain = createFinderChain();
+		DetailFinder finderchain = createFinderChain();
 
 		// run chain
 		try {

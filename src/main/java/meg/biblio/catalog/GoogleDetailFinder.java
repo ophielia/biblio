@@ -81,7 +81,7 @@ public class GoogleDetailFinder extends BaseDetailFinder {
 
 	private FinderObject searchLogic(FinderObject findobj, Books books)
 			throws Exception {
-
+boolean isbnsearch = false;
 		// find book
 		BookDetailDao bookdetail = findobj.getBookdetail();
 
@@ -94,6 +94,7 @@ public class GoogleDetailFinder extends BaseDetailFinder {
 						.getIsbn10() : bookdetail.getIsbn13();
 				querybuild.append("isbn:");
 				querybuild.append(isbn);
+				isbnsearch=true;
 			} else {
 				querybuild.append("intitle:");
 				String title = bookdetail.getTitle().toLowerCase();
@@ -155,7 +156,8 @@ public class GoogleDetailFinder extends BaseDetailFinder {
 			List<FoundDetailsDao> details = null;
 			if (volumes.getTotalItems() == 0 || volumes.getItems() == null) {
 				// set detailstatus to not found in book
-				findobj.setSearchStatus(CatalogService.DetailStatus.DETAILNOTFOUND);
+				Long searchstatus = isbnsearch?CatalogService.DetailStatus.DETAILNOTFOUNDWISBN:CatalogService.DetailStatus.DETAILNOTFOUND;
+				findobj.setSearchStatus(searchstatus);	
 			} else if (volumes.getTotalItems() == 1) {
 				// one volume found - get details for this, fill in the book,
 				// and save the book

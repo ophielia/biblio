@@ -3,6 +3,7 @@ package meg.biblio.search;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -46,6 +47,9 @@ public class SearchServiceTest {
 	@Autowired
 	BookRepository bookRepo;
 	
+	
+	BookDao testbook;
+	
 	@Before
 	public void setup() {
 		// put "Laura Ingalls Wilder" in db
@@ -63,7 +67,8 @@ public class SearchServiceTest {
 		authors.add(newart);
 		book.getBookdetail().setDetailstatus(CatalogService.DetailStatus.NODETAIL);
 		book.getBookdetail().setAuthors(authors);
-		bookRepo.save(book);
+		book.getBookdetail().setClientspecific(false);
+		 testbook = bookRepo.save(book);
 		// put "John Smith" in db
 		newart = new ArtistDao();
 		newart.setFirstname("John");
@@ -265,7 +270,25 @@ public class SearchServiceTest {
 		
 	}		
 	
+    @Test
+    public void testBypassCacheBookDetailQuery() {
+    	// blow up test
+    	Long id = 0L;
+    	searchService.findBookDetailBypassCache(id);
+    	
+    	// test that it's not cached  - change book
+    	testbook.getBookdetail().setTitle("nonsense");
+    	testbook.getBookdetail().setPublishyear(1970L);
+    	id = testbook.getBookdetail().getId();
+    	
+    	Assert.assertTrue(testbook.getBookdetail().getClientspecific());
 
+    	// now, get from db, bypassing cache
+    	BookDetailDao nocache = searchService.findBookDetailBypassCache(id);
+    	Assert.assertFalse(nocache.getClientspecific());
+    	
+    }
+	
 	@Test
 	public void testFindBooksForIdentifier() throws GeneralSecurityException, IOException {
 		// insert bookdetail with title and ean 1111111111111

@@ -229,8 +229,8 @@ public class AssignBarcodeController {
 		if (artist!=null) {
 			model.setAuthorInBook(artist);
 		}
-		model = catalogService.createCatalogEntryFromBookModel(clientid, model,
-				createclientbookid);
+//		model = catalogService.createCatalogEntryFromBookModel(clientid, model,
+	//			createclientbookid);
 		// book-> AssignCodeModel -> uiModel
 		BookDao book = model.getBook();
 		assignCodeModel.setBook(book);

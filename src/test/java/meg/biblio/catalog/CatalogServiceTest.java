@@ -17,6 +17,7 @@ import meg.biblio.catalog.db.PublisherRepository;
 import meg.biblio.catalog.db.SubjectRepository;
 import meg.biblio.catalog.db.dao.ArtistDao;
 import meg.biblio.catalog.db.dao.BookDao;
+import meg.biblio.catalog.db.dao.BookDetailDao;
 import meg.biblio.catalog.db.dao.PublisherDao;
 import meg.biblio.catalog.web.model.BookModel;
 import meg.biblio.common.ClientService;
@@ -88,6 +89,9 @@ public class CatalogServiceTest {
 		pubtestbook.getBookdetail().setTitle("testTitle");
 		// put publisher in book
 		pubtestbook.getBookdetail().setPublisher(pub);
+		pubtestbook.getBookdetail().setDescription("description");
+		pubtestbook.getBookdetail().setClientspecific(false);
+		
 		// save book
 		BookDao pubtest = bookRepo.saveAndFlush(pubtestbook);
 		pubtestid = pubtest.getId();
@@ -390,5 +394,33 @@ public class CatalogServiceTest {
 		Assert.assertEquals(new Long(5), model.getShelfcode());
 		
 	}
+	
+	@Test
+	public void testUpdateBookClientSpecific() throws GeneralSecurityException, IOException {
+		// load testpubid
+		BookModel model = catalogService.loadBookModel(pubtestid);
+		
+		// change classification, booktype, status, and language
+		model.setShelfcode(5L);
+		model.setType(CatalogService.BookType.FOREIGNLANGUAGE);
+		model.setLanguage("EN");
+		model.setStatus(CatalogService.Status.CHECKEDOUT);
+		model.setDescription("shorter nonsense");
+		
+		Long detailid = model.getBook().getBookdetail().getId();
+		
+		// server call
+		model = catalogService.updateCatalogEntryFromBookModel(1L, model,false);
+		BookDetailDao saveddao = model.getBook().getBookdetail();
+		Long savedid = saveddao.getId();
+		
+		// ensure that changes are shown
+		Assert.assertNotNull(model);
+		Assert.assertEquals(new Long(CatalogService.BookType.FOREIGNLANGUAGE), model.getType());
+		Assert.assertEquals(new Long(CatalogService.Status.CHECKEDOUT), model.getStatus());
+		Assert.assertEquals("EN", model.getLanguage());
+		Assert.assertEquals(new Long(5), model.getShelfcode());
+		Assert.assertNotEquals(detailid,savedid);
+	}	
 
 }

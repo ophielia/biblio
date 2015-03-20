@@ -48,7 +48,6 @@ public interface CatalogService {
 
 
 
-	BookModel createCatalogEntryFromBookModel(Long clientkey, BookModel model,Boolean createclientbookid);
 	
 	BookModel createCatalogEntryFromBookModel(Long clientkey, BookModel model);
 
