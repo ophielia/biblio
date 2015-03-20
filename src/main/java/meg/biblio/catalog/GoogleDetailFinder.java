@@ -89,8 +89,9 @@ boolean isbnsearch = false;
 			// set up query for title and author
 			StringBuffer querybuild = new StringBuffer();
 
-			if (bookdetail.hasIsbn()) {
-				String isbn = bookdetail.getIsbn10() != null ? bookdetail
+					Long currentstatus = findobj.getSearchStatus()!=null?findobj.getSearchStatus():0L;
+
+		if (bookdetail.hasIsbn()&& currentstatus!=CatalogService.DetailStatus.DETAILNOTFOUNDWISBN) {String isbn = bookdetail.getIsbn10() != null ? bookdetail
 						.getIsbn10() : bookdetail.getIsbn13();
 				querybuild.append("isbn:");
 				querybuild.append(isbn);
