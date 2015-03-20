@@ -26,12 +26,12 @@ public class FinderObject {
 		// an isbn has been added since the search was first made
 		if (detail.getId() == null) {
 			isnew = true;
-			if (detail.getDetailstatus()==null) {
+			if (detail.getDetailstatus() == null) {
 				detail.setDetailstatus(CatalogService.DetailStatus.NODETAIL);
 			}
 		} else {
 			setPreviousfinderCode(detail.getFinderlog());
-			
+
 		}
 		setSearchStatus(detail.getDetailstatus());
 		this.bookdetail = detail;
@@ -121,6 +121,12 @@ public class FinderObject {
 
 	}
 
+	public void addToMultiresults(List<FoundDetailsDao> founddetails) {
+		for (FoundDetailsDao fd : founddetails) {
+			addToMultiresults(fd);
+		}
+	}
+
 	public List<FoundDetailsDao> getMultiresults() {
 		// return list of all values from multiresults hash
 		List<FoundDetailsDao> returnlist = new ArrayList<FoundDetailsDao>();
@@ -148,15 +154,14 @@ public class FinderObject {
 		return isnew;
 	}
 
-
 	public void setSearchStatus(Long newstatus) {
 		if (searchstatus.longValue() == newstatus.longValue()) {
 			return;
 		}
 		if (newstatus.longValue() == CatalogService.DetailStatus.DETAILNOTFOUNDWISBN) {
 			// set only if existing is NODETAIL or detailnot found
-			if (searchstatus.longValue() == CatalogService.DetailStatus.NODETAIL ||
-					searchstatus.longValue() == CatalogService.DetailStatus.DETAILNOTFOUND) {
+			if (searchstatus.longValue() == CatalogService.DetailStatus.NODETAIL
+					|| searchstatus.longValue() == CatalogService.DetailStatus.DETAILNOTFOUND) {
 				searchstatus = newstatus;
 			}
 		} else if (newstatus.longValue() == CatalogService.DetailStatus.DETAILNOTFOUND) {
@@ -170,7 +175,7 @@ public class FinderObject {
 				// copy current bookdetail into multiresults
 				addToMultiresults(bookdetail);
 			}
-		} else{
+		} else {
 			searchstatus = newstatus;
 		}
 
@@ -214,8 +219,8 @@ public class FinderObject {
 
 	private boolean isbnInHash(String isbn10, String isbn13) {
 		boolean inhash = false;
-		if (allisbns==null) {
-			 allisbns=new ArrayList<String>();
+		if (allisbns == null) {
+			allisbns = new ArrayList<String>();
 		}
 		if (isbn10 != null) {
 			if (allisbns.contains(isbn10)) {
@@ -252,8 +257,5 @@ public class FinderObject {
 	public List<BookIdentifier> getAddlcodes() {
 		return addlcodes;
 	}
-
-
-
 
 }

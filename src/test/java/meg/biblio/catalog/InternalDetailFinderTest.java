@@ -57,6 +57,7 @@ public class InternalDetailFinderTest {
 		ArtistDao author = catalogService.textToArtistName("Caroline Itoi");
 		authors.add(author);
 		bd.setAuthors(authors);
+		bd.setClientspecific(false);
 
 		// get id, and save in field
 		bd = bookDetRepo.save(bd);
@@ -122,4 +123,23 @@ public class InternalDetailFinderTest {
 		findobj = internalSearch.searchLogic(findobj);
 		Assert.assertTrue(findobj.getSearchStatus() == CatalogService.DetailStatus.DETAILNOTFOUNDWISBN);
 	}
+	
+	@Test
+	public void testISBNNotFoundRead() throws Exception {
+		BookDao book = new BookDao();
+		BookDetailDao bd = book.getBookdetail();
+		bd.setTitle("James Duke is born");
+		List<ArtistDao> authors = new ArrayList<ArtistDao>();
+		ArtistDao author = catalogService.textToArtistName("Caroline Itoi");
+		authors.add(author);
+		bd.setAuthors(authors);
+		book.setBookdetail(bd);
+		book.getBookdetail().setDetailstatus(CatalogService.DetailStatus.DETAILNOTFOUNDWISBN);
+
+		FinderObject findobj = new FinderObject(book.getBookdetail());
+
+		// service call
+		findobj = internalSearch.searchLogic(findobj);
+		Assert.assertFalse(findobj.getSearchStatus() == CatalogService.DetailStatus.DETAILNOTFOUNDWISBN);
+	}	
 }

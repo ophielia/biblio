@@ -20,8 +20,10 @@ immediate:
 ---> next - display not working /books/display/62767
 test - clientbookid not saved.  barcode also not saved.	
 ---> work out isbnnodetail for search - case where not found by isbn, should search again by title, author
-	done -	implement written correctly in finders
-	in process - BNF, Google, and internal left - implement noted correctly in finders
+
+	BNF - adding multi results and isbnsearch read to BNFFinder
+		will need to update isEligible
+		---> resultsIntoFoundDetail
 	implement swapped out in save
 	implement front end "search again" button (verification changes)
 
@@ -32,8 +34,8 @@ link if not client/barcodes for assign or reassign code
 link for "Search again"
 
 ---- begin commit changes ----
-done - clientspecific swap - only discard db if db is not already clientspecific!
-done - swap out of clientspecific in CatalogService - formal test - seems to be working....
+	done -	implement written correctly in finders
+	done - BNF, Google, and internal left - implement noted correctly in finders
 
 
 
@@ -109,6 +111,8 @@ done - put max count in amazon found details....
 done - add ark codes	
 done - input for description, select for fiction, language
 done - client specific swap out
+done - clientspecific swap - only discard db if db is not already clientspecific!
+done - swap out of clientspecific in CatalogService - formal test - seems to be working....
 
 
 ---- end branch changes ----

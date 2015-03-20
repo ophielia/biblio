@@ -82,7 +82,13 @@ public class InternalDetailFinder extends BaseDetailFinder {
 		// determine search type - title/author or isbn
 		BookDetailDao detail = findobj.getBookdetail();
 		List<BookDetailDao> results = new ArrayList<BookDetailDao>();
-		if (detail.getIsbn10() != null || detail.getIsbn13() != null) {
+		
+		if (detail!=null) {
+			
+			Long currentstatus = findobj.getSearchStatus() != null ? findobj
+					.getSearchStatus() : 0L;
+					boolean hasisbn=detail.getIsbn10() != null || detail.getIsbn13() != null;
+		if (hasisbn&& currentstatus!=CatalogService.DetailStatus.DETAILNOTFOUNDWISBN) {
 			// do isbn search
 			results = doIsbnSearch(detail);
 			isbnsearch = true;
@@ -103,7 +109,7 @@ public class InternalDetailFinder extends BaseDetailFinder {
 			Long searchstatus = isbnsearch?CatalogService.DetailStatus.DETAILNOTFOUNDWISBN:CatalogService.DetailStatus.DETAILNOTFOUND;
 			findobj.setSearchStatus(searchstatus);
 		}
-
+		}
 		// return
 		return findobj;
 	}

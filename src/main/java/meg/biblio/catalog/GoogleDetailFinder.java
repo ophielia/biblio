@@ -81,7 +81,7 @@ public class GoogleDetailFinder extends BaseDetailFinder {
 
 	private FinderObject searchLogic(FinderObject findobj, Books books)
 			throws Exception {
-boolean isbnsearch = false;
+		boolean isbnsearch = false;
 		// find book
 		BookDetailDao bookdetail = findobj.getBookdetail();
 
@@ -89,13 +89,16 @@ boolean isbnsearch = false;
 			// set up query for title and author
 			StringBuffer querybuild = new StringBuffer();
 
-					Long currentstatus = findobj.getSearchStatus()!=null?findobj.getSearchStatus():0L;
+			Long currentstatus = findobj.getSearchStatus() != null ? findobj
+					.getSearchStatus() : 0L;
 
-		if (bookdetail.hasIsbn()&& currentstatus!=CatalogService.DetailStatus.DETAILNOTFOUNDWISBN) {String isbn = bookdetail.getIsbn10() != null ? bookdetail
+			if (bookdetail.hasIsbn()
+					&& currentstatus != CatalogService.DetailStatus.DETAILNOTFOUNDWISBN) {
+				String isbn = bookdetail.getIsbn10() != null ? bookdetail
 						.getIsbn10() : bookdetail.getIsbn13();
 				querybuild.append("isbn:");
 				querybuild.append(isbn);
-				isbnsearch=true;
+				isbnsearch = true;
 			} else {
 				querybuild.append("intitle:");
 				String title = bookdetail.getTitle().toLowerCase();
@@ -157,8 +160,9 @@ boolean isbnsearch = false;
 			List<FoundDetailsDao> details = null;
 			if (volumes.getTotalItems() == 0 || volumes.getItems() == null) {
 				// set detailstatus to not found in book
-				Long searchstatus = isbnsearch?CatalogService.DetailStatus.DETAILNOTFOUNDWISBN:CatalogService.DetailStatus.DETAILNOTFOUND;
-				findobj.setSearchStatus(searchstatus);	
+				Long searchstatus = isbnsearch ? CatalogService.DetailStatus.DETAILNOTFOUNDWISBN
+						: CatalogService.DetailStatus.DETAILNOTFOUND;
+				findobj.setSearchStatus(searchstatus);
 			} else if (volumes.getTotalItems() == 1) {
 				// one volume found - get details for this, fill in the book,
 				// and save the book
@@ -273,14 +277,14 @@ boolean isbnsearch = false;
 					bookdetail.setListedtype(CatalogService.BookType.FICTION);
 
 				}
-				
+
 				subjects.add(category);
 			}
-			if (subjects.size()>0) {
+			if (subjects.size() > 0) {
 				insertSubjectsIntoBookDetail(subjects, bookdetail);
 			}
 		}
-		
+
 		// add image link
 		String imagelink = info.getImageLinks() != null ? info.getImageLinks()
 				.getThumbnail() : null;
@@ -336,6 +340,7 @@ boolean isbnsearch = false;
 			}
 			detail.setBookdetailid(bookdetail.getId());
 			detail.setSearchserviceid(found.getId());
+			detail.setSearchservice(identifier);
 			detail.setTitle(info.getTitle());
 			detail.setPublisher(info.getPublisher());
 			if (info.getPublishedDate() != null) {
@@ -388,7 +393,5 @@ boolean isbnsearch = false;
 
 		return details;
 	}
-
-
 
 }

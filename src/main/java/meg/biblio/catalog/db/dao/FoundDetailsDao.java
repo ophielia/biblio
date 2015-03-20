@@ -27,6 +27,7 @@ public class FoundDetailsDao {
 	private String imagelink;
 	private String searchserviceid;
 	private Long searchsource;
+	
 
 	public void setDescription(String description) {
 		if (description!=null && description.length()>1510) {
@@ -34,4 +35,6 @@ public class FoundDetailsDao {
 		}
 		this.description = description;
     }
+
+
 }

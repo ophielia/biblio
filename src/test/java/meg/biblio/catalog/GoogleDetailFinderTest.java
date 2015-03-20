@@ -90,4 +90,21 @@ public class GoogleDetailFinderTest {
 		Assert.assertTrue(findobj.getSearchStatus() == CatalogService.DetailStatus.DETAILNOTFOUNDWISBN);
 	}
 
+	@Test
+	public void testISBNNotFoundRead() throws Exception {
+		BookDao book = new BookDao();
+		book.getBookdetail().setIsbn13("1111111111111");
+		book.getBookdetail().setTitle("Superlapin");
+		ArtistDao author = catalogService.textToArtistName("Stephanie Blake");
+		List<ArtistDao> authors = new ArrayList<ArtistDao>();
+		authors.add(author);
+		book.getBookdetail().setAuthors(authors);
+		book.getBookdetail().setDetailstatus(CatalogService.DetailStatus.DETAILNOTFOUNDWISBN);
+
+		FinderObject findobj = new FinderObject(book.getBookdetail());
+
+		// service call
+		findobj = googleSearch.searchLogic(findobj);
+		Assert.assertFalse(findobj.getSearchStatus() == CatalogService.DetailStatus.DETAILNOTFOUNDWISBN);
+	}	
 }

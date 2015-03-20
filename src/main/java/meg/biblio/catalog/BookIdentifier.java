@@ -7,6 +7,7 @@ public class BookIdentifier {
 	String ean;
 	Long publishyear;
 	private String ark;
+	private String link;
 	
 	public String getIsbn() {
 		return isbn;
@@ -33,6 +34,11 @@ public class BookIdentifier {
 	public void setArk(String ark) {
 		this.ark = ark;
 	}
+	public String getLink() {
+		return this.link ;
+	}
 	
-	
+	public void setLink(String link) {
+		this.link = link;
+	}
 }

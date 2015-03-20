@@ -1,5 +1,6 @@
 package meg.biblio.catalog;
 
+import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,10 +13,12 @@ import meg.biblio.catalog.db.PublisherRepository;
 import meg.biblio.catalog.db.SubjectRepository;
 import meg.biblio.catalog.db.dao.ArtistDao;
 import meg.biblio.catalog.db.dao.BookDetailDao;
+import meg.biblio.catalog.db.dao.FoundDetailsDao;
 import meg.biblio.common.AppSettingService;
 import meg.biblio.search.SearchService;
 
 import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.BasicResponseHandler;
@@ -109,12 +112,11 @@ public class BNFCatalogFinder extends BaseDetailFinder {
 
 	}
 
-	protected HashMap<String, String> findAlternateIdentifiers(
-			FinderObject findobj, String authornameoverride)
-			throws Exception {
+	protected List<BookIdentifier> findAlternateIdentifiers(
+			FinderObject findobj, String authornameoverride) throws Exception {
 		HashMap<String, String> ean2link = new HashMap<String, String>();
 		BookDetailDao bookdetail = findobj.getBookdetail();
-		
+
 		// add params - title and author
 		String querystring = "";
 		String value = "";
@@ -123,7 +125,7 @@ public class BNFCatalogFinder extends BaseDetailFinder {
 		String title = bookdetail.getTitle();
 		List<ArtistDao> authors = bookdetail.getAuthors();
 		String author = "";
-		if (authornameoverride!=null) {
+		if (authornameoverride != null) {
 			author = authornameoverride;
 		} else {
 			if (authors != null && authors.size() > 0) {
@@ -214,6 +216,7 @@ public class BNFCatalogFinder extends BaseDetailFinder {
 						// create book identifiers
 						BookIdentifier bi = new BookIdentifier();
 						bi.setEan(ean);
+						bi.setLink(link.trim());
 						bi.setIsbn(isbn);
 						if (cleandate.length() == 4) {
 							bi.setPublishyear(new Long(cleandate));
@@ -223,12 +226,9 @@ public class BNFCatalogFinder extends BaseDetailFinder {
 					}
 				}// end result loop
 			}
-			if (addlcodes!=null && addlcodes.size()>0) {
-				findobj.addAddlIdentifiers(addlcodes);
-			}
-			
+
 		}
-		return ean2link;
+		return addlcodes;
 	}
 
 	protected FinderObject searchLogic(FinderObject findobj) throws Exception {
@@ -238,6 +238,7 @@ public class BNFCatalogFinder extends BaseDetailFinder {
 		// lookup by isbn
 		// add params by search type (isbn, or other (title, author, publisher)
 		String querystring = "";
+		String catalogurl = null;
 		if (bookdetail.hasIsbn()) {
 			String value = "";
 			// doing an isbn search
@@ -252,7 +253,7 @@ public class BNFCatalogFinder extends BaseDetailFinder {
 			// replace string in query with value
 			querystring = querystring.replace("REPLACE", value);
 			querystring = URLEncoder.encode(querystring, "UTF-8");
-isbnsearch = true;
+			isbnsearch = true;
 		} else {
 			// returning - this somehow got here without and isbn - can't run
 			// this without isbn....
@@ -260,25 +261,52 @@ isbnsearch = true;
 			return findobj;
 		}
 
-		String requestUrl = databnfrequest.replace("REPLACE", querystring);
+		if (isbnsearch) {
+			String requestUrl = databnfrequest.replace("REPLACE", querystring);
 
-		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-		DocumentBuilder db = dbf.newDocumentBuilder();
-		Document doc = db.parse(requestUrl);
+			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+			DocumentBuilder db = dbf.newDocumentBuilder();
+			Document doc = db.parse(requestUrl);
 
-		// get catalog uri from response
-		Node node = doc.getElementsByTagName("uri").item(0);
-		String catalogurl = node != null ? node.getTextContent() : null;
-
-		// if no catalogurl, look for additional codes
-		HashMap<String, String> addlcodes = null;
+			// get catalog uri from response
+			Node node = doc.getElementsByTagName("uri").item(0);
+			catalogurl = node != null ? node.getTextContent() : null;
+		}
+		// if no catalogurl, do author / title search - to put either in
+		// additionalcodes, or founddetails
+		HashMap<String, String> addlcodeshash = null;
 		if (catalogurl == null) {
 			addlcodessearch = true;
-			addlcodes = findAlternateIdentifiers(findobj, null);
+
+			List<BookIdentifier> addlcodes = findAlternateIdentifiers(findobj,
+					null);
+
 			if (addlcodes != null && addlcodes.size() > 0) {
-				for (String key : addlcodes.keySet()) {
-					catalogurl = addlcodes.get(key);
-					break;
+				// if !isbnsearch - this is our first search - and should be
+				// processed accordingly
+				if (!isbnsearch) {
+					if (addlcodes.size() == 1) {
+						// one result - becomes catalogurl
+						catalogurl = addlcodes.get(0).getLink();
+					} else {
+						// more than one result - becomes founddetails
+						List<FoundDetailsDao> details = processLinksIntoFoundDetails(addlcodes);
+						findobj.addToMultiresults(details);
+						findobj.setSearchStatus(CatalogService.DetailStatus.MULTIDETAILSFOUND);
+					}
+
+				} else {
+					// isbnsearch -
+					// one or more results - first becomes catalogurl
+					BookIdentifier bi = addlcodes.get(0);
+					catalogurl = bi.getLink();
+					// any possible remaining results added to findobj
+					if (addlcodes.size() > 1) {
+						addlcodes = addlcodes.subList(1, addlcodes.size());
+						if (addlcodes != null && addlcodes.size() > 0) {
+							findobj.addAddlIdentifiers(addlcodes);
+						}
+					}
 				}
 			}
 		}
@@ -286,8 +314,8 @@ isbnsearch = true;
 		// now, lets get this record....
 		if (catalogurl != null) {
 			HashMap<String, String> results = new HashMap<String, String>();
-			String alternateauthor=null;
-			
+			String alternateauthor = null;
+
 			// now, lets get this record....
 			CloseableHttpClient httpclient = HttpClients.createDefault();
 			try {
@@ -299,20 +327,21 @@ isbnsearch = true;
 						responseHandler);
 				processResponse(responseBody, results);
 
-				if (results.size()>0) {
+				if (results.size() > 0) {
 					// add ark to bookdetail
 					String ark = parseArkFromUrl(catalogurl);
 					findobj.getBookdetail().setArk(ark);
 					findobj.setSearchStatus(CatalogService.DetailStatus.DETAILFOUND);
 				} else {
-						Long searchstatus = isbnsearch?CatalogService.DetailStatus.DETAILNOTFOUNDWISBN:CatalogService.DetailStatus.DETAILNOTFOUND;
-						findobj.setSearchStatus(searchstatus);	
+					Long searchstatus = isbnsearch ? CatalogService.DetailStatus.DETAILNOTFOUNDWISBN
+							: CatalogService.DetailStatus.DETAILNOTFOUND;
+					findobj.setSearchStatus(searchstatus);
 				}
 				// nab this authors name here, just in case
 				alternateauthor = stripAfterText("(", results.get("Auteur(s)"));
 				alternateauthor = stripAfterText(newlinemarker, alternateauthor);
 				alternateauthor = normalizeArtistName(alternateauthor);
-				
+
 				// put results into bookdetail
 				resultsIntoDetail(results, findobj);
 			} finally {
@@ -323,8 +352,10 @@ isbnsearch = true;
 			}
 
 			// get additional codes for title and author
-			if (!addlcodessearch && alternateauthor!=null) {
-				addlcodes = findAlternateIdentifiers(findobj, alternateauthor);
+			if (!addlcodessearch && alternateauthor != null) {
+				List<BookIdentifier> addlcodes = findAlternateIdentifiers(
+						findobj, alternateauthor);
+				findobj.addAddlIdentifiers(addlcodes);
 			}
 		} else {
 			// nothing found
@@ -333,6 +364,55 @@ isbnsearch = true;
 
 		// return findobj
 		return findobj;
+	}
+
+	private List<FoundDetailsDao> processLinksIntoFoundDetails(
+			List<BookIdentifier> addlcodes) throws ClientProtocolException, IOException {
+		List<FoundDetailsDao> fdetails = new ArrayList<FoundDetailsDao>();
+if (addlcodes!=null && addlcodes.size()>0) {
+		
+	for (BookIdentifier bi:addlcodes) {
+	FoundDetailsDao fd = new FoundDetailsDao();
+	String catalogurl = bi.getLink();
+	String ark = parseArkFromUrl(catalogurl);
+	fd.setSearchserviceid(ark);
+	fd.setSearchsource(identifier);
+
+	if (catalogurl != null) {
+			HashMap<String, String> results = new HashMap<String, String>();
+
+			// now, lets get this record....
+			CloseableHttpClient httpclient = HttpClients.createDefault();
+			try {
+				HttpGet httpget = new HttpGet(catalogurl);
+
+				// Create a response handler
+				ResponseHandler<String> responseHandler = new BasicResponseHandler();
+				String responseBody = httpclient.execute(httpget,
+						responseHandler);
+				processResponse(responseBody, results);
+
+								// put results into bookdetail
+				resultsIntoFoundDetail(results, fd);
+				fdetails.add(fd);
+			} finally {
+				// When HttpClient instance is no longer needed,
+				// shut down the connection manager to ensure
+				// immediate deallocation of all system resources
+				httpclient.getConnectionManager().shutdown();
+			}
+
+		}
+		
+		}
+}
+		return null;
+	}
+
+	private void resultsIntoFoundDetail(HashMap<String, String> results,
+			FoundDetailsDao fd) {
+		// TODO Auto-generated method stub
+
 	}
 
 	private String parseOutDate(String rawdate) {
@@ -353,8 +433,8 @@ isbnsearch = true;
 	private void resultsIntoDetail(HashMap<String, String> results,
 			FinderObject findobj) {
 		BookDetailDao bdetail = findobj.getBookdetail();
-		List<String> addlauthors = new ArrayList<String>(); 
-		List<String> addlillustrators = new ArrayList<String>(); 
+		List<String> addlauthors = new ArrayList<String>();
+		List<String> addlillustrators = new ArrayList<String>();
 		if (results != null) {
 			for (String key : results.keySet()) {
 				if (key.toLowerCase().equals("indice(s) dewey")) {
@@ -413,18 +493,16 @@ isbnsearch = true;
 					bdetail.setDescription(value);
 				}
 			}
-			
+
 			// now, add addlauthors and illustrators
-			if (addlauthors !=null ) {
-				for (String artist:addlauthors) {
-					bdetail = addArtistToAuthors(artist,
-							bdetail);
+			if (addlauthors != null) {
+				for (String artist : addlauthors) {
+					bdetail = addArtistToAuthors(artist, bdetail);
 				}
 			}
-			if (addlillustrators !=null ) {
-				for (String artist:addlillustrators) {
-					bdetail = addArtistToAuthors(artist,
-							bdetail);
+			if (addlillustrators != null) {
+				for (String artist : addlillustrators) {
+					bdetail = addArtistToAuthors(artist, bdetail);
 				}
 			}
 
@@ -476,10 +554,10 @@ isbnsearch = true;
 	}
 
 	private String parseArkFromUrl(String link) {
-		if (link!=null) {
+		if (link != null) {
 			int lastslash = link.lastIndexOf("/");
-			if (lastslash>=0) {
-				return link.substring(lastslash+1);
+			if (lastslash >= 0) {
+				return link.substring(lastslash + 1);
 			}
 		}
 		return null;
