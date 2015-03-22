@@ -44,7 +44,7 @@ public class BookModelValidator {
 		}
 		
 		// validation - check isbn - OR - title 
-		boolean hasisbn = model.getIsbnentry()!=null && model.getIsbnentry().trim().length()>0;
+		boolean hasisbn = model.hasIsbn();
 		boolean hastitle = model.getTitle()!=null && model.getTitle().trim().length()>0;
 		if ((!hasisbn) && !(hastitle)) {
 			errors.reject("error_eitheror",null,"Title or ISBN");

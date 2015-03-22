@@ -5,8 +5,6 @@ import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.List;
 
-import meg.biblio.catalog.CatalogService;
-import meg.biblio.catalog.CatalogServiceImpl;
 import meg.biblio.catalog.db.ArtistRepository;
 import meg.biblio.catalog.db.BookRepository;
 import meg.biblio.catalog.db.FoundWordsDao;
@@ -21,6 +19,7 @@ import meg.biblio.catalog.db.dao.BookDetailDao;
 import meg.biblio.catalog.db.dao.PublisherDao;
 import meg.biblio.catalog.web.model.BookModel;
 import meg.biblio.common.ClientService;
+import meg.biblio.search.BookSearchCriteria;
 import meg.biblio.search.SearchService;
 
 import org.junit.Assert;
@@ -45,12 +44,12 @@ public class CatalogServiceTest {
 
 	@Autowired
 	ArtistRepository artistRepo;
-	
+
 	@Autowired
-	FoundWordsRepository foundRepo;	
-	
+	FoundWordsRepository foundRepo;
+
 	@Autowired
-	IgnoredWordsRepository ignoredRepo;		
+	IgnoredWordsRepository ignoredRepo;
 
 	@Autowired
 	BookRepository bookRepo;
@@ -60,7 +59,6 @@ public class CatalogServiceTest {
 
 	@Autowired
 	SubjectRepository subjectRepo;
-	
 
 	@Autowired
 	ClientService clientService;
@@ -78,8 +76,8 @@ public class CatalogServiceTest {
 		// add "eating" to ignored words list
 		IgnoredWordsDao ignored = new IgnoredWordsDao();
 		ignored.setWord("eating");
-		ignoredRepo.saveAndFlush(ignored);		
-		
+		ignoredRepo.saveAndFlush(ignored);
+
 		// setup book with publisher
 		// create publisher
 		PublisherDao pub = new PublisherDao();
@@ -91,9 +89,9 @@ public class CatalogServiceTest {
 		pubtestbook.getBookdetail().setPublisher(pub);
 		pubtestbook.getBookdetail().setDescription("description");
 		pubtestbook.getBookdetail().setClientspecific(false);
-		
+
 		// save book
-		BookDao pubtest = bookRepo.saveAndFlush(pubtestbook);
+		BookDao pubtest = catalogService.saveBook(pubtestbook);
 		pubtestid = pubtest.getId();
 	}
 
@@ -151,7 +149,7 @@ public class CatalogServiceTest {
 		Assert.assertNotNull(result.getBookid());
 		Assert.assertNotNull(result.getClientid());
 		Assert.assertNotNull(result.getAuthors());
-		Assert.assertTrue(result.getIllustrators().size()==0);
+		Assert.assertTrue(result.getIllustrators().size() == 0);
 		// test authors
 		ArtistDao artist = result.getAuthors().get(0);
 		Assert.assertEquals(artistid, artist.getId());
@@ -160,66 +158,70 @@ public class CatalogServiceTest {
 	@Test
 	public void testIndexing() {
 		// make book with description "i am eating a hat. I am Eating a Hat";
-		BookDao book = bookRepo.findOne(pubtestid);
-		book.getBookdetail().setDescription("i am eating a hat. I am Eating a Hat");
-		
+		BookModel bmodel = catalogService.loadBookModel(pubtestid);
+		BookDao book = bmodel.getBook();
+		book.getBookdetail().setDescription(
+				"i am eating a hat. I am Eating a Hat");
 
-		
 		// save book (calls indexing)
-		catalogService.saveBook(book);
-		
+		book = catalogService.saveBook(book);
+
 		// get foundwords for book
-		List<FoundWordsDao> foundw = foundRepo.findWordsForBookDetail( book.getBookdetail());
-		
+		bmodel = catalogService.loadBookModel(pubtestid);
+		book = bmodel.getBook();
+		List<FoundWordsDao> foundw = foundRepo.findWordsForBookDetail(book
+				.getBookdetail());
+
 		// should have 2 i, 2 eating, 2 hat
 		Assert.assertNotNull(foundw);
-		Assert.assertTrue(foundw.size()>0);
-		boolean eatingfound=false;
-		for (FoundWordsDao found:foundw) {
+		Assert.assertTrue(foundw.size() > 0);
+		boolean eatingfound = false;
+		for (FoundWordsDao found : foundw) {
 			if (found.getWord().equals("i")) {
 				Assert.assertNotNull(found.getCountintext());
-				Assert.assertTrue(found.getCountintext().intValue()==2);
+				Assert.assertTrue(found.getCountintext().intValue() == 2);
 			}
 			if (found.getWord().equals("eating")) {
-				eatingfound=true;
+				eatingfound = true;
 			}
 			if (found.getWord().equals("hat")) {
 				Assert.assertNotNull(found.getCountintext());
-				Assert.assertTrue(found.getCountintext().intValue()==2);
+				Assert.assertTrue(found.getCountintext().intValue() == 2);
 			}
 		}
 		// Assert that eating wasn't found(an ignored word)
 		Assert.assertFalse(eatingfound);
-		
+
 		// do a second time - and ensure that results are the same
-		book.getBookdetail().setDescription("i am eating a hat! I am Eating a Hat");
+		book.getBookdetail().setDescription(
+				"i am eating a hat! I am Eating a Hat");
 		// save book (calls indexing)
 		catalogService.saveBook(book);
-		
+
 		// get foundwords for book
-		foundw = foundRepo.findWordsForBookDetail( book.getBookdetail());
-		
+		foundw = foundRepo.findWordsForBookDetail(book.getBookdetail());
+
 		// should have 2 i, 2 eating, 2 hat
 		Assert.assertNotNull(foundw);
-		Assert.assertTrue(foundw.size()>0);
-		eatingfound=false;
-		for (FoundWordsDao found:foundw) {
+		Assert.assertTrue(foundw.size() > 0);
+		eatingfound = false;
+		for (FoundWordsDao found : foundw) {
 			if (found.getWord().equals("i")) {
 				Assert.assertNotNull(found.getCountintext());
-				Assert.assertTrue(found.getCountintext().intValue()==2);
+				Assert.assertTrue(found.getCountintext().intValue() == 2);
 			}
 			if (found.getWord().equals("eating")) {
-				eatingfound=true;
+				eatingfound = true;
 			}
 			if (found.getWord().equals("hat")) {
 				Assert.assertNotNull(found.getCountintext());
-				Assert.assertTrue(found.getCountintext().intValue()==2);
+				Assert.assertTrue(found.getCountintext().intValue() == 2);
 			}
 		}
 		// Assert that eating wasn't found(an ignored word)
-		Assert.assertFalse(eatingfound);		
+		Assert.assertFalse(eatingfound);
 	}
-	
+
 	@Test
 	public void testPublisherBug() {
 
@@ -229,7 +231,7 @@ public class CatalogServiceTest {
 		// check that publisher is not null
 		Assert.assertNotNull(book.getBookdetail().getPublisher());
 	}
-	
+
 	@Test
 	public void testAssignCodeToBook() {
 		Long clientid = clientService.getTestClientId();
@@ -241,19 +243,18 @@ public class CatalogServiceTest {
 		book.getBookdetail().setAuthors(authors);
 
 		BookModel model = new BookModel(book);
-		model = catalogService.createCatalogEntryFromBookModel(clientid,
-				model);
-		
+		model = catalogService.createCatalogEntryFromBookModel(clientid, model);
+
 		// bookid, code
 		Long bookid = model.getBookid();
 		String code = "B1000001000";
-		
+
 		// service call
 		catalogService.assignCodeToBook(code, bookid);
-		
+
 		model = catalogService.loadBookModel(bookid);
-		Assert.assertEquals(code,model.getBook().getBarcodeid());
-		
+		Assert.assertEquals(code, model.getBook().getBarcodeid());
+
 	}
 
 	@Test
@@ -278,8 +279,6 @@ public class CatalogServiceTest {
 		Assert.assertNotNull(result.getAuthors());
 
 	}
-
-
 
 	@Test
 	public void testCreateFromList() {
@@ -317,11 +316,11 @@ public class CatalogServiceTest {
 		Assert.assertNotNull(found);
 		Assert.assertTrue(1 == found.size());
 		BookDao result = bookRepo.findOne(found.get(0));
-		Assert.assertEquals("Pride and Prejudice", result.getBookdetail().getTitle());
+		Assert.assertEquals("Pride and Prejudice", result.getBookdetail()
+				.getTitle());
 
 	}
 
-	
 	@Test
 	public void testTextToArtistName() {
 		// text "Michael Vincent Marbboury"
@@ -376,7 +375,7 @@ public class CatalogServiceTest {
 	public void testUpdateBook() throws GeneralSecurityException, IOException {
 		// load testpubid
 		BookModel model = catalogService.loadBookModel(pubtestid);
-		
+
 		// change classification, booktype, status, and language
 		model.setShelfcode(5L);
 		model.setType(CatalogService.BookType.FOREIGNLANGUAGE);
@@ -384,43 +383,79 @@ public class CatalogServiceTest {
 		model.setStatus(CatalogService.Status.CHECKEDOUT);
 
 		// server call
-		model = catalogService.updateCatalogEntryFromBookModel(1L, model,false);
-		
+		model = catalogService
+				.updateCatalogEntryFromBookModel(1L, model, false);
+
 		// ensure that changes are shown
 		Assert.assertNotNull(model);
-		Assert.assertEquals(new Long(CatalogService.BookType.FOREIGNLANGUAGE), model.getType());
-		Assert.assertEquals(new Long(CatalogService.Status.CHECKEDOUT), model.getStatus());
+		Assert.assertEquals(new Long(CatalogService.BookType.FOREIGNLANGUAGE),
+				model.getType());
+		Assert.assertEquals(new Long(CatalogService.Status.CHECKEDOUT),
+				model.getStatus());
 		Assert.assertEquals("EN", model.getLanguage());
 		Assert.assertEquals(new Long(5), model.getShelfcode());
-		
+
 	}
-	
-	@Test
-	public void testUpdateBookClientSpecific() throws GeneralSecurityException, IOException {
-		// load testpubid
-		BookModel model = catalogService.loadBookModel(pubtestid);
-		
-		// change classification, booktype, status, and language
-		model.setShelfcode(5L);
-		model.setType(CatalogService.BookType.FOREIGNLANGUAGE);
-		model.setLanguage("EN");
-		model.setStatus(CatalogService.Status.CHECKEDOUT);
-		model.setDescription("shorter nonsense");
-		
-		Long detailid = model.getBook().getBookdetail().getId();
-		
-		// server call
-		model = catalogService.updateCatalogEntryFromBookModel(1L, model,false);
-		BookDetailDao saveddao = model.getBook().getBookdetail();
-		Long savedid = saveddao.getId();
-		
-		// ensure that changes are shown
-		Assert.assertNotNull(model);
-		Assert.assertEquals(new Long(CatalogService.BookType.FOREIGNLANGUAGE), model.getType());
-		Assert.assertEquals(new Long(CatalogService.Status.CHECKEDOUT), model.getStatus());
-		Assert.assertEquals("EN", model.getLanguage());
-		Assert.assertEquals(new Long(5), model.getShelfcode());
-		Assert.assertNotEquals(detailid,savedid);
-	}	
 
+	@Test
+	public void testUpdateBookClientSpecific() throws GeneralSecurityException,
+			IOException {
+		Long clientid = clientService.getTestClientId();
+		// find book which isn't client specific
+		BookSearchCriteria bc = new BookSearchCriteria();
+		bc.setClientspecific(false);
+		List<BookDao> notclientspecific = searchService.findBooksForCriteria(
+				bc, clientid);
+		BookDao toplaywith = null;
+
+		if (notclientspecific != null) {
+			for (BookDao book : notclientspecific) {
+				if (book != null) {
+					toplaywith = book;
+				}
+			}
+		}
+
+		if (toplaywith != null) {
+			BookModel bmodel = new BookModel(toplaywith);
+			bmodel.setTitle("new nonsense");
+			bmodel.setLanguage("EN");
+			bmodel.setShelfcode(5L);
+			Long detailid = bmodel.getBook().getBookdetail().getId();
+
+			// server call
+			bmodel = catalogService.updateCatalogEntryFromBookModel(clientid,
+					bmodel, false);
+			BookDetailDao saveddao = bmodel.getBook().getBookdetail();
+			Long savedid = saveddao.getId();
+
+			// ensure that changes are shown
+			Assert.assertNotNull(bmodel);
+			Assert.assertEquals("EN", bmodel.getLanguage());
+			Assert.assertEquals(new Long(5), bmodel.getShelfcode());
+			Assert.assertNotEquals(detailid, savedid);
+
+		} else {
+			Assert.assertFalse(1 == 1);
+			// no book found. Play with db....
+		}
+
+	}
+
+	@Test
+	public void testIsbnDetailStatusSwap() {
+		// create bookmodel
+		BookDao book = new BookDao();
+		BookModel bmodel = new BookModel(book);
+		bmodel.setTitle("nimportequoi");
+		
+		// add detailsearchstatus of DETAILNOTFOUNDWISBN
+		bmodel.setDetailstatus(CatalogService.DetailStatus.DETAILNOTFOUNDWISBN);
+		// save book
+		bmodel = catalogService.createCatalogEntryFromBookModel(clientService.getTestClientId(), bmodel);
+		// load book
+		bmodel = catalogService.loadBookModel(bmodel.getBookid());
+		// ensure that detail status is DETAILNOTFOUND
+		Assert.assertTrue(bmodel.getDetailstatus()==CatalogService.DetailStatus.DETAILNOTFOUND);
+	}
 }

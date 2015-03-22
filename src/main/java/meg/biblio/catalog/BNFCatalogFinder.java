@@ -95,10 +95,16 @@ public class BNFCatalogFinder extends BaseDetailFinder {
 				// check eligibility for object (eligible and not complete)
 				if (isEligible(findobj)
 						&& !resultsComplete(findobj, clientcomplete)) {
+					// original clientspecific
+					Boolean cs = findobj.getBookdetail().getClientspecific();
+
 					// do search
 					findobj = searchLogic(findobj);
 					// log, process search
 					findobj.logFinderRun(getIdentifier());
+					
+					// reset clientspecific
+					findobj.getBookdetail().setClientspecific(cs);
 				}
 			} // end list loop
 		}
@@ -254,11 +260,6 @@ public class BNFCatalogFinder extends BaseDetailFinder {
 			querystring = querystring.replace("REPLACE", value);
 			querystring = URLEncoder.encode(querystring, "UTF-8");
 			isbnsearch = true;
-		} else {
-			// returning - this somehow got here without and isbn - can't run
-			// this without isbn....
-			findobj.setSearchStatus(CatalogService.DetailStatus.NODETAIL);
-			return findobj;
 		}
 
 		if (isbnsearch) {
@@ -367,52 +368,122 @@ public class BNFCatalogFinder extends BaseDetailFinder {
 	}
 
 	private List<FoundDetailsDao> processLinksIntoFoundDetails(
-			List<BookIdentifier> addlcodes) throws ClientProtocolException, IOException {
+			List<BookIdentifier> addlcodes) throws ClientProtocolException,
+			IOException {
 		List<FoundDetailsDao> fdetails = new ArrayList<FoundDetailsDao>();
-if (addlcodes!=null && addlcodes.size()>0) {
-		
-	for (BookIdentifier bi:addlcodes) {
-	FoundDetailsDao fd = new FoundDetailsDao();
-	String catalogurl = bi.getLink();
-	String ark = parseArkFromUrl(catalogurl);
-	fd.setSearchserviceid(ark);
-	fd.setSearchsource(identifier);
+		if (addlcodes != null && addlcodes.size() > 0) {
 
-	if (catalogurl != null) {
-			HashMap<String, String> results = new HashMap<String, String>();
+			for (BookIdentifier bi : addlcodes) {
+				FoundDetailsDao fd = new FoundDetailsDao();
+				String catalogurl = bi.getLink();
+				String ark = parseArkFromUrl(catalogurl);
+				fd.setSearchserviceid(ark);
+				fd.setSearchsource(identifier);
 
-			// now, lets get this record....
-			CloseableHttpClient httpclient = HttpClients.createDefault();
-			try {
-				HttpGet httpget = new HttpGet(catalogurl);
+				if (catalogurl != null) {
+					HashMap<String, String> results = new HashMap<String, String>();
 
-				// Create a response handler
-				ResponseHandler<String> responseHandler = new BasicResponseHandler();
-				String responseBody = httpclient.execute(httpget,
-						responseHandler);
-				processResponse(responseBody, results);
+					// now, lets get this record....
+					CloseableHttpClient httpclient = HttpClients
+							.createDefault();
+					try {
+						HttpGet httpget = new HttpGet(catalogurl);
 
-								// put results into bookdetail
-				resultsIntoFoundDetail(results, fd);
-				fdetails.add(fd);
-			} finally {
-				// When HttpClient instance is no longer needed,
-				// shut down the connection manager to ensure
-				// immediate deallocation of all system resources
-				httpclient.getConnectionManager().shutdown();
+						// Create a response handler
+						ResponseHandler<String> responseHandler = new BasicResponseHandler();
+						String responseBody = httpclient.execute(httpget,
+								responseHandler);
+						processResponse(responseBody, results);
+
+						// put results into bookdetail
+						resultsIntoFoundDetail(results, fd);
+						fdetails.add(fd);
+					} finally {
+						// When HttpClient instance is no longer needed,
+						// shut down the connection manager to ensure
+						// immediate deallocation of all system resources
+						httpclient.getConnectionManager().shutdown();
+					}
+
+				}
+
 			}
-
 		}
-		
-		}
-}
-		return null;
+		return fdetails;
 	}
 
 	private void resultsIntoFoundDetail(HashMap<String, String> results,
 			FoundDetailsDao fd) {
-		// TODO Auto-generated method stub
 
+		List<String> addlauthors = new ArrayList<String>();
+		List<String> addlillustrators = new ArrayList<String>();
+		if (results != null) {
+			for (String key : results.keySet()) {
+				if (key.toLowerCase().equals("autre(s) auteur(s)")) {
+					if (results.get(key) != null) {
+						// split on linebreak
+						String[] addl = results.get(key).split(
+								newlinemarkersplit);
+						// for each line - divide on last period author, role
+						for (int i = 0; i < addl.length; i++) {
+							String toparse = addl[i];
+							int lastperiod = toparse.lastIndexOf(".");
+							if (lastperiod >= 0) {
+								String rawartist = toparse.substring(0,
+										lastperiod);
+								String rawrole = toparse
+										.substring(lastperiod + 1);
+
+								// processing author - strip after (
+								rawartist = stripAfterText("(", rawartist);
+								// normalize author name
+								String artist = normalizeArtistName(rawartist);
+								// add to book detail depending upon role
+
+								if (rawrole.toLowerCase().contains("auteur")) {
+									addlauthors.add(artist);
+								} else if (rawrole.toLowerCase().contains(
+										"illustrateur")) {
+									// add to illustrators
+									addlillustrators.add(artist);
+								}
+							}
+						}
+					}
+
+				} else if (key.toLowerCase().equals("titre(s)")) {
+					String rawtitle = stripAfterText("[", results.get(key));
+					rawtitle = stripAfterText("/", rawtitle);
+					fd.setTitle(rawtitle);
+				} else if (key.toLowerCase().equals("auteur(s)")) {
+					String value = stripAfterText("(", results.get(key));
+					// normalize author name
+					value = normalizeArtistName(value);
+					// set in author....
+					addlauthors.add(0, value);
+				} else if (key.toLowerCase().equals("résumé")) {
+					String value = stripAfterText(newlinemarkersplit,
+							results.get(key));
+					value = stripAfterText("[", value);
+					fd.setDescription(value);
+				}
+			}
+
+			// now, add addlauthors and illustrators
+			if (addlauthors != null) {
+				if (addlillustrators != null) {
+					addlauthors.addAll(addlillustrators);
+				}
+				if (addlauthors.size() > 0) {
+					StringBuffer authorstr = new StringBuffer();
+					for (String artist : addlauthors) {
+						authorstr.append(artist).append(",");
+					}
+					authorstr.setLength(authorstr.length() - 1);
+					fd.setAuthors(authorstr.toString());
+				}
+			}
+		}
 	}
 
 	private String parseOutDate(String rawdate) {
@@ -439,7 +510,7 @@ if (addlcodes!=null && addlcodes.size()>0) {
 			for (String key : results.keySet()) {
 				if (key.toLowerCase().equals("indice(s) dewey")) {
 					String value = stripAfterText(" ", results.get(key));
-					// set the shelf class here...
+					bdetail.setShelfclass(value);
 				} else if (key.toLowerCase().equals("autre(s) auteur(s)")) {
 					if (results.get(key) != null) {
 						// split on linebreak

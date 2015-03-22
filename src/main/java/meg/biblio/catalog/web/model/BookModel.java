@@ -150,8 +150,9 @@ public class BookModel  implements Serializable {
 			String str = isbn10.replaceAll("[^\\d.X]", "");
 			if (str.length() > 10) {
 				this.book.getBookdetail().setIsbn13(str);
+			} else {
+				this.book.getBookdetail().setIsbn10(str);
 			}
-			this.book.getBookdetail().setIsbn10(str);
 		}
 	}
 
@@ -161,8 +162,10 @@ public class BookModel  implements Serializable {
 			String str = isbn13.replaceAll("[^\\d.X]", "");
 			if (str.length() > 10) {
 				this.book.getBookdetail().setIsbn13(str);
+			} else {
+				this.book.getBookdetail().setIsbn10(str);	
 			}
-			this.book.getBookdetail().setIsbn10(str);
+			
 		}
 	}
 

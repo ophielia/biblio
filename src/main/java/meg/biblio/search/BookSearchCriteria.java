@@ -12,6 +12,7 @@ public class BookSearchCriteria {
 	private Long status;
 	private Long detailstatus;
 	private Long booktype;
+	private Boolean clientspecific;
 	private long orderby;
 	private long orderbydir;
 
@@ -44,6 +45,10 @@ public class BookSearchCriteria {
 
 	public boolean hasKeyword() {
 		return keyword != null && keyword.trim().length() > 0;
+	}
+	
+	public boolean hasClientspecific() {
+		return clientspecific != null;
 	}
 
 	public String getKeyword() {
@@ -112,6 +117,14 @@ public class BookSearchCriteria {
 
 	public void setStatus(Long status) {
 		this.status = status;
+	}
+
+	public Boolean getClientspecific() {
+		return clientspecific;
+	}
+
+	public void setClientspecific(Boolean clientspecific) {
+		this.clientspecific = clientspecific;
 	}
 
 	public boolean hasDetailstatus() {

@@ -32,6 +32,5 @@ public interface SearchService {
 
 	public BookDetailDao findBooksForIdentifier(BookIdentifier bi);
 
-	BookDetailDao findBookDetailBypassCache(Long id);
 
 }

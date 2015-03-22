@@ -103,14 +103,8 @@ privileged aspect BookDetailDao_Roo_JavaBean {
         this.ark = ark;
     }
     
-    public Boolean BookDetailDao.getClientspecific() {
-        return this.clientspecific;
-    }
-    
-    public void BookDetailDao.setClientspecific(Boolean clientspecific) {
-        this.clientspecific = clientspecific;
-    }
-    
+        
+        
     public Boolean BookDetailDao.getTextchange() {
         return this.textchange;
     }

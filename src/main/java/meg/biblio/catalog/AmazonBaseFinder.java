@@ -82,10 +82,14 @@ public class AmazonBaseFinder extends BaseDetailFinder {
 				// check eligibility for object (eligible and not complete)
 				if (isEligible(findobj)
 						&& !resultsComplete(findobj, clientcomplete)) {
+					// original clientspecific
+					Boolean cs = findobj.getBookdetail().getClientspecific();
 					// do search
 					findobj = searchLogic(findobj);
 					// log, process search
 					findobj.logFinderRun(getIdentifier());
+					// reset clientspecific
+					findobj.getBookdetail().setClientspecific(cs);
 				}
 				// build in  tiny pause to not exceed requests per second
 				try {

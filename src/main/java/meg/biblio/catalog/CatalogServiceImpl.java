@@ -29,6 +29,7 @@ import meg.biblio.catalog.web.model.BookModel;
 import meg.biblio.common.AppSettingService;
 import meg.biblio.common.BarcodeService;
 import meg.biblio.common.ClientService;
+import meg.biblio.common.ScalarFunction;
 import meg.biblio.common.SelectKeyService;
 import meg.biblio.common.db.dao.ClientDao;
 import meg.biblio.search.SearchService;
@@ -47,6 +48,9 @@ public class CatalogServiceImpl implements CatalogService {
 
 	@Autowired
 	SelectKeyService keyService;
+	
+	@Autowired
+	ScalarFunction<Boolean> scalarDb;	
 
 	@Autowired
 	SearchService searchService;
@@ -141,6 +145,8 @@ public class CatalogServiceImpl implements CatalogService {
 			bookdetail.setIllustrators(illustrators);
 			List<SubjectDao> subjects = bookdetail.getSubjects();
 			bookdetail.setSubjects(subjects);
+			PublisherDao publisher = bookdetail.getPublisher();
+			bookdetail.setPublisher(publisher);
 
 			// set book in model
 			book.setBookdetail(bookdetail);
@@ -173,6 +179,7 @@ public class CatalogServiceImpl implements CatalogService {
 		BookDetailDao saved = savebook.getBookdetail();
 		log.debug("indexing for bookdetailid:" + saved.getId()
 				+ "; description:" + saved.getDescription());
+
 		List<FoundWordsDao> todelete = indexRepo.findWordsForBookDetail(saved);
 		indexRepo.delete(todelete);
 
@@ -329,10 +336,10 @@ public class CatalogServiceImpl implements CatalogService {
 		return null;
 	}
 
-	public List<FoundDetailsDao> getFoundDetailsForBook(Long id) {
-		if (id != null) {
+	public List<FoundDetailsDao> getFoundDetailsForBook(Long detailid) {
+		if (detailid != null) {
 			// query db for founddetails
-			List<FoundDetailsDao> details = foundRepo.findDetailsForBook(id);
+			List<FoundDetailsDao> details = foundRepo.findDetailsForBook(detailid);
 			// return founddetails
 			return details;
 		}
@@ -632,29 +639,31 @@ public class CatalogServiceImpl implements CatalogService {
 			// get from db if already persisted
 			if (newdetail.getId() != null) { // only applies if this has been
 												// saved to the db
-				// get from db
-				BookDetailDao bookdetail = searchService
-						.findBookDetailBypassCache(newdetail.getId());
+				
+				String sql = "select clientspecific from bookdetail where id = " + newdetail.getId();
+				Boolean dbclientsp = scalarDb.singleResult(sql);
+
 				// so, if we're here, we know that a database version is
 				// available which shouldn't be overwritten with client specific
 				// changes.
 				// only save if no client specific changes
-				if (!bookdetail.getClientspecific()) {
-					if (newdetail.getClientspecific()) {
-						// save into new client specific detail and return
-						BookDetailDao newclientspecific = new BookDetailDao();
-						// copy from newdetail
-						newclientspecific.copyFrom(newdetail);
-						// save and return
-						newdetail = newclientspecific;
+					if (dbclientsp != null
+							&& !dbclientsp) {
+						if (newdetail.getClientspecific()) {
+							// save into new client specific detail and return
+							BookDetailDao newclientspecific = new BookDetailDao();
+							// copy from newdetail
+							newclientspecific.copyFrom(newdetail);
+							// save and return
+							newdetail = newclientspecific;
+						}
 					}
-				}
 			} else {
 				newobject = true;
 			}
 
 			// refresh objects in bookdetail
-
+			Boolean origcs = newdetail.getClientspecific();
 			// refresh authors (avoid detached object problem)
 			List<ArtistDao> authors = new ArrayList<ArtistDao>();
 			if (newdetail.getAuthors() != null) {
@@ -734,14 +743,22 @@ public class CatalogServiceImpl implements CatalogService {
 			// publisher
 			if (newdetail.getPublisher() != null) {
 				if (newdetail.getPublisher().getId() != null) {
-					if (newdetail.getPublisher().getId() != null) {
-						// pull publisher from db
-						PublisherDao dbpub = pubRepo.findOne(newdetail
-								.getPublisher().getId());
+					// pull publisher from db
+					PublisherDao dbpub = pubRepo.findOne(newdetail
+							.getPublisher().getId());
+					if (dbpub != null) {
 						dbpub.copyFrom(newdetail.getPublisher());
 						newdetail.setPublisher(dbpub);
 					}
+
 				}
+			}
+
+			// swap out NODETAILFOUNDWISBN - shouldn't be saved to db
+			if (newdetail.getDetailstatus() != null
+					&& newdetail.getDetailstatus() == CatalogService.DetailStatus.DETAILNOTFOUNDWISBN) {
+				newdetail
+						.setDetailstatus(CatalogService.DetailStatus.DETAILNOTFOUND);
 			}
 
 			if (newobject) {
@@ -750,6 +767,8 @@ public class CatalogServiceImpl implements CatalogService {
 				// for further searches.
 				newdetail.setClientspecific(false);
 
+			} else {
+				newdetail.setClientspecific(origcs);
 			}
 
 			// save and return

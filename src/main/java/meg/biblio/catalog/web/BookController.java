@@ -95,7 +95,7 @@ public class BookController {
 	
 	// assign code for new (to catalog) book
 	@RequestMapping(value = "/newbook", method = RequestMethod.POST, produces = "text/html")
-	public String createNewBook(BookModel bookModel,
+	public String findInfo(BookModel bookModel,
 			Model uiModel, BindingResult bindingResult,HttpServletRequest httpServletRequest,
 			Principal principal) {
 		ClientDao client = clientService.getCurrentClient(principal);
@@ -116,54 +116,47 @@ public class BookController {
 			return "book/create";
 		}
 		
-		// gatherinfo -cBookid (or generateok), isbn, title, author
-		String cbooknr = bookModel.getClientbookid();
-		String isbn = bookModel.getIsbnentry();
-		String title = bookModel.getTitle();
+		// get author and status
 		String author = bookModel.getAuthorname();
-		Boolean createclientbookid = bookModel.getCreatenewid();
 		Long status = client.getDefaultStatus();
 		
-		// create book in catalog
-		BookModel model = new BookModel();
-		model.setClientid(clientid);
-		if (cbooknr!=null) model.setClientbookid(cbooknr);
-		if (isbn!=null) model.setIsbn10(isbn);
-		if (title!=null) model.setTitle(title);
+		// find information for book
+		bookModel.setClientid(clientid);
 		ArtistDao artist = catalogService.textToArtistName(author);
 		if (artist!=null) {
-			model.setAuthorInBook(artist);
+			bookModel.setAuthorInBook(artist);
 		}
 		if (status!=null) {
-			model.setStatus(status);
+			bookModel.setStatus(status);
 		}else {
-			model.setStatus(CatalogService.Status.PROCESSING);
+			bookModel.setStatus(CatalogService.Status.PROCESSING);
 		}
 		
 		// want to find the details for this book ,but not save it yet...
-		model = detSearchService.fillInDetailsForBook(model, client);
+		bookModel = detSearchService.fillInDetailsForBook(bookModel, client);
 		//model = catalogService.createCatalogEntryFromBookModel(clientid, model,
 			//	createclientbookid);
 		// book-> BookModel -> uiModel
-		BookDao book = model.getBook();
+		BookDao book = bookModel.getBook();
 		bookModel.setBook(book);
 		uiModel.addAttribute("bookModel", bookModel);
 
-		// choose return view (isbnedit if no details, otherwise editbook)
+		// return editbook view (unless multiresults)
 		bookModel.setEditMode(EditMode.editbook);
 		String returnview = "book/editbook";
-		if (book.getBookdetail().getDetailstatus().longValue() != CatalogService.DetailStatus.DETAILFOUND) {
-			if (bookModel.getTitle()!=null && bookModel.getTitle().equals(CatalogService.titledefault)) {
-				bookModel.setTitle("");
-				bookModel.setEditMode(EditMode.title);
-				uiModel.addAttribute("bookModel",bookModel);
-				returnview = "book/titleedit";
-			} else {
-				bookModel.setEditMode(EditMode.isbn);
-				returnview = "book/isbnedit";	
-			}
-		}
+		// determine if another search should be made or not
+		long detstatus = book.getBookdetail().getDetailstatus().longValue();
+		if (detstatus == CatalogService.DetailStatus.DETAILNOTFOUNDWISBN) {
+			// should search again - steer this by setting attribute
+			uiModel.addAttribute("searchagain",true);
+		} else if (detstatus == CatalogService.DetailStatus.MULTIDETAILSFOUND) {
+			// add found objects to model
+			List<FoundDetailsDao> multidetails = bookModel.getFounddetails();
+			uiModel.addAttribute("foundDetails", multidetails);
 
+			returnview =  "book/choosedetails";
+		}
+		
 		// add lookups / displays for view
 		String shortname = client.getShortname();
 		uiModel.addAttribute("clientname",shortname);
@@ -186,18 +179,11 @@ public class BookController {
 		bookValidator.validateUpdateBook(bookModel,bindingResult);
 		if (bindingResult.hasErrors()) {
 			String returnview = "book/editbook";
-			if (bookModel.getEditMode().equals(EditMode.title)) {
-					returnview = "book/titleedit";
-				} else if (bookModel.getEditMode().equals(EditMode.title)) {
-					returnview = "book/isbnedit";	
-			}
 
 			return returnview;
 		}
 		
 		// update book - if changed
-		// fill in details if not detailfound, and isbn exists
-		boolean fillindetails = false;//model.hasIsbn() && !(model.getDetailstatus().longValue()==CatalogService.DetailStatus.DETAILFOUND);
 		try {
 			bookModel = catalogService.createCatalogEntryFromBookModel(clientid, bookModel);
 		} catch (Exception e) {
@@ -207,6 +193,8 @@ public class BookController {
 		
 		// return view - returns either to display book, or to assign code
 		uiModel.addAttribute("bookModel",bookModel);
+		String shortname = client.getShortname();
+		uiModel.addAttribute("clientname",shortname);
 		Boolean showbarcode = client.getUsesBarcodes()!=null && client.getUsesBarcodes();
 		uiModel.addAttribute("showbarcodes",showbarcode);
 		// redirect to display book page

@@ -349,7 +349,7 @@ public class DetailSearchServiceImpl implements DetailSearchService {
 		amazonFinder.setNext(bnfFinder);
 		googleFinder.setNext(amazonFinder);
 		internalFinder.setNext(googleFinder);
-		return googleFinder;
+		return internalFinder;
 	}
 	
 	private DetailFinder createOfflineFinderChain() {

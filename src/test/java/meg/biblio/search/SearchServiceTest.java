@@ -3,7 +3,6 @@ package meg.biblio.search;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -270,24 +269,7 @@ public class SearchServiceTest {
 		
 	}		
 	
-    @Test
-    public void testBypassCacheBookDetailQuery() {
-    	// blow up test
-    	Long id = 0L;
-    	searchService.findBookDetailBypassCache(id);
-    	
-    	// test that it's not cached  - change book
-    	testbook.getBookdetail().setTitle("nonsense");
-    	testbook.getBookdetail().setPublishyear(1970L);
-    	id = testbook.getBookdetail().getId();
-    	
-    	Assert.assertTrue(testbook.getBookdetail().getClientspecific());
 
-    	// now, get from db, bypassing cache
-    	BookDetailDao nocache = searchService.findBookDetailBypassCache(id);
-    	Assert.assertFalse(nocache.getClientspecific());
-    	
-    }
 	
 	@Test
 	public void testFindBooksForIdentifier() throws GeneralSecurityException, IOException {

@@ -44,6 +44,9 @@ public abstract class BaseDetailFinder implements DetailFinder {
 
 		// if eligible, run searchlogic
 		if (iseligible && isenabled) {
+			// original clientspecific
+			Boolean cs = findobj.getBookdetail().getClientspecific();
+			
 			// log search
 			findobj.logFinderRun(getIdentifier());
 
@@ -56,6 +59,8 @@ public abstract class BaseDetailFinder implements DetailFinder {
 					findobj = getNext().findDetails(findobj, clientcomplete);
 				}
 			}
+			
+			findobj.getBookdetail().setClientspecific(cs);
 		} else {
 			// otherwise, run next search
 			if (getNext() != null) {

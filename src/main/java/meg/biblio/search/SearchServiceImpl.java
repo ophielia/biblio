@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import javax.persistence.CacheRetrieveMode;
-import javax.persistence.CacheStoreMode;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Tuple;
@@ -47,47 +45,9 @@ public class SearchServiceImpl implements SearchService {
     @Autowired
     private BookDetailRepository bookDetailRepo;    
 
-    @Override
-    public BookDetailDao findBookDetailBypassCache(Long id) {
-    	BookDetailDao toevict = bookDetailRepo.findOne(id);
-    	if (toevict!=null) {
-    	Session session = (Session) entityManager.getDelegate();
-    	session.evict(toevict);
-    	BookDetailDao newlyretrieved = bookDetailRepo.findOne(id);
-    	return newlyretrieved;
-    	}
-    	return null;
-    	/*
-		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-		CriteriaQuery<BookDetailDao> c = cb.createQuery(BookDetailDao.class);
-		Root<BookDetailDao> exp = c.from(BookDetailDao.class);
-		c.select(exp);
-
-		if (id != null) {
-			// get where clause
-			List<Predicate> whereclause = new ArrayList<Predicate>();
-			Predicate predicate = cb.equal(exp.get("id"),id);
-				whereclause.add(predicate);
-			
-			// creating the query
-			c.where(cb.and(whereclause.toArray(new Predicate[whereclause.size()])));
-			TypedQuery<BookDetailDao> q = entityManager.createQuery(c);
-			q.setHint("javax.persistence.cache.storeMode", CacheStoreMode.BYPASS); 
-			q.setHint("javax.persistence.cache.retrieveMode", CacheRetrieveMode.BYPASS); 
-			
-			
-			List<BookDetailDao> results = q.getResultList();
-			if (results!=null && results.size()>0) {
-				return results.get(0);
-			} else {
-				return null;
-			}
-
-		}
-
-		return null;*/
-	}
-
+    private int defaultlimit = 500;
+    
+   
     
 
 	public ArtistDao findArtistMatchingName(ArtistDao tomatch) {
@@ -413,7 +373,8 @@ public class SearchServiceImpl implements SearchService {
 			}
 			c.orderBy(orderlist);
 			// creating the query
-			TypedQuery<BookDao> q = entityManager.createQuery(c);
+			TypedQuery<BookDao> q = entityManager.createQuery(c)
+					.setMaxResults(defaultlimit);
 
 			// setting the parameters
 			setParametersInQuery(criteria,q, clientid);
@@ -516,7 +477,8 @@ public class SearchServiceImpl implements SearchService {
 			}
 			
 			// creating the query
-			TypedQuery<Tuple> q = entityManager.createQuery(c);
+			TypedQuery<Tuple> q = entityManager.createQuery(c)
+					.setMaxResults(defaultlimit);
 
 			// setting the parameters
 			setParametersInQuery(criteria,q, clientid);
@@ -551,6 +513,10 @@ public class SearchServiceImpl implements SearchService {
 		if (criteria.hasTitle()) {
 			q.setParameter("title", "%"
 					+ criteria.getTitle().toLowerCase().trim() + "%");
+		}
+		// clientspecific
+		if (criteria.hasClientspecific()) {
+			q.setParameter("clientspecific",criteria.getClientspecific());
 		}
 		// shelf class
 		if (criteria.hasShelfclasskey()) {
@@ -618,6 +584,13 @@ public class SearchServiceImpl implements SearchService {
 					.add(cb.like(cb.lower(bookdetail.<String> get("title")), param));
 
 		}
+		// clientspecific
+		if (criteria.hasClientspecific()) {
+			ParameterExpression<Boolean> param = cb.parameter(Boolean.class,
+					"clientspecific");
+			whereclause
+					.add(cb.equal(bookdetail.<Boolean> get("clientspecific"), param));
+		}		
 		// shelfclass
 		if (criteria.hasShelfclasskey()) {
 			ParameterExpression<Long> param = cb.parameter(Long.class,

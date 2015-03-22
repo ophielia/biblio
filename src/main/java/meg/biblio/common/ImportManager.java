@@ -170,6 +170,8 @@ public class ImportManager {
 						if (newbook.getBarcode()!=null && newbook.getBarcode().trim().length()>0) {
 							model.setBarcode(newbook.getBarcode().trim());
 						}
+						// reset clientspecific...
+						model.getBook().getBookdetail().setClientspecific(false);
 						toimport.add(model);
 
 					}else {

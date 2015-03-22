@@ -57,7 +57,7 @@ public interface CatalogService {
 
 	public ArtistDao textToArtistName(String text);
 
-	public List<FoundDetailsDao> getFoundDetailsForBook(Long id);
+	public List<FoundDetailsDao> getFoundDetailsForBook(Long detailid);
 
 	List<BookModel> createCatalogEntriesFromList(Long clientkey, List<BookModel> toimport);
 

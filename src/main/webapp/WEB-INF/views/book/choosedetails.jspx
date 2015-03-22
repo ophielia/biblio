@@ -65,7 +65,6 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <spring:message code="label_book_detailstatus" htmlEscape="false" var="ldetailstatus"/>
 <spring:message code="label_book_status" htmlEscape="false" var="lstatus"/>
 <spring:message code="label_book_classification" htmlEscape="false" var="lclassification"/>
-<spring:message code="label_book_classificationverified" htmlEscape="false" var="lclassverif"/>
 <spring:message code="label_book_clientbookid" htmlEscape="false" var="lclientbookid"/>
 <spring:message code="button_searchbyisbn" htmlEscape="false" var="button_searchbyisbn"/>
 

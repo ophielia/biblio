@@ -82,33 +82,36 @@ public class InternalDetailFinder extends BaseDetailFinder {
 		// determine search type - title/author or isbn
 		BookDetailDao detail = findobj.getBookdetail();
 		List<BookDetailDao> results = new ArrayList<BookDetailDao>();
-		
-		if (detail!=null) {
-			
+
+		if (detail != null) {
+
 			Long currentstatus = findobj.getSearchStatus() != null ? findobj
 					.getSearchStatus() : 0L;
-					boolean hasisbn=detail.getIsbn10() != null || detail.getIsbn13() != null;
-		if (hasisbn&& currentstatus!=CatalogService.DetailStatus.DETAILNOTFOUNDWISBN) {
-			// do isbn search
-			results = doIsbnSearch(detail);
-			isbnsearch = true;
-		} else if (detail.hasAuthor() && detail.getTitle() != null) {
-			// do titleauthor search
-			results = doTitleAuthorSearch(detail);
-		}
+			boolean hasisbn = detail.getIsbn10() != null
+					|| detail.getIsbn13() != null;
+			if (hasisbn
+					&& currentstatus != CatalogService.DetailStatus.DETAILNOTFOUNDWISBN) {
+				// do isbn search
+				results = doIsbnSearch(detail);
+				isbnsearch = true;
+			} else if (detail.hasAuthor() && detail.getTitle() != null) {
+				// do titleauthor search
+				results = doTitleAuthorSearch(detail);
+			}
 
-		// process results, if any
-		if (results != null && results.size() > 0) {
-			// set detailstatus
-			findobj.setSearchStatus(CatalogService.DetailStatus.DETAILFOUND);
-			// put first result into findobj
-			BookDetailDao found = results.get(0);
-			findobj.setBookdetail(found);
-		} else {
-			// set detailstatus to not found in book
-			Long searchstatus = isbnsearch?CatalogService.DetailStatus.DETAILNOTFOUNDWISBN:CatalogService.DetailStatus.DETAILNOTFOUND;
-			findobj.setSearchStatus(searchstatus);
-		}
+			// process results, if any
+			if (results != null && results.size() > 0) {
+				// set detailstatus
+				findobj.setSearchStatus(CatalogService.DetailStatus.DETAILFOUND);
+				// put first result into findobj
+				BookDetailDao found = results.get(0);
+				findobj.setBookdetail(found);
+			} else {
+				// set detailstatus to not found in book
+				Long searchstatus = isbnsearch ? CatalogService.DetailStatus.DETAILNOTFOUNDWISBN
+						: CatalogService.DetailStatus.DETAILNOTFOUND;
+				findobj.setSearchStatus(searchstatus);
+			}
 		}
 		// return
 		return findobj;
@@ -118,9 +121,10 @@ public class InternalDetailFinder extends BaseDetailFinder {
 		// gather params
 		String title = detail.getTitle().toLowerCase().trim();
 		List<ArtistDao> authors = detail.getAuthors();
-		ArtistDao tomatch = authors!=null && authors.size()>0?authors.get(0):null;
+		ArtistDao tomatch = authors != null && authors.size() > 0 ? authors
+				.get(0) : null;
 		String author = tomatch.getDisplayName().toLowerCase().trim();
-		
+
 		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
 		CriteriaQuery<BookDetailDao> c = cb.createQuery(BookDetailDao.class);
 		Root<BookDetailDao> bookroot = c.from(BookDetailDao.class);
@@ -129,19 +133,22 @@ public class InternalDetailFinder extends BaseDetailFinder {
 		// get where clause
 		List<Predicate> whereclause = new ArrayList<Predicate>();
 		// always add clientspecific
-		ParameterExpression<Boolean> clientparam = cb.parameter(Boolean.class, "clientspecific");
-		whereclause.add(cb.equal(bookroot.<Boolean> get("clientspecific"), clientparam));
+		ParameterExpression<Boolean> clientparam = cb.parameter(Boolean.class,
+				"clientspecific");
+		whereclause.add(cb.equal(bookroot.<Boolean> get("clientspecific"),
+				clientparam));
 		// title
-		if (title!=null) {
+		if (title != null) {
 			ParameterExpression<String> param = cb.parameter(String.class,
 					"title");
-			whereclause
-					.add(cb.like(cb.lower(bookroot.<String> get("title")), param));
+			whereclause.add(cb.like(cb.lower(bookroot.<String> get("title")),
+					param));
 		}
 
 		// author
-		if (author!=null) {
-			Join<BookDetailDao, ArtistDao> authorjoin = bookroot.join("authors");
+		if (author != null) {
+			Join<BookDetailDao, ArtistDao> authorjoin = bookroot
+					.join("authors");
 			// where firstname = firstname and middlename = middlename and
 			// lastname = lastname
 			// together with likes and to lower
@@ -173,7 +180,7 @@ public class InternalDetailFinder extends BaseDetailFinder {
 				whereclause.add(predicate);
 			}
 		}
-		
+
 		// adding where clause
 		c.where(cb.and(whereclause.toArray(new Predicate[whereclause.size()])));
 
@@ -188,25 +195,25 @@ public class InternalDetailFinder extends BaseDetailFinder {
 		}
 		if (author != null) {
 			// author
-				// where firstname = firstname and middlename = middlename and
-				// lastname = lastname
-				// together with likes and to lower
-				// lastname
-				if (tomatch.hasLastname()) {
-					q.setParameter("alastname", "%"
-							+ tomatch.getLastname().toLowerCase().trim() + "%");
-				}
-				// middlename
-				if (tomatch.hasMiddlename()) {
-					q.setParameter("amiddlename", "%"
-							+ tomatch.getMiddlename().toLowerCase().trim() + "%");				
-				}
-				// firstname
-				if (tomatch.hasFirstname()) {
-					q.setParameter("afirstname", "%"
-							+ tomatch.getFirstname().toLowerCase().trim() + "%");				
+			// where firstname = firstname and middlename = middlename and
+			// lastname = lastname
+			// together with likes and to lower
+			// lastname
+			if (tomatch.hasLastname()) {
+				q.setParameter("alastname", "%"
+						+ tomatch.getLastname().toLowerCase().trim() + "%");
+			}
+			// middlename
+			if (tomatch.hasMiddlename()) {
+				q.setParameter("amiddlename", "%"
+						+ tomatch.getMiddlename().toLowerCase().trim() + "%");
+			}
+			// firstname
+			if (tomatch.hasFirstname()) {
+				q.setParameter("afirstname", "%"
+						+ tomatch.getFirstname().toLowerCase().trim() + "%");
 
-			}	
+			}
 		}
 
 		List<BookDetailDao> results = q.getResultList();
@@ -228,8 +235,10 @@ public class InternalDetailFinder extends BaseDetailFinder {
 		Expression sortexpr = null;
 		List<Predicate> whereclause = new ArrayList<Predicate>();
 		// always add clientspecific
-		ParameterExpression<Boolean> clientparam = cb.parameter(Boolean.class, "clientspecific");
-		whereclause.add(cb.equal(bookroot.<Boolean> get("clientspecific"), clientparam));
+		ParameterExpression<Boolean> clientparam = cb.parameter(Boolean.class,
+				"clientspecific");
+		whereclause.add(cb.equal(bookroot.<Boolean> get("clientspecific"),
+				clientparam));
 		// ean
 		if (ean != null) {
 			ParameterExpression<String> param = cb.parameter(String.class,
@@ -275,10 +284,15 @@ public class InternalDetailFinder extends BaseDetailFinder {
 				// check eligibility for object (eligible and not complete)
 				if (isEligible(findobj)
 						&& !resultsComplete(findobj, clientcomplete)) {
+					// original clientspecific
+					Boolean cs = findobj.getBookdetail().getClientspecific();
+
 					// do search
 					findobj = searchLogic(findobj);
 					// log, process search
 					findobj.logFinderRun(getIdentifier());
+					// reset clientspecific
+					findobj.getBookdetail().setClientspecific(cs);
 				}
 			} // end list loop
 		}

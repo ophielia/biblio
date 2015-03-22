@@ -210,10 +210,15 @@ public class GoogleDetailFinder extends BaseDetailFinder {
 				// check eligibility for object (eligible and not complete)
 				if (isEligible(findobj)
 						&& !resultsComplete(findobj, clientcomplete)) {
+					// original clientspecific
+					Boolean cs = findobj.getBookdetail().getClientspecific();
 					// do search
 					findobj = searchLogic(findobj, books);
 					// log, process search
 					findobj.logFinderRun(getIdentifier());
+					// reset clientspecific
+					findobj.getBookdetail().setClientspecific(cs);
+
 				}
 			} // end list loop
 		}
@@ -340,7 +345,7 @@ public class GoogleDetailFinder extends BaseDetailFinder {
 			}
 			detail.setBookdetailid(bookdetail.getId());
 			detail.setSearchserviceid(found.getId());
-			detail.setSearchservice(identifier);
+			detail.setSearchsource(identifier);
 			detail.setTitle(info.getTitle());
 			detail.setPublisher(info.getPublisher());
 			if (info.getPublishedDate() != null) {

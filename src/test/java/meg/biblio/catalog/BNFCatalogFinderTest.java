@@ -221,5 +221,22 @@ public class BNFCatalogFinderTest {
 		findobj = bnfSearch.searchLogic(findobj);
 		Assert.assertTrue(findobj.getSearchStatus() == CatalogService.DetailStatus.DETAILNOTFOUNDWISBN);
 	}
+	
+	@Test
+	public void testISBNNotFoundRead() throws Exception {
+		BookDao book = new BookDao();
+		book.getBookdetail().setTitle("Jour de lessive");
+		ArtistDao author = catalogService.textToArtistName("Frédéric Stehr");
+		List<ArtistDao> authors = new ArrayList<ArtistDao>();
+		authors.add(author);
+		book.getBookdetail().setAuthors(authors);
+		book.getBookdetail().setDetailstatus(CatalogService.DetailStatus.DETAILNOTFOUNDWISBN);
+
+		FinderObject findobj = new FinderObject(book.getBookdetail());
+
+		// service call
+		findobj = bnfSearch.searchLogic(findobj);
+		Assert.assertFalse(findobj.getSearchStatus() == CatalogService.DetailStatus.DETAILNOTFOUNDWISBN);
+	}	
 
 }

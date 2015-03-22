@@ -110,7 +110,13 @@
 				<span class="stress">${lauthor}:</span>
 					 ${bookModel.book.bookdetail.authorsAsString}
 					<c:if test="${bookModel.book.bookdetail.hasIllustrator}">${lillustrator}: ${bookModel.book.bookdetail.illustratorsAsString}</c:if>
-				</div>
+				</div>	
+				<div>
+					<span class="stress">${lpublisher}:</span><form:input type="text" path="publishername"></form:input>
+				</div>	
+				<div>
+					<span class="stress">${lpublished}:</span><form:input type="text" path="publishyear"></form:input>
+				</div>						
 				<div>
 					<form:input type="hidden" path="shelfcode"></form:input>
 					<span class="stress"> ${clientname} ${lclassification}:</span>
@@ -133,9 +139,7 @@
 						</c:forEach>
 					</form:select>
 				</div>
-				<div>
-					<span class="stress">${lpublisher}:</span><form:input type="text" path="publishername"></form:input>
-				</div>
+
 				<div><span class="stress">${lbooktype}:</span>
 				<form:select path="type">
 						<form:option value="" label="${lemptyoption}" />

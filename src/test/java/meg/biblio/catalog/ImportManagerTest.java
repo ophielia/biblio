@@ -55,14 +55,16 @@ public class ImportManagerTest {
 		// put bookdetail into db - with isbn "1111111111111", title "nonsense", author "no one"
 		BookDetailDao bookdetail = new BookDetailDao();
 		bookdetail.setTitle("nonsense");
-		bookdetail.setIsbn13("1111111111111");
+		bookdetail.setIsbn13("11111111111");
 		bookdetail.setIsbn10("1111111111");
+		
 		ArtistDao author = catalogService.textToArtistName("no one");
 		List<ArtistDao> authors = new ArrayList<ArtistDao>();
 		authors.add(author);
 		bookdetail.setAuthors(authors);
 		bookdetail.setDetailstatus(CatalogService.DetailStatus.DETAILFOUND);
 		bookdetail.setFinderlog(6L);
+		bookdetail.setClientspecific(false);
 		
 		bookDetailRepo.save(bookdetail);
 	}

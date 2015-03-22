@@ -70,7 +70,7 @@ public class BookDetailDao {
 	private Long listedtype;
 	private String shelfclass;
 	private String ark;
-	private Boolean clientspecific;
+	private Boolean clientspecific=false;
 
 	@Transient
 	private Boolean textchange=new Boolean(false);
@@ -257,4 +257,12 @@ public class BookDetailDao {
 	}
 
 
+
+	public Boolean getClientspecific() {
+        return this.clientspecific;
+    }
+
+	public void setClientspecific(Boolean clientspecific) {
+        this.clientspecific = clientspecific;
+    }
 }

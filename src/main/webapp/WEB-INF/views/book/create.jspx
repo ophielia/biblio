@@ -58,7 +58,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <div >
 <div class="inputspace">${clientname} ${lnumber}: <form:input path="clientbookid"></form:input><span style="padding-left:5px;padding-right:5px"> ${lor} </span>
 <form:checkbox class="checkboxalign" path="createnewid"></form:checkbox>${ageneratenr}</div>
-<div class="inputspace">${lisbn}: <form:input path="isbnentry"></form:input>
+<div class="inputspace">${lisbn}: <form:input path="isbn10"></form:input>
 <input id="newbook" class="linkbutton" name="newbook" type="submit" value="${aaddcatalog }"></input>
 <c:if test="${showlinkexist}">
 <span style="margin-left:10px"> </span>
