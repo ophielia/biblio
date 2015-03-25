@@ -37,15 +37,14 @@ public abstract class BaseDetailFinder implements DetailFinder {
 	@Override
 	public FinderObject findDetails(FinderObject findobj, long clientcomplete)
 			throws Exception {
-
+		
 		// check eligibility
 		boolean iseligible = isEligible(findobj);
 		boolean isenabled = isEnabled();
 
 		// if eligible, run searchlogic
 		if (iseligible && isenabled) {
-			// original clientspecific
-			Boolean cs = findobj.getBookdetail().getClientspecific();
+
 			
 			// log search
 			findobj.logFinderRun(getIdentifier());
@@ -60,7 +59,7 @@ public abstract class BaseDetailFinder implements DetailFinder {
 				}
 			}
 			
-			findobj.getBookdetail().setClientspecific(cs);
+
 		} else {
 			// otherwise, run next search
 			if (getNext() != null) {

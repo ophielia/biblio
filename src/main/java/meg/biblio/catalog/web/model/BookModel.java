@@ -406,6 +406,12 @@ public class BookModel  implements Serializable {
 	public void setAssignedcode(String assignedcode) {
 		this.assignedcode = assignedcode;
 	}
+	
+	public void setTrackchange(Boolean trackchange) {
+		if (this.book!=null && this.book.getBookdetail()!=null) {
+			this.book.getBookdetail().setTrackchange(trackchange);
+		}
+	}
 
 	public Boolean getShowbarcodelinks() {
 		return showbarcodelinks;

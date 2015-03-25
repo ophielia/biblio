@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page" 
+xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" 
+xmlns:c="http://java.sun.com/jsp/jstl/core" 
+xmlns:spring="http://www.springframework.org/tags" 
+xmlns:form="http://www.springframework.org/tags/form" 
+xmlns:fmt="http://java.sun.com/jsp/jstl/fmt" 
+xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+
+<spring:message code="button_generate" htmlEscape="false" var="bgen"/>
+<spring:message code="button_cancel" htmlEscape="false" var="bcancel"/>
+<spring:message code="label_barcode_assignnew" htmlEscape="false" var="pagetitle"/>
+<spring:message code="label_number" htmlEscape="false" var="lnumber"/>
+<spring:message code="action_book_generatenumber" htmlEscape="false" var="ageneratenr"/>
+<spring:message code="label_or" htmlEscape="false" var="lor"/>
+<spring:message code="label_book_isbnenry" htmlEscape="false" var="lisbn"/>
+<spring:message code="action_book_isbnnotthere" htmlEscape="false" var="isbnnotavail"/>
+<spring:message code="label_book_title" htmlEscape="false" var="ltitle"/>
+<spring:message code="label_book_author" htmlEscape="false" var="lauthor"/>
+<spring:message code="action_book_addtocatalog" htmlEscape="false" var="aaddcatalog"/>
+<spring:message code="label_barcode_assignexist" htmlEscape="false" var="bassigncodeexist"/>
+
+<spring:url value="/testrd" var="actionurl"/>
+
+<script type="text/javascript">
+ require([
+          'dojo/dom',"dojo/dom-style","dijit/focus","dojo/on", 
+          'dojo/domReady!'
+      ], function (dom,style,focusUtil,on) {
+
+	 focusUtil.focus(dom.byId("isbnentry"));
+	 
+	 	<c:if test="${bookModel.createnewid}">
+	 		dojo.byId("clientbookid").disabled="true";
+	 	</c:if>
+		on(dojo.byId("createnewid1"), 'click', function(event) {
+			ischecked = event.currentTarget.checked;
+			dojo.byId("clientbookid").disabled=ischecked;
+			focusUtil.focus(dom.byId("isbnentry"));
+		});
+		
+		on(dojo.byId("showaddl"), 'click', function(event) {
+			// reveal the additional fields
+			style.set("addlfields","display","inline");
+			// hide the show addl fields button
+			style.set("showaddl","display","none");
+		});		
+ 	
+
+	});
+ </script>
+
+<h1>${pagetitle}</h1>
+<form:form action="${actionurl}" id="generatebookcodes" method="POST" modelAttribute="bookModel">
+<input id="newbook" class="linkbutton" name="newbook" type="submit" value="${aaddcatalog }"></input>
+
+</form:form>
+</div>

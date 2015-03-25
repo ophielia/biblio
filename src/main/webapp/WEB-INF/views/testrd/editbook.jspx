@@ -57,9 +57,6 @@
 	<spring:message code="button_save" htmlEscape="false" var="bsaveand" />
 	<spring:message code="msg_assign_pagemessage" htmlEscape="false"
 		var="msginstr" />
-	<c:if test="${!showbarcodes}">
-		<spring:message code="button_save" htmlEscape="false" var="bsaveand" />
-	</c:if>
 
 	<spring:message code="button_save" htmlEscape="false" var="bsave" />
 	<spring:message code="button_cancel" htmlEscape="false" var="bcancel" />
@@ -180,7 +177,7 @@
 
 			</div>
 			<div>
-				<spring:url value="/books?form" var="linkurl" />
+				<spring:url value="/testrd?form" var="linkurl" />
 				<a href="${linkurl}" class="linkbutton" id="showaddl">${bcancel}</a>
 				<span> <input class="linkbutton" id="save" name="save"
 					type="submit" value="${bsaveand}" /></span>

@@ -103,14 +103,20 @@ privileged aspect BookDetailDao_Roo_JavaBean {
         this.ark = ark;
     }
     
-        
-        
     public Boolean BookDetailDao.getTextchange() {
         return this.textchange;
     }
     
     public void BookDetailDao.setTextchange(Boolean textchange) {
         this.textchange = textchange;
+    }
+    
+    public Boolean BookDetailDao.getTrackchange() {
+        return this.trackchange;
+    }
+    
+    public void BookDetailDao.setTrackchange(Boolean trackchange) {
+        this.trackchange = trackchange;
     }
     
 }

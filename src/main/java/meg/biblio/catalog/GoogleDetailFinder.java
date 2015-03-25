@@ -89,8 +89,8 @@ public class GoogleDetailFinder extends BaseDetailFinder {
 			// set up query for title and author
 			StringBuffer querybuild = new StringBuffer();
 
-			Long currentstatus = findobj.getSearchStatus() != null ? findobj
-					.getSearchStatus() : 0L;
+			Long currentstatus = bookdetail.getDetailstatus() != null ? bookdetail
+					.getDetailstatus() : 0L;
 
 			if (bookdetail.hasIsbn()
 					&& currentstatus != CatalogService.DetailStatus.DETAILNOTFOUNDWISBN) {
@@ -210,14 +210,11 @@ public class GoogleDetailFinder extends BaseDetailFinder {
 				// check eligibility for object (eligible and not complete)
 				if (isEligible(findobj)
 						&& !resultsComplete(findobj, clientcomplete)) {
-					// original clientspecific
-					Boolean cs = findobj.getBookdetail().getClientspecific();
 					// do search
 					findobj = searchLogic(findobj, books);
 					// log, process search
 					findobj.logFinderRun(getIdentifier());
-					// reset clientspecific
-					findobj.getBookdetail().setClientspecific(cs);
+
 
 				}
 			} // end list loop

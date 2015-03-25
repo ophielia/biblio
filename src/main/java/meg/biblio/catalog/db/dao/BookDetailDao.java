@@ -1,6 +1,7 @@
 package meg.biblio.catalog.db.dao;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.FetchType;
@@ -14,7 +15,9 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
 import meg.biblio.catalog.db.FoundWordsDao;
+
 import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.jpa.entity.RooJpaEntity;
 import org.springframework.roo.addon.tostring.RooToString;
@@ -75,8 +78,8 @@ public class BookDetailDao {
 	@Transient
 	private Boolean textchange=new Boolean(false);
 
-
-
+	@Transient
+	private Boolean trackchange=new Boolean(false);
 
 	public boolean hasIsbn() {
 		boolean hasisbn = (isbn10!=null && isbn10.length()>0) || (isbn13!=null &&isbn13.length()>0);
@@ -111,47 +114,91 @@ public class BookDetailDao {
 
 
 	public void setAuthors(List<ArtistDao> authors) {
-        if (this.authors != authors) {
-        	setTextchange(true);
-        	setClientspecific(true);
-        }
+		if (authors != null) {
+			if (this.authors == null || !artistListsEqual(this.authors,authors)) {
+				setClientspecific(true);
+				setTextchange(true);
+			}
+		}else if (this.authors!=null){
+			setClientspecific(true);
+			setTextchange(true);
+		}
+
+
 		this.authors = authors;
     }
 
+	
+	private boolean artistListsEqual(List listone,List listtwo) {
+		if (listone!=null && listtwo!=null) {
+		List<ArtistDao> baselist = new ArrayList<ArtistDao>();
+		baselist.addAll(listone);
+		baselist.retainAll(listtwo);
+		
+		return baselist.size()==0 && listone.size()==listtwo.size();
+		} else {
+			return (listone!=null || listtwo!=null);
+		}
+	}
+	
 	public void setDescription(String description) {
-		if (this.description != description) {
-        	setTextchange(true);
-        	setClientspecific(true);
-        }
-		if (description!=null && description.length()>1510) {
-			this.description = description.substring(0,1510);
+		if (description != null) {
+			if (this.description == null || !this.description.equals(description)) {
+				setTextchange(true);
+				setClientspecific(true);
+			}
+		}else if (this.description!=null){
+			setTextchange(true);
+			setClientspecific(true);
+		}
+
+		if (description != null && description.length() > 1510) {
+			this.description = description.substring(0, 1510);
 		}
 		this.description = description;
-    }
+	}
 
 	public void setIllustrators(List<ArtistDao> illustrators) {
-		if (this.illustrators != illustrators) {
-        	setTextchange(true);
-        	setClientspecific(true);
-        }
+		if (illustrators != null) {
+			if (this.illustrators == null || !artistListsEqual(this.illustrators,illustrators)) {
+				setClientspecific(true);
+				setTextchange(true);
+			}
+		}else if (this.illustrators!=null){
+			setClientspecific(true);
+			setTextchange(true);
+		}
 		this.illustrators = illustrators;
     }
 
 	public void setTitle(String title) {
-		if (this.title != title) {
-        	setTextchange(true);
-        	setClientspecific(true);
-        }
+		if (title != null) {
+			if (this.title == null || !this.title.equals(title)) {
+				setTextchange(true);
+				setClientspecific(true);
+			}
+		} else if (this.title!=null){
+			setTextchange(true);
+			setClientspecific(true);
+		}
 
 		this.title = title;
-    }
+	}
 
 	public void setLanguage(String language) {
-		if (this.language != language) {
-        	setClientspecific(true);
-        }
+		if (language != null) {
+			if (this.language == null || !this.language.equals(language)) {
+				setTextchange(true);
+				setClientspecific(true);
+			}
+		}else if (this.language!=null){
+			setTextchange(true);
+			setClientspecific(true);
+		}
+
+		
 		this.language = language;
-    }
+	}
 
 	public void setPublisher(PublisherDao publisher) {
 		if (this.publisher != publisher) {
@@ -161,9 +208,14 @@ public class BookDetailDao {
     }
 
 	public void setPublishyear(Long publishyear) {
-		if (this.publishyear != publishyear) {
-        	setClientspecific(true);
-        }
+		if (publishyear != null) {
+			if (this.publishyear == null || this.publishyear.longValue()!=publishyear.longValue()) {
+				setClientspecific(true);
+			}
+		}else if (this.publishyear!=null){
+			setClientspecific(true);
+		}
+
 		this.publishyear = publishyear;
     }
 
@@ -263,6 +315,8 @@ public class BookDetailDao {
     }
 
 	public void setClientspecific(Boolean clientspecific) {
-        this.clientspecific = clientspecific;
+        if (this.trackchange) {
+        	this.clientspecific = clientspecific;
+        }
     }
 }

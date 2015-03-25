@@ -1,6 +1,7 @@
 package meg.biblio.catalog.web;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.security.GeneralSecurityException;
 import java.security.Principal;
 import java.util.HashMap;
@@ -31,7 +32,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
+import org.springframework.web.util.UriUtils;
+import org.springframework.web.util.WebUtils;
 
 import flexjson.JSONSerializer;
 
@@ -66,6 +72,7 @@ public class BookController {
 	}
 	
 
+	
 	@RequestMapping(params = "form", method = RequestMethod.GET, produces = "text/html")
 	public String showNewBookPage(BookModel bookModel,
 			Model uiModel, HttpServletRequest httpServletRequest,
@@ -133,12 +140,14 @@ public class BookController {
 		}
 		
 		// want to find the details for this book ,but not save it yet...
+		bookModel.setTrackchange(false);
 		bookModel = detSearchService.fillInDetailsForBook(bookModel, client);
 		//model = catalogService.createCatalogEntryFromBookModel(clientid, model,
 			//	createclientbookid);
 		// book-> BookModel -> uiModel
 		BookDao book = bookModel.getBook();
 		bookModel.setBook(book);
+		bookModel.setTrackchange(true);
 		uiModel.addAttribute("bookModel", bookModel);
 
 		// return editbook view (unless multiresults)
@@ -175,12 +184,12 @@ public class BookController {
 			HttpServletRequest httpServletRequest, BindingResult bindingResult,Principal principal) {
 		ClientDao client = clientService.getCurrentClient(principal);
 		Long clientid = client.getId();
-		
+		bookModel.setTrackchange(false);
 		bookValidator.validateUpdateBook(bookModel,bindingResult);
 		if (bindingResult.hasErrors()) {
 			String returnview = "book/editbook";
 
-			return returnview;
+			// MM return returnview;
 		}
 		
 		// update book - if changed
@@ -198,8 +207,10 @@ public class BookController {
 		Boolean showbarcode = client.getUsesBarcodes()!=null && client.getUsesBarcodes();
 		uiModel.addAttribute("showbarcodes",showbarcode);
 		// redirect to display book page
-		String redirect = "/books/display/" + bookModel.getBookid();
-		return "redirect:" + redirect;
+
+		return "redirect:/books/display/" + encodeUrlPathSegment(bookModel.getBookid().toString(), httpServletRequest);
+		//return new RedirectView("/books/display/" + bookModel.getBookid(), true);
+
 		
 /*
  * 
@@ -259,6 +270,17 @@ public class BookController {
 		return "book/show";
 	}
 
+	
+    private String encodeUrlPathSegment(String pathSegment, HttpServletRequest httpServletRequest) {
+        String enc = httpServletRequest.getCharacterEncoding();
+        if (enc == null) {
+            enc = WebUtils.DEFAULT_CHARACTER_ENCODING;
+        }
+        try {
+            pathSegment = UriUtils.encodePathSegment(pathSegment, enc);
+        } catch (UnsupportedEncodingException uee) {}
+        return pathSegment;
+    }
 	@RequestMapping(value = "/editall/{id}", method = RequestMethod.GET, produces = "text/html")
 	public String showEditBookForm(@PathVariable("id") Long id, Model uiModel,
 			HttpServletRequest httpServletRequest, Principal principal) {

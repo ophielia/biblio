@@ -4,6 +4,16 @@
     <definition extends="default" name="book/create">
         <put-attribute name="body" value="/WEB-INF/views/book/create.jspx"/>
     </definition>
+    
+    <definition extends="default" name="book/rdstart">
+        <put-attribute name="body" value="/WEB-INF/views/book/rdstart.jspx"/>
+    </definition>    
+    
+    
+    <definition extends="default" name="book/rdtarget">
+        <put-attribute name="body" value="/WEB-INF/views/book/rdtarget.jspx"/>
+    </definition>    
+    
 
     <definition extends="default" name="book/isbnedit">
         <put-attribute name="body" value="/WEB-INF/views/book/isbnedit.jspx"/>

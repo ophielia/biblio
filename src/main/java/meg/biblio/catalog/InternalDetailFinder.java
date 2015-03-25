@@ -14,6 +14,7 @@ import javax.persistence.criteria.ParameterExpression;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import meg.biblio.catalog.db.FoundWordsDao;
 import meg.biblio.catalog.db.PublisherRepository;
 import meg.biblio.catalog.db.dao.ArtistDao;
 import meg.biblio.catalog.db.dao.BookDetailDao;
@@ -85,9 +86,7 @@ public class InternalDetailFinder extends BaseDetailFinder {
 
 		if (detail != null) {
 
-			Long currentstatus = findobj.getSearchStatus() != null ? findobj
-					.getSearchStatus() : 0L;
-			boolean hasisbn = detail.getIsbn10() != null
+			Long currentstatus = detail.getDetailstatus()!=null?detail.getDetailstatus():0L;			boolean hasisbn = detail.getIsbn10() != null
 					|| detail.getIsbn13() != null;
 			if (hasisbn
 					&& currentstatus != CatalogService.DetailStatus.DETAILNOTFOUNDWISBN) {
@@ -105,6 +104,7 @@ public class InternalDetailFinder extends BaseDetailFinder {
 				findobj.setSearchStatus(CatalogService.DetailStatus.DETAILFOUND);
 				// put first result into findobj
 				BookDetailDao found = results.get(0);
+				List<FoundWordsDao> foundword = found.getFoundwords();
 				findobj.setBookdetail(found);
 			} else {
 				// set detailstatus to not found in book
@@ -284,15 +284,11 @@ public class InternalDetailFinder extends BaseDetailFinder {
 				// check eligibility for object (eligible and not complete)
 				if (isEligible(findobj)
 						&& !resultsComplete(findobj, clientcomplete)) {
-					// original clientspecific
-					Boolean cs = findobj.getBookdetail().getClientspecific();
 
 					// do search
 					findobj = searchLogic(findobj);
 					// log, process search
 					findobj.logFinderRun(getIdentifier());
-					// reset clientspecific
-					findobj.getBookdetail().setClientspecific(cs);
 				}
 			} // end list loop
 		}

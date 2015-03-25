@@ -48,9 +48,9 @@ public class CatalogServiceImpl implements CatalogService {
 
 	@Autowired
 	SelectKeyService keyService;
-	
+
 	@Autowired
-	ScalarFunction<Boolean> scalarDb;	
+	ScalarFunction<Boolean> scalarDb;
 
 	@Autowired
 	SearchService searchService;
@@ -138,7 +138,7 @@ public class CatalogServiceImpl implements CatalogService {
 		BookDetailDao bookdetail = book.getBookdetail();
 
 		if (bookdetail != null) {
-			// get authors, subjects and illustrators
+			// get authors, subjects , illustrators and foundwords
 			List<ArtistDao> authors = bookdetail.getAuthors();
 			bookdetail.setAuthors(authors);
 			List<ArtistDao> illustrators = bookdetail.getIllustrators();
@@ -147,6 +147,8 @@ public class CatalogServiceImpl implements CatalogService {
 			bookdetail.setSubjects(subjects);
 			PublisherDao publisher = bookdetail.getPublisher();
 			bookdetail.setPublisher(publisher);
+			List<FoundWordsDao> foundwords = bookdetail.getFoundwords();
+			bookdetail.setFoundwords(foundwords);
 
 			// set book in model
 			book.setBookdetail(bookdetail);
@@ -339,7 +341,8 @@ public class CatalogServiceImpl implements CatalogService {
 	public List<FoundDetailsDao> getFoundDetailsForBook(Long detailid) {
 		if (detailid != null) {
 			// query db for founddetails
-			List<FoundDetailsDao> details = foundRepo.findDetailsForBook(detailid);
+			List<FoundDetailsDao> details = foundRepo
+					.findDetailsForBook(detailid);
 			// return founddetails
 			return details;
 		}
@@ -639,25 +642,29 @@ public class CatalogServiceImpl implements CatalogService {
 			// get from db if already persisted
 			if (newdetail.getId() != null) { // only applies if this has been
 												// saved to the db
-				
-				String sql = "select clientspecific from bookdetail where id = " + newdetail.getId();
+
+				String sql = "select clientspecific from bookdetail where id = "
+						+ newdetail.getId();
 				Boolean dbclientsp = scalarDb.singleResult(sql);
 
 				// so, if we're here, we know that a database version is
 				// available which shouldn't be overwritten with client specific
 				// changes.
 				// only save if no client specific changes
-					if (dbclientsp != null
-							&& !dbclientsp) {
-						if (newdetail.getClientspecific()) {
-							// save into new client specific detail and return
-							BookDetailDao newclientspecific = new BookDetailDao();
-							// copy from newdetail
-							newclientspecific.copyFrom(newdetail);
-							// save and return
-							newdetail = newclientspecific;
-						}
+				if (dbclientsp != null && !dbclientsp) {
+					if (newdetail.getClientspecific()) {
+						// save into new client specific detail and return
+						BookDetailDao newclientspecific = new BookDetailDao();
+						// copy from newdetail
+						newclientspecific.copyFrom(newdetail);
+						// save and return
+						newdetail = newclientspecific;
+						newdetail.setTrackchange(true);
+						newdetail.setClientspecific(true);
+						newdetail.setTrackchange(false);
+						newdetail.setFoundwords(null);
 					}
+				}
 			} else {
 				newobject = true;
 			}
@@ -722,23 +729,27 @@ public class CatalogServiceImpl implements CatalogService {
 			}
 
 			// refresh found words
-			List<FoundWordsDao> foundwords = new ArrayList<FoundWordsDao>();
-			if (newdetail.getFoundwords() != null) {
-				for (FoundWordsDao fwords : newdetail.getFoundwords()) {
-					if (fwords.getId() != null) {
-						// get from db
-						FoundWordsDao dbfw = indexRepo.findOne(fwords.getId());
-						// copy changes into db object
-						dbfw.copyFrom(fwords);
-						// add to persist list
-						foundwords.add(dbfw);
-					} else {
-						// add to persist list
-						foundwords.add(fwords);
+/* 			if (newdetail.getId() != null) {
+				List<FoundWordsDao> foundwords = new ArrayList<FoundWordsDao>();
+				if (newdetail.getFoundwords() != null
+						&& newdetail.getFoundwords().size() > 0) {
+					for (FoundWordsDao fwords : newdetail.getFoundwords()) {
+						if (fwords.getId() != null) {
+							// get from db
+							FoundWordsDao dbfw = indexRepo.findOne(fwords
+									.getId());
+							// copy changes into db object
+							dbfw.copyFrom(fwords);
+							// add to persist list
+							foundwords.add(dbfw);
+						} else {
+							// add to persist list
+							foundwords.add(fwords);
+						}
 					}
+					newdetail.setFoundwords(foundwords);
 				}
-				newdetail.setFoundwords(foundwords);
-			}
+			}*/
 
 			// publisher
 			if (newdetail.getPublisher() != null) {
@@ -767,9 +778,7 @@ public class CatalogServiceImpl implements CatalogService {
 				// for further searches.
 				newdetail.setClientspecific(false);
 
-			} else {
-				newdetail.setClientspecific(origcs);
-			}
+			} 
 
 			// save and return
 			newdetail = bookDetailRepo.save(newdetail);

@@ -55,7 +55,7 @@ privileged aspect BookDetailDaoDataOnDemand_Roo_DataOnDemand {
     }
     
     public void BookDetailDaoDataOnDemand.setClientspecific(BookDetailDao obj, int index) {
-        Boolean clientspecific = Boolean.TRUE;
+        Boolean clientspecific = false;
         obj.setClientspecific(clientspecific);
     }
     
