@@ -32,9 +32,8 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <spring:message code="label_book_notverified" htmlEscape="false" var="lnvfd"/>
 
 
-<spring:message code="button_save" htmlEscape="false" var="bsave"/>
-<spring:message code="button_cancel" htmlEscape="false" var="bcancel"/>
-<spring:message code="entity_show" arguments="${lbook}" htmlEscape="false" var="pagetitle"/>
+<spring:message code="button_edit" htmlEscape="false" var="bedit"/>
+<spring:message code="label_book_aboutthis"  htmlEscape="false" var="pagetitle"/>
 
 <script type="text/javascript">
  require([
@@ -134,10 +133,9 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 
 			</div>
 			<div>
-				<spring:url value="/books?form" var="linkurl" />
-				<a href="${linkurl}" class="linkbutton" id="showaddl">${bcancel}</a>
-				<span> <input class="linkbutton" id="save" name="save"
-					type="submit" value="${bsaveand}" /></span>
+				<spring:url value="/testrd/update/${bookModel.bookid}" var="linkurl" />
+				<a href="${linkurl}" class="linkbutton" id="showaddl">${bedit}</a>
+
 
 			</div>
 

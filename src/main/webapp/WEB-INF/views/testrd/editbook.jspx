@@ -54,14 +54,19 @@
 	<spring:message code="label_number" htmlEscape="false" var="lnumber" />
 	<spring:message code="select_emptyoption" htmlEscape="false"
 		var="lemptyselect" />
-	<spring:message code="button_save" htmlEscape="false" var="bsaveand" />
-	<spring:message code="msg_assign_pagemessage" htmlEscape="false"
-		var="msginstr" />
+	<spring:message code="button_save" htmlEscape="false" var="bsave" />
+	<spring:message code="button_book_saveandadd" htmlEscape="false" var="bsaveand" />
+	<spring:message code="message_book_verifybook" htmlEscape="false"	var="msginstr" />
+
 
 	<spring:message code="button_save" htmlEscape="false" var="bsave" />
 	<spring:message code="button_cancel" htmlEscape="false" var="bcancel" />
 	<spring:message code="entity_editargs" arguments="${lbook}"
 		htmlEscape="false" var="pagetitle" />
+	<c:if test="${bookModel.bookid ==null}"> 
+		<spring:message code="label_book_findinfo"
+		htmlEscape="false" var="pagetitle" />
+	</c:if>
 	<spring:message code="label_book_isbnenry" htmlEscape="false"
 		var="lisbn" />
 
@@ -84,11 +89,15 @@
 		});
 	</script>
 
-
 	<spring:url value="/testrd" var="actionurl" />
+<c:if test="${bookModel.bookid !=null}"> 
+<spring:url value="/testrd/update/${bookModel.bookid}" var="actionurl" />
+</c:if>
 
 	<h1>${pagetitle}</h1>
-	<p>${msginstr}</p>
+	<p>	<c:if test="${bookModel.bookid !=null}"> 
+${msginstr}
+</c:if></p>
 	<form:form action="${actionurl}" id="editbook" method="POST"
 		modelAttribute="bookModel">
 		<form:errors id="errors" class="errors" path="*" />
@@ -176,14 +185,29 @@
 				</div>
 
 			</div>
+			
+			<c:if test="${bookModel.bookid ==null}"> 
+<!-- from find info -->
 			<div>
 				<spring:url value="/testrd?form" var="linkurl" />
 				<a href="${linkurl}" class="linkbutton" id="showaddl">${bcancel}</a>
 				<span> <input class="linkbutton" id="save" name="save"
+					type="submit" value="${bsave}" /></span>
+				<span> <input class="linkbutton" id="saveandadd" name="saveandadd"
 					type="submit" value="${bsaveand}" /></span>
 
 			</div>
+</c:if>
+<c:if test="${bookModel.bookid !=null}"> 
+<!-- from edit -->
+			<div>
+				<spring:url value="/testrd/display/${bookModel.bookid}" var="linkurl" />
+				<a href="${linkurl}" class="linkbutton" id="showaddl">${bcancel}</a>
+				<span> <input class="linkbutton" id="save" name="save"
+					type="submit" value="${bsave}" /></span>
 
+			</div>
+</c:if>
 		</div>
 
 

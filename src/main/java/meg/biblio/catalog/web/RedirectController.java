@@ -29,6 +29,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.util.UriUtils;
 import org.springframework.web.util.WebUtils;
@@ -132,14 +133,65 @@ public class RedirectController {
 			returnview =  "testrd/choosedetails";
 		}
 		
-		// check uses barcodes
-		Boolean showbarcode = client.getUsesBarcodes()!=null && client.getUsesBarcodes();
-		uiModel.addAttribute("showbarcodes",showbarcode);	
+		// add addbookcontext as true to model
+		uiModel.addAttribute("addbookcontext",true);
 		
 		// return view
 		return returnview;
 
 	}
+	
+	@RequestMapping( params="saveandadd", method = RequestMethod.POST, produces = "text/html")
+	public String addBookCreateAndAdd(@RequestParam(value = "saveandadd", required = false)  String addanother, BookModel bookModel, Model uiModel,
+				HttpServletRequest httpServletRequest, BindingResult bindingResult,Principal principal, Locale locale)  {
+	
+		return createBook(bookModel,uiModel,httpServletRequest,bindingResult,principal, locale, true);
+		}
+	
+	@RequestMapping(  method = RequestMethod.POST, produces = "text/html")
+	public String addBookCreate(@RequestParam(value = "saveandadd", required = false)  String addanother, BookModel bookModel, Model uiModel,
+				HttpServletRequest httpServletRequest, BindingResult bindingResult,Principal principal, Locale locale)  {
+	
+		return createBook(bookModel,uiModel,httpServletRequest,bindingResult,principal, locale, false);
+		}	
+
+	public String createBook( BookModel bookModel, Model uiModel,
+			HttpServletRequest httpServletRequest, BindingResult bindingResult,Principal principal, Locale locale, Boolean returntoadd)  {
+
+		ClientDao client = clientService.getCurrentClient(principal);
+		Long clientid = client.getId();
+		
+		bookValidator.validateUpdateBook(bookModel,bindingResult);
+		if (bindingResult.hasErrors()) {
+			// fill lookups
+			fillLookups(uiModel, httpServletRequest, principal, locale);
+			String shortname = client.getShortname();
+			uiModel.addAttribute("clientname",shortname);
+			return "testrd/editbook";
+		}
+		
+		// update book - if changed
+		try {
+			bookModel.setTrackchange(false);
+			bookModel = catalogService.createCatalogEntryFromBookModel(clientid, bookModel);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		
+		// return view - returns either to display book, or to assign code
+		uiModel.addAttribute("bookModel",bookModel);
+
+
+		// return target
+		if (!returntoadd) {
+		return "redirect:/testrd/display/" + bookModel.getBookid().toString();
+		} else {
+			return "redirect:/testrd?form";
+		}
+
+	}
+	
 	
 	@RequestMapping(value = "/update/{id}", produces = "text/html")
 	public String editBook(@PathVariable("id") Long id,
@@ -165,43 +217,39 @@ public class RedirectController {
 		return "testrd/editbook";
 	}
 	
-	
-	@RequestMapping(method = RequestMethod.POST, produces = "text/html")
-	public String addBookCreate(BookModel bookModel, Model uiModel,
-				HttpServletRequest httpServletRequest, BindingResult bindingResult,Principal principal, Locale locale)  {
-
-			ClientDao client = clientService.getCurrentClient(principal);
-			Long clientid = client.getId();
-			
-			bookValidator.validateUpdateBook(bookModel,bindingResult);
-			if (bindingResult.hasErrors()) {
-				// fill lookups
-				fillLookups(uiModel, httpServletRequest, principal, locale);
-				String shortname = client.getShortname();
-				uiModel.addAttribute("clientname",shortname);
-				return "testrd/editbook";
-			}
-			
-			// update book - if changed
-			try {
-				bookModel.setTrackchange(false);
-				bookModel = catalogService.createCatalogEntryFromBookModel(clientid, bookModel);
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} 
-			
-			// return view - returns either to display book, or to assign code
-			uiModel.addAttribute("bookModel",bookModel);
-
-
-			// return target
-			return "redirect:/testrd/display/"
-					+ encodeUrlPathSegment(bookModel.getBookid().toString(), httpServletRequest);
-
+	@RequestMapping(value = "/update/{id}",method = RequestMethod.POST, produces = "text/html")
+	public String updateBook(@PathVariable("id") Long id,BookModel bookModel, 
+			BindingResult bindingResult,Model uiModel, HttpServletRequest httpServletRequest,
+			Principal principal, Locale locale) {
+		ClientDao client = clientService.getCurrentClient(principal);
+		Long clientid = client.getId();
+		
+		bookValidator.validateUpdateBook(bookModel,bindingResult);
+		if (bindingResult.hasErrors()) {
+			// fill lookups
+			fillLookups(uiModel, httpServletRequest, principal, locale);
+			String shortname = client.getShortname();
+			uiModel.addAttribute("clientname",shortname);
+			return "testrd/editbook";
 		}
+		
+		// update book - if changed
+		try {
+			bookModel.setTrackchange(false);
+			bookModel = catalogService.updateCatalogEntryFromBookModel(clientid, bookModel, false);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		
+		// return view - returns either to display book, or to assign code
+		uiModel.addAttribute("bookModel",bookModel);
 
-	
+
+		// return target
+		return "redirect:/testrd/display/" + bookModel.getBookid().toString();
+
+	}	
 	@RequestMapping(value = "/display/{id}", produces = "text/html")
 	public String displayBook(@PathVariable("id") Long id,Model uiModel,HttpServletRequest httpServletRequest, Principal principal,
 			Locale locale) {
@@ -228,21 +276,6 @@ public class RedirectController {
 		return pathSegment;
 	}
 
-	@RequestMapping(value = "target", produces = "text/html")
-	public String showTarget(Model uiModel,HttpServletRequest httpServletRequest, Principal principal,
-			Locale locale) {
-		fillLookups(uiModel, httpServletRequest,  principal,locale);
-		return "testrd/rdtarget";
-	}
-
-	@RequestMapping(value = "/{id}", method = RequestMethod.PUT, produces = "text/html")
-	public String update(@Valid ClientDao clientDao,
-			BindingResult bindingResult, Model uiModel,
-			HttpServletRequest httpServletRequest) {
-		return "redirect:/client/"
-				+ encodeUrlPathSegment(clientDao.getId().toString(),
-						httpServletRequest);
-	}
 
 	// @ModelAttribute("classHash")
 	private void fillLookups(Model uiModel,

@@ -11,7 +11,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 
 <spring:message code="button_generate" htmlEscape="false" var="bgen"/>
 <spring:message code="button_cancel" htmlEscape="false" var="bcancel"/>
-<spring:message code="label_barcode_assignnew" htmlEscape="false" var="pagetitle"/>
+<spring:message code="label_book_create" htmlEscape="false" var="pagetitle"/>
 <spring:message code="label_number" htmlEscape="false" var="lnumber"/>
 <spring:message code="action_book_generatenumber" htmlEscape="false" var="ageneratenr"/>
 <spring:message code="label_or" htmlEscape="false" var="lor"/>

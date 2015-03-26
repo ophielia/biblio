@@ -19,12 +19,7 @@ immediate:
 
 
 little stuff -
-	title - create.jspx - add book
-	editbook - findinfo context - title as Verify Information,
-						message - Modify the information as you wish, then click on the button add to add the book to the catalog. 
-						button save as add book to catalog
-	show - change title to about this book
-			add button - add another book (add book context only....)						
+
 
 	implement front end "search again" button (verification changes)
 	assign code separate from save, and dependant upon client assign code type
@@ -54,14 +49,13 @@ done - thread cache problem with db and client specific swap out.
 
 
 ---- begin commit changes ----
-done - display not working /books/display/62767 as redirect, but yes when called directly
-done - redirect hell!!!  :-) reworking bookcontroller into redirect controller
-done - start RedirectController addBookCreate - put real book in there!!!
-done - check internal search, and detail id.  same book should have same bookid
-done - save shows book code and processing status
 
-
-
+	done - title - create.jspx - add book
+	done - editbook - findinfo context - title as Verify Information,
+						message - Modify the information as you wish, then click on the button add to add the book to the catalog. 
+						button save as add book to catalog
+	done - show - change title to about this book
+	nevermind - add button - add another book (add book context only....)						
 
 
 ---- end commit changes ----
@@ -145,6 +139,11 @@ done - adding multi results and isbnsearch read to BNFFinder
 done - will need to update isEligible
 done - resultsIntoFoundDetail
 done - implement swapped out in save
+done - display not working /books/display/62767 as redirect, but yes when called directly
+done - redirect hell!!!  :-) reworking bookcontroller into redirect controller
+done - start RedirectController addBookCreate - put real book in there!!!
+done - check internal search, and detail id.  same book should have same bookid
+done - save shows book code and processing status
 
 
 ---- end branch changes ----
