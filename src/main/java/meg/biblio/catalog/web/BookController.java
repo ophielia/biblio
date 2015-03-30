@@ -4,12 +4,15 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.GeneralSecurityException;
 import java.security.Principal;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 
+import meg.biblio.catalog.BookMemberService;
 import meg.biblio.catalog.CatalogService;
 import meg.biblio.catalog.DetailSearchService;
 import meg.biblio.catalog.db.dao.ArtistDao;
@@ -48,6 +51,10 @@ public class BookController {
 
 	@Autowired
 	CatalogService catalogService;
+	
+
+	@Autowired
+	BookMemberService bMemberService;
 
 	@Autowired
 	DetailSearchService detSearchService;
@@ -129,7 +136,7 @@ public class BookController {
 		
 		// find information for book
 		bookModel.setClientid(clientid);
-		ArtistDao artist = catalogService.textToArtistName(author);
+		ArtistDao artist = bMemberService.textToArtistName(author);
 		if (artist!=null) {
 			bookModel.setAuthorInBook(artist);
 		}
@@ -184,7 +191,7 @@ public class BookController {
 			HttpServletRequest httpServletRequest, BindingResult bindingResult,Principal principal) {
 		ClientDao client = clientService.getCurrentClient(principal);
 		Long clientid = client.getId();
-		bookModel.setTrackchange(false);
+		
 		bookValidator.validateUpdateBook(bookModel,bindingResult);
 		if (bindingResult.hasErrors()) {
 			String returnview = "book/editbook";
@@ -192,7 +199,16 @@ public class BookController {
 			// MM return returnview;
 		}
 		
+		// deal with authors, illustrators, and subjects
+		List<String> authors = parseEntryIntoStringlist(bookModel.getAuthorentry());
+		List<String> illustrators = parseEntryIntoStringlist(bookModel.getAuthorentry());
+		List<String> subjects = parseEntryIntoStringlist(bookModel.getAuthorentry());
+		
+		
+		// set string lists in bookmodel
+		
 		// update book - if changed
+		bookModel.setTrackchange(false);
 		try {
 			bookModel = catalogService.createCatalogEntryFromBookModel(clientid, bookModel);
 		} catch (Exception e) {
@@ -226,6 +242,25 @@ public class BookController {
 
  */
 	}
+
+	private List<String> parseEntryIntoStringlist(String authorentry) {
+		if (authorentry != null && authorentry.trim().length() > 0) {
+			String[] splitresult = authorentry.split(";");
+			List<String> result = new ArrayList<String>();
+			for (int i = 0; i < splitresult.length; i++) {
+				String value = splitresult[i];
+				if (value.trim().length() > 0) {
+					result.add(value);
+				}
+			}
+
+			return result;
+		}
+		return null;
+	}
+
+
+
 	// persist any changes to book (new classification, addition of isbn)
 	@RequestMapping(value = "/assign", method = RequestMethod.POST, produces = "text/html")
 	public String assignCodeToBook(BookModel bookModel,
@@ -311,9 +346,9 @@ public class BookController {
 		// changes into database model (from passed model)
 		if (id != null) {
 
-			ArtistDao author = catalogService.textToArtistName(bookModel
+			ArtistDao author = bMemberService.textToArtistName(bookModel
 					.getAuthorname());
-			ArtistDao illustrator = catalogService.textToArtistName(bookModel
+			ArtistDao illustrator = bMemberService.textToArtistName(bookModel
 					.getIllustratorname());
 			String publisher = bookModel.getPublishername();
 			String isbn = bookModel.getIsbn10();

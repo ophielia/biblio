@@ -29,5 +29,7 @@ public interface DetailSearchService {
 	List<BookModel> doOfflineSearchForBookList(List<BookModel> models,
 			ClientDao client);
 
+	public BookModel assignDetailToBook(BookModel bookModel, FoundDetailsDao fd, ClientDao client);
+
 	
 }

@@ -129,25 +129,49 @@ public class BookDetailDao {
     }
 
 	
-	private boolean artistListsEqual(List listone,List listtwo) {
+	private boolean artistListsEqual(List<ArtistDao> listone,List<ArtistDao> listtwo) {
 		if (listone!=null && listtwo!=null) {
-		List<ArtistDao> baselist = new ArrayList<ArtistDao>();
-		baselist.addAll(listone);
-		baselist.retainAll(listtwo);
-		
-		return baselist.size()==0 && listone.size()==listtwo.size();
+			int size= listone.size();
+			if (size!=listtwo.size()) {
+				return false;
+			}
+			StringBuffer testone = new StringBuffer();
+			StringBuffer testtwo = new StringBuffer();
+			for (int i=0;i<size;i++) {
+				testone.append(listone.get(i).getDisplayName());
+				testtwo.append(listtwo.get(i).getDisplayName());
+			}
+			return testone.toString().equals(testtwo.toString());
 		} else {
 			return (listone!=null || listtwo!=null);
 		}
 	}
 	
+	private boolean subjectListsEqual(List<SubjectDao> listone,List<SubjectDao> listtwo) {
+		if (listone!=null && listtwo!=null) {
+			int size= listone.size();
+			if (size!=listtwo.size()) {
+				return false;
+			}
+			StringBuffer testone = new StringBuffer();
+			StringBuffer testtwo = new StringBuffer();
+			for (int i=0;i<size;i++) {
+				testone.append(listone.get(i).getListing());
+				testtwo.append(listtwo.get(i).getListing());
+			}
+			return testone.toString().equals(testtwo.toString());
+		} else {
+			return (listone!=null || listtwo!=null);
+		}
+	}	
+	
 	public void setDescription(String description) {
-		if (description != null) {
+		if (description != null && description.trim().length()>0) {
 			if (this.description == null || !this.description.equals(description)) {
 				setTextchange(true);
 				setClientspecific(true);
 			}
-		}else if (this.description!=null){
+		}else if (this.description!=null && this.description.trim().length()>0){
 			setTextchange(true);
 			setClientspecific(true);
 		}
@@ -164,7 +188,7 @@ public class BookDetailDao {
 				setClientspecific(true);
 				setTextchange(true);
 			}
-		}else if (this.illustrators!=null){
+		}else if (this.illustrators!=null && this.illustrators.size()>0){
 			setClientspecific(true);
 			setTextchange(true);
 		}
@@ -220,9 +244,16 @@ public class BookDetailDao {
     }
 
 	public void setSubjects(List<SubjectDao> subjects) {
-		if (this.subjects != subjects) {
-        	setClientspecific(true);
-        }
+	
+		if (subjects != null) {
+			if (this.subjects == null || !subjectListsEqual(this.subjects,subjects)) {
+				setClientspecific(true);
+				setTextchange(true);
+			}
+		}else if (this.subjects!=null && this.subjects.size()>0){
+			setClientspecific(true);
+			setTextchange(true);
+		}
 		this.subjects = subjects;
     }
 
@@ -260,9 +291,6 @@ public class BookDetailDao {
 		if (copyfrom != null) {
 			if (copyfrom.authors != null) {
 				this.authors = copyfrom.authors;
-			}
-			if (copyfrom.foundwords != null) {
-				this.foundwords = copyfrom.foundwords;
 			}
 			if (copyfrom.detailstatus != null) {
 				this.detailstatus = copyfrom.detailstatus;

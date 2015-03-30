@@ -2,6 +2,7 @@ package meg.biblio.catalog;
 
 import java.util.List;
 
+import meg.biblio.catalog.db.dao.FoundDetailsDao;
 import meg.biblio.catalog.web.model.BookModel;
 
 public interface DetailFinder {
@@ -10,6 +11,10 @@ public interface DetailFinder {
 
 	List<FinderObject> findDetailsForList(List<FinderObject> forsearch,
 			long clientcomplete, Integer batchsearchmax)  throws Exception;
+
+	
+
+	public FinderObject assignDetailToBook(FinderObject findobj, FoundDetailsDao fd) throws Exception;
 
 	
 }

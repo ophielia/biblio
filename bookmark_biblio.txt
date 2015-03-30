@@ -5,7 +5,7 @@ Branch - DEMO 1.0 - Demo1
 	Front End improvements
 	Better navigation
 		
-GoogleSearch - test multi details....
+
 reflect code / class / type changes in search
 
 eventually - will need to program for isbn codes - translate codes to hyphens.
@@ -17,17 +17,25 @@ immediate:
 ---> test solution - needs to work with book already in db....
 ---> slogging through front end - 
 
+done - thread cache problem with db and client specific swap out.
 
 little stuff -
 
-
-	implement front end "search again" button (verification changes)
-	assign code separate from save, and dependant upon client assign code type
-	save goes to display - display makes an add another button available
-	add subjects to edit book / display book
-	make authors, illustrators, and subjects editable
+--->  enabling entry for authors, illustrators and subjects - front end
+	
 	choosedetails page - isbnfield only shown if no isbn in bookdetail
+		done - title change
+		done - message
+		show isbns in choosedetail listing
+		
+66468 bookdetail jour de lessive - isbn10 saved with hyphens - actually, it's the isbn13 - and it's a duplicate of something already in bookdetail.
+	fix this.		 
+	
+	later - InternalSearch should allow multidetail results....
+	
 	note on display page - barcode assigned.
+	
+done - Search - check - every "Chevaliers + Autocollant" is clientspecific, isbn "9782215089971"	
 	
 backend - assign founddetails
 	detailsearchservice - reset finderlog, finder fills in details, rerun normal search chain
@@ -40,23 +48,33 @@ barcode printouts
 Navigation - remove assigncode pages.	
 	oh - big idea (next update) - assign code (old random code version - with barcode!!)	
 	
+General - check that search is working
 
+later - assign code separate from save, and dependant upon client assign code type
 
-link if not client/barcodes for assign or reassign code
-
-
-done - thread cache problem with db and client specific swap out.
-
+small - 
+	BNF - strip - from isbns  or maybe in setISBN??
+	copy image to other books with matching titles and authors when found....
+	validation for entering book which already has a client nr.  currently has to do with assign code
+	editbook - message - Modify the information as you wish, then click on the button add to add the book to the catalog.
 
 ---- begin commit changes ----
 
-	done - title - create.jspx - add book
-	done - editbook - findinfo context - title as Verify Information,
-						message - Modify the information as you wish, then click on the button add to add the book to the catalog. 
-						button save as add book to catalog
-	done - show - change title to about this book
-	nevermind - add button - add another book (add book context only....)						
-
+	done - wire function onButtonClick to a link for authors
+	done - move link after creation of new slot
+	done - polish
+	done - write to field (on submit)		
+	done - make authors, illustrators, and subjects editable
+	done - test edit author/ill/subj capability - together with clientspecific
+	done - add subjects to edit book / display book
+	done - display shows all authors, illustrators
+	done - implement front end "search again" button (verification changes)
+	done - validation changes....
+	done - bad clientspecific - isbn 222 title jour de lessive author stehr
+	done -two things - should be set to false on save
+	done - illustrators still tripping bad clientspecific?
+	done - nevermind - save goes to display - display makes an add another button available
+	done - GoogleSearch - test multi details....	
 
 ---- end commit changes ----
 
@@ -144,6 +162,11 @@ done - redirect hell!!!  :-) reworking bookcontroller into redirect controller
 done - start RedirectController addBookCreate - put real book in there!!!
 done - check internal search, and detail id.  same book should have same bookid
 done - save shows book code and processing status
+done - title - create.jspx - add book
+done - editbook - findinfo context - title as Verify Information,
+done - button save as add book to catalog
+done - show - change title to about this book
+nevermind - add button - add another book (add book context only....)						
 
 
 ---- end branch changes ----

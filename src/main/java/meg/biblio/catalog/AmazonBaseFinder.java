@@ -13,6 +13,7 @@ import meg.biblio.catalog.db.SubjectRepository;
 import meg.biblio.catalog.db.dao.BookDetailDao;
 import meg.biblio.catalog.db.dao.FoundDetailsDao;
 import meg.biblio.catalog.db.dao.PublisherDao;
+import meg.biblio.catalog.web.model.BookModel;
 import meg.biblio.common.AppSettingService;
 import meg.biblio.search.SearchService;
 
@@ -30,13 +31,7 @@ public class AmazonBaseFinder extends BaseDetailFinder {
 	AppSettingService settingService;
 
 	@Autowired
-	SearchService searchService;
-
-	@Autowired
-	PublisherRepository pubRepo;
-
-	@Autowired
-	SubjectRepository subjectRepo;
+	BookMemberService bMemberService;
 
 	final static class NameMatchType {
 		public static final long FIRSTINITIAL = 1;
@@ -277,7 +272,7 @@ public class AmazonBaseFinder extends BaseDetailFinder {
 
 		// publisher
 		if (publisher != null && bookdetail.getPublisher() == null) {
-			PublisherDao pub = findPublisherForName(publisher);
+			PublisherDao pub = bMemberService.findPublisherForName(publisher);
 			bookdetail.setPublisher(pub);
 		}
 
@@ -311,7 +306,7 @@ public class AmazonBaseFinder extends BaseDetailFinder {
 					authorlist.add(toadd.trim());
 				}
 			}
-			bookdetail = insertAuthorsIntoBookDetail(authorlist, bookdetail);
+			bookdetail = bMemberService.insertAuthorsIntoBookDetail(authorlist, bookdetail);
 		}
 		
 		// return bookdetail
@@ -474,24 +469,10 @@ public class AmazonBaseFinder extends BaseDetailFinder {
 		return null;
 	}
 
-	private PublisherDao findPublisherForName(String text) {
-		if (text != null) {
-			// clean up text
-			text = text.trim();
-			// query db
-			List<PublisherDao> foundlist = pubRepo.findPublisherByName(text
-					.toLowerCase());
-			if (foundlist != null && foundlist.size() > 0) {
-				return foundlist.get(0);
-			} else {
-				// if nothing found, make new PublisherDao
-				PublisherDao pub = new PublisherDao();
-				pub.setName(text);
-				return pub;
-			}
-		}
+	protected FinderObject assignDetail(FinderObject findobj, FoundDetailsDao fd)  throws Exception {
 		return null;
 	}
+
 
 
 }

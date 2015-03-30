@@ -5,7 +5,6 @@ import java.security.GeneralSecurityException;
 import java.util.HashMap;
 import java.util.List;
 
-import meg.biblio.catalog.db.dao.ArtistDao;
 import meg.biblio.catalog.db.dao.BookDao;
 import meg.biblio.catalog.db.dao.BookDetailDao;
 import meg.biblio.catalog.db.dao.ClassificationDao;
@@ -54,8 +53,6 @@ public interface CatalogService {
 	BookModel loadBookModel(Long id);
 
 
-
-	public ArtistDao textToArtistName(String text);
 
 	public List<FoundDetailsDao> getFoundDetailsForBook(Long detailid);
 

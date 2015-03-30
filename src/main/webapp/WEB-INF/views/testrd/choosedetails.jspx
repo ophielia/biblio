@@ -39,7 +39,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 				bookid = dojo.byId("bookid").value;
 				
 				var form = dojo.byId('assigndetail');
-	      		  form.action = "${actionurl}?detailid=" + clickedidx +
+	      		  form.action = "${actionurl}?detailidx=" + clickedidx +
 	      		<![CDATA[/"&" ]]>+ "bookid=" + bookid;
 	      		  form.submit();
 
@@ -72,11 +72,12 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <spring:message code="button_save" htmlEscape="false" var="bsave"/>
 <spring:message code="button_cancel" htmlEscape="false" var="bcancel"/>
 <spring:message code="button_assign" htmlEscape="false" var="bassign"/>
-<spring:message code="entity_show" arguments="${lbook}" htmlEscape="false" var="pagetitle"/>
+<spring:message code="label_book_choosedetails" htmlEscape="false" var="pagetitle"/>
+<spring:message code="msg_book_choosedetails" htmlEscape="false" var="msg"/>
 
 
 <h1>${pagetitle}</h1>
-
+<p>${msg}</p>
 <div>
 	<div>
 	${ltitle}: ${bookModel.title}
@@ -91,11 +92,12 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 
 
 <form:form action="${actionurl}" id="assigndetail" method="POST" modelAttribute="bookModel">
+<form:input type="hidden" path="bookid"></form:input>
+<c:if test="${noisbn}">
 <div>
 ${lisbn}: <form:input path="isbn10" type="text" ></form:input> <input id="isbn" name="isbn" type="submit" value="${button_searchbyisbn}"/>
-<form:input type="hidden" path="bookid"></form:input>
 </div>
-
+</c:if>
 <table>
 <thead>
 <tr>

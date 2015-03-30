@@ -20,6 +20,7 @@ public class FinderObject {
 	private List<Long> findersrun;
 	private Long tempident;
 	private List<BookIdentifier> addlcodes;
+	private Boolean assigncontext=false;
 
 	public FinderObject(BookDetailDao detail) {
 		// determine if this is a firsttime search, or if an old search, if
@@ -37,6 +38,22 @@ public class FinderObject {
 		this.bookdetail = detail;
 	}
 
+	public FinderObject(BookDetailDao detail, Boolean isassign) {
+		// determine if this is a firsttime search, or if an old search, if
+		// an isbn has been added since the search was first made
+		if (detail.getId() == null) {
+			isnew = true;
+			if (detail.getDetailstatus() == null) {
+				detail.setDetailstatus(CatalogService.DetailStatus.NODETAIL);
+			}
+		} else {
+			setPreviousfinderCode(detail.getFinderlog());
+
+		}
+		setSearchStatus(detail.getDetailstatus());
+		this.bookdetail = detail;
+		this.assigncontext=isassign;
+	}
 	public BookDetailDao getBookdetail() {
 		return bookdetail;
 	}
@@ -170,10 +187,12 @@ public class FinderObject {
 				searchstatus = newstatus;
 			}
 		} else if (newstatus.longValue() == CatalogService.DetailStatus.MULTIDETAILSFOUND) {
-			searchstatus = newstatus;
-			if (searchstatus.longValue() == CatalogService.DetailStatus.DETAILFOUND) {
-				// copy current bookdetail into multiresults
-				addToMultiresults(bookdetail);
+			if (!assigncontext) {
+				searchstatus = newstatus;
+				if (searchstatus.longValue() == CatalogService.DetailStatus.DETAILFOUND) {
+					// copy current bookdetail into multiresults
+					addToMultiresults(bookdetail);
+				}
 			}
 		} else {
 			searchstatus = newstatus;

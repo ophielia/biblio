@@ -95,6 +95,7 @@ public class BookSearchCriteria {
 		this.title = title;
 	}
 
+	// MM change to shelf code
 	public boolean hasShelfclasskey() {
 		return shelfclasskey != null && shelfclasskey.longValue() > 0;
 	}

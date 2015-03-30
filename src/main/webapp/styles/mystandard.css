@@ -81,3 +81,7 @@ vertical-align: bottom;
 outline: 0;
 height: 27px;
 }
+
+.spacedout div {
+	padding-top:5px;
+}

@@ -41,6 +41,10 @@ public class ImportManagerTest {
 
 	@Autowired
 	ClientService clientService;
+	
+
+	@Autowired
+	BookMemberService bMemberService;
 
 
 	@Autowired
@@ -58,7 +62,7 @@ public class ImportManagerTest {
 		bookdetail.setIsbn13("11111111111");
 		bookdetail.setIsbn10("1111111111");
 		
-		ArtistDao author = catalogService.textToArtistName("no one");
+		ArtistDao author = bMemberService.textToArtistName("no one");
 		List<ArtistDao> authors = new ArrayList<ArtistDao>();
 		authors.add(author);
 		bookdetail.setAuthors(authors);

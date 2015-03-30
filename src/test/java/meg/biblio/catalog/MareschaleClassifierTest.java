@@ -31,6 +31,10 @@ public class MareschaleClassifierTest {
 	@Autowired
 	CatalogService catalogService;
 
+
+	@Autowired
+	BookMemberService bMemberService;
+	
 	@Autowired
 	SearchService searchService;
 
@@ -98,7 +102,7 @@ public class MareschaleClassifierTest {
 		book1.setClientid(1L);
 		book1.getBookdetail().setTitle("Pride and Prejudice");
 		authors = new ArrayList<ArtistDao>();
-		ArtistDao author = catalogService.textToArtistName("Ed White");
+		ArtistDao author = bMemberService.textToArtistName("Ed White");
 		authors.add(author);
 		book1.getBookdetail().setAuthors(authors);
 		book1.getBookdetail().setDetailstatus(CatalogService.DetailStatus.DETAILFOUND);

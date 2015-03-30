@@ -9,6 +9,7 @@ import javax.validation.ValidatorFactory;
 import meg.biblio.catalog.CatalogService;
 import meg.biblio.catalog.db.BookRepository;
 import meg.biblio.catalog.db.dao.BookDao;
+import meg.biblio.catalog.db.dao.BookDetailDao;
 import meg.biblio.catalog.web.model.BookModel;
 import meg.biblio.common.db.dao.ClientDao;
 
@@ -28,7 +29,7 @@ public class BookModelValidator {
 	public void validateNewBookEntry(BookModel model, BindingResult errors,ClientDao client) {
 
 		
-		// if not generate new - no existing book for book code
+		// if not generate new - check no existing book for book code
 		boolean generatenew = model.getCreatenewid();
 		if (!generatenew) {
 			String clientnr = model.getClientbookid();
@@ -48,7 +49,19 @@ public class BookModelValidator {
 		boolean hastitle = model.getTitle()!=null && model.getTitle().trim().length()>0;
 		if ((!hasisbn) && !(hastitle)) {
 			errors.reject("error_eitheror",null,"Title or ISBN");
-		}		
+		}	
+		
+		// check searchagain
+		BookDetailDao bd = model.getBook().getBookdetail();
+		Long status = model.getDetailstatus();
+		if (status!=null) {
+			if (status.longValue()== CatalogService.DetailStatus.DETAILNOTFOUNDWISBN) {
+				// search already done by isbn - search now by title AND author
+				if (!hastitle || !bd.hasAuthor()) {
+					errors.reject("error_searchagain",null,"Title and author");
+				}
+			}
+		}
 
 	}
 	

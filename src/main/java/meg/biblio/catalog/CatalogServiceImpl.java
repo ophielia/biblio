@@ -52,6 +52,10 @@ public class CatalogServiceImpl implements CatalogService {
 	@Autowired
 	ScalarFunction<Boolean> scalarDb;
 
+
+	@Autowired
+	BookMemberService bmemberService;
+	
 	@Autowired
 	SearchService searchService;
 
@@ -60,6 +64,9 @@ public class CatalogServiceImpl implements CatalogService {
 
 	@Autowired
 	BookRepository bookRepo;
+	
+	@Autowired
+	PublisherRepository pubRepo;
 
 	@Autowired
 	BookDetailRepository bookDetailRepo;
@@ -76,8 +83,7 @@ public class CatalogServiceImpl implements CatalogService {
 	@Autowired
 	ArtistRepository artistRepo;
 
-	@Autowired
-	PublisherRepository pubRepo;
+
 
 	@Autowired
 	SubjectRepository subjectRepo;
@@ -289,54 +295,7 @@ public class CatalogServiceImpl implements CatalogService {
 
 	}
 
-	public ArtistDao textToArtistName(String text) {
-		ArtistDao name = new ArtistDao();
-		if (text != null) {
-			if (text.contains(",")) {
-				// break text by comma
-				String[] tokens = text.trim().split(",");
-				List<String> tknlist = arrayToList(tokens);
-				// first member goes to last name
-				String lastname = tknlist.remove(0);
-				name.setLastname(lastname);
-				if (tknlist.size() > 0) {
-					// break remaining by space
-					String remaining = tknlist.get(0);
-					tokens = remaining.trim().split(" ");
-					tknlist = arrayToList(tokens);
-					// first member goes to first name
-					String firstname = tknlist.remove(0);
-					name.setFirstname(firstname);
-					// any remaining members go to middle name
-					if (tknlist.size() > 0) {
-						String middlename = tknlist.remove(0);
-						name.setMiddlename(middlename);
-					}
-				}
-			} else {
-				// break name into list
-				String[] tokens = text.trim().split(" ");
-				List<String> tknlist = arrayToList(tokens);
-				// last member of list is last name
-				String lastname = tknlist.remove(tknlist.size() - 1);
-				name.setLastname(lastname);
-				// if members remaining, first member is firstname
-				if (tknlist.size() > 0) {
-					String firstname = tknlist.remove(0);
-					name.setFirstname(firstname);
-					if (tknlist.size() > 0) {
-						// all remaining go to middlename
-						String middlename = tknlist.remove(0);
-						name.setMiddlename(middlename);
-					}
-				}
-			}
-			// return name
-			return name;
-		}
-		// return name
-		return null;
-	}
+
 
 	public List<FoundDetailsDao> getFoundDetailsForBook(Long detailid) {
 		if (detailid != null) {
@@ -349,24 +308,7 @@ public class CatalogServiceImpl implements CatalogService {
 		return null;
 	}
 
-	private PublisherDao findPublisherForName(String text) {
-		if (text != null) {
-			// clean up text
-			text = text.trim();
-			// query db
-			List<PublisherDao> foundlist = pubRepo.findPublisherByName(text
-					.toLowerCase());
-			if (foundlist != null && foundlist.size() > 0) {
-				return foundlist.get(0);
-			} else {
-				// if nothing found, make new PublisherDao
-				PublisherDao pub = new PublisherDao();
-				pub.setName(text);
-				return pub;
-			}
-		}
-		return null;
-	}
+
 
 	@Override
 	public HashMap<Long, ClassificationDao> getShelfClassHash(Long clientkey,
@@ -445,7 +387,9 @@ public class CatalogServiceImpl implements CatalogService {
 		}
 
 		// add default entries for status, detail status, type
-		book.setStatus(Status.PROCESSING);
+		if (book.getStatus()==null) {
+			book.setStatus(Status.PROCESSING);
+		}
 		book.setCreatedon(new Date());
 		if (bookdetail.getDetailstatus() == null) {
 			bookdetail.setDetailstatus(CatalogService.DetailStatus.NODETAIL);
@@ -492,7 +436,7 @@ public class CatalogServiceImpl implements CatalogService {
 			bookdetail.setIllustrators(newillustrators);
 		}
 		if (bookdetail.getPublisher() != null) {
-			PublisherDao pub = findPublisherForName(bookdetail.getPublisher()
+			PublisherDao pub = bmemberService.findPublisherForName(bookdetail.getPublisher()
 					.getName());
 			bookdetail.setPublisher(pub);
 		}
@@ -521,15 +465,7 @@ public class CatalogServiceImpl implements CatalogService {
 
 	}
 
-	private List<String> arrayToList(String[] tokens) {
-		List<String> list = new ArrayList<String>();
-		if (tokens != null) {
-			for (int i = 0; i < tokens.length; i++) {
-				list.add(tokens[i]);
-			}
-		}
-		return list;
-	}
+
 
 	@Override
 	public void assignShelfClassToBooks(Long shelfclassUpdate,

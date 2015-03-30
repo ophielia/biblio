@@ -7,10 +7,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import meg.biblio.catalog.BookMemberService;
 import meg.biblio.catalog.CatalogService;
 import meg.biblio.catalog.DetailSearchService;
 import meg.biblio.catalog.db.dao.ArtistDao;
 import meg.biblio.catalog.db.dao.BookDao;
+import meg.biblio.catalog.db.dao.BookDetailDao;
 import meg.biblio.catalog.web.model.BookModel;
 import meg.biblio.common.db.ImportBookRepository;
 import meg.biblio.common.db.dao.ClientDao;
@@ -43,6 +45,10 @@ public class ImportManager {
 
 	@Autowired
 	ClientService clientService;
+	
+
+	@Autowired
+	BookMemberService bMemberService;
 
 	@Autowired
 	CatalogService catalogService;
@@ -127,6 +133,7 @@ public class ImportManager {
 		int notitle=0;
 		for (Object newbookobject:newbooks) {
 			ImportBookDao newbook = (ImportBookDao)newbookobject;
+			
 			// get clientbookid
 			String clientbookid = newbook.getClientbookid();
 			// note - only books with clientbookids are imported
@@ -140,21 +147,24 @@ public class ImportManager {
 				} else {
 					// check for no title
 					String title = newbook.getTitle()!=null?newbook.getTitle().trim():"";
+					
 					if (title.length()>0) {
 						// if doesn't exist and has title- put newbook in toimport list
 						BookDao book = new BookDao();
 						BookModel model = new BookModel(book);
+						BookDetailDao bd = model.getBook().getBookdetail();
+						bd.setTrackchange(false);
 						model.setClientbookid(newbook.getClientbookid());
 						model.setTitle(title);
 						if (newbook.getAuthor()!=null && newbook.getAuthor().trim().length()>0 ) {
 							List<ArtistDao> authors=new ArrayList<ArtistDao>();
-							ArtistDao author = catalogService.textToArtistName(newbook.getAuthor().trim());
+							ArtistDao author = bMemberService.textToArtistName(newbook.getAuthor().trim());
 							authors.add(author);
 							model.setAuthors(authors);
 						}
 						if (newbook.getIllustrator()!=null && newbook.getIllustrator().trim().length()>0) {
 							List<ArtistDao> illustrators=new ArrayList<ArtistDao>();
-							ArtistDao illustrator = catalogService.textToArtistName(newbook.getIllustrator().trim());
+							ArtistDao illustrator = bMemberService.textToArtistName(newbook.getIllustrator().trim());
 							illustrators.add(illustrator);
 							model.setIllustrators(illustrators);
 						}

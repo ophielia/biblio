@@ -26,6 +26,10 @@ public class AmazonDetailFinderTest {
 	@Autowired
 	CatalogService catalogService;
 
+
+	@Autowired
+	BookMemberService bMemberService;
+	
 	@Autowired
 	SearchService searchService;
 
@@ -58,10 +62,10 @@ public class AmazonDetailFinderTest {
 		c_p_i = "Complete I Illustrator";
 		nc_p_i = "N Illustrator";
 
-		c_p_i_obj = amazonSearch.textToArtistName("Complete I Illustrator");
-		nc_p_i_obj = amazonSearch.textToArtistName("N Illustrator");
-		c_p_a_obj = amazonSearch.textToArtistName("Complete I Author");
-		nc_p_a_obj = amazonSearch.textToArtistName("N Author");
+		c_p_i_obj = bMemberService.textToArtistName("Complete I Illustrator");
+		nc_p_i_obj = bMemberService.textToArtistName("N Illustrator");
+		c_p_a_obj = bMemberService.textToArtistName("Complete I Author");
+		nc_p_a_obj = bMemberService.textToArtistName("N Author");
 
 		c_p_i_obj = artistRepo.save(c_p_i_obj);
 		nc_p_i_obj = artistRepo.save(nc_p_i_obj);
@@ -73,7 +77,7 @@ public class AmazonDetailFinderTest {
 	public void testSearchLogic() throws Exception {
 		BookDao book = new BookDao();
 		book.getBookdetail().setTitle("coco tout nu");
-		ArtistDao author = catalogService.textToArtistName("Monfreid");
+		ArtistDao author = bMemberService.textToArtistName("Monfreid");
 		List<ArtistDao> authors = new ArrayList<ArtistDao>();
 		authors.add(author);
 		book.getBookdetail().setAuthors(authors);
@@ -110,7 +114,7 @@ public class AmazonDetailFinderTest {
 		// Empty book details - no authors. Adding list of two new authors
 		artists.add("new writer");
 		// service call
-		bd = amazonSearch.insertAuthorsIntoBookDetail(artists, bd);
+		bd = bMemberService.insertAuthorsIntoBookDetail(artists, bd);
 		// should have one writer in the author slot with lastname writer, and
 		// first name new
 		List<ArtistDao> resultauth = bd.getAuthors();
@@ -126,7 +130,7 @@ public class AmazonDetailFinderTest {
 
 		artists.add(c_p_a);
 		// service call
-		bd = amazonSearch.insertAuthorsIntoBookDetail(artists, bd);
+		bd = bMemberService.insertAuthorsIntoBookDetail(artists, bd);
 		// should have one writer in the author slot with lastname Author, and
 		// first name Complete
 		resultauth = bd.getAuthors();
@@ -145,7 +149,7 @@ public class AmazonDetailFinderTest {
 		artists.add(c_p_a);
 		artists.add("Random Illustrator");
 		// service call
-		amazonSearch.insertAuthorsIntoBookDetail(artists, bd);
+		bMemberService.insertAuthorsIntoBookDetail(artists, bd);
 		// should have one writer in the author slot with lastname Author, and
 		// first name Complete
 		resultauth = bd.getAuthors();
@@ -178,7 +182,7 @@ public class AmazonDetailFinderTest {
 		artists.add("Random Author");
 		artists.add("Random Illustrator");
 		// service call
-		bd = amazonSearch.insertAuthorsIntoBookDetail(artists, bd);
+		bd = bMemberService.insertAuthorsIntoBookDetail(artists, bd);
 		// should have three illustrators and three authors
 		resultauth = bd.getAuthors();
 		Assert.assertNotNull(resultauth);
@@ -202,7 +206,7 @@ public class AmazonDetailFinderTest {
 		artists.add(c_p_a);
 		artists.add(c_p_i);
 		// service call
-		bd = amazonSearch.insertAuthorsIntoBookDetail(artists, bd);
+		bd = bMemberService.insertAuthorsIntoBookDetail(artists, bd);
 		// should have three illustrators and three authors
 		resultauth = bd.getAuthors();
 		Assert.assertNotNull(resultauth);
@@ -230,7 +234,7 @@ public class AmazonDetailFinderTest {
 		artists.add("Nonpersisted Author");
 		artists.add("Nonpersisted Illustrator");
 		// service call
-		bd = amazonSearch.insertAuthorsIntoBookDetail(artists, bd);
+		bd = bMemberService.insertAuthorsIntoBookDetail(artists, bd);
 		// should have three illustrators and three authors
 		resultauth = bd.getAuthors();
 		Assert.assertNotNull(resultauth);
@@ -252,15 +256,15 @@ public class AmazonDetailFinderTest {
 		bd = new BookDetailDao();
 		bdauth = new ArrayList<ArtistDao>();
 		bdillus = new ArrayList<ArtistDao>();
-		bdauth.add(amazonSearch.textToArtistName("Nonpersisted Author"));
+		bdauth.add(bMemberService.textToArtistName("Nonpersisted Author"));
 		bd.setAuthors(bdauth);
-		bdillus.add(amazonSearch.textToArtistName("Nonpersisted Illustrator"));
+		bdillus.add(bMemberService.textToArtistName("Nonpersisted Illustrator"));
 		bd.setIllustrators(bdillus);
 
 		artists.add(nc_p_a);
 		artists.add(nc_p_i);
 		// service call
-		bd = amazonSearch.insertAuthorsIntoBookDetail(artists, bd);
+		bd = bMemberService.insertAuthorsIntoBookDetail(artists, bd);
 		// should have three illustrators and three authors
 		resultauth = bd.getAuthors();
 		Assert.assertNotNull(resultauth);
@@ -282,14 +286,14 @@ public class AmazonDetailFinderTest {
 		bd = new BookDetailDao();
 		bdauth = new ArrayList<ArtistDao>();
 		bdillus = new ArrayList<ArtistDao>();
-		bdauth.add(amazonSearch.textToArtistName("Random Author"));
+		bdauth.add(bMemberService.textToArtistName("Random Author"));
 		bd.setAuthors(bdauth);
 		bdillus.add(c_p_a_obj);
 		bd.setIllustrators(bdillus);
 
 		artists.add(c_p_a_obj.getDisplayName());
 		// service call
-		bd = amazonSearch.insertAuthorsIntoBookDetail(artists, bd);
+		bd = bMemberService.insertAuthorsIntoBookDetail(artists, bd);
 		// should have 1 illustrator, 1 author
 		resultauth = bd.getAuthors();
 		Assert.assertNotNull(resultauth);
@@ -315,7 +319,7 @@ public class AmazonDetailFinderTest {
 		BookDao book = new BookDao();
 		book.getBookdetail().setIsbn13("1111111111111");
 		book.getBookdetail().setTitle("coco tout nu");
-		ArtistDao author = catalogService.textToArtistName("Monfreid");
+		ArtistDao author = bMemberService.textToArtistName("Monfreid");
 		List<ArtistDao> authors = new ArrayList<ArtistDao>();
 		authors.add(author);
 		book.getBookdetail().setAuthors(authors);
@@ -332,7 +336,7 @@ public class AmazonDetailFinderTest {
 		BookDao book = new BookDao();
 		book.getBookdetail().setIsbn13("1111111111111");
 		book.getBookdetail().setTitle("La petite poule noire");
-		ArtistDao author = catalogService.textToArtistName("Iskender Gider");
+		ArtistDao author = bMemberService.textToArtistName("Iskender Gider");
 		List<ArtistDao> authors = new ArrayList<ArtistDao>();
 		authors.add(author);
 		book.getBookdetail().setAuthors(authors);

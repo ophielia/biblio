@@ -18,6 +18,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import meg.biblio.catalog.BookIdentifier;
+import meg.biblio.catalog.BookMemberService;
 import meg.biblio.catalog.CatalogService;
 import meg.biblio.catalog.db.BookDetailRepository;
 import meg.biblio.catalog.db.FoundWordsDao;
@@ -41,6 +42,9 @@ public class SearchServiceImpl implements SearchService {
     
     @Autowired
     private CatalogService catalogService;
+
+	@Autowired
+	BookMemberService bMemberService;
     
     @Autowired
     private BookDetailRepository bookDetailRepo;    
@@ -520,7 +524,7 @@ public class SearchServiceImpl implements SearchService {
 		}
 		// shelf class
 		if (criteria.hasShelfclasskey()) {
-			q.setParameter("shelfclass", criteria.getShelfclasskey());
+			q.setParameter("shelfcode", criteria.getShelfclasskey());
 		}
 		// status
 		if (criteria.hasStatus()) {
@@ -536,7 +540,7 @@ public class SearchServiceImpl implements SearchService {
 		}	
 		// author
 		if (criteria.hasAuthor()) {
-			ArtistDao tomatch = catalogService.textToArtistName(criteria
+			ArtistDao tomatch = bMemberService.textToArtistName(criteria
 					.getAuthor());
 			// where firstname = firstname and middlename = middlename and
 			// lastname = lastname
@@ -594,8 +598,8 @@ public class SearchServiceImpl implements SearchService {
 		// shelfclass
 		if (criteria.hasShelfclasskey()) {
 			ParameterExpression<Long> param = cb.parameter(Long.class,
-					"shelfclass");
-			whereclause.add(cb.equal(bookroot.<Long> get("shelfclass"), param));
+					"shelfcode");
+			whereclause.add(cb.equal(bookroot.<Long> get("clientshelfcode"), param));
 
 		}
 		
@@ -611,7 +615,7 @@ public class SearchServiceImpl implements SearchService {
 		if (criteria.hasBooktype()) {
 			ParameterExpression<Long> param = cb.parameter(Long.class,
 					"type");
-			whereclause.add(cb.equal(bookroot.<Long> get("type"), param));
+			whereclause.add(cb.equal(bookroot.<Long> get("booktype"), param));
 
 		}		
 		
@@ -626,7 +630,7 @@ public class SearchServiceImpl implements SearchService {
 		// author
 		if (criteria.hasAuthor()) {
 			Join<BookDetailDao, ArtistDao> authorjoin = bookdetail.join("authors");
-			ArtistDao tomatch = catalogService.textToArtistName(criteria
+			ArtistDao tomatch = bMemberService.textToArtistName(criteria
 					.getAuthor());
 			// where firstname = firstname and middlename = middlename and
 			// lastname = lastname

@@ -31,8 +31,11 @@ public class BookModel  implements Serializable {
 	private String assignedcode;
 	private Boolean showbarcodelinks;
 	List<FoundDetailsDao> founddetails;
-	private String shelfclass;
-	private String shelfcode;
+	
+	private String authorentry;
+	private String illustratorentry;
+	private String subjectentry;
+
 	
 	// *** constructors ***//
 	public BookModel(BookDao book) {
@@ -86,6 +89,30 @@ public class BookModel  implements Serializable {
 	}
 
 	
+	public String getAuthorentry() {
+		return authorentry;
+	}
+
+	public void setAuthorentry(String authorentry) {
+		this.authorentry = authorentry;
+	}
+
+	public String getIllustratorentry() {
+		return illustratorentry;
+	}
+
+	public void setIllustratorentry(String illustratorentry) {
+		this.illustratorentry = illustratorentry;
+	}
+
+	public String getSubjectentry() {
+		return subjectentry;
+	}
+
+	public void setSubjectentry(String subjectentry) {
+		this.subjectentry = subjectentry;
+	}
+
 	public String getAuthorname() {
 		return authorname;
 	}
@@ -125,15 +152,15 @@ public class BookModel  implements Serializable {
 	}
 
 	public void setAuthors(List<ArtistDao> authors) {
-		if (authors!=null) this.book.getBookdetail().setAuthors(authors);
+		this.book.getBookdetail().setAuthors(authors);
 	}
 
 	public void setIllustrators(List<ArtistDao> illustrators) {
-		if (illustrators!=null) this.book.getBookdetail().setIllustrators(illustrators);
+		this.book.getBookdetail().setIllustrators(illustrators);
 	}
 
 	public void setSubjects(List<SubjectDao> subjects) {
-		if (subjects!=null) this.book.getBookdetail().setSubjects(subjects);
+		this.book.getBookdetail().setSubjects(subjects);
 	}
 
 	public void setPublisherkey(PublisherDao publisherkey) {
@@ -310,7 +337,98 @@ public class BookModel  implements Serializable {
 	public boolean hasIsbn() {
 		return this.book.getBookdetail().hasIsbn();
 	}
+	
+	public String getAuthorsforJS() {
+		if (getAuthors()!=null && getAuthors().size()>0) {
+			StringBuffer jstext = new StringBuffer();
+			for (ArtistDao artist:getAuthors()) {
+				 if (artist.getDisplayName()==null) {
+					 continue;
+				 }
+				 jstext.append(artist.getDisplayName()).append(";");
+			}
+			jstext.setLength(jstext.length()-1);
+			return jstext.toString();
+		}
+		return "";
+	}
+	
+	public String getAllAuthorsDisplay() {
+		if (getAuthors()!=null && getAuthors().size()>0) {
+			StringBuffer jstext = new StringBuffer();
+			for (ArtistDao artist:getAuthors()) {
+				 if (artist.getDisplayName()==null) {
+					 continue;
+				 }
+				 jstext.append(artist.getDisplayName()).append(", ");
+			}
+			jstext.setLength(jstext.length()-2);
+			return jstext.toString();
+		}
+		return "";
+	}	
 
+	public String getIllustratorsforJS() {
+		if (getIllustrators()!=null && getIllustrators().size()>0) {
+			StringBuffer jstext = new StringBuffer();
+			for (ArtistDao artist:getIllustrators()) {
+				 if (artist.getDisplayName()==null) {
+					 continue;
+				 }
+				 jstext.append(artist.getDisplayName()).append(";");
+			}
+			jstext.setLength(jstext.length()-1);
+			return jstext.toString();
+		}
+		return "";
+	}
+	
+	public String getAllIllustratorsDisplay() {
+		if (getIllustrators()!=null && getIllustrators().size()>0) {
+			StringBuffer jstext = new StringBuffer();
+			for (ArtistDao artist:getIllustrators()) {
+				 if (artist.getDisplayName()==null) {
+					 continue;
+				 }
+				 jstext.append(artist.getDisplayName()).append(", ");
+			}
+			jstext.setLength(jstext.length()-2);
+			return jstext.toString();
+		}
+		return "";
+	}
+	
+	public String getSubjectsforJS() {
+		if (getSubjects()!=null && getSubjects().size()>0) {
+			StringBuffer jstext = new StringBuffer();
+			for (SubjectDao subject:getSubjects()) {
+				 if (subject.getListing()==null) {
+					 continue;
+				 }
+				 jstext.append(subject.getListing()).append(";");
+			}
+			jstext.setLength(jstext.length()-1);
+			return jstext.toString();
+		}
+		return "";
+	}
+	
+	public String getAllSubjectsDisplay() {
+		if (getSubjects()!=null && getSubjects().size()>0) {
+			StringBuffer jstext = new StringBuffer();
+			for (SubjectDao subject:getSubjects()) {
+				 if (subject.getListing()==null) {
+					 continue;
+				 }
+				 jstext.append(subject.getListing()).append(", ");
+			}
+			jstext.setLength(jstext.length()-2);
+			return jstext.toString();
+		}
+		return "";
+	}	
+	
+	
 	public ArtistDao getMainAuthor() {
 		if (getAuthors()!=null && getAuthors().size()>0) {
 			ArtistDao author = getAuthors().get(0);

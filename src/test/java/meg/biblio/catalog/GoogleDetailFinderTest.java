@@ -44,6 +44,9 @@ public class GoogleDetailFinderTest {
 	SearchService searchService;
 
 	@Autowired
+	BookMemberService bMemberService;
+	
+	@Autowired
 	GoogleDetailFinder googleSearch;
 
 	@Before
@@ -55,7 +58,7 @@ public class GoogleDetailFinderTest {
 	public void testSearchLogic() throws Exception {
 		BookDao book = new BookDao();
 		book.getBookdetail().setTitle("coco tout nu");
-		ArtistDao author = catalogService.textToArtistName("Monfreid");
+		ArtistDao author = bMemberService.textToArtistName("Monfreid");
 		List<ArtistDao> authors = new ArrayList<ArtistDao>();
 		authors.add(author);
 		book.getBookdetail().setAuthors(authors);
@@ -78,7 +81,7 @@ public class GoogleDetailFinderTest {
 		BookDao book = new BookDao();
 		book.getBookdetail().setIsbn13("1111111111111");
 		book.getBookdetail().setTitle("coco tout nu");
-		ArtistDao author = catalogService.textToArtistName("Monfreid");
+		ArtistDao author = bMemberService.textToArtistName("Monfreid");
 		List<ArtistDao> authors = new ArrayList<ArtistDao>();
 		authors.add(author);
 		book.getBookdetail().setAuthors(authors);
@@ -95,7 +98,7 @@ public class GoogleDetailFinderTest {
 		BookDao book = new BookDao();
 		book.getBookdetail().setIsbn13("1111111111111");
 		book.getBookdetail().setTitle("Superlapin");
-		ArtistDao author = catalogService.textToArtistName("Stephanie Blake");
+		ArtistDao author = bMemberService.textToArtistName("Stephanie Blake");
 		List<ArtistDao> authors = new ArrayList<ArtistDao>();
 		authors.add(author);
 		book.getBookdetail().setAuthors(authors);

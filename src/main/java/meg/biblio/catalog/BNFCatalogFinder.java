@@ -46,6 +46,9 @@ public class BNFCatalogFinder extends BaseDetailFinder {
 
 	@Autowired
 	SubjectRepository subjectRepo;
+	
+	@Autowired
+	BookMemberService bMemberService;
 
 	/* Get actual class name to be printed on */
 	static Logger log = Logger.getLogger(BNFCatalogFinder.class.getName());
@@ -338,7 +341,7 @@ public class BNFCatalogFinder extends BaseDetailFinder {
 				// nab this authors name here, just in case
 				alternateauthor = stripAfterText("(", results.get("Auteur(s)"));
 				alternateauthor = stripAfterText(newlinemarker, alternateauthor);
-				alternateauthor = normalizeArtistName(alternateauthor);
+				alternateauthor = bMemberService.normalizeArtistName(alternateauthor);
 
 				// put results into bookdetail
 				resultsIntoDetail(results, findobj);
@@ -373,8 +376,8 @@ public class BNFCatalogFinder extends BaseDetailFinder {
 			for (BookIdentifier bi : addlcodes) {
 				FoundDetailsDao fd = new FoundDetailsDao();
 				String catalogurl = bi.getLink();
-				String ark = parseArkFromUrl(catalogurl);
-				fd.setSearchserviceid(ark);
+				//String ark = parseArkFromUrl(catalogurl);
+				fd.setSearchserviceid(catalogurl);
 				fd.setSearchsource(identifier);
 
 				if (catalogurl != null) {
@@ -434,7 +437,7 @@ public class BNFCatalogFinder extends BaseDetailFinder {
 								// processing author - strip after (
 								rawartist = stripAfterText("(", rawartist);
 								// normalize author name
-								String artist = normalizeArtistName(rawartist);
+								String artist = bMemberService.normalizeArtistName(rawartist);
 								// add to book detail depending upon role
 
 								if (rawrole.toLowerCase().contains("auteur")) {
@@ -455,7 +458,7 @@ public class BNFCatalogFinder extends BaseDetailFinder {
 				} else if (key.toLowerCase().equals("auteur(s)")) {
 					String value = stripAfterText("(", results.get(key));
 					// normalize author name
-					value = normalizeArtistName(value);
+					value = bMemberService.normalizeArtistName(value);
 					// set in author....
 					addlauthors.add(0, value);
 				} else if (key.toLowerCase().equals("résumé")) {
@@ -526,7 +529,7 @@ public class BNFCatalogFinder extends BaseDetailFinder {
 								// processing author - strip after (
 								rawartist = stripAfterText("(", rawartist);
 								// normalize author name
-								String artist = normalizeArtistName(rawartist);
+								String artist = bMemberService.normalizeArtistName(rawartist);
 								// add to book detail depending upon role
 
 								if (rawrole.toLowerCase().contains("auteur")) {
@@ -542,9 +545,9 @@ public class BNFCatalogFinder extends BaseDetailFinder {
 				} else if (key.toLowerCase().equals("auteur(s)")) {
 					String value = stripAfterText("(", results.get(key));
 					// normalize author name
-					value = normalizeArtistName(value);
+					value = bMemberService.normalizeArtistName(value);
 					// set in author....
-					bdetail = addArtistToAuthors(value, bdetail);
+					bdetail = bMemberService.addArtistToAuthors(value, bdetail);
 				} else if (key.toLowerCase().equals("sujet(s)")) {
 					List<String> subjects = new ArrayList<String>();
 					String value = stripAfterText(newlinemarkersplit,
@@ -553,7 +556,7 @@ public class BNFCatalogFinder extends BaseDetailFinder {
 					for (int i = 0; i < rawsubjects.length; i++) {
 						subjects.add(rawsubjects[i].trim());
 					}
-					bdetail = insertSubjectsIntoBookDetail(subjects, bdetail);
+					bdetail = bMemberService.insertSubjectsIntoBookDetail(subjects, bdetail);
 				} else if (key.toLowerCase().equals("résumé")) {
 					String value = stripAfterText(newlinemarkersplit,
 							results.get(key));
@@ -565,12 +568,12 @@ public class BNFCatalogFinder extends BaseDetailFinder {
 			// now, add addlauthors and illustrators
 			if (addlauthors != null) {
 				for (String artist : addlauthors) {
-					bdetail = addArtistToAuthors(artist, bdetail);
+					bdetail = bMemberService.addArtistToAuthors(artist, bdetail);
 				}
 			}
 			if (addlillustrators != null) {
 				for (String artist : addlillustrators) {
-					bdetail = addArtistToAuthors(artist, bdetail);
+					bdetail = bMemberService.addArtistToAuthors(artist, bdetail);
 				}
 			}
 
@@ -661,4 +664,7 @@ public class BNFCatalogFinder extends BaseDetailFinder {
 
 	}
 
+	protected FinderObject assignDetail(FinderObject findobj, FoundDetailsDao fd)  throws Exception {
+		return null;
+	}
 }

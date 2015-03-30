@@ -37,11 +37,8 @@ public class GoogleDetailFinder extends BaseDetailFinder {
 	AppSettingService settingService;
 
 	@Autowired
-	SearchService searchService;
-
-	@Autowired
-	PublisherRepository pubRepo;
-
+	BookMemberService bMemberService;
+	
 	/* Get actual class name to be printed on */
 	static Logger log = Logger.getLogger(GoogleDetailFinder.class.getName());
 
@@ -233,7 +230,7 @@ public class GoogleDetailFinder extends BaseDetailFinder {
 		VolumeInfo info = volume.getVolumeInfo();
 
 		bookdetail.setTitle(info.getTitle());
-		PublisherDao publisher = findPublisherForName(info.getPublisher());
+		PublisherDao publisher = bMemberService.findPublisherForName(info.getPublisher());
 		bookdetail.setDescription(info.getDescription());
 		bookdetail.setPublisher(publisher);
 		if (info.getPublishedDate() != null) {
@@ -253,7 +250,7 @@ public class GoogleDetailFinder extends BaseDetailFinder {
 		}
 		bookdetail.setLanguage(info.getLanguage());
 
-		insertAuthorsIntoBookDetail(info.getAuthors(), bookdetail);
+		bMemberService.insertAuthorsIntoBookDetail(info.getAuthors(), bookdetail);
 
 		List<IndustryIdentifiers> isbn = info.getIndustryIdentifiers();
 		ListIterator<IndustryIdentifiers> iter = isbn.listIterator();
@@ -283,7 +280,7 @@ public class GoogleDetailFinder extends BaseDetailFinder {
 				subjects.add(category);
 			}
 			if (subjects.size() > 0) {
-				insertSubjectsIntoBookDetail(subjects, bookdetail);
+				bMemberService.insertSubjectsIntoBookDetail(subjects, bookdetail);
 			}
 		}
 
@@ -294,24 +291,7 @@ public class GoogleDetailFinder extends BaseDetailFinder {
 
 	}
 
-	private PublisherDao findPublisherForName(String text) {
-		if (text != null) {
-			// clean up text
-			text = text.trim();
-			// query db
-			List<PublisherDao> foundlist = pubRepo.findPublisherByName(text
-					.toLowerCase());
-			if (foundlist != null && foundlist.size() > 0) {
-				return foundlist.get(0);
-			} else {
-				// if nothing found, make new PublisherDao
-				PublisherDao pub = new PublisherDao();
-				pub.setName(text);
-				return pub;
-			}
-		}
-		return null;
-	}
+
 
 	private Volumes singleQueryGoogle(Books books, String query)
 			throws IOException {
@@ -396,4 +376,8 @@ public class GoogleDetailFinder extends BaseDetailFinder {
 		return details;
 	}
 
+	
+	protected FinderObject assignDetail(FinderObject findobj, FoundDetailsDao fd)  throws Exception {
+		return null;
+	}
 }

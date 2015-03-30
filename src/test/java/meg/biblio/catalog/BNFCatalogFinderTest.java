@@ -28,6 +28,11 @@ public class BNFCatalogFinderTest {
 	@Autowired
 	SearchService searchService;
 
+	
+
+	@Autowired
+	BookMemberService bMemberService;
+	
 	@Autowired
 	BNFCatalogFinder bnfSearch;
 
@@ -38,7 +43,7 @@ public class BNFCatalogFinderTest {
 		searchfor= new ArrayList<FinderObject>();
 		BookDetailDao bookdetail = new BookDetailDao();
 		bookdetail.setTitle("Jour de lessive");
-		ArtistDao author = catalogService.textToArtistName("Frédéric Stehr");
+		ArtistDao author = bMemberService.textToArtistName("Frédéric Stehr");
 		List<ArtistDao> authors = new ArrayList<ArtistDao>();
 		authors.add(author);
 		bookdetail.setAuthors(authors);
@@ -48,7 +53,7 @@ public class BNFCatalogFinderTest {
 		
 		bookdetail = new BookDetailDao();
 		bookdetail.setTitle("Petit Pierrot : Décrocher la Lune");
-		author = catalogService.textToArtistName("Alberto Varanda");
+		author = bMemberService.textToArtistName("Alberto Varanda");
 		authors = new ArrayList<ArtistDao>();
 		authors.add(author);
 		bookdetail.setAuthors(authors);
@@ -58,7 +63,7 @@ public class BNFCatalogFinderTest {
 		
 		bookdetail = new BookDetailDao();
 		bookdetail.setTitle("Et pourquoi ?");
-		author = catalogService.textToArtistName("Michel Zeveren");
+		author = bMemberService.textToArtistName("Michel Zeveren");
 		authors = new ArrayList<ArtistDao>();
 		authors.add(author);
 		bookdetail.setAuthors(authors);
@@ -68,7 +73,7 @@ public class BNFCatalogFinderTest {
 		
 		bookdetail = new BookDetailDao();
 		bookdetail.setTitle("C'est plus drôle avec Mimi");
-		author = catalogService.textToArtistName("Lucy Cousins");
+		author = bMemberService.textToArtistName("Lucy Cousins");
 		authors = new ArrayList<ArtistDao>();
 		authors.add(author);
 		bookdetail.setAuthors(authors);
@@ -78,7 +83,7 @@ public class BNFCatalogFinderTest {
 		
 		bookdetail = new BookDetailDao();
 		bookdetail.setTitle("Eloïse");
-		author = catalogService.textToArtistName("Kay Thompson");
+		author = bMemberService.textToArtistName("Kay Thompson");
 		authors = new ArrayList<ArtistDao>();
 		authors.add(author);
 		bookdetail.setAuthors(authors);
@@ -89,7 +94,7 @@ public class BNFCatalogFinderTest {
 		
 		bookdetail = new BookDetailDao();
 		bookdetail.setTitle("Le Premier Grand Voyage du Père Noël");
-		author = catalogService.textToArtistName("Moe Price");
+		author = bMemberService.textToArtistName("Moe Price");
 		authors = new ArrayList<ArtistDao>();
 		authors.add(author);
 		bookdetail.setAuthors(authors);
@@ -100,7 +105,7 @@ public class BNFCatalogFinderTest {
 		
 		bookdetail = new BookDetailDao();
 		bookdetail.setTitle("Jour de lessive");
-		author = catalogService.textToArtistName("Frédéric Stehr");
+		author = bMemberService.textToArtistName("Frédéric Stehr");
 		authors = new ArrayList<ArtistDao>();
 		authors.add(author);
 		bookdetail.setAuthors(authors);
@@ -110,7 +115,7 @@ public class BNFCatalogFinderTest {
 		
 		bookdetail = new BookDetailDao();
 		bookdetail.setTitle("Superlapin");
-		author = catalogService.textToArtistName("Stephanie Blake");
+		author = bMemberService.textToArtistName("Stephanie Blake");
 		authors = new ArrayList<ArtistDao>();
 		authors.add(author);
 		bookdetail.setAuthors(authors);
@@ -125,7 +130,7 @@ public class BNFCatalogFinderTest {
 	public void testSearchLogic() throws Exception {
 		BookDao book = new BookDao();
 		book.getBookdetail().setTitle("Jour de lessive");
-		ArtistDao author = catalogService.textToArtistName("Frédéric Stehr");
+		ArtistDao author = bMemberService.textToArtistName("Frédéric Stehr");
 		List<ArtistDao> authors = new ArrayList<ArtistDao>();
 		authors.add(author);
 		book.getBookdetail().setAuthors(authors);
@@ -177,7 +182,7 @@ public class BNFCatalogFinderTest {
 		subjects.add("green");
 		subjects.add("blue");
 
-		bookdetail = bnfSearch.insertSubjectsIntoBookDetail(subjects, bookdetail);
+		bookdetail = bMemberService.insertSubjectsIntoBookDetail(subjects, bookdetail);
 		
 		// check - should have subjects not null, with size 3
 		Assert.assertNotNull(bookdetail.getSubjects());
@@ -188,7 +193,7 @@ public class BNFCatalogFinderTest {
 		subjects.add("pink");
 		subjects.add("blue");
 
-		bookdetail = bnfSearch.insertSubjectsIntoBookDetail(subjects, bookdetail);
+		bookdetail = bMemberService.insertSubjectsIntoBookDetail(subjects, bookdetail);
 		// should have subjects not null, with size of 4
 		Assert.assertNotNull(bookdetail.getSubjects());
 		Assert.assertEquals(4L,bookdetail.getSubjects().size());
@@ -198,7 +203,7 @@ public class BNFCatalogFinderTest {
 	public void testNormalizeArtistName() throws Exception {
 		String totest = "Martin, Margaret";
 		// service call
-		String result = bnfSearch.normalizeArtistName(totest);
+		String result = bMemberService.normalizeArtistName(totest);
 		
 		// check call
 		Assert.assertNotNull(result);
@@ -210,7 +215,7 @@ public class BNFCatalogFinderTest {
 		BookDao book = new BookDao();
 		book.getBookdetail().setIsbn13("1111111111111");
 		book.getBookdetail().setTitle("coco tout nu");
-		ArtistDao author = catalogService.textToArtistName("Monfreid");
+		ArtistDao author = bMemberService.textToArtistName("Monfreid");
 		List<ArtistDao> authors = new ArrayList<ArtistDao>();
 		authors.add(author);
 		book.getBookdetail().setAuthors(authors);
@@ -226,7 +231,7 @@ public class BNFCatalogFinderTest {
 	public void testISBNNotFoundRead() throws Exception {
 		BookDao book = new BookDao();
 		book.getBookdetail().setTitle("Jour de lessive");
-		ArtistDao author = catalogService.textToArtistName("Frédéric Stehr");
+		ArtistDao author = bMemberService.textToArtistName("Frédéric Stehr");
 		List<ArtistDao> authors = new ArrayList<ArtistDao>();
 		authors.add(author);
 		book.getBookdetail().setAuthors(authors);

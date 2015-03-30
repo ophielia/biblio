@@ -38,6 +38,10 @@ public class CatalogServiceTest {
 
 	@Autowired
 	CatalogService catalogService;
+	
+
+	@Autowired
+	BookMemberService bMemberService;
 
 	@Autowired
 	SearchService searchService;
@@ -69,7 +73,7 @@ public class CatalogServiceTest {
 	@Before
 	public void setup() {
 		// make artist susan cooper
-		ArtistDao artist = catalogService.textToArtistName("Susan Cooper");
+		ArtistDao artist = bMemberService.textToArtistName("Susan Cooper");
 		artist = artistRepo.save(artist);
 		artistid = artist.getId();
 
@@ -237,7 +241,7 @@ public class CatalogServiceTest {
 		Long clientid = clientService.getTestClientId();
 		BookDao book = new BookDao();
 		book.getBookdetail().setTitle("les trois brigands");
-		ArtistDao author = catalogService.textToArtistName("Ungerer");
+		ArtistDao author = bMemberService.textToArtistName("Ungerer");
 		List<ArtistDao> authors = new ArrayList<ArtistDao>();
 		authors.add(author);
 		book.getBookdetail().setAuthors(authors);
@@ -261,7 +265,7 @@ public class CatalogServiceTest {
 	public void testFillDetailsFromEntry() {
 		BookDao book = new BookDao();
 		book.getBookdetail().setTitle("coco tout nu");
-		ArtistDao author = catalogService.textToArtistName("Monfreid");
+		ArtistDao author = bMemberService.textToArtistName("Monfreid");
 		List<ArtistDao> authors = new ArrayList<ArtistDao>();
 		authors.add(author);
 		book.getBookdetail().setAuthors(authors);
@@ -291,13 +295,13 @@ public class CatalogServiceTest {
 		book2.setClientbookid("2A");
 		book2.getBookdetail().setTitle("Sense and Sensibility");
 		List<ArtistDao> authors = new ArrayList<ArtistDao>();
-		ArtistDao author = catalogService.textToArtistName("Jane Austen");
+		ArtistDao author = bMemberService.textToArtistName("Jane Austen");
 		authors.add(author);
 		BookDao book3 = new BookDao();
 		book3.setClientbookid("3A");
 		book3.getBookdetail().setTitle("The Very Hungry Catepillar");
 		authors = new ArrayList<ArtistDao>();
-		author = catalogService.textToArtistName("Eric Carle");
+		author = bMemberService.textToArtistName("Eric Carle");
 		book3.getBookdetail().setAuthors(authors);
 
 		// to model, and in list
@@ -319,56 +323,6 @@ public class CatalogServiceTest {
 		Assert.assertEquals("Pride and Prejudice", result.getBookdetail()
 				.getTitle());
 
-	}
-
-	@Test
-	public void testTextToArtistName() {
-		// text "Michael Vincent Marbboury"
-		String text = "Michael Vincent Marbboury";
-		ArtistDao name = catalogService.textToArtistName(text);
-		// check firstname
-		Assert.assertEquals("Michael", name.getFirstname());
-		// check middlename
-		Assert.assertEquals("Vincent", name.getMiddlename());
-		// check lastname
-		Assert.assertEquals("Marbboury", name.getLastname());
-
-		// text "Bill Moyers"
-		text = "Bill Moyers";
-		name = catalogService.textToArtistName(text);
-		// check firstname
-		Assert.assertEquals("Bill", name.getFirstname());
-		// check lastname
-		Assert.assertEquals("Moyers", name.getLastname());
-
-		// text "Sendak"
-		text = "Sendak";
-		name = catalogService.textToArtistName(text);
-		// check lastname
-		Assert.assertEquals("Sendak", name.getLastname());
-
-		// text "Martin, Kate"
-		text = "Martin, Kate";
-		name = catalogService.textToArtistName(text);
-		// check firstname
-		Assert.assertEquals("Kate", name.getFirstname());
-		// checkk lastname
-		Assert.assertEquals("Martin", name.getLastname());
-
-		// text null
-		name = catalogService.textToArtistName(null);
-		// check null
-		Assert.assertNull(name);
-
-		// text "Martin, Jack Orion"
-		text = "Martin, Jack Orion";
-		name = catalogService.textToArtistName(text);
-		// check firstname
-		Assert.assertEquals("Jack", name.getFirstname());
-		// check middlename
-		Assert.assertEquals("Orion", name.getMiddlename());
-		// check lastname
-		Assert.assertEquals("Martin", name.getLastname());
 	}
 
 	@Test

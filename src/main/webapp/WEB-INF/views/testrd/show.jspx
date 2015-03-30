@@ -29,7 +29,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <spring:message code="label_book_classification" htmlEscape="false" var="lclassification"/>
 <spring:message code="label_book_clientbookid" htmlEscape="false" var="lclientbookid"/>
 <spring:message code="label_book_verified" htmlEscape="false" var="lvfd"/>
-<spring:message code="label_book_notverified" htmlEscape="false" var="lnvfd"/>
+<spring:message code="label_book_subject" htmlEscape="false" var="lsubject"/>
 
 
 <spring:message code="button_edit" htmlEscape="false" var="bedit"/>
@@ -67,10 +67,10 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 	<span class="stress">${ltitle}:</span> ${bookModel.title}
 	</div>
 	<div>
-	<span class="stress">${lauthor}:</span>${bookModel.mainAuthor.firstname} ${bookModel.mainAuthor.middlename} ${bookModel.mainAuthor.lastname} 
+	<span class="stress">${lauthor}:</span>${bookModel.allAuthorsDisplay} 
 	</div>
 	<div>
-	<span class="stress">${lillustrator}:</span> ${bookModel.mainIllustrator.firstname} ${bookModel.mainIllustrator.middlename} ${bookModel.mainIllustrator.lastname}
+	<span class="stress">${lillustrator}:</span> ${bookModel.allIllustratorsDisplay}
 	</div>
 	<div>
 	<span class="stress">${lpublisher}:</span> ${bookModel.publisher.name}
@@ -100,6 +100,9 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 					${bookModel.shelfclass}
 				</div>
 	<span class="stress">${lstatus}: </span>${statusLkup[bookModel.status]}
+	</div>
+	<div>
+	<span class="stress">${lsubject}: </span>${bookModel.allSubjectsDisplay}
 	</div>
 	<div>
 	<span class="stress">${lbooktype}: </span>${typeLkup[bookModel.type]}

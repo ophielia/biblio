@@ -7,6 +7,7 @@ import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 
+import meg.biblio.catalog.BookMemberService;
 import meg.biblio.catalog.CatalogService;
 import meg.biblio.catalog.db.dao.ArtistDao;
 import meg.biblio.catalog.db.dao.BookDao;
@@ -41,6 +42,10 @@ public class AssignBarcodeController {
 	@Autowired
 	CatalogService catalogService;
 
+
+	@Autowired
+	BookMemberService bMemberService;
+	
 	@Autowired
 	SelectKeyService keyService;
 
@@ -225,7 +230,7 @@ public class AssignBarcodeController {
 		if (cbooknr!=null) model.setClientbookid(cbooknr);
 		if (isbn!=null) model.setIsbn10(isbn);
 		if (title!=null) model.setTitle(title);
-		ArtistDao artist = catalogService.textToArtistName(author);
+		ArtistDao artist = bMemberService.textToArtistName(author);
 		if (artist!=null) {
 			model.setAuthorInBook(artist);
 		}
@@ -293,7 +298,7 @@ public class AssignBarcodeController {
 		if (status!=null) model.setStatus(status);
 		if (isbn!=null) model.setIsbn10(isbn);
 		if (title!=null) model.setTitle(title);
-		ArtistDao artist = catalogService.textToArtistName(author);
+		ArtistDao artist = bMemberService.textToArtistName(author);
 		if (artist!=null) {
 			model.setAuthorInBook(artist);
 		}

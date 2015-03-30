@@ -25,6 +25,10 @@ public class InternalDetailFinderTest {
 
 	@Autowired
 	CatalogService catalogService;
+	
+
+	@Autowired
+	BookMemberService bMemberService;
 
 	@Autowired
 	SearchService searchService;
@@ -54,7 +58,7 @@ public class InternalDetailFinderTest {
 		bd = new BookDetailDao();
 		bd.setTitle("James Duke is born");
 		List<ArtistDao> authors = new ArrayList<ArtistDao>();
-		ArtistDao author = catalogService.textToArtistName("Caroline Itoi");
+		ArtistDao author = bMemberService.textToArtistName("Caroline Itoi");
 		authors.add(author);
 		bd.setAuthors(authors);
 		bd.setClientspecific(false);
@@ -69,7 +73,7 @@ public class InternalDetailFinderTest {
 	public void testSearchLogic() throws Exception {
 		BookDao book = new BookDao();
 		book.getBookdetail().setTitle("James Duke is born");
-		ArtistDao author = catalogService.textToArtistName("Caroline Itoi");
+		ArtistDao author = bMemberService.textToArtistName("Caroline Itoi");
 		List<ArtistDao> authors = new ArrayList<ArtistDao>();
 		authors.add(author);
 		book.getBookdetail().setAuthors(authors);
@@ -112,7 +116,7 @@ public class InternalDetailFinderTest {
 		BookDao book = new BookDao();
 		book.getBookdetail().setIsbn13("1111111111111");
 		book.getBookdetail().setTitle("coco tout nu");
-		ArtistDao author = catalogService.textToArtistName("Monfreid");
+		ArtistDao author = bMemberService.textToArtistName("Monfreid");
 		List<ArtistDao> authors = new ArrayList<ArtistDao>();
 		authors.add(author);
 		book.getBookdetail().setAuthors(authors);
@@ -130,7 +134,7 @@ public class InternalDetailFinderTest {
 		BookDetailDao bd = book.getBookdetail();
 		bd.setTitle("James Duke is born");
 		List<ArtistDao> authors = new ArrayList<ArtistDao>();
-		ArtistDao author = catalogService.textToArtistName("Caroline Itoi");
+		ArtistDao author = bMemberService.textToArtistName("Caroline Itoi");
 		authors.add(author);
 		bd.setAuthors(authors);
 		book.setBookdetail(bd);
