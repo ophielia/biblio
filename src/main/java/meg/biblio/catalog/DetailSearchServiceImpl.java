@@ -398,7 +398,10 @@ public class DetailSearchServiceImpl implements DetailSearchService {
 		
 		// replace bookdetail in bookmodel
 		bd = findobj.getBookdetail();
+		bd.setDetailstatus(findobj.getSearchStatus());
+		bd.setFinderlog(findobj.getCurrentFinderLog());
 		bookModel.setBookdetail(bd);
+		
 		// once assigned (from finder which found the details), now rerun the
 		// search
 		bookModel = fillInDetailsForBook(bookModel, client);

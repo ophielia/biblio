@@ -19,6 +19,7 @@ import meg.biblio.catalog.db.dao.ArtistDao;
 import meg.biblio.catalog.db.dao.BookDao;
 import meg.biblio.catalog.db.dao.ClassificationDao;
 import meg.biblio.catalog.db.dao.FoundDetailsDao;
+import meg.biblio.catalog.db.dao.PublisherDao;
 import meg.biblio.catalog.db.dao.SubjectDao;
 import meg.biblio.catalog.web.model.BookModel;
 import meg.biblio.catalog.web.validator.BookModelValidator;
@@ -82,14 +83,14 @@ public class RedirectController {
 	public String addBookFindInfo(BookModel bookModel, Model uiModel,
 			BindingResult bindingResult, HttpServletRequest httpServletRequest,
 			Principal principal, Locale locale) {
-		return findInfo(bookModel,uiModel,bindingResult,httpServletRequest,principal,locale);
+		return findInfo(bookModel,uiModel,bindingResult,httpServletRequest,principal,locale, true);
 	}
-	
+
 	@RequestMapping(params = "searchagain", method = RequestMethod.POST, produces = "text/html")
 	public String searchAgain(BookModel bookModel, Model uiModel,
 			BindingResult bindingResult, HttpServletRequest httpServletRequest,
 			Principal principal, Locale locale) {
-		
+
 		// deal with authors, illustrators, and subjects
 		List<String> authors = parseEntryIntoStringlist(bookModel
 				.getAuthorentry());
@@ -97,6 +98,7 @@ public class RedirectController {
 				.getIllustratorentry());
 		List<String> subjects = parseEntryIntoStringlist(bookModel
 				.getSubjectentry());
+		String pubname = bookModel.getPublishername();
 
 		List<ArtistDao> authorlist = bMemberService
 				.stringListToArtists(authors);
@@ -104,17 +106,20 @@ public class RedirectController {
 				.stringListToArtists(illustrators);
 		List<SubjectDao> subjectlist = bMemberService
 				.stringListToSubjects(subjects);
+		PublisherDao publisher = bMemberService.findPublisherForName(pubname);
 
 		bookModel.setAuthors(authorlist);
 		bookModel.setIllustrators(illustratorlist);
 		bookModel.setSubjects(subjectlist);
+		bookModel.getBook().getBookdetail().setPublisher(publisher);
 		
-		return findInfo(bookModel,uiModel,bindingResult,httpServletRequest,principal,locale);
+		
+		return findInfo(bookModel,uiModel,bindingResult,httpServletRequest,principal,locale,false);
 	}
-	
+
 	private String findInfo(BookModel bookModel, Model uiModel,
 			BindingResult bindingResult, HttpServletRequest httpServletRequest,
-			Principal principal, Locale locale) {
+			Principal principal, Locale locale, boolean firstsearch) {
 		ClientDao client = clientService.getCurrentClient(principal);
 		Long clientid = client.getId();
 
@@ -127,13 +132,19 @@ public class RedirectController {
 		// if not generate new - no existing book for book code
 		bookValidator.validateNewBookEntry(bookModel, bindingResult, client);
 		if (bindingResult.hasErrors()) {
-			// return to choosenewbook page
-			uiModel.addAttribute("searchagain", true);
-			return "testrd/editbook";
+			if (firstsearch) {
+				return "testrd/create";
+			} else {
+				// return to editbook page
+				uiModel.addAttribute("searchagain", true);
+				return "testrd/editbook";
+				
+			}
 		}
 
 		// get author and status
 		String author = bookModel.getAuthorname();
+		String publishername = bookModel.getPublishername();
 		Long status = client.getDefaultStatus();
 
 		// find information for book
@@ -141,6 +152,10 @@ public class RedirectController {
 		ArtistDao artist = bMemberService.textToArtistName(author);
 		if (artist != null) {
 			bookModel.setAuthorInBook(artist);
+		}
+		PublisherDao publisher = bMemberService.findPublisherForName(publishername);
+		if (publisher!=null) {
+			bookModel.getBook().getBookdetail().setPublisher(publisher);
 		}
 		if (status != null) {
 			bookModel.setStatus(status);
@@ -194,8 +209,8 @@ public class RedirectController {
 	}
 
 
-	
-	
+
+
 	@RequestMapping(method = RequestMethod.POST, produces = "text/html")
 	public String addBookCreate(
 			@RequestParam(value = "saveandadd", required = false) String addanother,
@@ -274,7 +289,7 @@ public class RedirectController {
 	@RequestMapping(value = "/choosedetails", params = { "detailidx" }, method = RequestMethod.POST, produces = "text/html")
 	public String assignBookDetails(@RequestParam("detailidx") Long detailidx,
 			BookModel bookModel, Model uiModel,
-			HttpServletRequest httpServletRequest, Principal principal) {
+			HttpServletRequest httpServletRequest, Principal principal,Locale locale) {
 
 		ClientDao client = clientService.getCurrentClient(principal);
 		List<FoundDetailsDao> fdetails = bookModel.getFounddetails();
@@ -285,17 +300,21 @@ FoundDetailsDao fd = fdetails.get(detailidx.intValue());
 			bookModel = detSearchService.assignDetailToBook(bookModel, fd,client);
 		} catch (Exception e) {
 			e.printStackTrace();
-		} 
+		}
 
 		// show book
 		uiModel.addAttribute("bookModel", bookModel);
+		// fill lookups
+		fillLookups(uiModel, httpServletRequest, principal, locale);
+		String shortname = client.getShortname();
+		uiModel.addAttribute("clientname", shortname);
 
-		return "book/show";
+		return "testrd/editbook";
 		}
-		return "book/choosedetails";
+		return "testrd/choosedetails";
 	}
 
-	
+
 	@RequestMapping(value = "/update/{id}", produces = "text/html")
 	public String editBook(@PathVariable("id") Long id, Model uiModel,
 			HttpServletRequest httpServletRequest, Principal principal,
@@ -417,7 +436,7 @@ FoundDetailsDao fd = fdetails.get(detailidx.intValue());
 		return null;
 	}
 
-	// @ModelAttribute("classHash")
+
 	private void fillLookups(Model uiModel,
 			HttpServletRequest httpServletRequest, Principal principal,
 			Locale locale) {

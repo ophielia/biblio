@@ -1,7 +1,6 @@
 package meg.biblio.catalog.db.dao;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.FetchType;
@@ -15,9 +14,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-
 import meg.biblio.catalog.db.FoundWordsDao;
-
 import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.jpa.entity.RooJpaEntity;
 import org.springframework.roo.addon.tostring.RooToString;
@@ -84,6 +81,20 @@ public class BookDetailDao {
 	public boolean hasIsbn() {
 		boolean hasisbn = (isbn10!=null && isbn10.length()>0) || (isbn13!=null &&isbn13.length()>0);
 		return hasisbn;
+	}
+	
+	
+	public void setIsbn(String isbncode) {
+		if (isbncode != null) {
+			// remove non numeric characters
+			String str = isbncode.replaceAll("[^\\d.X]", "");
+			if (str.length() > 10) {
+				this.isbn13=str;
+			} else {
+				this.isbn10=str;
+			}
+		}
+		
 	}
 
 	public String getAuthorsAsString() {
@@ -346,5 +357,13 @@ public class BookDetailDao {
         if (this.trackchange) {
         	this.clientspecific = clientspecific;
         }
+    }
+
+	public void setIsbn10(String isbn10) {
+        setIsbn(isbn10);
+    }
+
+	public void setIsbn13(String isbn13) {
+		setIsbn(isbn13);
     }
 }

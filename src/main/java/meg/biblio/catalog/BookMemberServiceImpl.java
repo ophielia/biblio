@@ -31,7 +31,7 @@ public class BookMemberServiceImpl implements BookMemberService {
 
 	@Override
 	public PublisherDao findPublisherForName(String text) {
-		if (text != null) {
+		if (text != null && text.trim().length()>0) {
 			// clean up text
 			text = text.trim();
 			// query db

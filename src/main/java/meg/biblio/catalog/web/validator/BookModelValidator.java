@@ -10,6 +10,7 @@ import meg.biblio.catalog.CatalogService;
 import meg.biblio.catalog.db.BookRepository;
 import meg.biblio.catalog.db.dao.BookDao;
 import meg.biblio.catalog.db.dao.BookDetailDao;
+import meg.biblio.catalog.db.dao.PublisherDao;
 import meg.biblio.catalog.web.model.BookModel;
 import meg.biblio.common.db.dao.ClientDao;
 
@@ -54,10 +55,12 @@ public class BookModelValidator {
 		// check searchagain
 		BookDetailDao bd = model.getBook().getBookdetail();
 		Long status = model.getDetailstatus();
+		String publishername = model.getPublishername()!=null ?model.getPublishername():"";
+		boolean haspublisher = publishername!=null &&publishername.trim().length()>0;
 		if (status!=null) {
 			if (status.longValue()== CatalogService.DetailStatus.DETAILNOTFOUNDWISBN) {
 				// search already done by isbn - search now by title AND author
-				if (!hastitle || !bd.hasAuthor()) {
+				if (!hastitle && (!bd.hasAuthor() || !haspublisher)) {
 					errors.reject("error_searchagain",null,"Title and author");
 				}
 			}

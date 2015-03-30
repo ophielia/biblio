@@ -172,28 +172,11 @@ public class BookModel  implements Serializable {
 	}
 
 	public void setIsbn10(String isbn10) {
-		if (isbn10 != null) {
-			// remove non numeric characters
-			String str = isbn10.replaceAll("[^\\d.X]", "");
-			if (str.length() > 10) {
-				this.book.getBookdetail().setIsbn13(str);
-			} else {
-				this.book.getBookdetail().setIsbn10(str);
-			}
-		}
+		this.book.getBookdetail().setIsbn(isbn10);
 	}
 
 	public void setIsbn13(String isbn13) {
-		if (isbn13 != null) {
-			// remove non numeric characters
-			String str = isbn13.replaceAll("[^\\d.X]", "");
-			if (str.length() > 10) {
-				this.book.getBookdetail().setIsbn13(str);
-			} else {
-				this.book.getBookdetail().setIsbn10(str);	
-			}
-			
-		}
+		this.book.getBookdetail().setIsbn(isbn13);
 	}
 
 	public void setLanguage(String language) {

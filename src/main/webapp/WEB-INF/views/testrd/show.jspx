@@ -80,23 +80,23 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 	</div>
 		<div>
 			<span class="stress">${clientname} ${lclassification}:</span>
-			<c:if test="${not empty bookModel.shelfclass}"> 
-	<c:set var="shelfclass" value="${classHash[bookModel.shelfcode]}" />
+			<c:if test="${not empty bookModel.shelfcode}"> 
+	<c:set var="shelfcode" value="${classHash[bookModel.shelfcode]}" />
 				<c:choose>
-					<c:when test="${ not empty shelfclass.imagedisplay}">
-						<img id="shelfimg" src="${imagebasedir}${shelfclass.imagedisplay}"
+					<c:when test="${ not empty shelfcode.imagedisplay}">
+						<img id="shelfimg" src="${imagebasedir}${shelfcode.imagedisplay}"
 							width="50x" style="margin-bottom: -10px" />
-						<span id="shelfinfo" style="display: none">${shelfclass.textdisplay}:${shelfclass.description}</span>
+						<span id="shelfinfo" style="display: none">${shelfcode.textdisplay}:${shelfcode.description}</span>
 					</c:when>
 					<c:otherwise>
-	${shelfclass.textdisplay}
+	${shelfcode.textdisplay}
 	</c:otherwise>
 				</c:choose>
 			</c:if>
 		</div>
 		<div>
 		<div>
-			<span class="stress">${lclassification}:</span>
+			<span class="stress">${lclassification} :</span>
 					${bookModel.shelfclass}
 				</div>
 	<span class="stress">${lstatus}: </span>${statusLkup[bookModel.status]}

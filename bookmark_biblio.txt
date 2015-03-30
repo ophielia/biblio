@@ -8,74 +8,53 @@ Branch - DEMO 1.0 - Demo1
 
 reflect code / class / type changes in search
 
-eventually - will need to program for isbn codes - translate codes to hyphens.
-eventually - check scheduledFillInDetails... DetailSearch	
-eventually - subjects will need to be fixed; change saves to new subject; subject changes trigger new subject save.	
-	
-immediate:
-
----> test solution - needs to work with book already in db....
----> slogging through front end - 
-
-done - thread cache problem with db and client specific swap out.
-
-little stuff -
-
---->  enabling entry for authors, illustrators and subjects - front end
-	
-	choosedetails page - isbnfield only shown if no isbn in bookdetail
-		done - title change
-		done - message
-		show isbns in choosedetail listing
-		
-66468 bookdetail jour de lessive - isbn10 saved with hyphens - actually, it's the isbn13 - and it's a duplicate of something already in bookdetail.
-	fix this.		 
-	
-	later - InternalSearch should allow multidetail results....
-	
-	note on display page - barcode assigned.
-	
-done - Search - check - every "Chevaliers + Autocollant" is clientspecific, isbn "9782215089971"	
-	
-backend - assign founddetails
-	detailsearchservice - reset finderlog, finder fills in details, rerun normal search chain
-	finders - implement calling for specific id (fill from found detail) 
-	
 barcode printouts
 	chooseable formats
 	from / to page for Book Barcodes
 	
 Navigation - remove assigncode pages.	
-	oh - big idea (next update) - assign code (old random code version - with barcode!!)	
+		
 	
 General - check that search is working
 
-later - assign code separate from save, and dependant upon client assign code type
-
 small - 
-	BNF - strip - from isbns  or maybe in setISBN??
-	copy image to other books with matching titles and authors when found....
+	done - BNF - strip - from isbns  or maybe in setISBN??
 	validation for entering book which already has a client nr.  currently has to do with assign code
 	editbook - message - Modify the information as you wish, then click on the button add to add the book to the catalog.
+	show isbns in choosedetail listing
+	copy image to other books with matching titles and authors when found....
+	showpublisher in editbook
+
+
+later - assign code separate from save, and dependant upon client assign code type
+later - InternalSearch should allow multidetail results....
+later - note on display page - barcode assigned.
+eventually - will need to program for isbn codes - translate codes to hyphens.
+eventually - check scheduledFillInDetails... DetailSearch	
+eventually oh - big idea (next update) - assign code (old random code version - with barcode!!)
+
+
+
 
 ---- begin commit changes ----
 
-	done - wire function onButtonClick to a link for authors
-	done - move link after creation of new slot
-	done - polish
-	done - write to field (on submit)		
-	done - make authors, illustrators, and subjects editable
-	done - test edit author/ill/subj capability - together with clientspecific
-	done - add subjects to edit book / display book
-	done - display shows all authors, illustrators
-	done - implement front end "search again" button (verification changes)
-	done - validation changes....
-	done - bad clientspecific - isbn 222 title jour de lessive author stehr
-	done -two things - should be set to false on save
-	done - illustrators still tripping bad clientspecific?
-	done - nevermind - save goes to display - display makes an add another button available
-	done - GoogleSearch - test multi details....	
-
+done - eventually - subjects will need to be fixed; change saves to new subject; subject changes trigger new subject save.	
+done - thread cache problem with db and client specific swap out.
+done -   enabling entry for authors, illustrators and subjects - front end
+done - choosedetails page - isbnfield only shown if no isbn in bookdetail
+done - choosedetails title change
+done - choosedetails message
+done - Search - check - every "Chevaliers + Autocollant" is clientspecific, isbn "9782215089971"
+done -  complete AssignDetail for BNF
+done - test AssignDetail for BNF
+done - do test for whole chain - test in DetailSearchService....
+done - wire in to front end
+done - wire in to front end
+done - remove isbn references in choosedetails
+done - backend - assign founddetails
+done - 	detailsearchservice - reset finderlog, finder fills in details, rerun normal search chain
+done -	finders - implement calling for specific id (fill from found detail) 
+	
 ---- end commit changes ----
 
 
@@ -167,6 +146,21 @@ done - editbook - findinfo context - title as Verify Information,
 done - button save as add book to catalog
 done - show - change title to about this book
 nevermind - add button - add another book (add book context only....)						
+done - wire function onButtonClick to a link for authors
+done - move link after creation of new slot
+done - polish
+done - write to field (on submit)		
+done - make authors, illustrators, and subjects editable
+done - test edit author/ill/subj capability - together with clientspecific
+done - add subjects to edit book / display book
+done - display shows all authors, illustrators
+done - implement front end "search again" button (verification changes)
+done - validation changes....
+done - bad clientspecific - isbn 222 title jour de lessive author stehr
+done -two things - should be set to false on save
+done - illustrators still tripping bad clientspecific?
+done - nevermind - save goes to display - display makes an add another button available
+done - GoogleSearch - test multi details....	
 
 
 ---- end branch changes ----

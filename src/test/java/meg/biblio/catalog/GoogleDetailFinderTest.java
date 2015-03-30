@@ -18,6 +18,7 @@ import meg.biblio.catalog.db.SubjectRepository;
 import meg.biblio.catalog.db.dao.ArtistDao;
 import meg.biblio.catalog.db.dao.BookDao;
 import meg.biblio.catalog.db.dao.BookDetailDao;
+import meg.biblio.catalog.db.dao.FoundDetailsDao;
 import meg.biblio.catalog.db.dao.PublisherDao;
 import meg.biblio.catalog.web.model.BookModel;
 import meg.biblio.common.ClientService;
@@ -74,6 +75,40 @@ public class GoogleDetailFinderTest {
 		Assert.assertNotNull(findobj);
 		Assert.assertFalse(findobj.getSearchStatus() == CatalogService.DetailStatus.NODETAIL);
 		Assert.assertEquals(0L, findobj.getCurrentFinderLog()%2L);
+	}
+	
+	@Test
+	public void testAssignDetails() throws Exception {
+		// first get some multi details
+		BookDao book = new BookDao();
+		book.getBookdetail().setTitle("coco");
+		ArtistDao author = bMemberService.textToArtistName("Monfreid");
+		List<ArtistDao> authors = new ArrayList<ArtistDao>();
+		authors.add(author);
+		book.getBookdetail().setAuthors(authors);
+		FinderObject findobj = new FinderObject(book.getBookdetail());
+		// service call - to get multidetails
+		findobj = googleSearch.findDetails(findobj, 210);
+		// get the first of the multidetails
+		List<FoundDetailsDao> detailslist = findobj.getMultiresults();
+		if (detailslist != null && detailslist.size() > 0) {
+			FoundDetailsDao fd = detailslist.get(0);
+			String titlecompare = fd.getTitle();
+			// service call
+			findobj = googleSearch.assignDetailToBook(findobj, fd);
+			BookDetailDao bdetail = findobj.getBookdetail();
+			// ensure - finder is logged in findobj, detailstatus in
+			// findobj is found, titles match
+			Long finderlog = findobj.getCurrentFinderLog();
+			Assert.assertTrue(finderlog % 2 == 0);
+			Assert.assertEquals(titlecompare, bdetail.getTitle());
+			Assert.assertEquals(findobj.getSearchStatus().longValue(),
+					CatalogService.DetailStatus.DETAILFOUND);
+		} else {
+			// test fail - no multidetails found
+			Assert.assertEquals(1L, 2L);
+		}
+
 	}
 
 	@Test

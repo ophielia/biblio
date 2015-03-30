@@ -87,6 +87,12 @@ public abstract class BaseDetailFinder implements DetailFinder {
 
 		return !searchrun;
 	}
+	
+	protected boolean assignEligible(FoundDetailsDao fdetails) throws Exception {
+		// do the details belong to this finder?
+		Long detailssource = fdetails.getSearchsource();
+		return detailssource!=null && detailssource.longValue()==getIdentifier().longValue();
+	}	
 
 	protected boolean resultsComplete(FinderObject findobj, long clientcomplete) {
 		boolean complete = true;
@@ -125,7 +131,7 @@ public abstract class BaseDetailFinder implements DetailFinder {
 
 	public FinderObject assignDetailToBook(FinderObject findobj, FoundDetailsDao fd) throws Exception {
 		// check against identifier in FoundDetails
-		if (fd.getSearchsource().longValue()== getIdentifier().longValue()) {
+		if (assignEligible(fd)) {
 			// log search
 			findobj.logFinderRun(getIdentifier());
 			// if identifier matches, run assigndetail

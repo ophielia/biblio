@@ -31,18 +31,12 @@ privileged aspect BookDetailDao_Roo_JavaBean {
         return this.isbn10;
     }
     
-    public void BookDetailDao.setIsbn10(String isbn10) {
-        this.isbn10 = isbn10;
-    }
-    
+        
     public String BookDetailDao.getIsbn13() {
         return this.isbn13;
     }
     
-    public void BookDetailDao.setIsbn13(String isbn13) {
-        this.isbn13 = isbn13;
-    }
-    
+        
     public String BookDetailDao.getLanguage() {
         return this.language;
     }

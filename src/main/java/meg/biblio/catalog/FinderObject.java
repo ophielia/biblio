@@ -127,6 +127,9 @@ public class FinderObject {
 	}
 
 	public void addToMultiresults(FoundDetailsDao fd) {
+		if (multiresultshash==null) {
+			multiresultshash = new HashMap<String, FoundDetailsDao>();
+		}
 		// isbn10
 		String key = fd.getIsbn10() != null ? fd.getIsbn10() : fd.getIsbn13();
 		if (key != null) {

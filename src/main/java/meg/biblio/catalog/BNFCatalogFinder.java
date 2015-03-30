@@ -32,6 +32,14 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.books.Books;
+import com.google.api.services.books.BooksRequestInitializer;
+import com.google.api.services.books.Books.Volumes.Get;
+import com.google.api.services.books.model.Volume;
+
 @Component
 public class BNFCatalogFinder extends BaseDetailFinder {
 
@@ -46,7 +54,7 @@ public class BNFCatalogFinder extends BaseDetailFinder {
 
 	@Autowired
 	SubjectRepository subjectRepo;
-	
+
 	@Autowired
 	BookMemberService bMemberService;
 
@@ -103,7 +111,6 @@ public class BNFCatalogFinder extends BaseDetailFinder {
 					findobj = searchLogic(findobj);
 					// log, process search
 					findobj.logFinderRun(getIdentifier());
-					
 
 				}
 			} // end list loop
@@ -341,7 +348,8 @@ public class BNFCatalogFinder extends BaseDetailFinder {
 				// nab this authors name here, just in case
 				alternateauthor = stripAfterText("(", results.get("Auteur(s)"));
 				alternateauthor = stripAfterText(newlinemarker, alternateauthor);
-				alternateauthor = bMemberService.normalizeArtistName(alternateauthor);
+				alternateauthor = bMemberService
+						.normalizeArtistName(alternateauthor);
 
 				// put results into bookdetail
 				resultsIntoDetail(results, findobj);
@@ -359,11 +367,67 @@ public class BNFCatalogFinder extends BaseDetailFinder {
 				findobj.addAddlIdentifiers(addlcodes);
 			}
 		} else {
-			// nothing found
-			findobj.setSearchStatus(CatalogService.DetailStatus.DETAILNOTFOUNDWISBN);
+			if (findobj.getSearchStatus() != CatalogService.DetailStatus.MULTIDETAILSFOUND) {
+				// nothing found
+				findobj.setSearchStatus(CatalogService.DetailStatus.DETAILNOTFOUNDWISBN);
+			}
 		}
 
 		// return findobj
+		return findobj;
+	}
+
+	protected FinderObject assignDetail(FinderObject findobj, FoundDetailsDao fd)
+			throws Exception {
+		// initializing
+		BookDetailDao bookdetail = findobj.getBookdetail();
+
+		// get searchid from found details
+		String searchid = fd.getSearchserviceid();
+
+		// do search for identifier
+		// now, lets get this record....
+		if (searchid != null) {
+			HashMap<String, String> results = new HashMap<String, String>();
+			String alternateauthor = null;
+
+			// now, lets get this record....
+			CloseableHttpClient httpclient = HttpClients.createDefault();
+			try {
+				HttpGet httpget = new HttpGet(searchid);
+
+				// Create a response handler
+				ResponseHandler<String> responseHandler = new BasicResponseHandler();
+				String responseBody = httpclient.execute(httpget,
+						responseHandler);
+				processResponse(responseBody, results);
+
+				if (results.size() > 0) {
+					// add ark to bookdetail
+					String ark = parseArkFromUrl(searchid);
+					findobj.getBookdetail().setArk(ark);
+					findobj.setSearchStatus(CatalogService.DetailStatus.DETAILFOUND);
+
+					// put results into bookdetail
+					resultsIntoDetail(results, findobj);
+
+					// if results found, update searchstatus
+					findobj.setSearchStatus(CatalogService.DetailStatus.DETAILFOUND);
+					// copy results into book
+
+					// set bookdetail in findobj
+					findobj.setBookdetail(bookdetail);
+
+				}
+			} finally {
+				// When HttpClient instance is no longer needed,
+				// shut down the connection manager to ensure
+				// immediate deallocation of all system resources
+				httpclient.getConnectionManager().shutdown();
+			}
+
+		}
+		// return finderobject
 		return findobj;
 	}
 
@@ -376,7 +440,7 @@ public class BNFCatalogFinder extends BaseDetailFinder {
 			for (BookIdentifier bi : addlcodes) {
 				FoundDetailsDao fd = new FoundDetailsDao();
 				String catalogurl = bi.getLink();
-				//String ark = parseArkFromUrl(catalogurl);
+				// String ark = parseArkFromUrl(catalogurl);
 				fd.setSearchserviceid(catalogurl);
 				fd.setSearchsource(identifier);
 
@@ -397,6 +461,11 @@ public class BNFCatalogFinder extends BaseDetailFinder {
 
 						// put results into bookdetail
 						resultsIntoFoundDetail(results, fd);
+
+						// add isbn/ean to founddetails
+						fd.setIsbn10(bi.getIsbn());
+						fd.setIsbn13(bi.getEan());
+
 						fdetails.add(fd);
 					} finally {
 						// When HttpClient instance is no longer needed,
@@ -437,7 +506,8 @@ public class BNFCatalogFinder extends BaseDetailFinder {
 								// processing author - strip after (
 								rawartist = stripAfterText("(", rawartist);
 								// normalize author name
-								String artist = bMemberService.normalizeArtistName(rawartist);
+								String artist = bMemberService
+										.normalizeArtistName(rawartist);
 								// add to book detail depending upon role
 
 								if (rawrole.toLowerCase().contains("auteur")) {
@@ -529,7 +599,8 @@ public class BNFCatalogFinder extends BaseDetailFinder {
 								// processing author - strip after (
 								rawartist = stripAfterText("(", rawartist);
 								// normalize author name
-								String artist = bMemberService.normalizeArtistName(rawartist);
+								String artist = bMemberService
+										.normalizeArtistName(rawartist);
 								// add to book detail depending upon role
 
 								if (rawrole.toLowerCase().contains("auteur")) {
@@ -556,7 +627,8 @@ public class BNFCatalogFinder extends BaseDetailFinder {
 					for (int i = 0; i < rawsubjects.length; i++) {
 						subjects.add(rawsubjects[i].trim());
 					}
-					bdetail = bMemberService.insertSubjectsIntoBookDetail(subjects, bdetail);
+					bdetail = bMemberService.insertSubjectsIntoBookDetail(
+							subjects, bdetail);
 				} else if (key.toLowerCase().equals("résumé")) {
 					String value = stripAfterText(newlinemarkersplit,
 							results.get(key));
@@ -568,12 +640,14 @@ public class BNFCatalogFinder extends BaseDetailFinder {
 			// now, add addlauthors and illustrators
 			if (addlauthors != null) {
 				for (String artist : addlauthors) {
-					bdetail = bMemberService.addArtistToAuthors(artist, bdetail);
+					bdetail = bMemberService
+							.addArtistToAuthors(artist, bdetail);
 				}
 			}
 			if (addlillustrators != null) {
 				for (String artist : addlillustrators) {
-					bdetail = bMemberService.addArtistToAuthors(artist, bdetail);
+					bdetail = bMemberService
+							.addArtistToAuthors(artist, bdetail);
 				}
 			}
 
@@ -662,9 +736,5 @@ public class BNFCatalogFinder extends BaseDetailFinder {
 		}
 		return tagfree.toString();
 
-	}
-
-	protected FinderObject assignDetail(FinderObject findobj, FoundDetailsDao fd)  throws Exception {
-		return null;
 	}
 }

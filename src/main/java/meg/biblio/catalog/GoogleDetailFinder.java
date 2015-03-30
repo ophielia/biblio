@@ -225,6 +225,48 @@ public class GoogleDetailFinder extends BaseDetailFinder {
 		return objects;
 	}
 
+	protected FinderObject assignDetail(FinderObject findobj, FoundDetailsDao fd)
+			throws Exception {
+
+	
+			// initializing
+			JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+			if (apikey == null) {
+				apikey = settingService
+						.getSettingAsString("biblio.google.apikey");
+			}
+			if (appname == null) {
+				appname = settingService.getSettingAsString("biblio.appname");
+			}
+			final Books books = new Books.Builder(
+					GoogleNetHttpTransport.newTrustedTransport(), jsonFactory,
+					null)
+					.setApplicationName(appname)
+					.setGoogleClientRequestInitializer(
+							new BooksRequestInitializer(apikey)).build();
+			BookDetailDao bookdetail = findobj.getBookdetail();
+
+			// get searchid from found details
+			String searchid = fd.getSearchserviceid();
+
+			// do search for identifier
+			Get detailsrequest = books.volumes().get(searchid);
+			Volume completedetails = detailsrequest.execute();
+			
+			if (completedetails!=null) {
+				// if results found, update searchstatus
+				findobj.setSearchStatus(CatalogService.DetailStatus.DETAILFOUND);
+				// copy results into book
+				copyCompleteDetailsIntoBook(completedetails, bookdetail);
+			}
+
+			// set bookdetail in findobj
+			findobj.setBookdetail(bookdetail);
+
+		// return finderobject
+		return findobj;
+	}
+
 	private void copyCompleteDetailsIntoBook(Volume volume,
 			BookDetailDao bookdetail) {
 		VolumeInfo info = volume.getVolumeInfo();
@@ -374,10 +416,5 @@ public class GoogleDetailFinder extends BaseDetailFinder {
 		}
 
 		return details;
-	}
-
-	
-	protected FinderObject assignDetail(FinderObject findobj, FoundDetailsDao fd)  throws Exception {
-		return null;
 	}
 }

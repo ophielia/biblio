@@ -1,7 +1,6 @@
 package meg.biblio.catalog.db.dao;
 import javax.persistence.Column;
 import javax.persistence.Table;
-
 import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.jpa.entity.RooJpaEntity;
 import org.springframework.roo.addon.tostring.RooToString;
@@ -35,6 +34,25 @@ public class FoundDetailsDao {
 		}
 		this.description = description;
     }
+	
+	public void setIsbn(String isbncode) {
+		if (isbncode != null) {
+			// remove non numeric characters
+			String str = isbncode.replaceAll("[^\\d.X]", "");
+			if (str.length() > 10) {
+				this.isbn13=str;
+			} else {
+				this.isbn10=str;
+			}
+		}
+		
+	}
 
+	public void setIsbn10(String isbn10) {
+        setIsbn(isbn10);
+    }
 
+	public void setIsbn13(String isbn13) {
+		setIsbn(isbn13);
+    }
 }

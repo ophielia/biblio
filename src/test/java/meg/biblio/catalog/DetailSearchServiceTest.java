@@ -18,6 +18,7 @@ import meg.biblio.catalog.db.SubjectRepository;
 import meg.biblio.catalog.db.dao.ArtistDao;
 import meg.biblio.catalog.db.dao.BookDao;
 import meg.biblio.catalog.db.dao.BookDetailDao;
+import meg.biblio.catalog.db.dao.FoundDetailsDao;
 import meg.biblio.catalog.db.dao.PublisherDao;
 import meg.biblio.catalog.web.model.BookModel;
 import meg.biblio.common.ClientService;
@@ -46,6 +47,9 @@ public class DetailSearchServiceTest {
 
 	@Autowired
 	ClientService clientService;
+	
+	@Autowired
+	BookMemberService bMemberService;
 
 	Long artistid;
 	Long pubtestid;
@@ -73,7 +77,47 @@ public class DetailSearchServiceTest {
 		Assert.assertNotNull(detail.getAuthors());
 		Assert.assertTrue(detail.getAuthors().size()>0);
 	}
+	
+	@Test
+	public void testAssignDetails() throws Exception {
+		Long clientid = clientService.getTestClientId();
+		ClientDao client = clientService.getClientForKey(clientid);
+			// first get some multi details
+			BookDao book = new BookDao();
+			book.getBookdetail().setTitle("coco");
+			ArtistDao author = bMemberService.textToArtistName("Monfreid");
+			List<ArtistDao> authors = new ArrayList<ArtistDao>();
+			authors.add(author);
+			book.getBookdetail().setAuthors(authors);
+			BookModel bmodel = new BookModel(book);
+			
+			// service call - to get multidetails
+			bmodel = detSearchService.fillInDetailsForBook(bmodel, client);
+			// get the first of the multidetails
+			List<FoundDetailsDao> detailslist = bmodel.getFounddetails();
+			if (detailslist != null && detailslist.size() > 0) {
+				FoundDetailsDao fd = detailslist.get(0);
+				String titlecompare = fd.getTitle();
+				// service call
+				bmodel = detSearchService.assignDetailToBook(bmodel, fd, client);
+				
+				BookDetailDao bdetail = bmodel.getBook().getBookdetail();
+				// ensure - finder is logged in findobj, detailstatus in
+				// findobj is found, titles match
+				Long finderlog = bdetail.getFinderlog();
+				Assert.assertTrue(finderlog % 2 == 0);
+				Assert.assertFalse(2L==finderlog);
+				Assert.assertEquals(titlecompare, bdetail.getTitle());
+				Assert.assertEquals(bdetail.getDetailstatus().longValue(),
+						CatalogService.DetailStatus.DETAILFOUND);
+			} else {
+				// test fail - no multidetails found
+				Assert.assertEquals(1L, 2L);
+			}
 
+	}
+	
+	
 	@Test
 	public void testFillInDetailsForBookAddlCodes() {
 		// make book model

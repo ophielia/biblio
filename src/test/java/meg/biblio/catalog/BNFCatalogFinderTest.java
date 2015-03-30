@@ -6,6 +6,7 @@ import java.util.List;
 import meg.biblio.catalog.db.dao.ArtistDao;
 import meg.biblio.catalog.db.dao.BookDao;
 import meg.biblio.catalog.db.dao.BookDetailDao;
+import meg.biblio.catalog.db.dao.FoundDetailsDao;
 import meg.biblio.search.SearchService;
 
 import org.junit.Assert;
@@ -149,7 +150,40 @@ public class BNFCatalogFinderTest {
 		Assert.assertEquals(new Long(7), findobj.getCurrentFinderLog());
 	}
 	
+	@Test
+	public void testAssignDetails() throws Exception {
+		// first get some multi details
+		BookDao book = new BookDao();
+		book.getBookdetail().setTitle("Jour de lessive");
+		ArtistDao author = bMemberService.textToArtistName("Frédéric Stehr");
+		List<ArtistDao> authors = new ArrayList<ArtistDao>();
+		authors.add(author);
+		book.getBookdetail().setAuthors(authors);
+		FinderObject findobj = new FinderObject(book.getBookdetail());
+		// service call - to get multidetails
+		findobj = bnfSearch.findDetails(findobj, 210);
+		// get the first of the multidetails
+		List<FoundDetailsDao> detailslist = findobj.getMultiresults();
+		if (detailslist != null && detailslist.size() > 0) {
+			FoundDetailsDao fd = detailslist.get(0);
+			String titlecompare = fd.getTitle();
+			// service call
+			findobj = bnfSearch.assignDetailToBook(findobj, fd);
+			BookDetailDao bdetail = findobj.getBookdetail();
+			// ensure - finder is logged in findobj, detailstatus in
+			// findobj is found, titles match
+			Long finderlog = findobj.getCurrentFinderLog();
+			Assert.assertTrue(finderlog % 7 == 0);
+			Assert.assertEquals(titlecompare, bdetail.getTitle());
+			Assert.assertEquals(findobj.getSearchStatus().longValue(),
+					CatalogService.DetailStatus.DETAILFOUND);
+		} else {
+			// test fail - no multidetails found
+			Assert.assertEquals(1L, 2L);
+		}
 
+	}
+	
 	
 	@Test
 	public void testFindForList() throws Exception  {

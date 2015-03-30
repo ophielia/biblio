@@ -19,6 +19,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <spring:message code="action_book_isbnnotthere" htmlEscape="false" var="isbnnotavail"/>
 <spring:message code="label_book_title" htmlEscape="false" var="ltitle"/>
 <spring:message code="label_book_author" htmlEscape="false" var="lauthor"/>
+<spring:message code="label_book_publisher" htmlEscape="false" var="lpublisher"/>
 <spring:message code="action_book_addtocatalog" htmlEscape="false" var="aaddcatalog"/>
 <spring:message code="label_barcode_assignexist" htmlEscape="false" var="bassigncodeexist"/>
 
@@ -75,6 +76,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <div id="addlfields" style="display:none">
 <div class="inputspace">${ltitle }: <form:input path="title"></form:input></div>
 <div class="inputspace">${lauthor }: <form:input path="authorname"></form:input></div>
+<div class="inputspace">${lpublisher }: <form:input path="publishername"></form:input></div>
 </div>
 
 <a href="#" class="linkbutton" id="showaddl">${isbnnotavail}</a>
