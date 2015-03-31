@@ -32,6 +32,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -133,6 +134,17 @@ public class RedirectController {
 		bookValidator.validateNewBookEntry(bookModel, bindingResult, client);
 		if (bindingResult.hasErrors()) {
 			if (firstsearch) {
+				FieldError bookexists =bindingResult.getFieldError("clientbookid");
+				if (bookexists!=null) {
+					// find the book id, make a link, and put into model
+					BookDao existing = catalogService.findBookByClientBookId(bookModel.getClientbookid(), client);
+					if (existing !=null) {
+						Long existid = existing.getId();
+						String link = "/testrd/display/" + existid;
+						uiModel.addAttribute("numbertaken",true);
+						uiModel.addAttribute("displaylink",link);
+					}
+				}
 				return "testrd/create";
 			} else {
 				// return to editbook page

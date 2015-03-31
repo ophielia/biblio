@@ -13,17 +13,11 @@ barcode printouts
 	from / to page for Book Barcodes
 	
 Navigation - remove assigncode pages.	
-		
-	
-General - check that search is working
+ 
+General - check that advanced search is working 
 
 small - 
-	done - BNF - strip - from isbns  or maybe in setISBN??
-	validation for entering book which already has a client nr.  currently has to do with assign code
-	editbook - message - Modify the information as you wish, then click on the button add to add the book to the catalog.
-	show isbns in choosedetail listing
-	copy image to other books with matching titles and authors when found....
-	showpublisher in editbook
+
 
 
 later - assign code separate from save, and dependant upon client assign code type
@@ -38,22 +32,13 @@ eventually oh - big idea (next update) - assign code (old random code version - 
 
 ---- begin commit changes ----
 
-done - eventually - subjects will need to be fixed; change saves to new subject; subject changes trigger new subject save.	
-done - thread cache problem with db and client specific swap out.
-done -   enabling entry for authors, illustrators and subjects - front end
-done - choosedetails page - isbnfield only shown if no isbn in bookdetail
-done - choosedetails title change
-done - choosedetails message
-done - Search - check - every "Chevaliers + Autocollant" is clientspecific, isbn "9782215089971"
-done -  complete AssignDetail for BNF
-done - test AssignDetail for BNF
-done - do test for whole chain - test in DetailSearchService....
-done - wire in to front end
-done - wire in to front end
-done - remove isbn references in choosedetails
-done - backend - assign founddetails
-done - 	detailsearchservice - reset finderlog, finder fills in details, rerun normal search chain
-done -	finders - implement calling for specific id (fill from found detail) 
+	done / General - check that quick and dirt search is working
+	done - BNF - strip - from isbns  or maybe in setISBN??
+	done - validation for entering book which already has a client nr.  currently has to do with assign code
+	done - nevermind....show isbns in choosedetail listing
+	done - copy image to other books with matching titles and authors when found....
+	done - showpublisher in editbook
+	done -	editbook - message - Modify the information as you wish, then click on the button add to add the book to the catalog.
 	
 ---- end commit changes ----
 
@@ -161,6 +146,22 @@ done -two things - should be set to false on save
 done - illustrators still tripping bad clientspecific?
 done - nevermind - save goes to display - display makes an add another button available
 done - GoogleSearch - test multi details....	
+done - eventually - subjects will need to be fixed; change saves to new subject; subject changes trigger new subject save.	
+done - thread cache problem with db and client specific swap out.
+done -   enabling entry for authors, illustrators and subjects - front end
+done - choosedetails page - isbnfield only shown if no isbn in bookdetail
+done - choosedetails title change
+done - choosedetails message
+done - Search - check - every "Chevaliers + Autocollant" is clientspecific, isbn "9782215089971"
+done -  complete AssignDetail for BNF
+done - test AssignDetail for BNF
+done - do test for whole chain - test in DetailSearchService....
+done - wire in to front end
+done - wire in to front end
+done - remove isbn references in choosedetails
+done - backend - assign founddetails
+done - 	detailsearchservice - reset finderlog, finder fills in details, rerun normal search chain
+done -	finders - implement calling for specific id (fill from found detail) 
 
 
 ---- end branch changes ----

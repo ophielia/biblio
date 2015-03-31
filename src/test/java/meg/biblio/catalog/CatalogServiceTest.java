@@ -372,6 +372,7 @@ public class CatalogServiceTest {
 
 		if (toplaywith != null) {
 			BookModel bmodel = new BookModel(toplaywith);
+			bmodel.setTrackchange(true);
 			bmodel.setTitle("new nonsense");
 			bmodel.setLanguage("EN");
 			bmodel.setShelfcode(5L);

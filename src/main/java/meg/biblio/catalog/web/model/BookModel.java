@@ -130,6 +130,13 @@ public class BookModel  implements Serializable {
 	}
 
 	public String getPublishername() {
+		if (publishername==null) {
+			BookDetailDao bdetail = this.book.getBookdetail();
+			PublisherDao publisher = bdetail.getPublisher();
+			if (publisher!=null) {
+				return publisher.getName();
+			}
+		}
 		return publishername;
 	}
 

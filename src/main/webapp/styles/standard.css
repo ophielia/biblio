@@ -608,6 +608,12 @@ margin-right: 20px;
 background-color: #2e537d;
 }
     
+
+table a.tableboldlink {
+	color: #2e537d;;
+    background-color: white;
+    font-weight: bolder;
+}    
 table.clear {
 	
 }

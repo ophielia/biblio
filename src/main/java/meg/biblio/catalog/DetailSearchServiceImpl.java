@@ -6,11 +6,25 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Expression;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.ParameterExpression;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
+import meg.biblio.catalog.db.BookDetailRepository;
 import meg.biblio.catalog.db.BookRepository;
 import meg.biblio.catalog.db.FoundDetailsRepository;
+import meg.biblio.catalog.db.dao.ArtistDao;
 import meg.biblio.catalog.db.dao.BookDao;
 import meg.biblio.catalog.db.dao.BookDetailDao;
 import meg.biblio.catalog.db.dao.FoundDetailsDao;
+import meg.biblio.catalog.db.dao.PublisherDao;
 import meg.biblio.catalog.web.model.BookModel;
 import meg.biblio.common.AppSettingService;
 import meg.biblio.common.ClientService;
@@ -31,6 +45,9 @@ public class DetailSearchServiceImpl implements DetailSearchService {
 	@Autowired
 	AppSettingService settingService;
 
+	@PersistenceContext
+	private EntityManager entityManager;
+	
 	@Autowired
 	CatalogService catalogService;
 
@@ -45,6 +62,9 @@ public class DetailSearchServiceImpl implements DetailSearchService {
 
 	@Autowired
 	BookRepository bookRepo;
+	
+	@Autowired
+	BookDetailRepository bookDetailRepo;	
 
 	@Autowired
 	GeneralClassifier generalClassifier;
@@ -138,6 +158,22 @@ public class DetailSearchServiceImpl implements DetailSearchService {
 			}
 			// check for addl codes
 			checkAndSaveAdditionalCodes(findobj);
+			// check for image
+			String imagelink = findobj.getBookdetail().getImagelink();
+			if (imagelink!=null) {
+				// we have an image.  Now, this book may have been
+				// saved already with a different isbn without an
+				// image.  Here, we're going to check for books with matching
+				// titles, and author/publisher without images.  If any are
+				// found, the image will be set in these objects
+				List<BookDetailDao> matcheswoimage = findMatchingBooksWithoutImages(findobj.getBookdetail());
+				if (matcheswoimage!=null) {
+					for (BookDetailDao match:matcheswoimage) {
+						match.setImagelink(imagelink);
+						bookDetailRepo.save(match);
+					}
+				}
+			}
 		} else if (detail.getDetailstatus() == CatalogService.DetailStatus.MULTIDETAILSFOUND) {
 			// put found details into bookmodel
 			List<FoundDetailsDao> founddetails = findobj.getMultiresults();
@@ -146,6 +182,131 @@ public class DetailSearchServiceImpl implements DetailSearchService {
 
 		// return book model
 		return model;
+	}
+
+	private List<BookDetailDao> findMatchingBooksWithoutImages(
+			BookDetailDao detail) {
+		// gather params
+		String title = detail.getTitle().toLowerCase().trim();
+		List<ArtistDao> authors = detail.getAuthors();
+		ArtistDao tomatch = authors != null && authors.size() > 0 ? authors
+				.get(0) : null;
+		String author = tomatch!=null?tomatch.getDisplayName().toLowerCase().trim():null;
+		PublisherDao tomatchpub= detail.getPublisher();
+		String publisher = tomatchpub!=null?tomatchpub.getName().trim():null;
+		
+		// only continue if title, and at least one of author or publisher exist
+		if (title!=null && (author!=null || publisher!=null)) {
+		
+		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+		CriteriaQuery<BookDetailDao> c = cb.createQuery(BookDetailDao.class);
+		Root<BookDetailDao> bookroot = c.from(BookDetailDao.class);
+		c.select(bookroot);
+
+		// get where clause
+		List<Predicate> whereclause = new ArrayList<Predicate>();
+		// imagelink null
+		Expression<String> image = bookroot.get("imagelink");
+		Predicate pisnull = cb.isNull(image);
+		Predicate pisempty = cb.equal(image, "");
+		Predicate imagetest = cb.or(pisnull, pisempty);
+		whereclause.add(imagetest);
+		
+		// title
+		if (title != null) {
+			ParameterExpression<String> param = cb.parameter(String.class,
+					"title");
+			whereclause.add(cb.equal(cb.lower(cb.trim(bookroot.<String> get("title"))),
+					param));
+		}
+
+		// author
+		if (author != null) {
+			Join<BookDetailDao, ArtistDao> authorjoin = bookroot
+					.join("authors");
+			// where firstname = firstname and middlename = middlename and
+			// lastname = lastname
+			// together with likes and to lower
+			// lastname
+			if (tomatch.hasLastname()) {
+				ParameterExpression<String> param = cb.parameter(String.class,
+						"alastname");
+				Expression<String> path = authorjoin.get("lastname");
+				Expression<String> lower = cb.lower(path);
+				Predicate predicate = cb.equal(lower, param);
+				whereclause.add(predicate);
+			}
+			// middlename
+			if (tomatch.hasMiddlename()) {
+				ParameterExpression<String> param = cb.parameter(String.class,
+						"amiddlename");
+				Expression<String> path = authorjoin.get("middlename");
+				Expression<String> lower = cb.lower(path);
+				Predicate predicate = cb.equal(lower, param);
+				whereclause.add(predicate);
+			}
+			// firstname
+			if (tomatch.hasFirstname()) {
+				ParameterExpression<String> param = cb.parameter(String.class,
+						"afirstname");
+				Expression<String> path = authorjoin.get("firstname");
+				Expression<String> lower = cb.lower(path);
+				Predicate predicate = cb.equal(lower, param);
+				whereclause.add(predicate);
+			}
+		}
+		
+		// publisher
+		if (publisher!=null) {
+			Join<BookDetailDao, PublisherDao> publishjoin = bookroot
+					.join("publisher");
+
+			ParameterExpression<String> param = cb.parameter(String.class,
+					"publisher");
+			Expression<String> path = publishjoin.get("name");
+			Expression<String> lower = cb.lower(cb.trim(path));
+			Predicate predicate = cb.equal(lower, param);
+			whereclause.add(predicate);
+		}
+
+		// adding where clause
+		c.where(cb.and(whereclause.toArray(new Predicate[whereclause.size()])));
+
+		// creating the query
+		TypedQuery<BookDetailDao> q = entityManager.createQuery(c);
+
+		// setting the parameters
+		// title
+		if (title != null) {
+			q.setParameter("title", title.trim());
+		}
+		if (author != null) {
+			// author
+			// where firstname = firstname and middlename = middlename and
+			// lastname = lastname
+			// together with likes and to lower
+			// lastname
+			if (tomatch.hasLastname()) {
+				q.setParameter("alastname", tomatch.getLastname().toLowerCase().trim());
+			}
+			// middlename
+			if (tomatch.hasMiddlename()) {
+				q.setParameter("amiddlename", tomatch.getMiddlename().toLowerCase().trim());
+			}
+			// firstname
+			if (tomatch.hasFirstname()) {
+				q.setParameter("afirstname", tomatch.getFirstname().toLowerCase().trim()  );
+
+			}
+		}
+		if (publisher!=null) {
+			q.setParameter("publisher",  publisher.toLowerCase().trim());	
+		}
+
+		List<BookDetailDao> results = q.getResultList();
+		return results;
+		}
+		return null;
 	}
 
 	private void checkAndSaveAdditionalCodes(FinderObject findobj) {

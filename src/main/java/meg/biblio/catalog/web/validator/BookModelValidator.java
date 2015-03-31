@@ -34,14 +34,15 @@ public class BookModelValidator {
 		boolean generatenew = model.getCreatenewid();
 		if (!generatenew) {
 			String clientnr = model.getClientbookid();
-			BookDao book = catalogService.findBookByClientBookId(clientnr, client);
-			if (book!=null) {
-				if (book.getBarcodeid()!=null) {
-					errors.reject("error_book_hasbarcode");
-				} else {
-					errors.rejectValue("newbooknr","error_bookfound");
+			if (clientnr==null) {
+					errors.rejectValue("clientbookid","error_noclientid");
+					return;
+			} else {
+				BookDao book = catalogService.findBookByClientBookId(clientnr, client);
+				if (book!=null) {
+					errors.rejectValue("clientbookid","error_bookfound");
+					return;
 				}
-				return;
 			}
 		}
 		

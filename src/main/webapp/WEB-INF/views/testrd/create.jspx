@@ -22,6 +22,8 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <spring:message code="label_book_publisher" htmlEscape="false" var="lpublisher"/>
 <spring:message code="action_book_addtocatalog" htmlEscape="false" var="aaddcatalog"/>
 <spring:message code="label_barcode_assignexist" htmlEscape="false" var="bassigncodeexist"/>
+<spring:message code="message_book_duplicateclientid" htmlEscape="false" var="msgdup"/>
+<spring:message code="button_viewbook" htmlEscape="false" var="bview"/>
 
 <spring:url value="/testrd/findinfo" var="actionurl"/>
 
@@ -56,16 +58,16 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <h1>${pagetitle}</h1>
 <form:form action="${actionurl}" id="generatebookcodes" method="POST" modelAttribute="bookModel">
 <form:errors id="errors" class="errors" path="*" />	
+<c:if test="${numbertaken}">
+<spring:url value="${displaylink}" var="dispurl"/>
+<p>${msgdup} <a href="${dispurl}" class="linkbutton" id="vbook">${bview }</a></p>
+</c:if>
 <div >
 <div class="inputspace">${clientname} ${lnumber}: <form:input path="clientbookid"></form:input><span style="padding-left:5px;padding-right:5px"> ${lor} </span>
 <form:checkbox class="checkboxalign" path="createnewid"></form:checkbox>${ageneratenr}</div>
 <div class="inputspace">${lisbn}: <form:input path="isbn10"></form:input>
 <input id="newbook" class="linkbutton" name="newbook" type="submit" value="${aaddcatalog }"></input>
-<c:if test="${showlinkexist}">
-<span style="margin-left:10px"> </span>
-<spring:url value="/book/editbook?booknr=${bookModel.clientbookid}" var="existurl"/>
-<a class="linkbutton" href="${existurl}">${bassigncodeexist }</a>
-</c:if>
+
 <span style="margin-left:10px"> </span>
 <spring:url value="/search" var="cancelurl"/>
 	<a href="${cancelurl}" class="linkbutton" id="cancel">${bcancel}</a>
