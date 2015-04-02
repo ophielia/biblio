@@ -5,21 +5,15 @@ Branch - DEMO 1.0 - Demo1
 	Front End improvements
 	Better navigation
 		
-
+General - check that advanced search is working 
 reflect code / class / type changes in search
 
 barcode printouts
-	chooseable formats
+	chooseable formats - think - separate sheets, or from db, fed to sheet???(no - not now - maybe later...)
 	from / to page for Book Barcodes
-	
+
 Navigation - remove assigncode pages.	
  
-General - check that advanced search is working 
-
-small - 
-
-
-
 later - assign code separate from save, and dependant upon client assign code type
 later - InternalSearch should allow multidetail results....
 later - note on display page - barcode assigned.
@@ -31,15 +25,11 @@ eventually oh - big idea (next update) - assign code (old random code version - 
 
 
 ---- begin commit changes ----
-
-	done / General - check that quick and dirt search is working
-	done - BNF - strip - from isbns  or maybe in setISBN??
-	done - validation for entering book which already has a client nr.  currently has to do with assign code
-	done - nevermind....show isbns in choosedetail listing
-	done - copy image to other books with matching titles and authors when found....
-	done - showpublisher in editbook
-	done -	editbook - message - Modify the information as you wish, then click on the button add to add the book to the catalog.
-	
+done - current formatting 
+done -1mm for top margin
+done - -3 mm for left margin
+done - trouble with barcode cells being too narrow (33mm not 38mm)
+done - barcode cells too tall (22mm not 21 mm)	
 ---- end commit changes ----
 
 
@@ -162,6 +152,14 @@ done - remove isbn references in choosedetails
 done - backend - assign founddetails
 done - 	detailsearchservice - reset finderlog, finder fills in details, rerun normal search chain
 done -	finders - implement calling for specific id (fill from found detail) 
+done / General - check that quick and dirt search is working
+done - BNF - strip - from isbns  or maybe in setISBN??
+done - validation for entering book which already has a client nr.  currently has to do with assign code
+done - nevermind....show isbns in choosedetail listing
+done - copy image to other books with matching titles and authors when found....
+done - showpublisher in editbook
+done -	editbook - message - Modify the information as you wish, then click on the button add to add the book to the catalog.
+	
 
 
 ---- end branch changes ----

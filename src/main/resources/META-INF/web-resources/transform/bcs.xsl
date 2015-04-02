@@ -3,25 +3,21 @@
     
             <xsl:variable name="barcode-cfg">
               <barcode>
-                <code128/>
+                <code128>
+                <height>16.5mm</height>
+                </code128>
               </barcode>
             </xsl:variable>
             
 <xsl:template match="/">
     <fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format">
         <fo:layout-master-set>
-            <fo:simple-page-master margin-top="1in" margin-left="1in" margin-bottom="1in"
-                margin-right="1in" page-width="8in" page-height="11in" master-name="first">
-                <fo:region-body margin-top="1cm"/>
-                <fo:region-before extent="2cm"/>
-                <fo:region-after extent="0pt"/>
+            <fo:simple-page-master margin-top="7mm" margin-left="1mm" margin-bottom="5mm"
+                margin-right="0mm" page-width="210mm" page-height="297mm" master-name="first">
+                <fo:region-body margin-top="0cm"/>
             </fo:simple-page-master>
         </fo:layout-master-set>
-        
-        <fo:page-sequence master-reference="first">
-        <fo:static-content flow-name="xsl-region-before">
-            <fo:block text-align="center"><xsl:value-of select="barcodes/title"/></fo:block>
-        </fo:static-content>     
+        <fo:page-sequence master-reference="first"> 
         <fo:flow flow-name="xsl-region-body" font-size="7pt" font-family="Helvetica">
 			<xsl:apply-templates/>
 		</fo:flow>
@@ -30,7 +26,12 @@
 </xsl:template>
 
     <xsl:template match="barcodes">
-       <fo:table>
+       <fo:table  border-collapse="separate" border-spacing="1.9mm 0mm" width="20cm" table-layout="fixed">
+       <fo:table-column column-width="41.5mm"/>
+       <fo:table-column column-width="41.5mm"/>
+       <fo:table-column column-width="41.5mm"/>
+       <fo:table-column column-width="41.5mm"/>
+       <fo:table-column column-width="41.5mm"/>
             <fo:table-body>
                 <xsl:apply-templates/>
             </fo:table-body>
@@ -39,12 +40,12 @@
 
     <xsl:template match="codes">
         <xsl:variable name="posi" select="pos"/>
-        <fo:table-cell >
-            <xsl:if test="not($posi mod 3)">
+        <fo:table-cell border-width="0.1mm" border-style="solid" border-color="white" >
+            <xsl:if test="not($posi mod 5)">
                 <xsl:attribute name="ends-row">true</xsl:attribute>
             </xsl:if>
-            <fo:block keep-together="always">
-            <fo:block margin-left="3mm">
+            <fo:block keep-together="always"  text-align="center">
+            <fo:block margin-top="1mm" margin-left="1mm">
 	    	<xsl:value-of select="description"/>
             </fo:block>
                         <fo:block>

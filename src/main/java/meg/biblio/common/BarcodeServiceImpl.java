@@ -58,9 +58,14 @@ public class BarcodeServiceImpl implements BarcodeService {
 		List<Barcode> codes = generateCodes(barcodecnt,
 				BarcodeService.CodeType.BOOK, client, message);
 		// place codes in BookBarcodeSheet, with client
-		String base = appMessageSource.getMessage("reports_barcode_booktitle",
-				null, locale);
-		String title = base + client.getName();
+		String title="";
+		try {
+			String base = appMessageSource.getMessage("reports_barcode_booktitle",
+					null, locale);
+			title = base + client.getName();
+		} catch (Exception e) {
+			title = "barcodes";
+		}
 		BarcodeSheet sheet = new BarcodeSheet(codes, title);
 		// return BookBarcodeSheet
 		return sheet;
