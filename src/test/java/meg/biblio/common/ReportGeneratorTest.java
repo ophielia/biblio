@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import javax.xml.bind.JAXBContext;
@@ -20,6 +21,8 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.stream.StreamSource;
 
+import meg.biblio.common.db.dao.ClientDao;
+import meg.biblio.common.report.Barcode;
 import meg.biblio.common.report.BarcodeSheet;
 import meg.biblio.common.report.ClassSummaryReport;
 import meg.biblio.common.report.DailySummaryReport;
@@ -45,48 +48,48 @@ import org.springframework.transaction.annotation.Transactional;
 @RunWith(SpringJUnit4ClassRunner.class)
 @Transactional
 public class ReportGeneratorTest {
-	
+
 
 	@Autowired
 	ClassManagementService classService;
-	
+
 	@Autowired
 	BarcodeService barcodeService;
-	
+
 	@Autowired
 	LendingService lendingService;
-	
+
 	@Autowired
-	ClientService clientService;	
-	
+	ClientService clientService;
+
 	private FopFactory fopFactory = FopFactory.newInstance();
 	private TransformerFactory tFactory = TransformerFactory.newInstance();
 
-	
+
 	@Test
 	public void markerMethod() {
-		
+
 	}
-	
-	
-	/* Basically a development tool - not a test!!  
+
+
+
 	@Test
 	public void testMakeAnXml() throws JAXBException {
 		Long clientid = clientService.getTestClientId();
 		ClassSummaryReport list = lendingService.assembleClassSummaryReport( new Long(33724), new Date(), clientid);
-//assembleOverdueBookReport
+
 		JAXBContext context = JAXBContext.newInstance(ClassSummaryReport.class);
 		Marshaller m = context.createMarshaller();
 		m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-		
+
 		m.marshal(list, new File("C:/Temp/csr.xml"));
-		
+
 		}
-	
+
 	@Test
 	public void testMakeAClassXml() throws JAXBException {
 Long clientid = clientService.getTestClientId();
-		
+
 		// create dummy class, and three students
 		SchoolGroupDao sgroup = new SchoolGroupDao();
 		ClassModel model = new ClassModel(sgroup);
@@ -104,23 +107,38 @@ Long clientid = clientService.getTestClientId();
 		StudentDao neville = classService.addNewStudentToClass(
 				"neville longbottom", 3L, model.getSchoolGroup(), clientid);
 		model = classService.loadClassModelById(model.getClassid());
-		
-		
+
+
 		BarcodeSheet sheet = barcodeService.assembleBarcodeSheetForClass(model.getSchoolGroup().getId(),  clientid, null);
-		
+
 		JAXBContext context = JAXBContext.newInstance(BarcodeSheet.class);
 		Marshaller m = context.createMarshaller();
 		m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-		
+
 		m.marshal(sheet, new File("C:/Temp/bcs.xml"));
-		}	
-	
+		}
+@Test
+	public void testMakeABarcodeXML() throws JAXBException {
+		Long clientid = clientService.getTestClientId();
+		ClientDao client = clientService.getClientForKey(clientid);
+		Locale locale = Locale.FRANCE;
+
+		BarcodeSheet sheet = barcodeService.assembleBarcodeSheetForBooks(65,
+				clientid, locale);
+
+		JAXBContext context = JAXBContext.newInstance(BarcodeSheet.class);
+		Marshaller m = context.createMarshaller();
+		m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+
+		m.marshal(sheet, new File("C:/Temp/bcs.xml"));
+	}
+
 	@Test
 	public void testHelloWorld() throws IOException, TransformerException {
 
 		// Step 2: Set up output stream.
 		// Note: Using BufferedOutputStream for performance reasons (helpful with FileOutputStreams).
-		OutputStream out = new BufferedOutputStream(new FileOutputStream(new File("C:/Temp/myfile2.pdf")));
+		OutputStream out = new BufferedOutputStream(new FileOutputStream(new File("C:/Temp/barcodes.pdf")));
 
 		try {
 
@@ -129,14 +147,14 @@ Long clientid = clientService.getTestClientId();
 			Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, out);
 
 			//Setup Transformer
-			Source xsltSrc = new StreamSource(new File("C:/Temp/csr-en.xsl"));
+			Source xsltSrc = new StreamSource(new File("C:/Temp/bcs.xsl"));
 			Transformer transformer = tFactory.newTransformer(xsltSrc);
 
 			//Make sure the XSL transformation's result is piped through to FOP
 			Result res = new SAXResult(fop.getDefaultHandler());
 
 			//Setup input
-			Source src = new StreamSource(new File("C:/Temp/csr.xml"));
+			Source src = new StreamSource(new File("C:/Temp/bcs.xml"));
 
 
 			//Start the transformation and rendering process
@@ -154,13 +172,15 @@ Long clientid = clientService.getTestClientId();
 		}
 
 
-	}
-*/
 	
+}
+
+	
+
 /*
 	@Autowired
 	ReportGenerator rGen;
-	
+
 	@Autowired
 	LendingService lendingService;
 
@@ -182,8 +202,8 @@ Long clientid = clientService.getTestClientId();
 		rGen.testMakeAnClassSummaryXml(1L);
 
 	}
-	
-	
+
+
 	@Test
 	public void testdevelopXSL() throws JAXBException, IOException, TransformerException {
 		rGen.developXSL();
@@ -197,11 +217,11 @@ Long clientid = clientService.getTestClientId();
 		rGen.generateOverdueNoticeReport(transformpath, outputpath, obr,1L);
 		Assert.assertEquals(1L,1L);
 	}
-	
+
 
 	public static final class Transform {
-		public static final String OVERDUE="overduenotices"; 
-		
+		public static final String OVERDUE="overduenotices";
+
 	}
 
 	@Autowired
@@ -209,35 +229,35 @@ Long clientid = clientService.getTestClientId();
 
 	@Autowired
 	ClientService clientService;
-	
-	
 
-	
+
+
+
 	private FopFactory fopFactory = FopFactory.newInstance();
 	private TransformerFactory tFactory = TransformerFactory.newInstance();
 
-	
+
 	public String generateOverdueNoticeReport(String xslfilename,String outputpath, OverdueBookReport obr, Long clientid) throws FOPException, JAXBException, TransformerException, IOException {
 		long millis = new Date().getTime();
 		String reportname = clientid + "overdue" + millis + ".pdf";
-		
+
 		String outputfilename = outputpath + reportname;
-		
+
 		//OutputStream out = new BufferedOutputStream(new FileOutputStream(new File("C:/Temp/togetherfile.pdf")));
 		OutputStream out = new BufferedOutputStream(new FileOutputStream(new File(outputfilename)));
 		try {
-		
+
 		Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, out);
 		JAXBContext context = JAXBContext.newInstance(OverdueBookReport.class);
 		JAXBSource source = new JAXBSource(context,obr);
-		
+
 		//Setup Transformer
 		Source xsltSrc = new StreamSource(new File(xslfilename));
 		Transformer transformer = tFactory.newTransformer(xsltSrc);
-		
+
 		//Make sure the XSL transformation's result is piped through to FOP
 		Result res = new SAXResult(fop.getDefaultHandler());
-	
+
 		//Start the transformation and rendering process
 		transformer.transform(source, res);
 		} finally {
@@ -245,35 +265,35 @@ Long clientid = clientService.getTestClientId();
 		}
 		return reportwebdir + reportname;
 	}
-	
+
 	public String generateClassSummaryReport(String xslfilename,String outputpath, ClassSummaryReport csr, Long clientid) throws FOPException, JAXBException, TransformerException, IOException {
 		long millis = new Date().getTime();
 		String reportname = clientid + "classsummary" + millis + ".pdf";
-		
+
 		String outputfilename = outputpath + reportname;
-		
+
 		//OutputStream out = new BufferedOutputStream(new FileOutputStream(new File("C:/Temp/togetherfile.pdf")));
 		OutputStream out = new BufferedOutputStream(new FileOutputStream(new File(outputfilename)));
 		try {
-		
+
 		Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, out);
 		JAXBContext context = JAXBContext.newInstance(OverdueBookReport.class);
 		JAXBSource source = new JAXBSource(context,csr);
-		
+
 		//Setup Transformer
 		Source xsltSrc = new StreamSource(new File(xslfilename));
 		Transformer transformer = tFactory.newTransformer(xsltSrc);
-		
+
 		//Make sure the XSL transformation's result is piped through to FOP
 		Result res = new SAXResult(fop.getDefaultHandler());
-	
+
 		//Start the transformation and rendering process
 		transformer.transform(source, res);
 		} finally {
 			   out.close();
 		}
 		return outputfilename;
-	}	
+	}
 
 
 	public void testHelloWorld() throws IOException, TransformerException {
@@ -329,30 +349,30 @@ Long clientid = clientService.getTestClientId();
 				toxml = disp;
 				break;
 			}
-		
+
 			JAXBContext context = JAXBContext.newInstance(LoanRecordDisplay.class);
 			Marshaller m = context.createMarshaller();
 			m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-			
+
 			m.marshal(toxml, new File("C:/Temp/lrd.xml"));
 		}
-		
-		
+
+
 		}
 
 public void testMakeAnClassSummaryXml(Long clientid) throws JAXBException {
 	Calendar cal = Calendar.getInstance();
 	cal.set(Calendar.MONTH,Calendar.DECEMBER);
 	cal.set(Calendar.DAY_OF_MONTH, 1);
-	
+
 	ClassSummaryReport summary = lendingService.assembleClassSummaryReport(21486L, new Date(), 1L);
-	
+
 	JAXBContext context = JAXBContext.newInstance(ClassSummaryReport.class);
 	Marshaller m = context.createMarshaller();
 	m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-	
+
 	m.marshal(summary, new File("C:/Temp/csr.xml"));
-		
+
 	}
 
 public void developXSL() throws IOException, TransformerException {

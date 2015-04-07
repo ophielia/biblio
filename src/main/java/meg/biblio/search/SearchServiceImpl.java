@@ -9,6 +9,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Tuple;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaBuilder.Coalesce;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Join;
@@ -349,16 +350,22 @@ public class SearchServiceImpl implements SearchService {
 				} else if (criteria.getOrderby()==BookSearchCriteria.OrderBy.TITLE) {
 					sortexpr=bookdetail.get("title");
 				} else if (criteria.getOrderby()==BookSearchCriteria.OrderBy.SHELFCLASS) {
-					sortexpr=bookroot.get("shelfclass");
+					sortexpr=bookroot.get("clientshelfcode");
 				} else if (criteria.getOrderby()==BookSearchCriteria.OrderBy.BOOKID) {
 					exprlist.add(bookroot.get("clientbookidsort"));
 					sortexpr=bookroot.get("clientbookid");
 				} else if (criteria.getOrderby()==BookSearchCriteria.OrderBy.BOOKTYPE) {
-					sortexpr=bookroot.get("type");
+					Coalesce<Long> cexp = cb.coalesce();
+					cexp.value(bookroot.<Long> get("clientbooktype"));
+					cexp.value(bookdetail.<Long> get("listedtype"));
+					
+					
+					
+					sortexpr=cexp;
 				} else if (criteria.getOrderby()==BookSearchCriteria.OrderBy.STATUS) {
 					sortexpr=bookroot.get("status");
 				} else if (criteria.getOrderby()==BookSearchCriteria.OrderBy.DETAILSTATUS) {
-					sortexpr=bookroot.get("detailstatus");
+					sortexpr=bookdetail.get("detailstatus");
 				} else  {
 					// default
 					sortexpr=bookdetail.get("title");

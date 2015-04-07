@@ -22,7 +22,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <spring:message code="action_book_addtocatalog" htmlEscape="false" var="aaddcatalog"/>
 <spring:message code="label_barcode_assignexist" htmlEscape="false" var="bassigncodeexist"/>
 
-<spring:url value="/books/rdland" var="actionurl"/>
+<spring:url value="/books" var="actionurl"/>
 
 <script type="text/javascript">
  require([

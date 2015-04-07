@@ -79,6 +79,9 @@ privileged aspect BookDetailDaoDataOnDemand_Roo_DataOnDemand {
     
     public void BookDetailDaoDataOnDemand.setImagelink(BookDetailDao obj, int index) {
         String imagelink = "imagelink_" + index;
+        if (imagelink.length() > 500) {
+            imagelink = imagelink.substring(0, 500);
+        }
         obj.setImagelink(imagelink);
     }
     

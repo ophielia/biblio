@@ -12,7 +12,7 @@
 				<sec:authorize access="isAuthenticated()">
 							<li><moo:menulink label="menu_catalog" url="/search" />
 			<ul>
-				<li><moo:menulink label="menu_createbook" url="/testrd?form" /></li>
+				<li><moo:menulink label="menu_createbook" url="/books?form" /></li>
 				<li><moo:menulink label="menu_search" url="/search" /></li>
 				
 			</ul></li>
@@ -39,10 +39,7 @@
 				<li><moo:menulink label="menu_adminsearch" url="/admin/search" /></li>
 				
 				<li><moo:menulink label="menu_classlist" url="/classes" /></li>
-				<sec:authorize ifAnyGranted='ROLE_ADMIN,ROLE_SUPERADMIN'>
-				<li><moo:menulink label="menu_classmanage"
-						url="/classes/manage" /></li></sec:authorize>
-
+				
 				<li><moo:menulink label="menu_barcodes_generate"
 						url="/generatebarcode/books" />
 					<ul>
@@ -52,14 +49,14 @@
 								url="/generatebarcode/books" /></li>
 					</ul></li>
 
-				<li><moo:menulink label="menu_barcodes_assignbarcode"
-						url="/assignbarcode/enternewbook" /></li>
 
 				<li><moo:menulink label="menu_barcodes_verifybarcode" url="/barcode/checkout/verify" /></li>
 
 
 				<sec:authorize ifAnyGranted='ROLE_ADMIN,ROLE_SUPERADMIN'>
 				<li><moo:menulink label="menu_loginlist" url="/userlogins" /></li>
+<li><moo:menulink label="menu_classmanage"
+						url="/classes/manage" /></li>
 </sec:authorize>
 
 			</ul></li>

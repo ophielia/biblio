@@ -532,7 +532,7 @@ public class BNFCatalogFinder extends BaseDetailFinder {
 					// set in author....
 					addlauthors.add(0, value);
 				} else if (key.toLowerCase().equals("résumé")) {
-					String value = stripAfterText(newlinemarkersplit,
+					String value = stripAfterText(newlinemarker,
 							results.get(key));
 					value = stripAfterText("[", value);
 					fd.setDescription(value);
@@ -621,7 +621,7 @@ public class BNFCatalogFinder extends BaseDetailFinder {
 					bdetail = bMemberService.addArtistToAuthors(value, bdetail);
 				} else if (key.toLowerCase().equals("sujet(s)")) {
 					List<String> subjects = new ArrayList<String>();
-					String value = stripAfterText(newlinemarkersplit,
+					String value = stripAfterText(newlinemarker,
 							results.get(key));
 					String[] rawsubjects = value.split("--");
 					for (int i = 0; i < rawsubjects.length; i++) {
@@ -630,7 +630,7 @@ public class BNFCatalogFinder extends BaseDetailFinder {
 					bdetail = bMemberService.insertSubjectsIntoBookDetail(
 							subjects, bdetail);
 				} else if (key.toLowerCase().equals("résumé")) {
-					String value = stripAfterText(newlinemarkersplit,
+					String value = stripAfterText(newlinemarker,
 							results.get(key));
 					value = stripAfterText("[", value);
 					bdetail.setDescription(value);

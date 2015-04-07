@@ -4,54 +4,29 @@
     <definition extends="default" name="book/create">
         <put-attribute name="body" value="/WEB-INF/views/book/create.jspx"/>
     </definition>
+ 
+     
+    <definition extends="default" name="book/editbook">
+        <put-attribute name="body" value="/WEB-INF/views/book/editbook.jspx"/>
+    </definition>  
+    
+         <definition extends="default" name="book/show">
+        <put-attribute name="body" value="/WEB-INF/views/book/show.jspx"/>
+    </definition>  
+    
+             <definition extends="default" name="book/choosedetails">
+        <put-attribute name="body" value="/WEB-INF/views/book/choosedetails.jspx"/>
+    </definition>  
     
     <definition extends="default" name="book/rdstart">
         <put-attribute name="body" value="/WEB-INF/views/book/rdstart.jspx"/>
     </definition>    
     
-    
     <definition extends="default" name="book/rdtarget">
         <put-attribute name="body" value="/WEB-INF/views/book/rdtarget.jspx"/>
-    </definition>    
+    </definition>        
     
-
-    <definition extends="default" name="book/isbnedit">
-        <put-attribute name="body" value="/WEB-INF/views/book/isbnedit.jspx"/>
-    </definition>
-    
-    <definition extends="default" name="book/titleedit">
-        <put-attribute name="body" value="/WEB-INF/views/book/titleedit.jspx"/>
-    </definition>
-    
-    <definition extends="default" name="book/editbook">
-        <put-attribute name="body" value="/WEB-INF/views/book/editbook.jspx"/>
-    </definition>    
-    
-    <definition extends="default" name="book/assignsuccess">
-        <put-attribute name="body" value="/WEB-INF/views/book/assignsuccess.jspx"/>
-    </definition>    
-            
         
-    <definition extends="default" name="book/assigncode">
-        <put-attribute name="body" value="/WEB-INF/views/book/assigncode.jspx"/>
-    </definition>
-
-    <definition extends="default" name="book/show">
-        <put-attribute name="body" value="/WEB-INF/views/book/show.jspx"/>
-    </definition>
-    
-    <definition extends="default" name="book/edit">
-        <put-attribute name="body" value="/WEB-INF/views/book/edit.jspx"/>
-    </definition>
-    
-    <definition extends="default" name="book/editall">
-        <put-attribute name="body" value="/WEB-INF/views/book/editall.jspx"/>
-    </definition>    
-        
-    <definition extends="default" name="book/list">
-        <put-attribute name="body" value="/WEB-INF/views/book/list.jspx"/>
-    </definition>
-    
     <definition extends="default" name="book/resultlist">
         <put-attribute name="body" value="/WEB-INF/views/book/resultlist.jspx"/>
     </definition>    
@@ -60,7 +35,4 @@
         <put-attribute name="body" value="/WEB-INF/views/book/adminresultlist.jspx"/>
     </definition>      
     
-    <definition extends="default" name="book/choosedetails">
-        <put-attribute name="body" value="/WEB-INF/views/book/choosedetails.jspx"/>
-    </definition>    
 </tiles-definitions>

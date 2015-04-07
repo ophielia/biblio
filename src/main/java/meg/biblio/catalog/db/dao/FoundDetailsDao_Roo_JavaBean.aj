@@ -63,12 +63,10 @@ privileged aspect FoundDetailsDao_Roo_JavaBean {
         return this.isbn10;
     }
     
-        
     public String FoundDetailsDao.getIsbn13() {
         return this.isbn13;
     }
     
-        
     public String FoundDetailsDao.getLanguage() {
         return this.language;
     }

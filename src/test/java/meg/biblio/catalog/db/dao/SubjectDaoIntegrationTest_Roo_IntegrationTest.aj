@@ -121,5 +121,4 @@ privileged aspect SubjectDaoIntegrationTest_Roo_IntegrationTest {
         Assert.assertNotNull("Expected 'SubjectDao' identifier to no longer be null", obj.getId());
     }
     
-        
 }

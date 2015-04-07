@@ -248,13 +248,7 @@ public class BookAdminSearchController {
     	String lang = locale.getLanguage();
 		ClientDao client = clientService.getCurrentClient(principal);
 		Long clientkey = client.getId();
-    	
     	List<ClassificationDao> shelfclasses =catalogService.getShelfClassList(clientkey,lang);
-    	ClassificationDao selectdao = new ClassificationDao();
-    	selectdao.setId(0L);	
-    	selectdao.setTextdisplay("Select");
-    	selectdao.setKey(0L);
-    	shelfclasses.add(selectdao);
     	JSONSerializer serializer = new JSONSerializer();
 		String json = serializer.exclude("*.class").serialize(shelfclasses);
 		return json;

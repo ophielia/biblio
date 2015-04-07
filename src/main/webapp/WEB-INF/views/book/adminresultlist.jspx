@@ -91,6 +91,10 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 	});
  
  <c:set var="shelfclass" value="${classHash[bookListModel.criteria.shelfclasskey]}" />
+ <c:set var="displayid" value="${shelfclass.id}" />
+ <c:if test="${displayid == null}">
+ <c:set var="displayid" value="0" />
+ </c:if>
 
  require(
 		  ["mydojo/widget/ShelfClassSelectWidget","dojo/dom", "dojo/domReady!"],
@@ -100,7 +104,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 	        	
 	          
 	        	// Create our widget and place it
-	            var widget = new ShelfClassSelectWidget({displayId:'${shelfclass.id}',jsontext:'${classJson}',
+	            var widget = new ShelfClassSelectWidget({displayId:'${displayid}',jsontext:'${classJson}',
 	            	showtext: true,updatenodename:"shelfclasskey",showemptyselect:true,emptyselecttext:'${lemptyselect}',imagebasedir:'${imagebasedir}'}).placeAt(classiContainer);
 		}); 
 </script>
@@ -192,7 +196,6 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 			<th id="aSort8">${lstatus}</th>
 			<th id="aSort9">${ldetailstatus}</th>
 			<th id="aSort5">${lshelfclass}</th>
-			<th></th>
 		</tr>	 			
 		</thead>
 		<tbody>
@@ -201,13 +204,17 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 					<tr><td><form:checkbox path="checked[${bookstatus.index}]"  />
 					<form:input path="idref[${bookstatus.index}]" value="${book.id}" type="hidden"></form:input></td>
 						<td>${book.clientbookid}</td>
-						<td>${book.title}</td>
-						<td>${book.authorsAsString}/ <br />${book.illustratorsAsString}</td>
-						<td>${booktypeLkup[book.type]}</td>
+						<td>
+									<spring:url value="/books/display/${book.id}" var="editurl"/>
+			<a class="tableboldlink" href="${editurl}">${book.bookdetail.title}</a>
+						
+						</td>
+						<td>${book.bookdetail.authorsAsString}/ <br />${book.bookdetail.illustratorsAsString}</td>
+						<td>${booktypeLkup[book.clientbooktype]}</td>
 						<td>${statusLkup[book.status]}</td>
-						<td>${detailstatusLkup[book.detailstatus]}</td>
+						<td>${detailstatusLkup[book.bookdetail.detailstatus]}</td>
 						<td><c:set var="shelfclass"
-								value="${classHash[book.shelfclass]}" /> <c:choose>
+								value="${classHash[book.clientshelfcode]}" /> <c:choose>
 								<c:when test="${ not empty shelfclass.imagedisplay}">
 									<img id="shelfimg" src="${imagebasedir}${shelfclass.imagedisplay}" width="50x" />
 								</c:when>
@@ -215,15 +222,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 				${shelfclass.textdisplay}
 				</c:otherwise>
 							</c:choose></td>
-						<td><spring:url value="/books/editall/${book.id}"
-								var="editurl" /> <a href="${editurl}">${ledit}</a> <c:if
-								test="${book.detailstatus == 3}">
-								<spring:url value="/books/choosedetails/${book.id}"
-									var="chooseurl" />
-									<spring:message code="action_choosedetail" htmlEscape="false" var="adetail"/>
-								<br />
-								<a href="${chooseurl}">${adetail}</a>
-							</c:if></td>
+
 
 					</tr>
 				</c:forEach>		

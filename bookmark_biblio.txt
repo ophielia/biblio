@@ -5,15 +5,19 @@ Branch - DEMO 1.0 - Demo1
 	Front End improvements
 	Better navigation
 		
-General - check that advanced search is working 
-reflect code / class / type changes in search
 
+begin last development / testing with new client 
 barcode printouts
-	chooseable formats - think - separate sheets, or from db, fed to sheet???(no - not now - maybe later...)
 	from / to page for Book Barcodes
-
-Navigation - remove assigncode pages.	
+images to checkout / return!	
+google - strip html from description
+look for clientspecific in internalfinder 
  
+ 
+ 
+later - overhaul clientnr / clientid!!!
+later - make shelfclass codes json smaller.... remove client
+later - chooseable formats - think - separate sheets, or from db, fed to sheet???(no - not now - maybe later...)
 later - assign code separate from save, and dependant upon client assign code type
 later - InternalSearch should allow multidetail results....
 later - note on display page - barcode assigned.
@@ -25,11 +29,12 @@ eventually oh - big idea (next update) - assign code (old random code version - 
 
 
 ---- begin commit changes ----
-done - current formatting 
-done -1mm for top margin
-done - -3 mm for left margin
-done - trouble with barcode cells being too narrow (33mm not 38mm)
-done - barcode cells too tall (22mm not 21 mm)	
+
+done - broken shelfcode display in editbook 
+done - finish checking the pig.  client specific? why??
+done - error with this url - http://localhost:8080/biblio/books/display/69460
+done - remove old redirect controller and views
+
 ---- end commit changes ----
 
 
@@ -159,6 +164,15 @@ done - nevermind....show isbns in choosedetail listing
 done - copy image to other books with matching titles and authors when found....
 done - showpublisher in editbook
 done -	editbook - message - Modify the information as you wish, then click on the button add to add the book to the catalog.
+done - current formatting 
+done -1mm for top margin
+done - -3 mm for left margin
+done - trouble with barcode cells being too narrow (33mm not 38mm)
+done - barcode cells too tall (22mm not 21 mm)	
+done - General - check that advanced search is working 
+done - reflect code / class / type changes in search
+done - Navigation - remove assigncode pages.
+done - move redirect back to book
 	
 
 

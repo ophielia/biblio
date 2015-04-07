@@ -107,7 +107,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
  			
 			<td><c:if test="${book.bookdetail.imagelink != null}"><img src="${book.bookdetail.imagelink}" /></c:if></td>
 			<td>
-						<spring:url value="/testrd/display/${book.id}" var="editurl"/>
+						<spring:url value="/books/display/${book.id}" var="editurl"/>
 			<a class="tableboldlink" href="${editurl}">${book.bookdetail.title}</a>
 			</td>
 			<td>${book.bookdetail.authorsAsString} / <br />${book.bookdetail.illustratorsAsString}</td>

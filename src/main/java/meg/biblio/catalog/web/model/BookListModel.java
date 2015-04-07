@@ -107,7 +107,10 @@ public class BookListModel implements Serializable {
 	}
 
 	public Long getShelfclasskey() {
-		return criteria.getShelfclasskey();
+		if (criteria.getShelfclasskey()!=null) {
+			return criteria.getShelfclasskey();	
+		}
+		return 0L;
 	}
 
 	public void setShelfclasskey(Long shelfclasskey) {

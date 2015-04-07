@@ -395,7 +395,7 @@ public class BookModel  implements Serializable {
 				 if (subject.getListing()==null) {
 					 continue;
 				 }
-				 jstext.append(subject.getListing()).append(";");
+				 jstext.append(subject.getListing().trim()).append(";");
 			}
 			jstext.setLength(jstext.length()-1);
 			return jstext.toString();

@@ -60,6 +60,7 @@ public class BookDetailDao {
 	private String isbn10;
 	private String isbn13;
 	private String language;
+	@Column( length=500)
 	private String imagelink;
 	@Column( length=2000)
 	private String description;
