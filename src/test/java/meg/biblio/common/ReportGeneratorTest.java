@@ -123,7 +123,7 @@ Long clientid = clientService.getTestClientId();
 		ClientDao client = clientService.getClientForKey(clientid);
 		Locale locale = Locale.FRANCE;
 
-		BarcodeSheet sheet = barcodeService.assembleBarcodeSheetForBooks(65,
+		BarcodeSheet sheet = barcodeService.assembleBarcodeSheetForBooks(65,0,
 				clientid, locale);
 
 		JAXBContext context = JAXBContext.newInstance(BarcodeSheet.class);

@@ -8,6 +8,8 @@ import meg.biblio.catalog.db.dao.ArtistDao;
 import meg.biblio.catalog.db.dao.BookDao;
 import meg.biblio.catalog.db.dao.BookDetailDao;
 import meg.biblio.catalog.db.dao.FoundDetailsDao;
+import meg.biblio.common.ClientService;
+import meg.biblio.common.db.dao.ClientDao;
 import meg.biblio.search.SearchService;
 
 import org.junit.Assert;
@@ -33,6 +35,9 @@ public class AmazonDetailFinderTest {
 	
 	@Autowired
 	SearchService searchService;
+	
+	@Autowired
+	ClientService clientService;
 
 	@Autowired
 	ArtistRepository artistRepo;
@@ -76,6 +81,8 @@ public class AmazonDetailFinderTest {
 
 	@Test
 	public void testSearchLogic() throws Exception {
+		Long clientkey = clientService.getTestClientId();
+		ClientDao client = clientService.getClientForKey(clientkey);
 		BookDao book = new BookDao();
 		book.getBookdetail().setTitle("coco tout nu");
 		ArtistDao author = bMemberService.textToArtistName("Monfreid");
@@ -83,7 +90,7 @@ public class AmazonDetailFinderTest {
 		authors.add(author);
 		book.getBookdetail().setAuthors(authors);
 
-		FinderObject findobj = new FinderObject(book.getBookdetail());
+		FinderObject findobj = new FinderObject(book.getBookdetail(),client);
 
 		// service call
 		findobj = amazonSearch.searchLogic(findobj);
@@ -98,7 +105,7 @@ public class AmazonDetailFinderTest {
 		book = new BookDao();
 		book.getBookdetail().setIsbn13("9782211011716");
 
-		findobj = new FinderObject(book.getBookdetail());
+		findobj = new FinderObject(book.getBookdetail(),client);
 
 		// service call
 		findobj = amazonSearch.searchLogic(findobj);
@@ -317,6 +324,8 @@ public class AmazonDetailFinderTest {
 	
 	@Test
 	public void testISBNNotFoundWrite() throws Exception {
+		Long clientkey = clientService.getTestClientId();
+		ClientDao client = clientService.getClientForKey(clientkey);
 		BookDao book = new BookDao();
 		book.getBookdetail().setIsbn13("1111111111111");
 		book.getBookdetail().setTitle("coco tout nu");
@@ -325,7 +334,7 @@ public class AmazonDetailFinderTest {
 		authors.add(author);
 		book.getBookdetail().setAuthors(authors);
 
-		FinderObject findobj = new FinderObject(book.getBookdetail());
+		FinderObject findobj = new FinderObject(book.getBookdetail(),client);
 
 		// service call
 		findobj = amazonSearch.searchLogic(findobj);
@@ -334,6 +343,8 @@ public class AmazonDetailFinderTest {
 	
 	@Test
 	public void testISBNNotFoundRead() throws Exception {
+		Long clientkey = clientService.getTestClientId();
+		ClientDao client = clientService.getClientForKey(clientkey);
 		BookDao book = new BookDao();
 		book.getBookdetail().setIsbn13("1111111111111");
 		book.getBookdetail().setTitle("La petite poule noire");
@@ -343,7 +354,7 @@ public class AmazonDetailFinderTest {
 		book.getBookdetail().setAuthors(authors);
 		book.getBookdetail().setDetailstatus(CatalogService.DetailStatus.DETAILNOTFOUNDWISBN);
 
-		FinderObject findobj = new FinderObject(book.getBookdetail());
+		FinderObject findobj = new FinderObject(book.getBookdetail(),client);
 
 		// service call
 		findobj = amazonSearch.searchLogic(findobj);
@@ -352,6 +363,8 @@ public class AmazonDetailFinderTest {
 	
 	@Test
 	public void testAssignDetails() throws Exception {
+		Long clientkey = clientService.getTestClientId();
+		ClientDao client = clientService.getClientForKey(clientkey);
 		// first get some multi details
 		BookDao book = new BookDao();
 		book.getBookdetail().setTitle("coco");
@@ -359,7 +372,7 @@ public class AmazonDetailFinderTest {
 		List<ArtistDao> authors = new ArrayList<ArtistDao>();
 		authors.add(author);
 		book.getBookdetail().setAuthors(authors);
-		FinderObject findobj = new FinderObject(book.getBookdetail());
+		FinderObject findobj = new FinderObject(book.getBookdetail(),client);
 		// service call - to get multidetails
 		findobj = amazonSearch.findDetails(findobj, 210);
 		// get the first of the multidetails

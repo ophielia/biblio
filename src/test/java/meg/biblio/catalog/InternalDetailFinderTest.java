@@ -7,6 +7,8 @@ import meg.biblio.catalog.db.BookDetailRepository;
 import meg.biblio.catalog.db.dao.ArtistDao;
 import meg.biblio.catalog.db.dao.BookDao;
 import meg.biblio.catalog.db.dao.BookDetailDao;
+import meg.biblio.common.ClientService;
+import meg.biblio.common.db.dao.ClientDao;
 import meg.biblio.search.SearchService;
 
 import org.junit.Assert;
@@ -26,6 +28,8 @@ public class InternalDetailFinderTest {
 	@Autowired
 	CatalogService catalogService;
 	
+	@Autowired
+	ClientService clientService;	
 
 	@Autowired
 	BookMemberService bMemberService;
@@ -71,6 +75,8 @@ public class InternalDetailFinderTest {
 
 	@Test
 	public void testSearchLogic() throws Exception {
+		Long clientkey = clientService.getTestClientId();
+		ClientDao client = clientService.getClientForKey(clientkey);
 		BookDao book = new BookDao();
 		book.getBookdetail().setTitle("James Duke is born");
 		ArtistDao author = bMemberService.textToArtistName("Caroline Itoi");
@@ -78,7 +84,7 @@ public class InternalDetailFinderTest {
 		authors.add(author);
 		book.getBookdetail().setAuthors(authors);
 
-		FinderObject findobj = new FinderObject(book.getBookdetail());
+		FinderObject findobj = new FinderObject(book.getBookdetail(),client);
 
 		// service call
 		findobj = internalSearch.findDetails(findobj, 210);
@@ -93,11 +99,13 @@ public class InternalDetailFinderTest {
 	
 	@Test
 	public void testSearchLogicIsbn() throws Exception {
+		Long clientkey = clientService.getTestClientId();
+		ClientDao client = clientService.getClientForKey(clientkey);
 		BookDao book = new BookDao();
 		book.getBookdetail().setTitle("James Duke is born");
 		book.getBookdetail().setIsbn13("2222222222222");
 
-		FinderObject findobj = new FinderObject(book.getBookdetail());
+		FinderObject findobj = new FinderObject(book.getBookdetail(),client);
 
 		// service call
 		findobj = internalSearch.findDetails(findobj, 210);
@@ -113,6 +121,8 @@ public class InternalDetailFinderTest {
 	
 	@Test
 	public void testISBNNotFoundWrite() throws Exception {
+		Long clientkey = clientService.getTestClientId();
+		ClientDao client = clientService.getClientForKey(clientkey);
 		BookDao book = new BookDao();
 		book.getBookdetail().setIsbn13("1111111111111");
 		book.getBookdetail().setTitle("coco tout nu");
@@ -121,7 +131,7 @@ public class InternalDetailFinderTest {
 		authors.add(author);
 		book.getBookdetail().setAuthors(authors);
 
-		FinderObject findobj = new FinderObject(book.getBookdetail());
+		FinderObject findobj = new FinderObject(book.getBookdetail(),client);
 
 		// service call
 		findobj = internalSearch.searchLogic(findobj);
@@ -130,6 +140,8 @@ public class InternalDetailFinderTest {
 	
 	@Test
 	public void testISBNNotFoundRead() throws Exception {
+		Long clientkey = clientService.getTestClientId();
+		ClientDao client = clientService.getClientForKey(clientkey);
 		BookDao book = new BookDao();
 		BookDetailDao bd = book.getBookdetail();
 		bd.setTitle("James Duke is born");
@@ -140,7 +152,7 @@ public class InternalDetailFinderTest {
 		book.setBookdetail(bd);
 		book.getBookdetail().setDetailstatus(CatalogService.DetailStatus.DETAILNOTFOUNDWISBN);
 
-		FinderObject findobj = new FinderObject(book.getBookdetail());
+		FinderObject findobj = new FinderObject(book.getBookdetail(),client);
 
 		// service call
 		findobj = internalSearch.searchLogic(findobj);

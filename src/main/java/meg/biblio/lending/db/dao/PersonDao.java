@@ -24,7 +24,6 @@ import org.springframework.roo.addon.tostring.RooToString;
 @DiscriminatorColumn(name="PSN_TYPE")
 public class PersonDao {
 
-	@NotNull
 	private String firstname;
 
 	@NotNull

@@ -120,7 +120,7 @@ public class DetailSearchServiceImpl implements DetailSearchService {
 		long clientcomplete = client.getDetailCompleteCode();
 
 		// prepare FinderObject
-		FinderObject findobj = new FinderObject(detail);
+		FinderObject findobj = new FinderObject(detail,client);
 
 		// get finderchain
 		DetailFinder finderchain = createFinderChain();
@@ -364,7 +364,7 @@ public class DetailSearchServiceImpl implements DetailSearchService {
 					if (bd.getFinderlog() != null && bd.getFinderlog() > 1) {
 						continue;
 					}
-					FinderObject obj = new FinderObject(bd);
+					FinderObject obj = new FinderObject(bd,client);
 					i++;
 					obj.setTempIdent(new Long(i));
 					forsearch.add(obj);
@@ -424,7 +424,7 @@ public class DetailSearchServiceImpl implements DetailSearchService {
 			for (BookModel model : models) {
 				if (model != null && model.getBook() != null) {
 					BookDetailDao bd = model.getBook().getBookdetail();
-					FinderObject obj = new FinderObject(bd);
+					FinderObject obj = new FinderObject(bd,client);
 					i++;
 					obj.setTempIdent(new Long(i));
 					forsearch.add(obj);

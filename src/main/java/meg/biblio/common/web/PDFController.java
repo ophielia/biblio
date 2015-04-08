@@ -214,8 +214,8 @@ public class PDFController {
 		}
 	}
 	
-	@RequestMapping(value = "/bookbarcodes", method = RequestMethod.POST, produces = "text/html")
-	public void generateBookBarcodeSheet(
+	@RequestMapping(params = "count",value = "/bookbarcodes", method = RequestMethod.POST, produces = "text/html")
+	public void generateBookBarcodeSheetCount(
 			@RequestParam("codeCount") Integer codeCount, Model uiModel,
 			HttpServletRequest request, HttpServletRequest httpServletRequest,
 			HttpServletResponse response, Principal principal, Locale locale)
@@ -231,7 +231,7 @@ public class PDFController {
 
 			int codecount = codeCount.intValue();
 			BarcodeSheet sheet = barcodeService.assembleBarcodeSheetForBooks(
-					codecount, clientkey,locale);
+					codecount,0, clientkey,locale);
 
 			ByteArrayOutputStream out = new ByteArrayOutputStream();
 			try {
@@ -265,6 +265,62 @@ public class PDFController {
 			}
 		}
 	}
+	
+	@RequestMapping(params = "range",value = "/bookbarcodes", method = RequestMethod.GET, produces = "text/html")
+	public void generateBookBarcodeSheetRange(
+			@RequestParam("from") Integer startcode,@RequestParam("to") Integer endcode, Model uiModel,
+			HttpServletRequest request, HttpServletRequest httpServletRequest,
+			HttpServletResponse response, Principal principal, Locale locale)
+			throws FOPException, JAXBException, TransformerException,
+			IOException, ServletException {
+		ClientDao client = clientService.getCurrentClient(principal);
+		Long clientkey = client.getId();
+
+		String cxslname = "META-INF/web-resources/transform/"
+				+ client.getBarcodesheetxsl() + ".xsl";
+
+
+		if (startcode != null && endcode!=null) {
+			int start = startcode.intValue();
+			int end = endcode.intValue();
+			int count = end-start;
+			BarcodeSheet sheet = barcodeService.assembleBarcodeSheetForBooks(
+					count, start,clientkey,locale);
+
+			ByteArrayOutputStream out = new ByteArrayOutputStream();
+			try {
+
+				Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, out);
+				JAXBContext context = JAXBContext
+						.newInstance(BarcodeSheet.class);
+				JAXBSource source = new JAXBSource(context, sheet);
+
+				// Setup Transformer
+				Resource resource = new ClassPathResource(cxslname);
+				Source xsltSrc = new StreamSource(resource.getFile());
+				Transformer transformer = tFactory.newTransformer(xsltSrc);
+
+				// Make sure the XSL transformation's result is piped through to
+				// FOPx
+				Result res = new SAXResult(fop.getDefaultHandler());
+
+				// Start the transformation and rendering process
+				transformer.transform(source, res);
+
+				// prepare response
+				response.setContentType("application/pdf");
+				response.setContentLength(out.size());
+
+				// send content to browser
+				response.getOutputStream().write(out.toByteArray());
+				response.getOutputStream().flush();
+			} finally {
+				out.close();
+			}
+		}
+
+	}
+	
 	
 	@RequestMapping(value = "/classbarcodes", method = RequestMethod.POST, produces = "text/html")
 	public void generateClassBarcodeSheet(

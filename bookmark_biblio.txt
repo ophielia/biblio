@@ -5,13 +5,13 @@ Branch - DEMO 1.0 - Demo1
 	Front End improvements
 	Better navigation
 		
-
+look for clientspecific in internalfinder 
+	 build structure to pass client into search (in findobj)
+...	 fill in search methods in InternalDetailFinder
+	 
 begin last development / testing with new client 
-barcode printouts
-	from / to page for Book Barcodes
 images to checkout / return!	
 google - strip html from description
-look for clientspecific in internalfinder 
  
  
  
@@ -30,10 +30,12 @@ eventually oh - big idea (next update) - assign code (old random code version - 
 
 ---- begin commit changes ----
 
-done - broken shelfcode display in editbook 
-done - finish checking the pig.  client specific? why??
-done - error with this url - http://localhost:8080/biblio/books/display/69460
-done - remove old redirect controller and views
+done - barcode printouts
+done - from / to page for Book Barcodes - start GenerateBarcodeController
+done - begin generateBookBarcodeSheetRange PdfController
+done - generateBookBarcodeSheetRange - put errors in uiModel
+done - BarcodeServiceImple - fill in!!
+done - bug - assign barcodes to people
 
 ---- end commit changes ----
 
@@ -173,6 +175,10 @@ done - General - check that advanced search is working
 done - reflect code / class / type changes in search
 done - Navigation - remove assigncode pages.
 done - move redirect back to book
+done - broken shelfcode display in editbook 
+done - finish checking the pig.  client specific? why??
+done - error with this url - http://localhost:8080/biblio/books/display/69460
+done - remove old redirect controller and views
 	
 
 

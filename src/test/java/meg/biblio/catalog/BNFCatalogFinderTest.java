@@ -7,6 +7,8 @@ import meg.biblio.catalog.db.dao.ArtistDao;
 import meg.biblio.catalog.db.dao.BookDao;
 import meg.biblio.catalog.db.dao.BookDetailDao;
 import meg.biblio.catalog.db.dao.FoundDetailsDao;
+import meg.biblio.common.ClientService;
+import meg.biblio.common.db.dao.ClientDao;
 import meg.biblio.search.SearchService;
 
 import org.junit.Assert;
@@ -26,6 +28,9 @@ public class BNFCatalogFinderTest {
 	@Autowired
 	CatalogService catalogService;
 
+	
+	@Autowired
+	ClientService clientService;	
 	@Autowired
 	SearchService searchService;
 
@@ -41,6 +46,8 @@ public class BNFCatalogFinderTest {
 	List<FinderObject> searchfor;
 	@Before
 	public void setup() {
+		Long clientkey = clientService.getTestClientId();
+		ClientDao client = clientService.getClientForKey(clientkey);
 		searchfor= new ArrayList<FinderObject>();
 		BookDetailDao bookdetail = new BookDetailDao();
 		bookdetail.setTitle("Jour de lessive");
@@ -49,7 +56,7 @@ public class BNFCatalogFinderTest {
 		authors.add(author);
 		bookdetail.setAuthors(authors);
 		bookdetail.setIsbn13("9782211206464");
-		FinderObject findobj = new FinderObject(bookdetail);
+		FinderObject findobj = new FinderObject(bookdetail,client);
 		searchfor.add(findobj);
 		
 		bookdetail = new BookDetailDao();
@@ -59,7 +66,7 @@ public class BNFCatalogFinderTest {
 		authors.add(author);
 		bookdetail.setAuthors(authors);
 		bookdetail.setIsbn13("9782302007482");
-		 findobj = new FinderObject(bookdetail);
+		 findobj = new FinderObject(bookdetail,client);
 		searchfor.add(findobj);
 		
 		bookdetail = new BookDetailDao();
@@ -129,6 +136,8 @@ public class BNFCatalogFinderTest {
 
 	@Test
 	public void testSearchLogic() throws Exception {
+		Long clientkey = clientService.getTestClientId();
+		ClientDao client = clientService.getClientForKey(clientkey);
 		BookDao book = new BookDao();
 		book.getBookdetail().setTitle("Jour de lessive");
 		ArtistDao author = bMemberService.textToArtistName("Frédéric Stehr");
@@ -137,7 +146,7 @@ public class BNFCatalogFinderTest {
 		book.getBookdetail().setAuthors(authors);
 		book.getBookdetail().setIsbn13("9782211206464");
 
-		FinderObject findobj = new FinderObject(book.getBookdetail());
+		FinderObject findobj = new FinderObject(book.getBookdetail(),client);
 		
 
 		// service call
@@ -152,6 +161,8 @@ public class BNFCatalogFinderTest {
 	
 	@Test
 	public void testAssignDetails() throws Exception {
+		Long clientkey = clientService.getTestClientId();
+		ClientDao client = clientService.getClientForKey(clientkey);
 		// first get some multi details
 		BookDao book = new BookDao();
 		book.getBookdetail().setTitle("Jour de lessive");
@@ -159,7 +170,7 @@ public class BNFCatalogFinderTest {
 		List<ArtistDao> authors = new ArrayList<ArtistDao>();
 		authors.add(author);
 		book.getBookdetail().setAuthors(authors);
-		FinderObject findobj = new FinderObject(book.getBookdetail());
+		FinderObject findobj = new FinderObject(book.getBookdetail(),client);
 		// service call - to get multidetails
 		findobj = bnfSearch.findDetails(findobj, 210);
 		// get the first of the multidetails
@@ -246,6 +257,8 @@ public class BNFCatalogFinderTest {
 
 	@Test
 	public void testISBNNotFoundWrite() throws Exception {
+		Long clientkey = clientService.getTestClientId();
+		ClientDao client = clientService.getClientForKey(clientkey);
 		BookDao book = new BookDao();
 		book.getBookdetail().setIsbn13("1111111111111");
 		book.getBookdetail().setTitle("coco tout nu");
@@ -254,7 +267,7 @@ public class BNFCatalogFinderTest {
 		authors.add(author);
 		book.getBookdetail().setAuthors(authors);
 
-		FinderObject findobj = new FinderObject(book.getBookdetail());
+		FinderObject findobj = new FinderObject(book.getBookdetail(),client);
 
 		// service call
 		findobj = bnfSearch.searchLogic(findobj);
@@ -263,6 +276,8 @@ public class BNFCatalogFinderTest {
 	
 	@Test
 	public void testISBNNotFoundRead() throws Exception {
+		Long clientkey = clientService.getTestClientId();
+		ClientDao client = clientService.getClientForKey(clientkey);
 		BookDao book = new BookDao();
 		book.getBookdetail().setTitle("Jour de lessive");
 		ArtistDao author = bMemberService.textToArtistName("Frédéric Stehr");
@@ -271,7 +286,7 @@ public class BNFCatalogFinderTest {
 		book.getBookdetail().setAuthors(authors);
 		book.getBookdetail().setDetailstatus(CatalogService.DetailStatus.DETAILNOTFOUNDWISBN);
 
-		FinderObject findobj = new FinderObject(book.getBookdetail());
+		FinderObject findobj = new FinderObject(book.getBookdetail(),client);
 
 		// service call
 		findobj = bnfSearch.searchLogic(findobj);

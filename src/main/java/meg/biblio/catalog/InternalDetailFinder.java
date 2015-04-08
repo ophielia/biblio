@@ -19,6 +19,7 @@ import meg.biblio.catalog.db.PublisherRepository;
 import meg.biblio.catalog.db.dao.ArtistDao;
 import meg.biblio.catalog.db.dao.BookDetailDao;
 import meg.biblio.common.AppSettingService;
+import meg.biblio.common.db.dao.ClientDao;
 import meg.biblio.search.SearchService;
 
 import org.apache.log4j.Logger;
@@ -83,7 +84,8 @@ public class InternalDetailFinder extends BaseDetailFinder {
 		// determine search type - title/author or isbn
 		BookDetailDao detail = findobj.getBookdetail();
 		List<BookDetailDao> results = new ArrayList<BookDetailDao>();
-
+		ClientDao client = findobj.getClient();
+		
 		if (detail != null) {
 
 			Long currentstatus = detail.getDetailstatus()!=null?detail.getDetailstatus():0L;			boolean hasisbn = detail.getIsbn10() != null
@@ -91,11 +93,18 @@ public class InternalDetailFinder extends BaseDetailFinder {
 			if (hasisbn
 					&& currentstatus != CatalogService.DetailStatus.DETAILNOTFOUNDWISBN) {
 				// do isbn search
-				results = doIsbnSearch(detail);
+				results = doClientIsbnSearch(detail,client);
+				if (results==null || results.size()==0) {
+					results = doIsbnSearch(detail);	
+				}
 				isbnsearch = true;
 			} else if (detail.hasAuthor() && detail.getTitle() != null) {
 				// do titleauthor search
-				results = doTitleAuthorSearch(detail);
+				results = doClientTitleAuthorSearch(detail,client);
+				if (results==null || results.size()==0) {
+					results = doTitleAuthorSearch(detail);	
+				}
+
 			}
 
 			// process results, if any
@@ -115,6 +124,18 @@ public class InternalDetailFinder extends BaseDetailFinder {
 		}
 		// return
 		return findobj;
+	}
+
+	private List<BookDetailDao> doClientTitleAuthorSearch(BookDetailDao detail,
+			ClientDao client) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	private List<BookDetailDao> doClientIsbnSearch(BookDetailDao detail,
+			ClientDao client) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	private List<BookDetailDao> doTitleAuthorSearch(BookDetailDao detail) {

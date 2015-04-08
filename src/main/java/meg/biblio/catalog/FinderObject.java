@@ -8,6 +8,7 @@ import meg.biblio.catalog.db.dao.ArtistDao;
 import meg.biblio.catalog.db.dao.BookDetailDao;
 import meg.biblio.catalog.db.dao.FoundDetailsDao;
 import meg.biblio.catalog.db.dao.PublisherDao;
+import meg.biblio.common.db.dao.ClientDao;
 
 public class FinderObject {
 
@@ -21,8 +22,11 @@ public class FinderObject {
 	private Long tempident;
 	private List<BookIdentifier> addlcodes;
 	private Boolean assigncontext=false;
+	private ClientDao client;
 
-	public FinderObject(BookDetailDao detail) {
+	
+	public FinderObject(BookDetailDao detail,ClientDao client) {
+		this.client = client;
 		// determine if this is a firsttime search, or if an old search, if
 		// an isbn has been added since the search was first made
 		if (detail.getId() == null) {
@@ -279,5 +283,17 @@ public class FinderObject {
 	public List<BookIdentifier> getAddlcodes() {
 		return addlcodes;
 	}
+
+	public ClientDao getClient() {
+		return this.client;
+	}
+
+	public void setClient(ClientDao client) {
+		this.client = client;
+	}
+	
+	
+	
+	
 
 }
