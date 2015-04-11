@@ -146,5 +146,35 @@ public abstract class BaseDetailFinder implements DetailFinder {
 		
 		return findobj;
 	}
+	
+	public String removeTags(String string) {
+		StringBuffer tagfree = new StringBuffer();
+		boolean intag = false;
+		for (int i = 0; i < string.length(); i++) {
+			char examine = string.charAt(i);
+			if (intag) {
+				// check if we have an end tag
+				if (examine == '>') {
+					// end of tag
+					// if so, set intag to false
+					intag = false;
+				}
+				// if so, set intag to false
+			} else {
+				// check if new tag is starting
+				if (examine == '<') {
+					// if so, set intag to true
+					intag = true;
+				} else {
+					// write char to tagfree
+					tagfree.append(examine);
+				}
+
+			}
+
+		}
+		return tagfree.toString();
+
+	}
 
 }

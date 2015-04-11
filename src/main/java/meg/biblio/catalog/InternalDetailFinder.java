@@ -17,6 +17,7 @@ import javax.persistence.criteria.Root;
 import meg.biblio.catalog.db.FoundWordsDao;
 import meg.biblio.catalog.db.PublisherRepository;
 import meg.biblio.catalog.db.dao.ArtistDao;
+import meg.biblio.catalog.db.dao.BookDao;
 import meg.biblio.catalog.db.dao.BookDetailDao;
 import meg.biblio.common.AppSettingService;
 import meg.biblio.common.db.dao.ClientDao;
@@ -128,14 +129,176 @@ public class InternalDetailFinder extends BaseDetailFinder {
 
 	private List<BookDetailDao> doClientTitleAuthorSearch(BookDetailDao detail,
 			ClientDao client) {
-		// TODO Auto-generated method stub
-		return null;
+		// gather params
+		String title = detail.getTitle().toLowerCase().trim();
+		List<ArtistDao> authors = detail.getAuthors();
+		ArtistDao tomatch = authors != null && authors.size() > 0 ? authors
+				.get(0) : null;
+		String author = tomatch.getDisplayName().toLowerCase().trim();
+		Long clientid = client.getId();
+		
+		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+		CriteriaQuery<BookDetailDao> c = cb.createQuery(BookDetailDao.class);
+		Root<BookDao> clientbook = c.from(BookDao.class);
+		Join<BookDao,BookDetailDao> bookroot= clientbook.join("bookdetail");
+		c.select(bookroot);
+
+		// get where clause
+		List<Predicate> whereclause = new ArrayList<Predicate>();
+		// clientspecific - true
+		ParameterExpression<Boolean> clientparam = cb.parameter(Boolean.class,
+				"clientspecific");
+		whereclause.add(cb.equal(bookroot.<Boolean> get("clientspecific"),
+				clientparam));
+		// client for book
+		ParameterExpression<Long> clientidparam = cb.parameter(Long.class, "clientid");
+		whereclause.add(cb.equal(clientbook.<Long> get("clientid"), clientidparam));
+		
+		// title
+		if (title != null) {
+			ParameterExpression<String> param = cb.parameter(String.class,
+					"title");
+			whereclause.add(cb.like(cb.lower(bookroot.<String> get("title")),
+					param));
+		}
+
+		// author
+		if (author != null) {
+			Join<BookDetailDao, ArtistDao> authorjoin = bookroot
+					.join("authors");
+			// where firstname = firstname and middlename = middlename and
+			// lastname = lastname
+			// together with likes and to lower
+			// lastname
+			if (tomatch.hasLastname()) {
+				ParameterExpression<String> param = cb.parameter(String.class,
+						"alastname");
+				Expression<String> path = authorjoin.get("lastname");
+				Expression<String> lower = cb.lower(path);
+				Predicate predicate = cb.like(lower, param);
+				whereclause.add(predicate);
+			}
+			// middlename
+			if (tomatch.hasMiddlename()) {
+				ParameterExpression<String> param = cb.parameter(String.class,
+						"amiddlename");
+				Expression<String> path = authorjoin.get("middlename");
+				Expression<String> lower = cb.lower(path);
+				Predicate predicate = cb.like(lower, param);
+				whereclause.add(predicate);
+			}
+			// firstname
+			if (tomatch.hasFirstname()) {
+				ParameterExpression<String> param = cb.parameter(String.class,
+						"afirstname");
+				Expression<String> path = authorjoin.get("firstname");
+				Expression<String> lower = cb.lower(path);
+				Predicate predicate = cb.like(lower, param);
+				whereclause.add(predicate);
+			}
+		}
+
+		// adding where clause
+		c.where(cb.and(whereclause.toArray(new Predicate[whereclause.size()])));
+
+		// creating the query
+		TypedQuery<BookDetailDao> q = entityManager.createQuery(c);
+
+		// setting the parameters
+		q.setParameter("clientspecific", new Boolean(true));
+		q.setParameter("clientid",clientid);
+		// title
+		if (title != null) {
+			q.setParameter("title", title.trim());
+		}
+		if (author != null) {
+			// author
+			// where firstname = firstname and middlename = middlename and
+			// lastname = lastname
+			// together with likes and to lower
+			// lastname
+			if (tomatch.hasLastname()) {
+				q.setParameter("alastname", "%"
+						+ tomatch.getLastname().toLowerCase().trim() + "%");
+			}
+			// middlename
+			if (tomatch.hasMiddlename()) {
+				q.setParameter("amiddlename", "%"
+						+ tomatch.getMiddlename().toLowerCase().trim() + "%");
+			}
+			// firstname
+			if (tomatch.hasFirstname()) {
+				q.setParameter("afirstname", "%"
+						+ tomatch.getFirstname().toLowerCase().trim() + "%");
+
+			}
+		}
+
+		List<BookDetailDao> results = q.getResultList();
+		return results;
+
+
 	}
 
 	private List<BookDetailDao> doClientIsbnSearch(BookDetailDao detail,
 			ClientDao client) {
-		// TODO Auto-generated method stub
-		return null;
+		// gather params
+		String isbn = detail.getIsbn10();
+		String ean = detail.getIsbn13();
+		Long clientid = client.getId();
+
+		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+		CriteriaQuery<BookDetailDao> c = cb.createQuery(BookDetailDao.class);
+		Root<BookDao> clientbook = c.from(BookDao.class);
+		Join<BookDao,BookDetailDao> bookroot= clientbook.join("bookdetail");
+		c.select(bookroot);
+
+		// get where clause
+		Expression sortexpr = null;
+		List<Predicate> whereclause = new ArrayList<Predicate>();
+		// clientspecific - true
+		ParameterExpression<Boolean> clientparam = cb.parameter(Boolean.class,
+				"clientspecific");
+		whereclause.add(cb.equal(bookroot.<Boolean> get("clientspecific"),
+				clientparam));
+		// client for book
+		ParameterExpression<Long> clientidparam = cb.parameter(Long.class, "clientid");
+		whereclause.add(cb.equal(clientbook.<Long> get("clientid"), clientidparam));
+		
+		// ean
+		if (ean != null) {
+			ParameterExpression<String> param = cb.parameter(String.class,
+					"ean");
+			whereclause.add(cb.like(cb.lower(bookroot.<String> get("isbn13")),
+					param));
+		}
+		if (isbn != null) {
+			ParameterExpression<String> param = cb.parameter(String.class,
+					"isbn");
+			whereclause.add(cb.like(cb.lower(bookroot.<String> get("isbn10")),
+					param));
+		}
+
+		// adding where clause
+		c.where(cb.and(whereclause.toArray(new Predicate[whereclause.size()])));
+
+		// creating the query
+		TypedQuery<BookDetailDao> q = entityManager.createQuery(c);
+
+		// setting the parameters
+		q.setParameter("clientspecific", new Boolean(true));
+		q.setParameter("clientid",clientid);
+		// title
+		if (ean != null) {
+			q.setParameter("ean", ean.trim());
+		}
+		if (isbn != null) {
+			q.setParameter("isbn", isbn.trim());
+		}
+
+		List<BookDetailDao> results = q.getResultList();
+		return results;
+
 	}
 
 	private List<BookDetailDao> doTitleAuthorSearch(BookDetailDao detail) {

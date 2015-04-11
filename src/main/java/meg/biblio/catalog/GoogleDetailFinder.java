@@ -273,7 +273,11 @@ public class GoogleDetailFinder extends BaseDetailFinder {
 
 		bookdetail.setTitle(info.getTitle());
 		PublisherDao publisher = bMemberService.findPublisherForName(info.getPublisher());
-		bookdetail.setDescription(info.getDescription());
+		String description = info.getDescription();
+		if (description !=null && description.contains("<")) {
+			description = removeTags(description);
+		}
+		bookdetail.setDescription(description);
 		bookdetail.setPublisher(publisher);
 		if (info.getPublishedDate() != null) {
 			String publishyearstr = info.getPublishedDate();

@@ -76,7 +76,7 @@ public class BNFCatalogFinderTest {
 		authors.add(author);
 		bookdetail.setAuthors(authors);
 		bookdetail.setIsbn13("9782211093293");
-		 findobj = new FinderObject(bookdetail);
+		 findobj = new FinderObject(bookdetail,client);
 		searchfor.add(findobj);
 		
 		bookdetail = new BookDetailDao();
@@ -86,7 +86,7 @@ public class BNFCatalogFinderTest {
 		authors.add(author);
 		bookdetail.setAuthors(authors);
 		bookdetail.setIsbn13("9782226156488");
-		 findobj = new FinderObject(bookdetail);
+		 findobj = new FinderObject(bookdetail,client);
 		searchfor.add(findobj);
 		
 		bookdetail = new BookDetailDao();
@@ -96,7 +96,7 @@ public class BNFCatalogFinderTest {
 		authors.add(author);
 		bookdetail.setAuthors(authors);
 		bookdetail.setIsbn13("9782070561797");
-		 findobj = new FinderObject(bookdetail);
+		 findobj = new FinderObject(bookdetail,client);
 		searchfor.add(findobj);
 		
 		
@@ -107,7 +107,7 @@ public class BNFCatalogFinderTest {
 		authors.add(author);
 		bookdetail.setAuthors(authors);
 		bookdetail.setIsbn13("9782867268915");
-		 findobj = new FinderObject(bookdetail);
+		 findobj = new FinderObject(bookdetail,client);
 		searchfor.add(findobj);
 		
 		
@@ -118,7 +118,7 @@ public class BNFCatalogFinderTest {
 		authors.add(author);
 		bookdetail.setAuthors(authors);
 		bookdetail.setIsbn13("9782211206464");
-		 findobj = new FinderObject(bookdetail);
+		 findobj = new FinderObject(bookdetail,client);
 		searchfor.add(findobj);
 		
 		bookdetail = new BookDetailDao();
@@ -128,7 +128,7 @@ public class BNFCatalogFinderTest {
 		authors.add(author);
 		bookdetail.setAuthors(authors);
 		bookdetail.setIsbn13("9782211089685");
-		 findobj = new FinderObject(bookdetail);
+		 findobj = new FinderObject(bookdetail,client);
 		searchfor.add(findobj);
 		
 	}

@@ -32,14 +32,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.books.Books;
-import com.google.api.services.books.BooksRequestInitializer;
-import com.google.api.services.books.Books.Volumes.Get;
-import com.google.api.services.books.model.Volume;
-
 @Component
 public class BNFCatalogFinder extends BaseDetailFinder {
 
@@ -708,33 +700,5 @@ public class BNFCatalogFinder extends BaseDetailFinder {
 		return null;
 	}
 
-	private String removeTags(String string) {
-		StringBuffer tagfree = new StringBuffer();
-		boolean intag = false;
-		for (int i = 0; i < string.length(); i++) {
-			char examine = string.charAt(i);
-			if (intag) {
-				// check if we have an end tag
-				if (examine == '>') {
-					// end of tag
-					// if so, set intag to false
-					intag = false;
-				}
-				// if so, set intag to false
-			} else {
-				// check if new tag is starting
-				if (examine == '<') {
-					// if so, set intag to true
-					intag = true;
-				} else {
-					// write char to tagfree
-					tagfree.append(examine);
-				}
 
-			}
-
-		}
-		return tagfree.toString();
-
-	}
 }
