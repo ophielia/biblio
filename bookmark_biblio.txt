@@ -5,13 +5,12 @@ Branch - DEMO 1.0 - Demo1
 	Front End improvements
 	Better navigation
 		
-	 
-begin last development / testing with new client 
-images to checkout / return!	
+
+begin moving online....	
 
  
  
-later - check for "if duplicate" after search - and copy shelf info. 
+ 
 later - overhaul clientnr / clientid!!!
 later - make shelfclass codes json smaller.... remove client
 later - chooseable formats - think - separate sheets, or from db, fed to sheet???(no - not now - maybe later...)
@@ -27,10 +26,11 @@ eventually oh - big idea (next update) - assign code (old random code version - 
 
 ---- begin commit changes ----
 
-done - look for clientspecific in internalfinder 
-done - 	 build structure to pass client into search (in findobj)
-done - fill in search methods in InternalDetailFinder
-done - google - strip html from description
+done - author/subject/illustrator error with 9782215067207 - the forest.  check parsing upon add book
+done - check for "if duplicate" after search - and copy shelf info.
+done - begin last development / testing with new client 
+done - images to checkout / return!
+done - barcodelendingcontroller - return book which is not checked out....
 
 ---- end commit changes ----
 
@@ -180,6 +180,10 @@ done - begin generateBookBarcodeSheetRange PdfController
 done - generateBookBarcodeSheetRange - put errors in uiModel
 done - BarcodeServiceImple - fill in!!
 done - bug - assign barcodes to people
+done - look for clientspecific in internalfinder 
+done - 	 build structure to pass client into search (in findobj)
+done - fill in search methods in InternalDetailFinder
+done - google - strip html from description
 	
 
 

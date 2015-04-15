@@ -29,6 +29,7 @@ import meg.biblio.catalog.web.model.BookModel;
 import meg.biblio.common.AppSettingService;
 import meg.biblio.common.ClientService;
 import meg.biblio.common.db.dao.ClientDao;
+import meg.biblio.search.BookSearchCriteria;
 import meg.biblio.search.SearchService;
 
 import org.apache.log4j.Logger;
@@ -160,18 +161,40 @@ public class DetailSearchServiceImpl implements DetailSearchService {
 			checkAndSaveAdditionalCodes(findobj);
 			// check for image
 			String imagelink = findobj.getBookdetail().getImagelink();
-			if (imagelink!=null) {
-				// we have an image.  Now, this book may have been
+			if (imagelink != null) {
+				// we have an image. Now, this book may have been
 				// saved already with a different isbn without an
-				// image.  Here, we're going to check for books with matching
-				// titles, and author/publisher without images.  If any are
+				// image. Here, we're going to check for books with matching
+				// titles, and author/publisher without images. If any are
 				// found, the image will be set in these objects
-				List<BookDetailDao> matcheswoimage = findMatchingBooksWithoutImages(findobj.getBookdetail());
-				if (matcheswoimage!=null) {
-					for (BookDetailDao match:matcheswoimage) {
+				List<BookDetailDao> matcheswoimage = findMatchingBooksWithoutImages(findobj
+						.getBookdetail());
+				if (matcheswoimage != null) {
+					for (BookDetailDao match : matcheswoimage) {
 						match.setImagelink(imagelink);
 						bookDetailRepo.save(match);
 					}
+				}
+			}
+			// copy (overwrite) classification info with existing book (if any)
+			if (model.hasIsbn()) {
+				BookSearchCriteria criteria = new BookSearchCriteria();
+				String isbn = model.getIsbn13();
+				if (isbn == null) {
+					isbn = model.getIsbn10();
+					criteria.setIsbn10(isbn);
+				} else {
+					criteria.setIsbn13(isbn);
+				}
+				List<BookDao> found = searchService.findBooksForCriteria(
+						criteria, client.getId());
+				if (found != null && found.size() > 0) {
+					// found a book with the same isbn belonging to this client
+					// copy the classification from found book to new book
+					BookDao copyfrom = found.get(0);
+					model.setType(copyfrom.getClientbooktype());
+					model.setShelfcode(copyfrom.getClientshelfcode());
+					model.setShelfclass(copyfrom.getClientshelfclass());
 				}
 			}
 		} else if (detail.getDetailstatus() == CatalogService.DetailStatus.MULTIDETAILSFOUND) {
@@ -254,10 +277,7 @@ public class DetailSearchServiceImpl implements DetailSearchService {
 				Predicate predicate = cb.equal(lower, param);
 				whereclause.add(predicate);
 			}
-		}
-		
-		// publisher
-		if (publisher!=null) {
+		} else if (publisher!=null) {
 			Join<BookDetailDao, PublisherDao> publishjoin = bookroot
 					.join("publisher");
 
@@ -298,8 +318,7 @@ public class DetailSearchServiceImpl implements DetailSearchService {
 				q.setParameter("afirstname", tomatch.getFirstname().toLowerCase().trim()  );
 
 			}
-		}
-		if (publisher!=null) {
+		} else if (publisher!=null) {
 			q.setParameter("publisher",  publisher.toLowerCase().trim());	
 		}
 

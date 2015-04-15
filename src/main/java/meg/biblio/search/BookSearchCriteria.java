@@ -13,6 +13,8 @@ public class BookSearchCriteria {
 	private Long detailstatus;
 	private Long booktype;
 	private Boolean clientspecific;
+	private String isbn10;
+	private String isbn13;
 	private long orderby;
 	private long orderbydir;
 
@@ -202,4 +204,23 @@ public class BookSearchCriteria {
 		return OrderByDir.DESC;
 
 	}
+
+	public void setIsbn10(String isbn) {
+		this.isbn10=isbn;
+		
+	}
+
+	public String getIsbn10() {
+		return isbn10;
+	}
+
+	public void setIsbn13(String isbn) {
+		this.isbn13=isbn;
+	}
+
+	public String getIsbn13() {
+		return isbn13;
+	}
+	
+	
 }

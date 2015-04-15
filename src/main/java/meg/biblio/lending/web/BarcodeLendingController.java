@@ -115,10 +115,10 @@ public class BarcodeLendingController {
 			Model uiModel, BindingResult bindingErrors, ClientDao client) {
 		// get book for code
 		BookDao book = catalogService.findBookByBarcode(code);
-		BookDetailDao bookdetail = book.getBookdetail();
 		
-		if (bookdetail != null) {
-
+		
+		if (book != null) {
+			BookDetailDao bookdetail = book.getBookdetail();
 			// is checkout ? (do we have a person in model??)
 			boolean ischeckout = barcodeLendModel.getPerson() != null;
 
@@ -147,7 +147,7 @@ public class BarcodeLendingController {
 			if (ischeckout) {
 				Long borrowerid = barcodeLendModel.getPerson().getId();
 				// checkout book
-				lendingService.checkoutBook(bookdetail.getId(), borrowerid,
+				lendingService.checkoutBook(book.getId(), borrowerid,
 						client.getId());
 
 				// ---- put name, book title in uiModel
@@ -181,7 +181,7 @@ public class BarcodeLendingController {
 				// if return - return book and return success page
 				// return book
 				LoanHistoryDao lh = lendingService.returnBookByBookid(
-						bookdetail.getId(), client.getId());
+						book.getId(), client.getId());
 
 				firstname = lh.getBorrower().getFirstname();
 				// ---- put name, book title in uiModel

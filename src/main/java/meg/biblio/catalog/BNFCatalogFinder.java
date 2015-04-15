@@ -607,6 +607,7 @@ public class BNFCatalogFinder extends BaseDetailFinder {
 					}
 				} else if (key.toLowerCase().equals("auteur(s)")) {
 					String value = stripAfterText("(", results.get(key));
+					value = stripAfterText(newlinemarker,value);
 					// normalize author name
 					value = bMemberService.normalizeArtistName(value);
 					// set in author....
@@ -639,7 +640,7 @@ public class BNFCatalogFinder extends BaseDetailFinder {
 			if (addlillustrators != null) {
 				for (String artist : addlillustrators) {
 					bdetail = bMemberService
-							.addArtistToAuthors(artist, bdetail);
+							.addArtistToIllustrators(artist, bdetail);
 				}
 			}
 
