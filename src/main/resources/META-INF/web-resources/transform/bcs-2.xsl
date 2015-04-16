@@ -40,7 +40,7 @@
 
     <xsl:template match="codes">
         <xsl:variable name="posi" select="pos"/>
-        <fo:table-cell border-width="0.1mm" border-style="solid" border-color="black" >
+        <fo:table-cell border-width="0.1mm" border-style="solid" border-color="white" >
             <xsl:if test="not($posi mod 5)">
                 <xsl:attribute name="ends-row">true</xsl:attribute>
             </xsl:if>
