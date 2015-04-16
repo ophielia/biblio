@@ -5,13 +5,18 @@ Branch - DEMO 1.0 - Demo1
 	Front End improvements
 	Better navigation
 		
+barcode reformat for cheap sheets
 
 begin moving online....	
-
+	branch to master
+	database to online
+		tables
+		reset sequence
+		table data - client, select keys, appsetting, classifier
+	code to online
  
  
  
-later - overhaul clientnr / clientid!!!
 later - make shelfclass codes json smaller.... remove client
 later - chooseable formats - think - separate sheets, or from db, fed to sheet???(no - not now - maybe later...)
 later - assign code separate from save, and dependant upon client assign code type

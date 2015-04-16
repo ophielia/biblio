@@ -12,7 +12,7 @@
 <xsl:template match="/">
     <fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format">
         <fo:layout-master-set>
-            <fo:simple-page-master margin-top="6.5mm" margin-left="8mm" margin-bottom="5mm"
+            <fo:simple-page-master margin-top="7mm" margin-left="1mm" margin-bottom="5mm"
                 margin-right="0mm" page-width="210mm" page-height="297mm" master-name="first">
                 <fo:region-body margin-top="0cm"/>
             </fo:simple-page-master>
@@ -26,12 +26,12 @@
 </xsl:template>
 
     <xsl:template match="barcodes">
-       <fo:table  border-collapse="separate" border-spacing="0mm 0mm" width="19cm" table-layout="fixed">
-       <fo:table-column column-width="39mm"/>
-       <fo:table-column column-width="39mm"/>
-       <fo:table-column column-width="39mm"/>
-       <fo:table-column column-width="39mm"/>
-       <fo:table-column column-width="39mm"/>
+       <fo:table  border-collapse="separate" border-spacing="1.9mm 0mm" width="20cm" table-layout="fixed">
+       <fo:table-column column-width="41.5mm"/>
+       <fo:table-column column-width="41.5mm"/>
+       <fo:table-column column-width="41.5mm"/>
+       <fo:table-column column-width="41.5mm"/>
+       <fo:table-column column-width="41.5mm"/>
             <fo:table-body>
                 <xsl:apply-templates/>
             </fo:table-body>
@@ -40,7 +40,7 @@
 
     <xsl:template match="codes">
         <xsl:variable name="posi" select="pos"/>
-        <fo:table-cell border-width="0.1mm" border-style="solid" border-color="black" >
+        <fo:table-cell border-width="0.1mm" border-style="solid" border-color="white" >
             <xsl:if test="not($posi mod 5)">
                 <xsl:attribute name="ends-row">true</xsl:attribute>
             </xsl:if>
