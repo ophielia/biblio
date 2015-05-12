@@ -1,0 +1,14 @@
+c:\Users\Margaret\Documents\workspace\biblio>pg_dump --username=cataloguser bookcatalog
+
+pg_dump --username=cataloguser bookcatalog -s
+
+
+Dump Structure!!
+pg_dump --username=cataloguser --schema-only --no-owner bookcatalog > beep
+
+
+
+pg_dump --username=cataloguser --data-only --inserts --no-owner bookcatalog > bop
+
+
+
