@@ -36,6 +36,8 @@ public class BookModel  implements Serializable {
 	private String illustratorentry;
 	private String subjectentry;
 
+	private Long previousshelfcode;
+
 	
 	// *** constructors ***//
 	public BookModel(BookDao book) {
@@ -538,6 +540,13 @@ public class BookModel  implements Serializable {
 		this.book.setBarcodeid(barcodeid);
 	}
 
+	public void setPreviousShelfcode(Long shelfcode) {
+		previousshelfcode = shelfcode;
+	}
+	
+	public Long getPreviousShelfcode() {
+		return previousshelfcode;
+	}
 
 
 

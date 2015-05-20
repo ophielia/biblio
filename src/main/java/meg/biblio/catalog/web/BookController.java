@@ -67,11 +67,22 @@ public class BookController {
 	BookModelValidator bookValidator;
 
 	@RequestMapping(params = "form", produces = "text/html")
-	public String addBookForm(Model uiModel) {
+	public String addBookForm(Model uiModel,
+			@RequestParam(value = "shelfcode", required = false) Long shelfcode,
+			@RequestParam(value = "createnewid", required = false) Boolean newid) {
+		if (newid==null) {
+			newid = new Boolean(true);
+		}
+		
 		BookModel bookModel = new BookModel();
-		bookModel.setCreatenewid(new Boolean(true));
+		bookModel.setCreatenewid(newid);
 		bookModel.setStatus(CatalogService.Status.SHELVED);
 		bookModel.setAssignedcode(null);
+		
+		if (shelfcode!=null) {
+			bookModel.setPreviousShelfcode(shelfcode);
+		}
+		
 		uiModel.addAttribute("bookModel", bookModel);
 
 		return "book/create";
@@ -196,6 +207,11 @@ public class BookController {
 			List<FoundDetailsDao> multidetails = bookModel.getFounddetails();
 			uiModel.addAttribute("noisbn", !bookModel.getBook().getBookdetail().hasIsbn());
 			returnview = "book/choosedetails";
+		} else {
+			// add previous shelf code if desired
+			if (bookModel.getPreviousShelfcode()!=null) {
+				bookModel.setShelfcode(bookModel.getPreviousShelfcode());
+			}
 		}
 
 		// add addbookcontext as true to model
@@ -239,7 +255,8 @@ public class BookController {
 		Long clientid = client.getId();
 		String shortname = client.getShortname();
 		Long detailstatus = bookModel.getDetailstatus();
-
+		Boolean createnewid = bookModel.getCreatenewid();
+		
 		bookValidator.validateUpdateBook(bookModel, bindingResult);
 		if (bindingResult.hasErrors()) {
 			// fill lookups
@@ -282,15 +299,15 @@ public class BookController {
 			e.printStackTrace();
 		}
 
-		// return view - returns either to display book, or to assign code
-		uiModel.addAttribute("bookModel", bookModel);
-
 		// return target
 		if (!returntoadd) {
+			uiModel.addAttribute("bookModel", bookModel);
 			return "redirect:/books/display/"
 					+ bookModel.getBookid().toString();
 		} else {
-			return "redirect:/books?form";
+			// get current shelf and generate code info (createnewid)
+			Long shelfcode = bookModel.getShelfcode();
+			return "redirect:/books?form&shelfcode=" + shelfcode + "&createnewid=" + createnewid;
 		}
 
 	}
