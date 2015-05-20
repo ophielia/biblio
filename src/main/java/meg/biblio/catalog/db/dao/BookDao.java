@@ -1,4 +1,5 @@
 package meg.biblio.catalog.db.dao;
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.CascadeType;
@@ -14,7 +15,7 @@ import org.springframework.roo.addon.tostring.RooToString;
 @RooToString
 @RooJpaEntity
 @Table(name="book")
-public class BookDao {
+public class BookDao implements Serializable {
 
 private Long clientid;
 private Long status;

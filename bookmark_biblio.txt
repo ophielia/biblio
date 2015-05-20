@@ -1,20 +1,15 @@
-Branch - DEMO 1.0 - Demo1
-	DetailSearch rework
-	Client Editing
-	Bugfixes
-	Front End improvements
-	Better navigation
+Branch - Sessionbugfix
 		
-barcode reformat for cheap sheets
+webrunner working
 
-begin moving online....	
-	branch to master
-	database to online
-		tables
-		reset sequence
-		table data - client, select keys, appsetting, classifier
-	code to online
- 
+memcache can be run - but isn't installed as service
+
+try out sample code to get it to work
+
+put code into biblio  
+
+
+
  
  
 later - make shelfclass codes json smaller.... remove client

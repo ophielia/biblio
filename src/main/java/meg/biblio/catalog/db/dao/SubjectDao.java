@@ -1,4 +1,6 @@
 package meg.biblio.catalog.db.dao;
+import java.io.Serializable;
+
 import javax.persistence.Table;
 
 import org.springframework.roo.addon.javabean.RooJavaBean;
@@ -9,7 +11,7 @@ import org.springframework.roo.addon.tostring.RooToString;
 @RooToString
 @RooJpaEntity
 @Table(name="subject")
-public class SubjectDao {
+public class SubjectDao implements Serializable {
 	private String listing;
 	
 	
