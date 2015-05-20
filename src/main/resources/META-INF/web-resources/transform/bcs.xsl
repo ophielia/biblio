@@ -5,6 +5,7 @@
               <barcode>
                 <code128>
                 <height>16.5mm</height>
+                <module-width>0.25mm</module-width>
                 </code128>
               </barcode>
             </xsl:variable>
@@ -49,7 +50,7 @@
 	    	<xsl:value-of select="description"/>
             </fo:block>
                         <fo:block>
-	                  <fo:instream-foreign-object>
+	                  <fo:instream-foreign-object content-width="37.5mm" content-height="18mm">
 	                    <xsl:copy-of select="barcode:generate($barcode-cfg, msg)"/>
 	                  </fo:instream-foreign-object>
             </fo:block>
