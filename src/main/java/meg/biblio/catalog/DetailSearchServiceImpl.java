@@ -587,4 +587,6 @@ public class DetailSearchServiceImpl implements DetailSearchService {
 		bookModel = fillInDetailsForBook(bookModel, client);
 		return bookModel;
 	}
+
+
 }

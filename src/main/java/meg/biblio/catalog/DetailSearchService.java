@@ -31,5 +31,6 @@ public interface DetailSearchService {
 
 	public BookModel assignDetailToBook(BookModel bookModel, FoundDetailsDao fd, ClientDao client) throws Exception;
 
+
 	
 }

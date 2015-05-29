@@ -177,4 +177,5 @@ public abstract class BaseDetailFinder implements DetailFinder {
 
 	}
 
+
 }

@@ -89,8 +89,8 @@ public class InternalDetailFinder extends BaseDetailFinder {
 		
 		if (detail != null) {
 
-			Long currentstatus = detail.getDetailstatus()!=null?detail.getDetailstatus():0L;			boolean hasisbn = detail.getIsbn10() != null
-					|| detail.getIsbn13() != null;
+			Long currentstatus = detail.getDetailstatus()!=null?detail.getDetailstatus():0L;			
+			boolean hasisbn = detail.hasIsbn();
 			if (hasisbn
 					&& currentstatus != CatalogService.DetailStatus.DETAILNOTFOUNDWISBN) {
 				// do isbn search
@@ -457,6 +457,7 @@ public class InternalDetailFinder extends BaseDetailFinder {
 		return results;
 	}
 
+	
 	@Override
 	public List<FinderObject> findDetailsForList(List<FinderObject> objects,
 			long clientcomplete, Integer batchsearchmax) throws Exception {

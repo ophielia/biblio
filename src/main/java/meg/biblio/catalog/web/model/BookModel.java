@@ -37,6 +37,7 @@ public class BookModel  implements Serializable {
 	private String subjectentry;
 
 	private Long previousshelfcode;
+	private Long previousbooktype;
 
 	
 	// *** constructors ***//
@@ -548,8 +549,13 @@ public class BookModel  implements Serializable {
 		return previousshelfcode;
 	}
 
+	public Long getPreviousBookType() {
+		return previousbooktype;
+	}
 
-
+	public void setPreviousBookType(Long booktype) {
+		previousbooktype = booktype;
+	}
 
 
 }

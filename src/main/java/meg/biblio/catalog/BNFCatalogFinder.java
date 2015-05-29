@@ -361,7 +361,12 @@ public class BNFCatalogFinder extends BaseDetailFinder {
 		} else {
 			if (findobj.getSearchStatus() != CatalogService.DetailStatus.MULTIDETAILSFOUND) {
 				// nothing found
-				findobj.setSearchStatus(CatalogService.DetailStatus.DETAILNOTFOUNDWISBN);
+				if (findobj.getBookdetail().hasIsbn()) {
+					findobj.setSearchStatus(CatalogService.DetailStatus.DETAILNOTFOUNDWISBN);
+				} else {
+					findobj.setSearchStatus(CatalogService.DetailStatus.DETAILNOTFOUND);
+				}
+				
 			}
 		}
 

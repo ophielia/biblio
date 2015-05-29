@@ -33,15 +33,19 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
           'dojo/domReady!'
       ], function (dom,style,focusUtil,on) {
 
-	 focusUtil.focus(dom.byId("isbnentry"));
+	 focusUtil.focus(dom.byId("isbn10"));
 	 
 	 	<c:if test="${bookModel.createnewid}">
 	 		dojo.byId("clientbookid").disabled="true";
+	 		focusUtil.focus(dom.byId("isbn10"));
 	 	</c:if>
+	 	<c:if test="${bookModel.createnewid==false}">
+ 		focusUtil.focus(dom.byId("clientbookid"));
+ 	</c:if>	 	
 		on(dojo.byId("createnewid1"), 'click', function(event) {
 			ischecked = event.currentTarget.checked;
 			dojo.byId("clientbookid").disabled=ischecked;
-			focusUtil.focus(dom.byId("isbnentry"));
+			focusUtil.focus(dom.byId("isbn10"));
 		});
 		
 		on(dojo.byId("showaddl"), 'click', function(event) {

@@ -69,6 +69,7 @@ public class BookController {
 	@RequestMapping(params = "form", produces = "text/html")
 	public String addBookForm(Model uiModel,
 			@RequestParam(value = "shelfcode", required = false) Long shelfcode,
+			@RequestParam(value = "booktype", required = false) Long booktype,
 			@RequestParam(value = "createnewid", required = false) Boolean newid) {
 		if (newid==null) {
 			newid = new Boolean(true);
@@ -82,6 +83,9 @@ public class BookController {
 		if (shelfcode!=null) {
 			bookModel.setPreviousShelfcode(shelfcode);
 		}
+		if (booktype!=null) {
+			bookModel.setPreviousBookType(booktype);
+		}		
 		
 		uiModel.addAttribute("bookModel", bookModel);
 
@@ -212,6 +216,9 @@ public class BookController {
 			if (bookModel.getPreviousShelfcode()!=null) {
 				bookModel.setShelfcode(bookModel.getPreviousShelfcode());
 			}
+			if (bookModel.getPreviousBookType()!=null) {
+				bookModel.setType(bookModel.getPreviousBookType());
+			}			
 		}
 
 		// add addbookcontext as true to model
@@ -307,7 +314,16 @@ public class BookController {
 		} else {
 			// get current shelf and generate code info (createnewid)
 			Long shelfcode = bookModel.getShelfcode();
-			return "redirect:/books?form&shelfcode=" + shelfcode + "&createnewid=" + createnewid;
+			Long booktype = bookModel.getType();
+			String returnparams = "?form&createnewid=" + createnewid;
+			if (shelfcode!=null) {
+				returnparams += "&shelfcode=" + shelfcode;
+			}
+			if (booktype!=null) {
+				returnparams += "&booktype=" + booktype;
+			}		
+			
+			return "redirect:/books" + returnparams;
 		}
 
 	}

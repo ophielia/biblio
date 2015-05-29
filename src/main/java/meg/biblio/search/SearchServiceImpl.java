@@ -645,9 +645,13 @@ public class SearchServiceImpl implements SearchService {
 		
 		// type
 		if (criteria.hasBooktype()) {
+			Coalesce<Long> cexp = cb.coalesce();
+			cexp.value(bookroot.<Long> get("clientbooktype"));
+			cexp.value(bookdetail.<Long> get("listedtype"));
+
 			ParameterExpression<Long> param = cb.parameter(Long.class,
 					"type");
-			whereclause.add(cb.equal(bookroot.<Long> get("booktype"), param));
+			whereclause.add(cb.equal(cexp, param));
 
 		}		
 		
