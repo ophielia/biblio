@@ -241,7 +241,14 @@ public class BookController {
 	}
 
 
+	@RequestMapping(value = "/createedit",method = RequestMethod.GET, produces = "text/html")
+	public String notAmongFoundDetails(
+			BookModel bookModel, Model uiModel,
+			HttpServletRequest httpServletRequest, BindingResult bindingResult,
+			Principal principal, Locale locale) {
 
+		return "book/editbook";
+	}
 
 	@RequestMapping(method = RequestMethod.POST, produces = "text/html")
 	public String addBookCreate(

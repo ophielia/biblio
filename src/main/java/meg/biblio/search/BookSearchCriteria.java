@@ -3,6 +3,7 @@ package meg.biblio.search;
 public class BookSearchCriteria {
 
 	private Long clientid;
+	private String clientbookid;
 	private String keyword;
 	private String author;
 	private String illustrator;
@@ -43,6 +44,15 @@ public class BookSearchCriteria {
 
 	public void setClientid(Long clientid) {
 		this.clientid = clientid;
+	}
+
+	
+	public String getClientbookid() {
+		return clientbookid;
+	}
+
+	public void setClientbookid(String clientbookid) {
+		this.clientbookid = clientbookid;
 	}
 
 	public boolean hasKeyword() {
@@ -220,6 +230,11 @@ public class BookSearchCriteria {
 
 	public String getIsbn13() {
 		return isbn13;
+	}
+
+	public boolean hasClientbookid() {
+		// TODO Auto-generated method stub
+		return clientbookid!=null && clientbookid.trim().length()>0;
 	}
 	
 	

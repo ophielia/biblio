@@ -16,7 +16,7 @@ public class BookListModel implements Serializable {
 	private List<Boolean> checked;
 	private Long statusUpdate;
 	private Long shelfclassUpdate;
-
+	private String clientbookid;
 	private List<Long> idref;
 	
 
@@ -74,12 +74,21 @@ public class BookListModel implements Serializable {
 	}
 
 	/** Setters on criteria object **/
-	public String getKeyword() {
-		return criteria.getKeyword();
+
+	public String getClientbookid() {
+		return criteria.getClientbookid();
+	}
+
+	public void setClientbookid(String clientbookid) {
+		criteria.setClientbookid(clientbookid);
 	}
 
 	public void setKeyword(String keyword) {
 		criteria.setKeyword(keyword);
+	}
+
+	public String getKeyword() {
+		return criteria.getKeyword();
 	}
 
 	public String getAuthor() {

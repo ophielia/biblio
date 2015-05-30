@@ -66,6 +66,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <spring:message code="label_book_classification" htmlEscape="false" var="lclassification"/>
 <spring:message code="label_book_clientbookid" htmlEscape="false" var="lclientbookid"/>
 <spring:message code="button_searchbyisbn" htmlEscape="false" var="button_searchbyisbn"/>
+<spring:message code="message_book_notindetails" htmlEscape="false" var="bbacktocreate"/>
 
 
 <spring:message code="button_save" htmlEscape="false" var="bsave"/>
@@ -87,6 +88,8 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 	<div>
 	${lillustrator}: ${bookModel.mainIllustrator.firstname} ${bookModel.mainIllustrator.middlename} ${bookModel.mainIllustrator.lastname}
 	</div>
+<spring:url value="/books/createedit" var="linkurl" />
+				<a href="${linkurl}" class="linkbutton" id="showaddl">${bbacktocreate}</a>
 </div>
 
 
@@ -119,7 +122,9 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 
 </tbody>
 </table>
-<form:input path="assignDetailId" value="" ></form:input>
+<spring:url value="/books/createedit" var="linkurl" />
+				<a href="${linkurl}" class="linkbutton" id="showaddl">${bbacktocreate}</a>
+<form:hidden path="assignDetailId" value="" ></form:hidden>
 <form:hidden path="bookid" ></form:hidden>
 </form:form>
 </div>

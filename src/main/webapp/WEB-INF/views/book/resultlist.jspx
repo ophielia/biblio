@@ -16,7 +16,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <spring:message code="label_book_title" htmlEscape="false" var="ltitle"/>    
 <spring:message code="label_book_author" htmlEscape="false" var="lauthor"/>    
 <spring:message code="label_book_illustrator" htmlEscape="false" var="lillustrator"/>    
-<spring:message code="label_book_publisher" htmlEscape="false" var="lpublisher"/>    
+<spring:message code="label_book_bookid" htmlEscape="false" var="lbookid"/>    
 
 <spring:message code="label_book_clientbookid" htmlEscape="false" var="lclientbookid"/>    
 <spring:message code="label_book_classification" htmlEscape="false" var="lshelfclass"/>    
@@ -56,7 +56,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <td>${lkeyword}</td>
 <td>${ltitle}</td>
 <td>${lauthor}</td>
-<td>${lpublisher}</td>
+<td>${lbookid}</td>
 </tr>
 </THEAD>
 <tbody>
@@ -71,7 +71,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 						<form:input path="author" type="text"></form:input>
 					</td>
 					<td>
-						<form:input path="publisher" type="text"></form:input>
+						<form:input path="clientbookid" type="text"></form:input>
 					</td>
 				</tr>
 			</tbody>

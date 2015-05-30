@@ -525,6 +525,11 @@ public class SearchServiceImpl implements SearchService {
 			q.setParameter("title", "%"
 					+ criteria.getTitle().toLowerCase().trim() + "%");
 		}
+		// clientbookid
+		if (criteria.hasClientbookid()) {
+			q.setParameter("clientbookid", criteria.getClientbookid().toLowerCase().trim() );
+		}
+		
 		// isbn10
 		if (criteria.getIsbn10()!=null) {
 			q.setParameter("isbn10", criteria.getIsbn10().trim());	
@@ -604,6 +609,13 @@ public class SearchServiceImpl implements SearchService {
 					.add(cb.like(cb.lower(bookdetail.<String> get("title")), param));
 
 		}
+		if (criteria.hasClientbookid()) {
+			ParameterExpression<String> param = cb.parameter(String.class,
+					"clientbookid");
+			whereclause
+					.add(cb.equal(cb.lower(bookroot.<String> get("clientbookid")), param));
+
+		}		
 		// isbn10
 		if (criteria.getIsbn10()!=null) {
 			ParameterExpression<String> param = cb.parameter(String.class,
