@@ -23,6 +23,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <spring:message code="label_class_overview" htmlEscape="false" var="loverview"/>
 
 <spring:message code="action_class_newstudent" htmlEscape="false" var="anewstudent"/>
+<spring:message code="button_book_saveandadd" htmlEscape="false" var="anewstudentandadd"/>
 <spring:message code="action_class_existingstudent" htmlEscape="false" var="aexiststudent"/>
 <spring:message code="action_class_removestudent" htmlEscape="false" var="aremovestudent"/>
 
@@ -121,13 +122,22 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 		   	   });
 			
 	   	<c:set var="classModelErrors"><form:errors path="*"/></c:set>
-	   	<c:if test="${not empty classModelErrors}">
-		showNewStudentEntry(true);
+	   	<c:choose>
+	   	<c:when test="${not empty classModelErrors}">
+	   	showNewStudentEntry(true);
 		showClassList(false);
 		showExistingStudentAdd(false);
 		showRemoveStudents(false);
-	   	</c:if>	   	
-					
+	   	</c:when>
+	   	<c:otherwise>
+	   	<c:if test="${addanother}">
+	   	showNewStudentEntry(true);
+		showClassList(false);
+		showExistingStudentAdd(false);
+		showRemoveStudents(false);
+	   	</c:if>
+	   	</c:otherwise>
+		</c:choose>
 	});
 </script>
 
@@ -157,7 +167,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 </tr>
 </thead>
 <tbody>
-<c:choose><c:when test="${fn:length(classModel.students) gt 1}">
+<c:choose><c:when test="${fn:length(classModel.students) gt 0}">
 <c:forEach items="${classModel.students}" var="tmp" >
 <tr>
 <td>${tmp.firstname} ${tmp.lastname}</td>
@@ -184,7 +194,8 @@ ${lsection}
 </form:select>
 <br />
 <br />
-	<input class="linkbutton" id="save" name="addnew" type="submit" value="${anewstudent}"/> 
+	<input class="linkbutton" id="save" name="addnew" type="submit" value="${bsave}"/> 
+	<input class="linkbutton" id="addnewandagain" name="addnewandagain" type="submit" value="${anewstudentandadd}"/> 
 	<input class="linkbutton" id="cancelNew" type="submit" value="${bcancel}"/> 
 </div>
 

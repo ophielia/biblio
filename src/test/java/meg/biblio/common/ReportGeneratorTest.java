@@ -71,6 +71,64 @@ public class ReportGeneratorTest {
 
 	}
 
+	@Test
+	public void testMakeABarcodeXML() throws JAXBException {
+		Long clientid = clientService.getTestClientId();
+		ClientDao client = clientService.getClientForKey(clientid);
+		Locale locale = Locale.FRANCE;
+
+		BarcodeSheet sheet = barcodeService.assembleBarcodeSheetForBooks(65,0,
+				clientid, locale);
+
+		JAXBContext context = JAXBContext.newInstance(BarcodeSheet.class);
+		Marshaller m = context.createMarshaller();
+		m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+
+		m.marshal(sheet, new File("C:/Temp/bcs.xml"));
+	}
+	
+	@Test
+	public void testHelloWorld() throws IOException, TransformerException {
+
+		// Step 2: Set up output stream.
+		// Note: Using BufferedOutputStream for performance reasons (helpful with FileOutputStreams).
+		OutputStream out = new BufferedOutputStream(new FileOutputStream(new File("C:/Temp/barcodes.pdf")));
+
+		try {
+
+
+		  //Setup FOP
+			Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, out);
+
+			//Setup Transformer
+			Source xsltSrc = new StreamSource(new File("C:/Temp/bcs-2.xsl"));
+			Transformer transformer = tFactory.newTransformer(xsltSrc);
+
+			//Make sure the XSL transformation's result is piped through to FOP
+			Result res = new SAXResult(fop.getDefaultHandler());
+
+			//Setup input
+			Source src = new StreamSource(new File("C:/Temp/bcs.xml"));
+
+
+			//Start the transformation and rendering process
+			transformer.transform(src, res);
+
+		} catch (FOPException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (TransformerConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+		    //Clean-up
+		    out.close();
+		}
+
+
+	
+}
+
 /*
  * 
  * 

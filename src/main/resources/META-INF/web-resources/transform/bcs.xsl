@@ -50,7 +50,7 @@
 	    	<xsl:value-of select="description"/>
             </fo:block>
                         <fo:block>
-	                  <fo:instream-foreign-object content-width="37.5mm" content-height="18mm">
+	                  <fo:instream-foreign-object content-width="37.5mm" content-height="18.25mm">
 	                    <xsl:copy-of select="barcode:generate($barcode-cfg, msg)"/>
 	                  </fo:instream-foreign-object>
             </fo:block>

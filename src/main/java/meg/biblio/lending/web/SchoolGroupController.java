@@ -196,6 +196,22 @@ public class SchoolGroupController {
 
     @RequestMapping(value="/display/{id}", params="addnew",method = RequestMethod.POST, produces = "text/html")
 	public String addNewStudent(@ModelAttribute("classModel") ClassModel classModel,@PathVariable("id") Long id, BindingResult bindingResult,Model uiModel, HttpServletRequest httpServletRequest, Principal principal) {
+    	// Add attribute "add another" here
+    	uiModel.addAttribute("addanother",false);
+    	
+    	return newStudent( classModel,id, bindingResult,uiModel, httpServletRequest, principal);
+
+	}
+    
+    @RequestMapping(value="/display/{id}", params="addnewandagain",method = RequestMethod.POST, produces = "text/html")
+	public String addNewStudentAndAgain(@ModelAttribute("classModel") ClassModel classModel,@PathVariable("id") Long id, BindingResult bindingResult,Model uiModel, HttpServletRequest httpServletRequest, Principal principal) {
+    	// Add attribute "add another" here
+    	uiModel.addAttribute("addanother",true);
+    	
+    	return newStudent( classModel,id, bindingResult,uiModel, httpServletRequest, principal);
+	}    
+    
+	private String newStudent(ClassModel classModel,Long id, BindingResult bindingResult,Model uiModel, HttpServletRequest httpServletRequest, Principal principal) {
     	ClientDao client = clientService.getCurrentClient(principal);
     	Long clientkey = client.getId();
 
@@ -223,9 +239,12 @@ public class SchoolGroupController {
     	// put classmodel in model
     	uiModel.addAttribute("classModel",start);
 
+    	// Add attribute "add another" here
+    	
+    	
     	// return edit view
     	return "schoolgroups/edit";
-	}
+	}    
 
     @RequestMapping(value="/display/{id}", params="addstudents",method = RequestMethod.POST, produces = "text/html")
 	public String assignStudents(@ModelAttribute("classModel") ClassModel classModel,@PathVariable("id") Long id, Model uiModel, HttpServletRequest httpServletRequest, Principal principal) {

@@ -161,7 +161,7 @@ public class BarcodeServiceImpl implements BarcodeService {
 		// make prefix
 		Long clientid = client.getClientnr();
 		String prefix = codetype + clientid;
-		Boolean linkedtoclientid = client.getIdForBarcode();
+		Boolean linkedtoclientid = client.getIdForBarcode()!=null?client.getIdForBarcode():false;
 		
 		// set start code (begin) and endcode (after)
 		int begin=0;
