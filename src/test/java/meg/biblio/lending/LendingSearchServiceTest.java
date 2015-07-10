@@ -3,11 +3,8 @@ package meg.biblio.lending;
 import java.util.Date;
 import java.util.List;
 
-import junit.framework.Assert;
 import meg.biblio.common.ClientService;
-import meg.biblio.lending.db.LoanHistoryRepository;
 import meg.biblio.lending.db.LoanRecordRepository;
-import meg.biblio.lending.web.model.LoanHistoryDisplay;
 import meg.biblio.lending.web.model.LoanRecordDisplay;
 
 import org.junit.Test;
@@ -32,26 +29,8 @@ public class LendingSearchServiceTest {
 	LendingService lendingService;
 	@Autowired
 	LoanRecordRepository lrRepo;
-	@Autowired
-	LoanHistoryRepository lhRepo;	
 	
-	@Test
-	public void testBlowUp() {
-		LendingSearchCriteria criteria = new LendingSearchCriteria();
-		Long clientid = 1L;
-		
-		// service call
-		List<LoanRecordDisplay> results = lendingSearchService.findLoanRecordsByCriteria(criteria, clientid);
-		
-		// found something??
-		Assert.assertNotNull(results);
-		
-		// service call
-		List<LoanHistoryDisplay> results2 = lendingSearchService.findLoanHistoryByCriteria(criteria, clientid);
-		
-		// found something??
-		Assert.assertNotNull(results2);		
-	}
+
 	
 	@Test
 	public void testCriteriaMethods() {
@@ -67,7 +46,6 @@ public class LendingSearchServiceTest {
 
 		// service call
 		List<LoanRecordDisplay> results = lendingSearchService.findLoanRecordsByCriteria(criteria, clientid);
-		List<LoanHistoryDisplay> histresults = lendingSearchService.findLoanHistoryByCriteria(criteria, clientid);
 
 		// history only - returnedon, overdueonly
 		criteria = new LendingSearchCriteria();

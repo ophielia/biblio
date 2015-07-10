@@ -46,7 +46,9 @@ privileged aspect LoanRecordDaoDataOnDemand_Roo_DataOnDemand {
         LoanRecordDao obj = new LoanRecordDao();
         setCheckoutdate(obj, index);
         setDuedate(obj, index);
+        setReturned(obj, index);
         setSchoolyear(obj, index);
+        setTeachername(obj, index);
         return obj;
     }
     
@@ -60,9 +62,19 @@ privileged aspect LoanRecordDaoDataOnDemand_Roo_DataOnDemand {
         obj.setDuedate(duedate);
     }
     
+    public void LoanRecordDaoDataOnDemand.setReturned(LoanRecordDao obj, int index) {
+        Date returned = new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR), Calendar.getInstance().get(Calendar.MONTH), Calendar.getInstance().get(Calendar.DAY_OF_MONTH), Calendar.getInstance().get(Calendar.HOUR_OF_DAY), Calendar.getInstance().get(Calendar.MINUTE), Calendar.getInstance().get(Calendar.SECOND) + new Double(Math.random() * 1000).intValue()).getTime();
+        obj.setReturned(returned);
+    }
+    
     public void LoanRecordDaoDataOnDemand.setSchoolyear(LoanRecordDao obj, int index) {
         Integer schoolyear = new Integer(index);
         obj.setSchoolyear(schoolyear);
+    }
+    
+    public void LoanRecordDaoDataOnDemand.setTeachername(LoanRecordDao obj, int index) {
+        String teachername = "teachername_" + index;
+        obj.setTeachername(teachername);
     }
     
     public LoanRecordDao LoanRecordDaoDataOnDemand.getSpecificLoanRecordDao(int index) {

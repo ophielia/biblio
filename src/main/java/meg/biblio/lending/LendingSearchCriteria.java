@@ -23,6 +23,7 @@ public class LendingSearchCriteria {
 	private Long clientid;
 	private Long borrowerid;
 	private Long bookid;
+	private Boolean checkedout;
 
 
 	public Date getCheckedouton() {
@@ -30,6 +31,14 @@ public class LendingSearchCriteria {
 	}
 	public void setCheckedouton(Date checkedouton) {
 		this.checkedouton = checkedouton;
+	}
+	
+	
+	public Boolean getCheckedoutOnly() {
+		return checkedout;
+	}
+	public void setCheckedoutOnly(Boolean checkedout) {
+		this.checkedout = checkedout;
 	}
 	public Date getReturnedon() {
 		return returnedon;
@@ -75,6 +84,18 @@ public class LendingSearchCriteria {
 	}
 	public void setBorrowerid(Long borrowerid) {
 		this.borrowerid = borrowerid;
+	}
+	public void reset() {
+		  checkedouton=null;
+		  returnedon=null;
+		  forschoolgroup=null;
+		  lentToType=null;
+		  overdueonly=null;
+		  clientid=null;
+		  borrowerid=null;
+		  bookid=null;
+		  checkedout=null;
+		
 	}
 
 

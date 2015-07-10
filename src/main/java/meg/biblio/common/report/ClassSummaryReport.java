@@ -7,7 +7,6 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import meg.biblio.lending.db.dao.SchoolGroupDao;
-import meg.biblio.lending.web.model.LoanHistoryDisplay;
 import meg.biblio.lending.web.model.LoanRecordDisplay;
 
 @XmlRootElement(name = "classreport")
@@ -21,7 +20,7 @@ public class ClassSummaryReport {
 	private String teacherln;
 	private List<LoanRecordDisplay> overduelist;
 	private List<LoanRecordDisplay> checkedoutlist;
-	private List<LoanHistoryDisplay> historylist;
+	private List<LoanRecordDisplay> historylist;
 	
 	
 	public ClassSummaryReport() {
@@ -99,11 +98,11 @@ public class ClassSummaryReport {
 	}
 
 	@XmlElement(name="returnedlist")
-	public List<LoanHistoryDisplay> getReturnedlist() {
+	public List<LoanRecordDisplay> getReturnedlist() {
 		return historylist;
 	}
 
-	public void setReturnedlist(List<LoanHistoryDisplay> historylist) {
+	public void setReturnedlist(List<LoanRecordDisplay> historylist) {
 		this.historylist = historylist;
 	}
 

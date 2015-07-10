@@ -14,16 +14,13 @@ import meg.biblio.common.db.dao.ClientDao;
 import meg.biblio.common.report.ClassSummaryReport;
 import meg.biblio.common.report.DailySummaryReport;
 import meg.biblio.common.report.OverdueBookReport;
-import meg.biblio.lending.db.LoanHistoryRepository;
 import meg.biblio.lending.db.LoanRecordRepository;
 import meg.biblio.lending.db.PersonRepository;
-import meg.biblio.lending.db.dao.LoanHistoryDao;
 import meg.biblio.lending.db.dao.LoanRecordDao;
 import meg.biblio.lending.db.dao.PersonDao;
 import meg.biblio.lending.db.dao.SchoolGroupDao;
 import meg.biblio.lending.db.dao.StudentDao;
 import meg.biblio.lending.db.dao.TeacherDao;
-import meg.biblio.lending.web.model.LoanHistoryDisplay;
 import meg.biblio.lending.web.model.LoanRecordDisplay;
 import meg.biblio.lending.web.model.TeacherInfo;
 
@@ -57,8 +54,7 @@ public class LendingServiceImpl implements LendingService {
 	@Autowired
 	LoanRecordRepository lrRepo;
 
-	@Autowired
-	LoanHistoryRepository lhRepo;
+
 
 
 	@Autowired
@@ -74,15 +70,23 @@ public class LendingServiceImpl implements LendingService {
 
 		Integer schoolyear = 0;
 		boolean isteacher = true;
+		String teachername = null;
 		if (person instanceof StudentDao) {
 			isteacher = false;
 			StudentDao st = (StudentDao) person;
 			SchoolGroupDao sg = st.getSchoolgroup();
 			schoolyear = sg.getSchoolyearbegin();
+			TeacherDao tch = sg.getTeacher();
+			if (tch!=null ) {
+				if (tch.getFulldisplayname()!=null) {
+					teachername = tch.getFulldisplayname();
+				}
+			}
 		} else if (person instanceof TeacherDao) {
 			TeacherDao st = (TeacherDao) person;
 			SchoolGroupDao sg = st.getSchoolgroup();
 			schoolyear = sg.getSchoolyearbegin();
+			teachername = st.getFulldisplayname();
 		}
 
 		// make new loan record
@@ -92,7 +96,8 @@ public class LendingServiceImpl implements LendingService {
 		loanrec.setBook(book);
 		loanrec.setClient(client);
 		loanrec.setSchoolyear(schoolyear);
-
+		loanrec.setTeachername(teachername);
+		
 		// insert dates - checkedout and due
 		Integer checkoutdays = isteacher ? client.getTeachercheckouttime()
 				: client.getStudentcheckouttime();
@@ -116,48 +121,25 @@ public class LendingServiceImpl implements LendingService {
 	}
 
 	@Override
-	public LoanHistoryDao returnBook(Long loanrecordid, Long clientid) {
+	public LoanRecordDao returnBook(Long loanrecordid, Long clientid) {
 		// get loanrecord, client
 		LoanRecordDao lrecord = lrRepo.findOne(loanrecordid);
 		ClientDao client = clientService.getClientForKey(clientid);
 
 		if (lrecord != null) {
-			// create new loan history record
-			LoanHistoryDao lhistory = new LoanHistoryDao();
-
-			// fill in from loanrecord
-			lhistory.setClient(client);
-			lhistory.setBook(lrecord.getBook());
-			lhistory.setBorrower(lrecord.getBorrower());
-			lhistory.setCheckedout(lrecord.getCheckoutdate());
-			lhistory.setDuedate(lrecord.getDuedate());
-			lhistory.setSchoolyear(lrecord.getSchoolyear());
-			// set teacher if this is a student
-			if (lrecord.getBorrower() instanceof StudentDao) {
-				// fill in class information (want to know how it was when
-				// checkedout / returned - may be different teacher next year)
-				StudentDao student = (StudentDao) lrecord.getBorrower();
-				SchoolGroupDao sgroup = student.getSchoolgroup();
-				TeacherDao teacher = sgroup.getTeacher();
-				lhistory.setTeachername(teacher.getFulldisplayname());
-
-			}
 
 			// fill in return date
-			lhistory.setReturned(new Date());
+			lrecord.setReturned(new Date());
 
-			// persist loanhistory
-			lhistory = lhRepo.save(lhistory);
-
-			// delete loanrecord
-			lrRepo.delete(lrecord);
+			// persist loanrecord
+			lrecord = lrRepo.save(lrecord);
 
 			// update book itself - set status to shelved
 			catalogService.updateBookStatus(lrecord.getBook().getId(),
 					CatalogService.Status.SHELVED);
 
-			// return loanhistory
-			return lhistory;
+			// return loanrecord
+			return lrecord;
 
 		}
 		return null;
@@ -169,7 +151,7 @@ public class LendingServiceImpl implements LendingService {
 		// build criteria
 		LendingSearchCriteria criteria = new LendingSearchCriteria();
 		criteria.setSchoolgroup(classid);
-
+		criteria.setCheckedoutOnly(true);
 		// search for loan records
 		List<LoanRecordDisplay> checkedout = lendingSearch
 				.findLoanRecordsByCriteria(criteria, clientid);
@@ -183,7 +165,7 @@ public class LendingServiceImpl implements LendingService {
 		// build criteria
 		LendingSearchCriteria criteria = new LendingSearchCriteria();
 		criteria.setBorrowerid(borrowerId);
-
+		criteria.setCheckedoutOnly(true);
 		// search for loan records
 		List<LoanRecordDisplay> checkedout = lendingSearch
 				.findLoanRecordsByCriteria(criteria, clientid);
@@ -210,7 +192,7 @@ public class LendingServiceImpl implements LendingService {
 		// build criteria
 		LendingSearchCriteria criteria = new LendingSearchCriteria();
 		criteria.setOverdueOnly(true);
-
+		criteria.setCheckedoutOnly(true);
 		// search for loan records
 		List<LoanRecordDisplay> overdue = lendingSearch
 				.findLoanRecordsByCriteria(criteria, clientid);
@@ -222,7 +204,7 @@ public class LendingServiceImpl implements LendingService {
 	public List<LoanRecordDisplay> getCheckedOutBooksForClient(Long clientid) {
 		// build criteria
 		LendingSearchCriteria criteria = new LendingSearchCriteria();
-
+		criteria.setCheckedoutOnly(true);
 		// search for loan records
 		List<LoanRecordDisplay> checkedout = lendingSearch
 				.findLoanRecordsByCriteria(criteria, clientid);
@@ -269,14 +251,16 @@ public class LendingServiceImpl implements LendingService {
 		LendingSearchCriteria criteria = new LendingSearchCriteria();
 		criteria.setSchoolgroup(classid);
 		criteria.setCheckedouton(date);
+		criteria.setCheckedoutOnly(true);
 		List<LoanRecordDisplay> checkedout = lendingSearch
 				.findLoanRecordsByCriteria(criteria, clientid);
 		summaryreport.setCheckedoutlist(checkedout);
 
 		// overdue on date
-		criteria.setCheckedouton(null);
+		criteria.reset();
 		criteria.setSchoolgroup(classid);
 		criteria.setOverdueOnly(true);
+		criteria.setCheckedoutOnly(true);
 		List<LoanRecordDisplay> overdue = lendingSearch
 				.findLoanRecordsByCriteria(criteria, clientid);
 		// fill in teacherinfo
@@ -288,23 +272,24 @@ public class LendingServiceImpl implements LendingService {
 		summaryreport.setOverduelist(overdue);
 
 		// returned on date
+		criteria.reset();
 		criteria.setOverdueOnly(null);
 		criteria.setSchoolgroup(classid);
 		criteria.setReturnedon(date);
-		List<LoanHistoryDisplay> returned = lendingSearch
-				.findLoanHistoryByCriteria(criteria, clientid);
+		List<LoanRecordDisplay> returned = lendingSearch
+				.findLoanRecordsByCriteria(criteria, clientid);
 		summaryreport.setReturnedlist(returned);
 
 		return summaryreport;
 	}
 
 	@Override
-	public LoanHistoryDao returnBookByBookid(Long bookid, Long clientid) {
+	public LoanRecordDao returnBookByBookid(Long bookid, Long clientid) {
 		// find loanrecord
 		// build criteria
 		LendingSearchCriteria criteria = new LendingSearchCriteria();
 		criteria.setBookid(bookid);
-
+		criteria.setCheckedoutOnly(true);
 		// search for loan records
 		List<LoanRecordDisplay> checkedout = lendingSearch
 				.findLoanRecordsByCriteria(criteria, clientid);

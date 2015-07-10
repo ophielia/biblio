@@ -92,6 +92,12 @@ public class LoanRecordDisplay {
 	public Date getCheckedout() {
 		return this.loanrecord.getCheckoutdate();
 	}
+	
+	@XmlElement
+	public Date getReturned() {
+		return this.loanrecord.getReturned();
+	}
+	
 
 	@XmlElement
 	public Date getDuedate() {

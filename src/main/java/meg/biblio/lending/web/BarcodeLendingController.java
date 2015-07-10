@@ -18,7 +18,7 @@ import meg.biblio.common.db.dao.ClientDao;
 import meg.biblio.lending.ClassManagementService;
 import meg.biblio.lending.LendingService;
 import meg.biblio.lending.db.PersonRepository;
-import meg.biblio.lending.db.dao.LoanHistoryDao;
+import meg.biblio.lending.db.dao.LoanRecordDao;
 import meg.biblio.lending.db.dao.PersonDao;
 import meg.biblio.lending.db.dao.StudentDao;
 import meg.biblio.lending.db.dao.TeacherDao;
@@ -180,7 +180,7 @@ public class BarcodeLendingController {
 			} else {
 				// if return - return book and return success page
 				// return book
-				LoanHistoryDao lh = lendingService.returnBookByBookid(
+				LoanRecordDao lh = lendingService.returnBookByBookid(
 						book.getId(), client.getId());
 
 				firstname = lh.getBorrower().getFirstname();

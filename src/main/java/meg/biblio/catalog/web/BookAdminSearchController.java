@@ -62,6 +62,10 @@ public class BookAdminSearchController {
 		HttpSession session = request.getSession();
 		session.setAttribute(sessioncriteria,criteria);
 		List<BookDao> list = searchService.findBooksForCriteria(criteria, clientkey);
+		// cap list at 500
+		if (list!=null && list.size()>500) {
+			list = list.subList(0, 499);
+		}
 		model.setBooks(list);
 		return "book/admin/resultlist";
     }
@@ -74,6 +78,10 @@ public class BookAdminSearchController {
 		HttpSession session = request.getSession();
 		session.setAttribute(sessioncriteria,criteria);
 		List<BookDao> list = searchService.findBooksForCriteria(criteria, clientkey);
+		// cap list at 500
+		if (list!=null && list.size()>500) {
+			list = list.subList(0, 499);
+		}
 		model.setBooks(list);
 
 		return "book/admin/resultlist";

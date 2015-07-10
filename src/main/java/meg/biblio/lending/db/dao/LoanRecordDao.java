@@ -38,6 +38,12 @@ public class LoanRecordDao {
 	@DateTimeFormat(style = "M-")
 	private Date duedate;
 	
+	@Temporal(TemporalType.DATE)
+	@DateTimeFormat(style = "M-")
+	private Date returned;
+	
 	private Integer schoolyear;
+	
+	private String teachername;
 
 }

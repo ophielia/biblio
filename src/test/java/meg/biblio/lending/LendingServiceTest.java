@@ -12,9 +12,7 @@ import meg.biblio.catalog.web.model.BookModel;
 import meg.biblio.common.ClientService;
 import meg.biblio.common.db.ClientRepository;
 import meg.biblio.common.db.dao.ClientDao;
-import meg.biblio.lending.db.LoanHistoryRepository;
 import meg.biblio.lending.db.LoanRecordRepository;
-import meg.biblio.lending.db.dao.LoanHistoryDao;
 import meg.biblio.lending.db.dao.LoanRecordDao;
 import meg.biblio.lending.db.dao.SchoolGroupDao;
 import meg.biblio.lending.db.dao.StudentDao;
@@ -54,8 +52,6 @@ public class LendingServiceTest {
 	ClientRepository clientRepo;
 	@Autowired
 	LoanRecordRepository lrRepo;
-	@Autowired
-	LoanHistoryRepository lhRepo;
 
 	Long bookid1;
 	Long bookid2;
@@ -199,16 +195,12 @@ public class LendingServiceTest {
 		// service call
 		lendingService.returnBookByBookid(newbook.getBookid(), clientid);
 
-		// ensure - loan record no longer exists
-		LoanRecordDao testnull = lrRepo.findOne(lr.getId());
-		Assert.assertNull(testnull);
-		// loanhistory record exists, with return date of today, studentid and
+		// ensure - loan record exists, with return date of today, studentid and
 		// bookid as in loan record
-		boolean found = false;
-		List<LoanHistoryDao> returned = lhRepo.findForClient(client);
-
+		LoanRecordDao returned = lrRepo.findOne(lr.getId());
+		
 		Assert.assertNotNull(returned);
-
+		Assert.assertNotNull(returned.getReturned());
 	}
 
 	@Test
@@ -218,7 +210,7 @@ public class LendingServiceTest {
 		LoanRecordDao lr = lendingService.checkoutBook(bookid1, student3id, clientid);
 		
 		// service call
-		LoanHistoryDao lh = lendingService.returnBook(lr.getId(), clientid);
+		LoanRecordDao lh = lendingService.returnBook(lr.getId(), clientid);
 
 		Assert.assertNotNull(lh);
 		Assert.assertEquals(student3id,lh.getBorrower().getId());

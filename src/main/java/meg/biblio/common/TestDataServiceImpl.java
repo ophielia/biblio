@@ -7,22 +7,17 @@ import java.util.List;
 
 import meg.biblio.catalog.CatalogService;
 import meg.biblio.catalog.db.dao.BookDao;
-import meg.biblio.common.db.AppSettingRepository;
-import meg.biblio.common.db.dao.AppSettingDao;
 import meg.biblio.common.db.dao.ClientDao;
 import meg.biblio.lending.ClassManagementService;
 import meg.biblio.lending.LendingSearchCriteria;
 import meg.biblio.lending.LendingSearchService;
 import meg.biblio.lending.LendingService;
-import meg.biblio.lending.db.LoanHistoryRepository;
 import meg.biblio.lending.db.LoanRecordRepository;
 import meg.biblio.lending.db.PersonRepository;
 import meg.biblio.lending.db.SchoolGroupRepository;
 import meg.biblio.lending.db.StudentRepository;
 import meg.biblio.lending.db.TeacherRepository;
-import meg.biblio.lending.db.dao.LoanHistoryDao;
 import meg.biblio.lending.db.dao.LoanRecordDao;
-import meg.biblio.lending.db.dao.PersonDao;
 import meg.biblio.lending.db.dao.SchoolGroupDao;
 import meg.biblio.lending.db.dao.StudentDao;
 import meg.biblio.lending.db.dao.TeacherDao;
@@ -55,8 +50,7 @@ public class TestDataServiceImpl implements TestDataService {
 	@Autowired
 	LendingSearchService lendingSearchService;		
 	
-	@Autowired
-	LoanHistoryRepository lhRepo;
+
 
 	@Autowired
 	LoanRecordRepository lrRepo;	
@@ -240,8 +234,8 @@ public class TestDataServiceImpl implements TestDataService {
 		}
 		
 		// delete from loan history
-		List<LoanHistoryDao> lhdelete =lhRepo.findForClient(client);
-		lhRepo.delete(lhdelete);
+		List<LoanRecordDao> lhdelete =lrRepo.findForClient(client);
+		lrRepo.delete(lhdelete);
 		
 		
 	}	
@@ -306,6 +300,7 @@ criteria.setStatus(CatalogService.Status.SHELVED);
 			LendingSearchCriteria lsc = new LendingSearchCriteria();
 			lsc.setSchoolgroup(cm.getClassid());
 			lsc.setCheckedouton(lastweekco);
+			lsc.setCheckedoutOnly(true);
 			List<LoanRecordDisplay> lrs = lendingSearchService.findLoanRecordsByCriteria(lsc, clientid);
 			
 			int i=0;

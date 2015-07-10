@@ -6,7 +6,6 @@ import java.util.List;
 import meg.biblio.common.report.ClassSummaryReport;
 import meg.biblio.common.report.DailySummaryReport;
 import meg.biblio.common.report.OverdueBookReport;
-import meg.biblio.lending.db.dao.LoanHistoryDao;
 import meg.biblio.lending.db.dao.LoanRecordDao;
 import meg.biblio.lending.web.model.LoanRecordDisplay;
 
@@ -14,9 +13,9 @@ public interface LendingService {
 
 	LoanRecordDao checkoutBook(Long bookid, Long borrowerid, Long clientid);
 
-	LoanHistoryDao returnBook(Long loanrecordid, Long clientid);
+	LoanRecordDao returnBook(Long loanrecordid, Long clientid);
 
-	LoanHistoryDao returnBookByBookid(Long bookid, Long clientid);
+	LoanRecordDao returnBookByBookid(Long bookid, Long clientid);
 	
 	List<LoanRecordDisplay> getCheckedOutBooksForClass(Long classid, Long clientid);
 

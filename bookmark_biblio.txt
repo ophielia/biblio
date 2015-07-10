@@ -1,30 +1,15 @@
-Branch - DEMO 1.0 - Demo1
-	DetailSearch rework
-	Client Editing
-	Bugfixes
-	Front End improvements
-	Better navigation
-		
-barcode reformat for cheap sheets
-
-begin moving online....	
-	branch to master
-	database to online
-		tables
-		reset sequence
-		table data - client, select keys, appsetting, classifier
-	code to online
+Branch - inventory
+	inventory
+	rework lending - lending search
+	
+	
+LendingSearchServiceImpl rework for LoanHistory removal	
+	begin at LendingSearchServiceImpl
+	
+	
+	
+	
  
- 
- 
-later - make shelfclass codes json smaller.... remove client
-later - chooseable formats - think - separate sheets, or from db, fed to sheet???(no - not now - maybe later...)
-later - assign code separate from save, and dependant upon client assign code type
-later - InternalSearch should allow multidetail results....
-later - note on display page - barcode assigned.
-eventually - will need to program for isbn codes - translate codes to hyphens.
-eventually - check scheduledFillInDetails... DetailSearch	
-eventually oh - big idea (next update) - assign code (old random code version - with barcode!!)
 
 
 
@@ -255,6 +240,14 @@ Features:
 
 
 
+later - make shelfclass codes json smaller.... remove client
+later - chooseable formats - think - separate sheets, or from db, fed to sheet???(no - not now - maybe later...)
+later - assign code separate from save, and dependant upon client assign code type
+later - InternalSearch should allow multidetail results....
+later - note on display page - barcode assigned.
+eventually - will need to program for isbn codes - translate codes to hyphens.
+eventually - check scheduledFillInDetails... DetailSearch	
+eventually oh - big idea (next update) - assign code (old random code version - with barcode!!)
 
 
 
