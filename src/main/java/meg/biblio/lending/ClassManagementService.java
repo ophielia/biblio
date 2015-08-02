@@ -22,7 +22,6 @@ public interface ClassManagementService {
 	
 	ClassModel createClassFromClassModel(ClassModel model, Long clientkey);
 
-	Integer getSchoolYearBeginForDate(Date time);
 
 	List<SchoolGroupDao> getClassesForClient(Long clientkey);
 

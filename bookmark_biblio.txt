@@ -3,12 +3,28 @@ Branch - inventory
 	rework lending - lending search
 	
 	
-LendingSearchServiceImpl rework for LoanHistory removal	
-	begin at LendingSearchServiceImpl
+done - LendingSearchServiceImpl rework for LoanHistory removal	
+done - begin at LendingSearchServiceImpl
+
+LoanHistoryController -
+	DateUtils - make method for first date in current school year
+	finish LendingSearchModel - add sort info
+	finish LendingSearchCriteria - processing inputs from model (select boxes to concrete dates, query parameters)
+	insert LSM into LoanHistoryController
 	
 	
+... make LoanRecordDisplay into a view - so we don't have to insert teacher info
+select r.*, b.clientbookid, bd.title, auth.firstname, auth.lastname , p.*
+from loanrecord r inner join book b on r.book = b.id 
+	inner join bookdetail bd on bd.id = b.bookdetail
+	inner join person p on p.id = r.borrower
+	left outer join book_author ba on ba.bookdetail_id = bd.id and authororder = 0 
+	left outer join artist auth on auth.id = ba.artist_id
+	left outer join artist auth on auth.id = ba.artist_id
+where r.client=68	
 	
-	
+ need view version of overdue which covers 2 cases - overdue when returned, overdue today
+ need to add Teacher / Student to LoanRecordDisplay view
  
 
 

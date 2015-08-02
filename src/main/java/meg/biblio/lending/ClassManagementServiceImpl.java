@@ -1,7 +1,6 @@
 package meg.biblio.lending;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -16,6 +15,7 @@ import meg.biblio.lending.db.dao.StudentDao;
 import meg.biblio.lending.db.dao.TeacherDao;
 import meg.biblio.lending.web.model.ClassModel;
 import meg.biblio.lending.web.model.TeacherInfo;
+import meg.tools.DateUtils;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -61,7 +61,7 @@ public class ClassManagementServiceImpl implements ClassManagementService {
 		sgroup.setTeacher(teacher);
 
 		// configure school year dates
-		Integer schoolbegin = getSchoolYearBeginForDate(new Date());
+		Integer schoolbegin = DateUtils.getSchoolYearBeginForDate(new Date());
 		sgroup.setSchoolyearbegin(schoolbegin);
 		sgroup.setSchoolyearend(schoolbegin + 1);
 
@@ -71,7 +71,7 @@ public class ClassManagementServiceImpl implements ClassManagementService {
 		// save class in teacher
 		teacher.setSchoolgroup(sgroup);
 		teacherRepo.save(teacher);
-		
+
 		// reload model
 		ClassModel newclass = loadClassModelById(sgroup.getId());
 		// return reloaded model
@@ -85,42 +85,18 @@ public class ClassManagementServiceImpl implements ClassManagementService {
 
 		if (schoolgroup != null) {
 			// get active student list
-			List<StudentDao> students = getStudentsForClass(schoolgroup,schoolgroup.getClient());
+			List<StudentDao> students = getStudentsForClass(schoolgroup,
+					schoolgroup.getClient());
 			schoolgroup.setStudents(students);
-			List<TeacherDao> teachers = teacherRepo.findActiveTeachersForClientAndClass(schoolgroup.getClient(), schoolgroup);
+			List<TeacherDao> teachers = teacherRepo
+					.findActiveTeachersForClientAndClass(
+							schoolgroup.getClient(), schoolgroup);
 			schoolgroup.setTeacherlist(teachers);
 		}
 
 		ClassModel loadclass = new ClassModel(schoolgroup);
 		// set in model
 		return loadclass;
-	}
-
-	/**
-	 * Returns the beginning of the schoolyear according to date - for example,
-	 * if called in september 1989, the school year will be 1989/1990. If called
-	 * in march 2000, it will also be be 1999/2000. But in august 2000, it will
-	 * be 2000/2001. Any date before July will be classified as the current
-	 * school year. Anything after July will be classified as the next school
-	 * year.
-	 */
-	@Override
-	public Integer getSchoolYearBeginForDate(Date currentdate) {
-		// make calendar
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(currentdate);
-		// get month, year
-		int currentmonth = cal.get(Calendar.MONTH);
-		int currentyear = cal.get(Calendar.YEAR);
-		// if month between January and June, the begin year is the previous
-		// year
-		if (currentmonth < Calendar.JULY) {
-			return new Integer(currentyear - 1);
-		} else {
-			// if month after June, the begin year is the current
-			return new Integer(currentyear);
-		}
-
 	}
 
 	@Override
@@ -194,8 +170,7 @@ public class ClassManagementServiceImpl implements ClassManagementService {
 				sgroupRepo.save(schoolgroup);
 
 				// reload classlist, and return
-				ClassModel model = loadClassModelById(schoolgroup
-						.getId());
+				ClassModel model = loadClassModelById(schoolgroup.getId());
 				return model;
 			}
 		}
@@ -269,15 +244,17 @@ public class ClassManagementServiceImpl implements ClassManagementService {
 	@Override
 	public List<SchoolGroupDao> getClassesForClient(Long clientkey) {
 		ClientDao client = clientService.getClientForKey(clientkey);
-	
-		List<SchoolGroupDao> classes =  sgroupRepo.findSchoolGroupsByClient(client, new Sort("id"));
-		
-		for (SchoolGroupDao sclass:classes) {
-			List<TeacherDao> teachers = teacherRepo.findActiveTeachersForClientAndClass(client,sclass);
+
+		List<SchoolGroupDao> classes = sgroupRepo.findSchoolGroupsByClient(
+				client, new Sort("id"));
+
+		for (SchoolGroupDao sclass : classes) {
+			List<TeacherDao> teachers = teacherRepo
+					.findActiveTeachersForClientAndClass(client, sclass);
 			sclass.setTeacherlist(teachers);
-			List<StudentDao> students = getStudentsForClass(sclass,client);
+			List<StudentDao> students = getStudentsForClass(sclass, client);
 			sclass.setStudents(students);
-			
+
 		}
 		return classes;
 	}
@@ -285,16 +262,18 @@ public class ClassManagementServiceImpl implements ClassManagementService {
 	@Override
 	public SchoolGroupDao getClassForClient(Long classid, Long clientid) {
 		ClientDao client = clientService.getClientForKey(clientid);
-		
+
 		SchoolGroupDao sclass = sgroupRepo.findOne(classid);
-		if (sclass.getClient()==null || sclass.getClient().getId()!=clientid) {
-			return null;	
+		if (sclass.getClient() == null
+				|| sclass.getClient().getId() != clientid) {
+			return null;
 		}
-		List<TeacherDao> teachers = teacherRepo.findActiveTeachersForClientAndClass(client,sclass);
+		List<TeacherDao> teachers = teacherRepo
+				.findActiveTeachersForClientAndClass(client, sclass);
 		sclass.setTeacherlist(teachers);
-		List<StudentDao> students = getStudentsForClass(sclass,client);
+		List<StudentDao> students = getStudentsForClass(sclass, client);
 		sclass.setStudents(students);
-		
+
 		return sclass;
 	}
 
@@ -302,7 +281,9 @@ public class ClassManagementServiceImpl implements ClassManagementService {
 	public List<StudentDao> getUnassignedStudents(Long clientid) {
 		ClientDao client = clientService.getClientForKey(clientid);
 
-		List<StudentDao> unassigned = studentRepo.findActiveUnassignedStudents(client, new Sort(Sort.Direction.ASC, "sectionkey").and(new Sort(Sort.Direction.ASC, "firstname")));
+		List<StudentDao> unassigned = studentRepo.findActiveUnassignedStudents(
+				client, new Sort(Sort.Direction.ASC, "sectionkey")
+						.and(new Sort(Sort.Direction.ASC, "firstname")));
 
 		return unassigned;
 	}
@@ -322,7 +303,7 @@ public class ClassManagementServiceImpl implements ClassManagementService {
 		// get class
 		SchoolGroupDao sgroup = sgroupRepo.findOne(classid);
 		if (sgroup != null) {
-			if (sgroup.getClient().getId().longValue()==clientid.longValue()) {
+			if (sgroup.getClient().getId().longValue() == clientid.longValue()) {
 				// set client to null
 				sgroup.setClient(null);
 				// delete teacher - set null in class
@@ -330,80 +311,80 @@ public class ClassManagementServiceImpl implements ClassManagementService {
 				teacher.setClient(null);
 				teacher.setActive(false);
 				sgroup.setTeacher(null);
-				
+
 				// unassign students - set null in class
 				List<StudentDao> students = sgroup.getStudents();
 				for (StudentDao student : students) {
 					student.setSchoolgroup(null);
 				}
 				sgroup.setStudents(null);
-				
+
 				// save class and students
 				sgroupRepo.save(sgroup);
 				teacherRepo.save(teacher);
-				for (StudentDao student:students) {
-					studentRepo.saveAndFlush(student);	
+				for (StudentDao student : students) {
+					studentRepo.saveAndFlush(student);
 				}
-				
-				
+
 				// delete class and teacher
 				sgroupRepo.delete(sgroup);
 			}
 		}
 	}
-	
+
 	@Override
 	public void moveAllStudentsToNextSection(Long clientid) {
 		ClientDao client = clientService.getClientForKey(clientid);
 		// get active students for client
-		List<StudentDao> activestudents = studentRepo.findActiveStudentsForClient(client);
+		List<StudentDao> activestudents = studentRepo
+				.findActiveStudentsForClient(client);
 		// increment all section keys by 1
-		for (StudentDao student:activestudents) {
-			student.setSectionkey(student.getSectionkey()+1);
-			// save active students			
+		for (StudentDao student : activestudents) {
+			student.setSectionkey(student.getSectionkey() + 1);
+			// save active students
 			studentRepo.saveAndFlush(student);
 		}
-		
+
 		// update school year in classes for client
-		Integer newbegin = getSchoolYearBeginForDate(new Date());
+		Integer newbegin = DateUtils.getSchoolYearBeginForDate(new Date());
 		List<SchoolGroupDao> classes = getClassesForClient(clientid);
-		for (SchoolGroupDao clientclass:classes) {
+		for (SchoolGroupDao clientclass : classes) {
 			clientclass.setSchoolyearbegin(newbegin);
-			clientclass.setSchoolyearend(newbegin+1);
+			clientclass.setSchoolyearend(newbegin + 1);
 			sgroupRepo.saveAndFlush(clientclass);
 		}
 	}
-	
+
 	@Override
 	public void clearStudentListsForClient(Long clientid) {
 		ClientDao client = clientService.getClientForKey(clientid);
 		// clear students from class side first
 		List<SchoolGroupDao> classes = getClassesForClient(clientid);
-		for (SchoolGroupDao clientclass:classes) {
+		for (SchoolGroupDao clientclass : classes) {
 			clientclass.setStudents(null);
 			sgroupRepo.save(clientclass);
 		}
-		
-		
+
 		// get active students for client
-		List<StudentDao> activestudents = studentRepo.findActiveStudentsForClient(client);
+		List<StudentDao> activestudents = studentRepo
+				.findActiveStudentsForClient(client);
 		// for each active student - set schoolgroup to null, save schoolgroup
-		for (StudentDao student:activestudents) {
+		for (StudentDao student : activestudents) {
 			student.setSchoolgroup(null);
 			studentRepo.saveAndFlush(student);
 		}
 	}
-	
+
 	@Override
-	public void setStudentsAsInactive(List<Long> inactivelist,Long clientid) {
+	public void setStudentsAsInactive(List<Long> inactivelist, Long clientid) {
 		ClientDao client = clientService.getClientForKey(clientid);
 		// get Students for ids
 		List<StudentDao> toupdate = studentRepo.findAll(inactivelist);
-		// go through all students - 
-		for (StudentDao upd:toupdate) {
+		// go through all students -
+		for (StudentDao upd : toupdate) {
 			// ensure client id matches
 			Long studentclient = upd.getClient().getId();
-			if (studentclient.longValue()==clientid.longValue()) {
+			if (studentclient.longValue() == clientid.longValue()) {
 				// setting active to false, and saving students
 				upd.setActive(false);
 				studentRepo.saveAndFlush(upd);
@@ -415,56 +396,54 @@ public class ClassManagementServiceImpl implements ClassManagementService {
 	public List<StudentDao> getStudentsForClass(Long classid, Long clientid) {
 		// get client id
 		ClientDao client = clientService.getClientForKey(clientid);
-		
+
 		// get sgroupid
 		SchoolGroupDao sgroup = sgroupRepo.findOne(classid);
-		
+
 		if (sgroup.getClient().getId().longValue() == clientid.longValue()) {
-			// get students			
-			List<StudentDao> students = getStudentsForClass(sgroup,client);
-					return students;
+			// get students
+			List<StudentDao> students = getStudentsForClass(sgroup, client);
+			return students;
 		}
 
-		
 		// return students
 		return new ArrayList<StudentDao>();
 	}
 
-
 	@Override
-	public HashMap<Long,TeacherInfo> getTeacherByClassForClient(Long clientid) {
+	public HashMap<Long, TeacherInfo> getTeacherByClassForClient(Long clientid) {
 		// get Client
 		ClientDao client = clientService.getClientForKey(clientid);
 		// make result hash
-		 HashMap<Long, TeacherInfo> info = new  HashMap<Long, TeacherInfo>();
-		 
-		 // get teachers
-		 List<TeacherDao> teachers = teacherRepo.findActiveTeachersForClient(client);
-		 
-		 // put into hash
-		 for (TeacherDao teacher:teachers) {
-			 // key is schoolgroupid, value is teacher object
-			 Long schoolgroupid = teacher.getSchoolgroup().getId();
-			 TeacherInfo tinfo = new TeacherInfo(teacher);
-			 info.put(schoolgroupid,tinfo);
-		 }
+		HashMap<Long, TeacherInfo> info = new HashMap<Long, TeacherInfo>();
+
+		// get teachers
+		List<TeacherDao> teachers = teacherRepo
+				.findActiveTeachersForClient(client);
+
+		// put into hash
+		for (TeacherDao teacher : teachers) {
+			// key is schoolgroupid, value is teacher object
+			Long schoolgroupid = teacher.getSchoolgroup().getId();
+			TeacherInfo tinfo = new TeacherInfo(teacher);
+			info.put(schoolgroupid, tinfo);
+		}
 		return info;
 	}
-	
 
-	
-	
-	
-	private List<StudentDao> getStudentsForClass(SchoolGroupDao sgroup,ClientDao client) {
-		if (sgroup.getClient().getId().longValue() == client.getId().longValue()) {
-			// get students			
-			List<StudentDao> students = studentRepo.findActiveStudentsForClass(sgroup, client, new Sort(Sort.Direction.ASC, "sectionkey").and(new Sort(Sort.Direction.ASC, "firstname")));
-					return students;
+	private List<StudentDao> getStudentsForClass(SchoolGroupDao sgroup,
+			ClientDao client) {
+		if (sgroup.getClient().getId().longValue() == client.getId()
+				.longValue()) {
+			// get students
+			List<StudentDao> students = studentRepo.findActiveStudentsForClass(
+					sgroup, client, new Sort(Sort.Direction.ASC, "sectionkey")
+							.and(new Sort(Sort.Direction.ASC, "firstname")));
+			return students;
 		}
 
-		
 		// return students
-		return new ArrayList<StudentDao>();		
+		return new ArrayList<StudentDao>();
 	}
-	
+
 }

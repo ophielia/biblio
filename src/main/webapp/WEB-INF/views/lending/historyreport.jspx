@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page" 
+xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" 
+xmlns:c="http://java.sun.com/jsp/jstl/core" 
+xmlns:spring="http://www.springframework.org/tags" 
+xmlns:form="http://www.springframework.org/tags/form" 
+xmlns:fmt="http://java.sun.com/jsp/jstl/fmt" 
+xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+ 
+<link rel="stylesheet" href="${imagebasedir}/resources/mydojo/widget/css/ShelfClassWidget.css" media="screen"></link>
+<link rel="stylesheet" href="${imagebasedir}/resources/mydojo/widget/css/ShelfClassSelectWidget.css" media="screen"></link>
+    <spring:message code="menu_adminsearch" var="searchtitle"/>
+    <h1>${searchtitle}</h1>
+
+<spring:message code="label_book_searchkeyword" htmlEscape="false" var="lkeyword"/>    
+<spring:message code="label_book_title" htmlEscape="false" var="ltitle"/>    
+<spring:message code="label_book_author" htmlEscape="false" var="lauthor"/>    
+<spring:message code="label_book_illustrator" htmlEscape="false" var="lillustrator"/>    
+<spring:message code="label_book_publisher" htmlEscape="false" var="lpublisher"/>    
+<spring:message code="action_updateclass" htmlEscape="false" var="lscupdate"/>    
+<spring:message code="action_updatestatus" htmlEscape="false" var="lupdstatus"/>    
+<spring:message code="select_emptyoption" htmlEscape="false" var="lemptyselect"/>
+<spring:message code="label_book_clientbookid" htmlEscape="false" var="lclientbookid"/>    
+<spring:message code="label_book_classification" htmlEscape="false" var="lshelfclass"/>    
+<spring:message code="label_book_status" htmlEscape="false" var="lstatus"/>    
+<spring:message code="label_book_detailstatus" htmlEscape="false" var="ldetailstatus"/>    
+<spring:message code="label_book_btype" htmlEscape="false" var="lbooktype"/>    
+<spring:message code="label_book_information" htmlEscape="false" var="linfo"/>    
+<spring:message code="entity_edit" htmlEscape="false" var="ledit"/>    
+<spring:message code="select_emptyoption" htmlEscape="false" var="lemptyoption"/>    
+<spring:message code="field_invalid" arguments="${lstatus}" htmlEscape="false" var="missingstatus"/>    
+<spring:message code="field_invalid" arguments="${lshelfclass}" htmlEscape="false" var="missingshelfclass"/> 
+
+<spring:message code="button_sortby" htmlEscape="false" var="lsortby"/>    
+
+<spring:url value="/lendinghistory" var="actionurl"/>
+
+
+<form:form action="${actionurl}" id="resultlist" method="POST" modelAttribute="lendingSearchModel">
+
+		<table class="clear">
+			<tbody>
+				<tr>
+					<td>class</td>
+					<td>time</td>
+					<td>lendingtype</td>
+				</tr>
+				<tr>
+					<td><form:select path="classselect">
+							<c:forEach items="${classselect}" var="tmp">
+								<form:option value="${tmp.key}" label="${tmp.value}" />
+							</c:forEach>
+						</form:select></td>
+					
+					<td><form:select path="timeselect">
+							<c:forEach items="${timeperiods}" var="tmp">
+								<form:option value="${tmp.key}" label="${tmp.value}" />
+							</c:forEach>
+						</form:select></td>
+					<td><form:select path="lendtypeselect">
+							<c:forEach items="${lendtypeselect}" var="tmp">
+								<form:option value="${tmp.key}" label="${tmp.value}" />
+							</c:forEach>
+						</form:select></td>
+				</tr>
+			</tbody>
+		</table>
+		<spring:message code="button_search" htmlEscape="false" var="search_button"/>
+        <input class="linkbutton" id="searchbutton" type="submit" value="${search_button}"/>
+       <br />
+<hr />
+<br />
+
+		<TABLE>
+		<thead>		
+		
+		
+				<tr >
+			<th>Class</th>
+			<th>Student</th>
+			<th>Title / Author</th>
+			<th>Checked Out</th>
+			<th>Due Date</th>
+			<th>Returned</th>
+		</tr>	 			
+		</thead>
+		<tbody>
+		
+ <c:forEach var="histRec" items="${historyRecords}" varStatus="bookstatus">
+					<tr>
+			<td>${histRec.teacherfirstname }</td>
+			<td>${histRec.borrowerfn }</td>
+			<td>${histRec.booktitle }<br></br>${histRec.author }</td>
+			<td>${histRec.checkedout }</td>
+			<td>${histRec.duedate }</td>
+			<td>${histRec.returned }</td>
+					</tr>
+				</c:forEach>		
+		</tbody>
+		</TABLE>        
+</form:form>
+
+</div>

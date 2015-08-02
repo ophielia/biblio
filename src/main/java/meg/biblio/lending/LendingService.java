@@ -36,5 +36,8 @@ public interface LendingService {
 	DailySummaryReport assembleDailySummaryReport(Date date,
 			Long clientid, Boolean includeEmpties);
 
+	List<LoanRecordDisplay> searchLendingHistory(
+			LendingSearchCriteria criteria, Long clientid);
+
 	
 }

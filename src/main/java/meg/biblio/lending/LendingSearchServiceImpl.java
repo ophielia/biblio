@@ -6,21 +6,15 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Tuple;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Expression;
-import javax.persistence.criteria.Join;
 import javax.persistence.criteria.ParameterExpression;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import meg.biblio.catalog.CatalogService;
-import meg.biblio.catalog.db.dao.BookDao;
-import meg.biblio.lending.db.dao.LoanRecordDao;
-import meg.biblio.lending.db.dao.PersonDao;
-import meg.biblio.lending.db.dao.SchoolGroupDao;
 import meg.biblio.lending.web.model.LoanRecordDisplay;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,44 +37,28 @@ public class LendingSearchServiceImpl implements LendingSearchService {
 
 		// put together joins
 		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<Tuple> c = cb.createTupleQuery();
+		CriteriaQuery c = cb.createQuery(LoanRecordDisplay.class);
 		// CriteriaQuery<LoanRecordDisplay> c =
 		// cb.createQuery(LoanRecordDisplay.class);
-		Root<LoanRecordDao> loanrec = c.from(LoanRecordDao.class);
-		Join<LoanRecordDao, BookDao> book = loanrec.join("book");
-		Join<LoanRecordDao, PersonDao> person = loanrec.join("borrower");
-		Join<PersonDao, SchoolGroupDao> sgroup = person.join("schoolgroup");
+		Root<LoanRecordDisplay> loanrec = c.from(LoanRecordDisplay.class);
 
 		// build select clause
-		c.select(cb.tuple(book, person, loanrec, sgroup.<Long> get("id")));
+		c.select(loanrec);
 
 		// add predicate
-		List<Predicate> whereclause = getPredicatesForCriteria(criteria, cb,
-				book, person, sgroup, loanrec);
+		List<Predicate> whereclause = getPredicatesForCriteria(criteria, cb,loanrec);
 
 		// putting where clause together
 		c.where(cb.and(whereclause.toArray(new Predicate[whereclause.size()])));
 
 		// creating query
-		TypedQuery<Tuple> q = em.createQuery(c);
+		TypedQuery<LoanRecordDisplay> q = em.createQuery(c);
 
 		// adding parameters
 		setParametersInQuery(criteria, q, clientid);
 
 		// running query
-		List<Tuple> results = q.getResultList();
-		List<LoanRecordDisplay> toreturn = new ArrayList<LoanRecordDisplay>();
-
-		for (Tuple t : results) {
-			// LoanRecordDisplay result = (LoanRecordDisplay) t.get(0);
-			BookDao bookres = (BookDao) t.get(0);
-			PersonDao personres = (PersonDao) t.get(1);
-			LoanRecordDao lrec = (LoanRecordDao) t.get(2);
-			Long classid = (Long) t.get(3);
-			LoanRecordDisplay display = new LoanRecordDisplay(lrec, personres,
-					bookres, classid);
-			toreturn.add(display);
-		}
+		List<LoanRecordDisplay> toreturn = q.getResultList();
 
 		return toreturn;
 
@@ -89,8 +67,8 @@ public class LendingSearchServiceImpl implements LendingSearchService {
 
 
 	private List<Predicate> getPredicatesForCriteria(
-			LendingSearchCriteria criteria, CriteriaBuilder cb, Join book,
-			Join person, Join sgroup, Root loanrec) {
+			LendingSearchCriteria criteria, CriteriaBuilder cb,
+			Root<LoanRecordDisplay> loanrec) {
 		// put together where clause
 		List<Predicate> whereclause = new ArrayList<Predicate>();
 
@@ -98,14 +76,14 @@ public class LendingSearchServiceImpl implements LendingSearchService {
 		// always add client id
 		ParameterExpression<Long> clientparam = cb.parameter(Long.class,
 				"clientid");
-		whereclause.add(cb.equal(person.<Long> get("client").get("id"), clientparam));
+		whereclause.add(cb.equal(loanrec.<Long> get("clientid"), clientparam));
 
 		// do checkedouton
 		if (criteria.getCheckedouton() != null) {
 				ParameterExpression<Date> param = cb.parameter(Date.class,
 						"checkoutdate");
 				whereclause.add(cb.equal(
-						loanrec.<Date> get("checkoutdate"), param));
+						loanrec.<Date> get("checkedout"), param));
 			
 		}
 
@@ -122,7 +100,7 @@ public class LendingSearchServiceImpl implements LendingSearchService {
 			ParameterExpression<Long> param = cb.parameter(Long.class,
 					"schoolgroupid");
 			whereclause.add(cb.equal(
-					person.<Long> get("schoolgroup").get("id"), param));
+					loanrec.<Long> get("classid"), param));
 		}
 
 		// do borrowerid
@@ -130,7 +108,7 @@ public class LendingSearchServiceImpl implements LendingSearchService {
 			ParameterExpression<Long> param = cb.parameter(Long.class,
 					"borrowerid");
 			whereclause.add(cb.equal(
-					person.<Long>get("id"), param));
+					loanrec.<Long>get("borrowerid"), param));
 		}
 
 		// do bookid
@@ -138,7 +116,7 @@ public class LendingSearchServiceImpl implements LendingSearchService {
 			ParameterExpression<Long> param = cb.parameter(Long.class,
 					"bookid");
 			whereclause.add(cb.equal(
-					book.<Long>get("id"), param));
+					loanrec.<Long>get("bookid"), param));
 		}
 
 		// to lentto
@@ -150,9 +128,8 @@ public class LendingSearchServiceImpl implements LendingSearchService {
 				comparison = "StudentDao";
 			}
 			if (comparison.length() > 0) {
-				whereclause.add(cb.equal(person.<String> get("psn_type"),
+				whereclause.add(cb.notEqual(loanrec.<String> get("borrowerfn"),
 						comparison));
-
 			}
 		}
 
@@ -171,7 +148,9 @@ public class LendingSearchServiceImpl implements LendingSearchService {
 				whereclause.add(cb.isNull(loanrec.<Date> get("returned")));
 		}		
 		return whereclause;
+
 	}
+
 
 	private void setParametersInQuery(LendingSearchCriteria criteria,
 			TypedQuery q, Long clientid) {

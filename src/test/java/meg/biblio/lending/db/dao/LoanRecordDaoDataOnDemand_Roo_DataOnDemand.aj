@@ -48,7 +48,7 @@ privileged aspect LoanRecordDaoDataOnDemand_Roo_DataOnDemand {
         setDuedate(obj, index);
         setReturned(obj, index);
         setSchoolyear(obj, index);
-        setTeachername(obj, index);
+        setTeacherid(obj, index);
         return obj;
     }
     
@@ -72,9 +72,9 @@ privileged aspect LoanRecordDaoDataOnDemand_Roo_DataOnDemand {
         obj.setSchoolyear(schoolyear);
     }
     
-    public void LoanRecordDaoDataOnDemand.setTeachername(LoanRecordDao obj, int index) {
-        String teachername = "teachername_" + index;
-        obj.setTeachername(teachername);
+    public void LoanRecordDaoDataOnDemand.setTeacherid(LoanRecordDao obj, int index) {
+        Long teacherid = new Integer(index).longValue();
+        obj.setTeacherid(teacherid);
     }
     
     public LoanRecordDao LoanRecordDaoDataOnDemand.getSpecificLoanRecordDao(int index) {

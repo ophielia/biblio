@@ -15,6 +15,7 @@ import meg.biblio.lending.db.dao.StudentDao;
 import meg.biblio.lending.db.dao.TeacherDao;
 import meg.biblio.lending.web.model.ClassModel;
 import meg.biblio.lending.web.model.TeacherInfo;
+import meg.tools.DateUtils;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -183,41 +184,7 @@ public class ClassManagementServiceTest {
 
 	}
 
-	@Test
-	public void tempTextGetSchoolYearBegin() {
-		// this test is only for development, because it will be private in the
-		// end service
-		// marked as public for test only
 
-		// Calendar for tests
-		Calendar cal = Calendar.getInstance();
-
-		// test for september 1970 - result should be 1970
-		cal.set(Calendar.YEAR, 1970);
-		cal.set(Calendar.MONTH, Calendar.SEPTEMBER);
-		Integer beginyear = classService.getSchoolYearBeginForDate(cal
-				.getTime());
-		Assert.assertEquals(new Integer(1970), beginyear);
-
-		// test for december 1970 - result should be 1970
-		cal.set(Calendar.YEAR, 1970);
-		cal.set(Calendar.MONTH, Calendar.DECEMBER);
-		beginyear = classService.getSchoolYearBeginForDate(cal.getTime());
-		Assert.assertEquals(new Integer(1970), beginyear);
-
-		// test for july 1970 - result should be 1970
-		cal.set(Calendar.YEAR, 1970);
-		cal.set(Calendar.MONTH, Calendar.JULY);
-		beginyear = classService.getSchoolYearBeginForDate(cal.getTime());
-		Assert.assertEquals(new Integer(1970), beginyear);
-
-		// test for july 1970 - result should be 1969
-		cal.set(Calendar.YEAR, 1970);
-		cal.set(Calendar.MONTH, Calendar.MARCH);
-		beginyear = classService.getSchoolYearBeginForDate(cal.getTime());
-		Assert.assertEquals(new Integer(1969), beginyear);
-
-	}
 
 	@Test
 	public void testEditStudent() {

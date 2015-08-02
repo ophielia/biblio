@@ -9,6 +9,9 @@
         <put-attribute name="body" value="/WEB-INF/views/lending/checkout.jspx"/>
     </definition>    
 
+    <definition extends="default" name="lending/history">
+        <put-attribute name="body" value="/WEB-INF/views/lending/historyreport.jspx"/>
+    </definition>   
     
        <definition extends="default" name="lending/selectbook">
         <put-attribute name="body" value="/WEB-INF/views/lending/selectbook.jspx"/>

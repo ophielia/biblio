@@ -43,7 +43,6 @@ public class LoanRecordDao {
 	private Date returned;
 	
 	private Integer schoolyear;
-	
-	private String teachername;
 
+	private Long teacherid;
 }

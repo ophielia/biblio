@@ -1,0 +1,45 @@
+/**  lending key **/
+insert into select_key (id, lookup,version) values (nextval('hibernate_sequence'),'lendtypeselect',0);
+
+insert into select_value (id, display,disporder,value,active,languagekey,version,keyid) values (nextval('hibernate_sequence'),'All',1,'1',true,'en',0,(select id from select_key where lookup='lendtypeselect'));
+insert into select_value (id, display,disporder,value,active,languagekey,version,keyid) values (nextval('hibernate_sequence'),'Checked out',2,'2',true,'en',0,(select id from select_key where lookup='lendtypeselect'));
+insert into select_value (id, display,disporder,value,active,languagekey,version,keyid) values (nextval('hibernate_sequence'),'Overdue',3,'3',true,'en',0,(select id from select_key where lookup='lendtypeselect'));
+
+insert into select_value (id, display,disporder,value,active,languagekey,version,keyid) values (nextval('hibernate_sequence'),'Toutes',1,'1',true,'fr',0,(select id from select_key where lookup='lendtypeselect'));
+insert into select_value (id, display,disporder,value,active,languagekey,version,keyid) values (nextval('hibernate_sequence'),'Emprunté',2,'2',true,'fr',0,(select id from select_key where lookup='lendtypeselect'));
+insert into select_value (id, display,disporder,value,active,languagekey,version,keyid) values (nextval('hibernate_sequence'),'En retard',3,'3',true,'fr',0,(select id from select_key where lookup='lendtypeselect'));
+
+
+/** class select */
+insert into select_key (id, lookup,version) values (nextval('hibernate_sequence'),'classselect',0);
+
+insert into select_value (id, display,disporder,value,active,languagekey,version,keyid) values (nextval('hibernate_sequence'),'All',1,'1',true,'en',0,(select id from select_key where lookup='classselect'));
+insert into select_value (id, display,disporder,value,active,languagekey,version,keyid) values (nextval('hibernate_sequence'),'Toutes',1,'1',true,'fr',0,(select id from select_key where lookup='classselect'));
+
+
+/** time period select */
+insert into select_key (id, lookup,version) values (nextval('hibernate_sequence'),'timeperiodselect',0);
+
+insert into select_value (id, display,disporder,value,active,languagekey,version,keyid) values (nextval('hibernate_sequence'),'This Week',1,'1',true,'en',0,(select id from select_key where lookup='timeperiodselect'));
+insert into select_value (id, display,disporder,value,active,languagekey,version,keyid) values (nextval('hibernate_sequence'),'This Month',2,'2',true,'en',0,(select id from select_key where lookup='timeperiodselect'));
+insert into select_value (id, display,disporder,value,active,languagekey,version,keyid) values (nextval('hibernate_sequence'),'Last Three Months',3,'3',true,'en',0,(select id from select_key where lookup='timeperiodselect'));
+insert into select_value (id, display,disporder,value,active,languagekey,version,keyid) values (nextval('hibernate_sequence'),'School Year',4,'4',true,'en',0,(select id from select_key where lookup='timeperiodselect'));
+insert into select_value (id, display,disporder,value,active,languagekey,version,keyid) values (nextval('hibernate_sequence'),'All',5,'5',true,'en',0,(select id from select_key where lookup='timeperiodselect'));
+
+insert into select_value (id, display,disporder,value,active,languagekey,version,keyid) values (nextval('hibernate_sequence'),'cette semaine',1,'1',true,'fr',0,(select id from select_key where lookup='timeperiodselect'));
+insert into select_value (id, display,disporder,value,active,languagekey,version,keyid) values (nextval('hibernate_sequence'),'ce mois',2,'2',true,'fr',0,(select id from select_key where lookup='timeperiodselect'));
+insert into select_value (id, display,disporder,value,active,languagekey,version,keyid) values (nextval('hibernate_sequence'),'trois derniers mois',3,'3',true,'fr',0,(select id from select_key where lookup='timeperiodselect'));
+insert into select_value (id, display,disporder,value,active,languagekey,version,keyid) values (nextval('hibernate_sequence'),'année Scolaire',4,'4',true,'fr',0,(select id from select_key where lookup='timeperiodselect'));
+insert into select_value (id, display,disporder,value,active,languagekey,version,keyid) values (nextval('hibernate_sequence'),'tous',5,'5',true,'fr',0,(select id from select_key where lookup='timeperiodselect'));
+
+/** new view **/
+select r.id as id, r.id as loanrecordid,r.borrower as borrowerid, r.client as clientid,r.book as bookid, 
+p.schoolgroup as classid, p.firstname as borrowerfn, p.lastname as borrowerln,bd.title as booktitle,b.clientbookid as bookclientid,
+concat(concat(auth.firstname ,' '), auth.lastname )  as author,b.clientshelfcode as shelfclass,
+r.checkoutdate as checkedout , r.returned as returned,r.duedate as duedate,  tch.firstname as teacherfirstname, tch.lastname as teacherlastname
+from loanrecord r inner join book b on r.book = b.id 
+	inner join bookdetail bd on bd.id = b.bookdetail
+	inner join person p on p.id = r.borrower
+	left outer join person tch on r.teacherid = tch.schoolgroup and tch.psn_type='TeacherDao' 
+	left outer join book_author ba on ba.bookdetail_id = bd.id and authororder = 0 
+	left outer join artist auth on auth.id = ba.artist_id

@@ -71,6 +71,7 @@ public class LendingServiceImpl implements LendingService {
 		Integer schoolyear = 0;
 		boolean isteacher = true;
 		String teachername = null;
+		Long teacherid = null;
 		if (person instanceof StudentDao) {
 			isteacher = false;
 			StudentDao st = (StudentDao) person;
@@ -78,15 +79,13 @@ public class LendingServiceImpl implements LendingService {
 			schoolyear = sg.getSchoolyearbegin();
 			TeacherDao tch = sg.getTeacher();
 			if (tch!=null ) {
-				if (tch.getFulldisplayname()!=null) {
-					teachername = tch.getFulldisplayname();
-				}
+				teacherid =tch.getId();
 			}
 		} else if (person instanceof TeacherDao) {
 			TeacherDao st = (TeacherDao) person;
 			SchoolGroupDao sg = st.getSchoolgroup();
 			schoolyear = sg.getSchoolyearbegin();
-			teachername = st.getFulldisplayname();
+			teacherid = person.getId();
 		}
 
 		// make new loan record
@@ -96,7 +95,7 @@ public class LendingServiceImpl implements LendingService {
 		loanrec.setBook(book);
 		loanrec.setClient(client);
 		loanrec.setSchoolyear(schoolyear);
-		loanrec.setTeachername(teachername);
+		loanrec.setTeacherid(teacherid);
 		
 		// insert dates - checkedout and due
 		Integer checkoutdays = isteacher ? client.getTeachercheckouttime()
@@ -220,15 +219,21 @@ public class LendingServiceImpl implements LendingService {
 		obr.setClientname(client.getName());
 
 		List<LoanRecordDisplay> overdue = getOverdueBooksForClient(clientid);
-		// fill in teacherinfo
-		HashMap<Long, TeacherInfo> teacherInfo = classService
-				.getTeacherByClassForClient(client.getId());
-		for (LoanRecordDisplay lr : overdue) {
-			lr.setTeacherInfo(teacherInfo);
-		}
+		
 		obr.setBooklist(overdue);
 
 		return obr;
+	}
+	
+	@Override
+	public List<LoanRecordDisplay> searchLendingHistory(LendingSearchCriteria criteria, Long clientid) {
+		if (criteria!=null) {
+			List<LoanRecordDisplay> checkedout = lendingSearch
+					.findLoanRecordsByCriteria(criteria, clientid);
+			return checkedout;
+		}
+		return null;
+	
 	}
 
 	@Override
@@ -263,12 +268,6 @@ public class LendingServiceImpl implements LendingService {
 		criteria.setCheckedoutOnly(true);
 		List<LoanRecordDisplay> overdue = lendingSearch
 				.findLoanRecordsByCriteria(criteria, clientid);
-		// fill in teacherinfo
-		HashMap<Long, TeacherInfo> teacherInfo = classService
-				.getTeacherByClassForClient(client.getId());
-		for (LoanRecordDisplay lr : overdue) {
-			lr.setTeacherInfo(teacherInfo);
-		}
 		summaryreport.setOverduelist(overdue);
 
 		// returned on date

@@ -1,135 +1,142 @@
 package meg.biblio.lending.web.model;
 
 import java.util.Date;
-import java.util.HashMap;
 
+import javax.persistence.Entity;
+import javax.persistence.EntityResult;
+import javax.persistence.FieldResult;
+import javax.persistence.Id;
+import javax.persistence.SqlResultSetMapping;
+import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
-import meg.biblio.catalog.db.dao.BookDao;
-import meg.biblio.lending.db.dao.LoanRecordDao;
-import meg.biblio.lending.db.dao.PersonDao;
-
 @XmlRootElement(name = "LoanRecord")
+@Entity
+@Table(name = "loanrecorddisplay")
+@SqlResultSetMapping(name = "LRDisp", entities = { 
+		@EntityResult(entityClass = meg.biblio.lending.web.model.LoanRecordDisplay.class, fields = {
+		@FieldResult(name = "loanrecordid", column = "loanrecordid"),
+		@FieldResult(name = "bookid", column = "bookid"),
+		@FieldResult(name = "classid", column = "classid"),
+		@FieldResult(name = "clientid", column = "clientid"),
+		@FieldResult(name = "borrowerid", column = "borrowerid"),
+		@FieldResult(name = "borrowerfn", column = "borrowerfn"),
+		@FieldResult(name = "borrowerln", column = "borrowerln"),
+		@FieldResult(name = "booktitle", column = "booktitle"),
+		@FieldResult(name = "bookclientid", column = "bookclientid"),
+		@FieldResult(name = "author", column = "author"),
+		@FieldResult(name = "shelfclass", column = "shelfclass"),
+		@FieldResult(name = "checkedout", column = "checkedout"),
+		@FieldResult(name = "returned", column = "returned"),
+		@FieldResult(name = "duedate", column = "duedate"),
+		@FieldResult(name = "teacherfirstname", column = "teacherfirstname"),
+		@FieldResult(name = "teacherlastname", column = "teacherlastname")
+ }) }, columns = {})
 public class LoanRecordDisplay {
 
-	private LoanRecordDao loanrecord;
-	private PersonDao person;
-	private BookDao book;
+@Id
+	private Long loanrecordid;
+	private Long borrowerid;
+	private Long bookid;
 	private Long classid;
-	private TeacherInfo teacherinfo;
+	private Long clientid;
+	private String borrowerfn;
+	private String borrowerln;
+	private String booktitle;
+	private String bookclientid;
+	private String author;
+	private Long shelfclass;
+	private Date checkedout;
+	private Date returned;
+	private Date duedate;
+	private String teacherfirstname;
+	private String teacherlastname;
 
-	public LoanRecordDisplay(LoanRecordDao loanrecord, PersonDao person,
-			BookDao book, Long classid) {
-		super();
-		this.loanrecord = loanrecord;
-		this.person = person;
-		this.book = book;
-		this.classid = classid;
-	}
-
-	public LoanRecordDisplay() {
-		super();
-	}
-
-	@XmlTransient
 	public Long getLoanrecordid() {
-		return this.loanrecord.getId();
+		return loanrecordid;
 	}
 
-	@XmlTransient
 	public Long getBorrowerid() {
-		return this.person.getId();
+		return borrowerid;
 	}
 
-	@XmlTransient
-	public Long getClientid() {
-		return this.person.getClient().getId();
-	}
-
-	@XmlTransient
 	public Long getBookid() {
-		return this.book.getId();
+		return bookid;
 	}
 
-	@XmlTransient
 	public Long getClassid() {
 		return classid;
 	}
 
+	public Long getClientid() {
+		return clientid;
+	}
+
 	@XmlElement(name = "firstname_borrower")
 	public String getBorrowerfn() {
-		return this.person.getFirstname();
+		return borrowerfn;
 	}
 
 	@XmlElement(name = "lastname_borrower")
 	public String getBorrowerln() {
-		return this.person.getLastname();
+		return borrowerln;
 	}
 
 	@XmlElement
 	public String getBooktitle() {
-		return this.book.getBookdetail().getTitle();
+		return booktitle;
 	}
 
 	@XmlElement
 	public String getBookclientid() {
-		return this.book.getClientbookid();
+		return bookclientid;
 	}
 
 	@XmlElement(name = "bookauthor")
 	public String getAuthor() {
-		return this.book.getBookdetail().getAuthorsAsString();
+		return author;
 	}
 
 	@XmlTransient
 	public Long getShelfclass() {
-		return this.book.getClientshelfcode();
+		return shelfclass;
 	}
 
 	@XmlElement
 	public Date getCheckedout() {
-		return this.loanrecord.getCheckoutdate();
+		return checkedout;
 	}
-	
+
 	@XmlElement
 	public Date getReturned() {
-		return this.loanrecord.getReturned();
+		return returned;
 	}
-	
 
 	@XmlElement
 	public Date getDuedate() {
-		return this.loanrecord.getDuedate();
+		return duedate;
 	}
 
+	@XmlElement
 	public Boolean getIsoverdue() {
-		Date today = new Date();
-		return today.after(getDuedate());
+		if (returned!=null && duedate!=null) {
+			return returned.after(duedate);
+		} else if (returned == null && duedate!=null) {
+			return new Date().after(duedate);
+		}
+		return false;
 	}
 
 	@XmlElement(name = "firstname_teacher")
 	public String getTeacherfirstname() {
-		if (teacherinfo != null && teacherinfo.getFirstname() != null) {
-			return teacherinfo.getFirstname();
-		}
-		return "";
+		return teacherfirstname;
 	}
 
 	@XmlElement(name = "lastname_teacher")
 	public String getTeacherlastname() {
-		if (teacherinfo != null && teacherinfo.getLastname() != null) {
-			return teacherinfo.getLastname();
-		}
-		return "";
-	}
-
-	@XmlTransient
-	public void setTeacherInfo(HashMap<Long, TeacherInfo> teacherInfo) {
-		if (teacherInfo.containsKey(classid)) {
-			this.teacherinfo = teacherInfo.get(classid);
-		}
+		return teacherlastname;
 	}
 
 }

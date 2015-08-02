@@ -56,13 +56,17 @@ public class LendingServiceTest {
 	Long bookid1;
 	Long bookid2;
 	Long bookid3;
+	Long bookid4;
 	private Long classid;
 	private Long student1id;
+	
 	private Long student2id;
 	private Long student3id;
 	private Long student4id;
 	private Long clientid;
 
+	private Long c2classid;
+	private Long c2student1id;
 	@Before
 	public void initData() {
 		// create books to checkout and return
@@ -79,10 +83,15 @@ public class LendingServiceTest {
 		book3.setClientid(clientid);
 		book3.getBookdetail().setTitle("another book");
 		book3 = bookRepo.save(book3);
+		BookDao book4 = new BookDao();
+		book4.setClientid(clientid);
+		book4.getBookdetail().setTitle("another book new client");
+		book4 = bookRepo.save(book3);		
 
 		bookid1 = book1.getId();
 		bookid2 = book2.getId();
 		bookid3 = book3.getId();
+		bookid4 = book3.getId();
 
 		// create class to do the checking out and returning
 		// create dummy class, and three students
@@ -90,23 +99,38 @@ public class LendingServiceTest {
 		ClassModel model = new ClassModel(sgroup);
 		model.setTeachername("Prof MacGonnagal");
 		model.fillInTeacherFromEntry();
-		model = classService.createClassFromClassModel(model, 1L);
+		model = classService.createClassFromClassModel(model, clientid);
 
 		// add students to class -
 		StudentDao luke = classService.addNewStudentToClass("hermione granger",
-				1L, model.getSchoolGroup(), 1L);
+				1L, model.getSchoolGroup(), clientid);
 		student1id = luke.getId();
 		StudentDao obiwan = classService.addNewStudentToClass("ron weasley",
-				1L, model.getSchoolGroup(), 1L);
+				1L, model.getSchoolGroup(), clientid);
 		student2id = obiwan.getId();
 		StudentDao leia = classService.addNewStudentToClass("draco malfoy", 2L,
-				model.getSchoolGroup(), 1L);
+				model.getSchoolGroup(),clientid);
 		student3id = leia.getId();
 		StudentDao hansolo = classService.addNewStudentToClass(
-				"neville longbottom", 3L, model.getSchoolGroup(), 1L);
+				"neville longbottom", 3L, model.getSchoolGroup(), clientid);
 		student4id = hansolo.getId();
 		model = classService.loadClassModelById(model.getClassid());
 		classid = model.getClassid();
+		
+		// second class
+		sgroup = new SchoolGroupDao();
+		model = new ClassModel(sgroup);
+		model.setTeachername("Prof MacLonely");
+		model.fillInTeacherFromEntry();
+		model = classService.createClassFromClassModel(model, clientid);
+
+		// add students to class -
+		luke = classService.addNewStudentToClass("george granger",
+				1L, model.getSchoolGroup(), clientid);
+		c2student1id = luke.getId();
+		
+		model = classService.loadClassModelById(model.getClassid());
+		c2classid = model.getClassid();
 	}
 
 	@Test
@@ -357,5 +381,36 @@ public class LendingServiceTest {
 		}
 		Assert.assertTrue(lrfound);
 	}
+	
+	@Test
+	public void testSearchLendingHistory() {
+		// check out book to class 2
+		LoanRecordDao makeoverdue = lendingService.checkoutBook(bookid4,
+				c2student1id, clientid);
+		
+		
+		// make criteria - basic for all
+		LendingSearchCriteria lsc = new LendingSearchCriteria();
+		lsc.setClassselect(LendingSearchCriteria.ClassType.ALL);
+		lsc.setTimeselect(LendingSearchCriteria.TimePeriodType.ALL);
+		lsc.setLendtypeselect(LendingSearchCriteria.LendingType.ALL);
+		// run search
+		List<LoanRecordDisplay> results = lendingService.searchLendingHistory(lsc, clientid);
+		int origsize = results.size();
+		// ensure that at least one result is found
+		Assert.assertTrue(results!=null);
+		
+		
+		
+		// testing select by class
+		// now, search for second class
+		lsc.setClassselect(c2classid);
+		results = lendingService.searchLendingHistory(lsc, clientid);
+		// ensure that at least one result is found
+		Assert.assertTrue(results!=null);
+		// results should be less than all
+		Assert.assertTrue(results.size()<origsize);
+	
+	}	
 
 }

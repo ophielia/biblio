@@ -67,12 +67,12 @@ privileged aspect LoanRecordDao_Roo_JavaBean {
         this.schoolyear = schoolyear;
     }
     
-    public String LoanRecordDao.getTeachername() {
-        return this.teachername;
+    public Long LoanRecordDao.getTeacherid() {
+        return this.teacherid;
     }
     
-    public void LoanRecordDao.setTeachername(String teachername) {
-        this.teachername = teachername;
+    public void LoanRecordDao.setTeacherid(Long teacherid) {
+        this.teacherid = teacherid;
     }
     
 }

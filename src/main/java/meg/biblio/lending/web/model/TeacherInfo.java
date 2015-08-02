@@ -11,6 +11,7 @@ public class TeacherInfo {
 	private String firstname;
 
 	private String lastname;
+	private String displayname;
 
 	
 	
@@ -21,6 +22,7 @@ public class TeacherInfo {
 		this.schoolgroupid = teacher.getSchoolgroup().getId();
 		this.firstname = teacher.getFirstname();
 		this.lastname = teacher.getLastname();
+		this.displayname = teacher.getFulldisplayname();
 	}
 
 	public Long getId() {
@@ -37,6 +39,14 @@ public class TeacherInfo {
 
 	public String getLastname() {
 		return lastname;
+	}
+
+	public String getDisplayname() {
+		return displayname;
+	}
+
+	public void setDisplayname(String displayname) {
+		this.displayname = displayname;
 	}
 	
 
