@@ -46,10 +46,37 @@ public class LendingSearchServiceImpl implements LendingSearchService {
 		c.select(loanrec);
 
 		// add predicate
-		List<Predicate> whereclause = getPredicatesForCriteria(criteria, cb,loanrec);
+		List<Predicate> whereclause = getPredicatesForCriteria(criteria, cb,
+				loanrec);
 
 		// putting where clause together
 		c.where(cb.and(whereclause.toArray(new Predicate[whereclause.size()])));
+
+		// order clause
+		long sortkey = criteria.getSortKey();
+		long sortdir = criteria.getSortDir();
+		if (sortkey > 0) {
+			String key = null;
+			if (sortkey == LendingSearchCriteria.SortKey.BOOKID) {
+				key = "bookclientidsort";
+			} else if (sortkey == LendingSearchCriteria.SortKey.CHECKEDOUT) {
+				key = "checkedout";
+			} else if (sortkey == LendingSearchCriteria.SortKey.CLASS) {
+				key = "classid";
+			} else if (sortkey == LendingSearchCriteria.SortKey.RETURNED) {
+				key = "returned";
+			} else if (sortkey == LendingSearchCriteria.SortKey.STUDENTFIRSTNAME) {
+				key = "borrowerfn";
+			} else if (sortkey == LendingSearchCriteria.SortKey.TITLE) {
+				key = "booktitle";
+			}
+			Expression sortexp = loanrec.get(key);
+			if (sortdir == LendingSearchCriteria.SortByDir.ASC) {
+				c.orderBy(cb.asc(sortexp));
+			} else {
+				c.orderBy(cb.desc(sortexp));
+			}
+		}
 
 		// creating query
 		TypedQuery<LoanRecordDisplay> q = em.createQuery(c);
@@ -63,8 +90,6 @@ public class LendingSearchServiceImpl implements LendingSearchService {
 		return toreturn;
 
 	}
-
-
 
 	private List<Predicate> getPredicatesForCriteria(
 			LendingSearchCriteria criteria, CriteriaBuilder cb,
@@ -80,77 +105,71 @@ public class LendingSearchServiceImpl implements LendingSearchService {
 
 		// do checkedouton
 		if (criteria.getCheckedouton() != null) {
-				ParameterExpression<Date> param = cb.parameter(Date.class,
-						"checkoutdate");
-				whereclause.add(cb.equal(
-						loanrec.<Date> get("checkedout"), param));
-			
+			ParameterExpression<Date> param = cb.parameter(Date.class,
+					"checkoutdate");
+			whereclause.add(cb.equal(loanrec.<Date> get("checkedout"), param));
+
 		}
 
 		// do returned on
 		if (criteria.getReturnedon() != null) {
-				ParameterExpression<Date> param = cb.parameter(Date.class,
-						"returned");
-				whereclause
-						.add(cb.equal(loanrec.<Date> get("returned"), param));
+			ParameterExpression<Date> param = cb.parameter(Date.class,
+					"returned");
+			whereclause.add(cb.equal(loanrec.<Date> get("returned"), param));
 		}
 
 		// do forschoolgroup
 		if (criteria.getSchoolgroup() != null) {
 			ParameterExpression<Long> param = cb.parameter(Long.class,
 					"schoolgroupid");
-			whereclause.add(cb.equal(
-					loanrec.<Long> get("classid"), param));
+			whereclause.add(cb.equal(loanrec.<Long> get("classid"), param));
 		}
 
 		// do borrowerid
 		if (criteria.getBorrowerid() != null) {
 			ParameterExpression<Long> param = cb.parameter(Long.class,
 					"borrowerid");
-			whereclause.add(cb.equal(
-					loanrec.<Long>get("borrowerid"), param));
+			whereclause.add(cb.equal(loanrec.<Long> get("borrowerid"), param));
 		}
 
 		// do bookid
 		if (criteria.getBookid() != null) {
-			ParameterExpression<Long> param = cb.parameter(Long.class,
-					"bookid");
-			whereclause.add(cb.equal(
-					loanrec.<Long>get("bookid"), param));
+			ParameterExpression<Long> param = cb
+					.parameter(Long.class, "bookid");
+			whereclause.add(cb.equal(loanrec.<Long> get("bookid"), param));
 		}
 
 		// to lentto
 		if (criteria.getLentToType() != null) {
-			String comparison = "";
-			if (criteria.getLentToType() == LendingSearchCriteria.LentToType.TEACHER) {
-				comparison = "TeacherDao";
-			} else if (criteria.getLentToType() == LendingSearchCriteria.LentToType.STUDENT) {
-				comparison = "StudentDao";
+			Expression<java.lang.Boolean> isteacher = cb.literal(new Boolean(
+					true));
+			if (criteria.getLentToType() == LendingSearchCriteria.LentToType.STUDENT) {
+				isteacher = cb.literal(new Boolean(false));
 			}
-			if (comparison.length() > 0) {
-				whereclause.add(cb.notEqual(loanrec.<String> get("borrowerfn"),
-						comparison));
-			}
+			whereclause.add(cb.equal(loanrec.<Boolean> get("isteacher"),
+					isteacher));
 		}
 
 		// to overdue only
 		if (criteria.getOverdueOnly() != null && criteria.getOverdueOnly()) {
-				Expression<java.util.Date> today = cb
-						.literal(new java.util.Date());
-				whereclause.add(cb.lessThan(loanrec.<Date> get("duedate"),
-						today));
+			Expression<java.lang.Boolean> truelit = cb
+					.literal(new Boolean(true));
+			whereclause.add(cb.equal(loanrec.<Boolean> get("currentlyoverdue"),
+					truelit));
 
-			
 		}
-		
+
 		// to checkedout only
-		if (criteria.getCheckedoutOnly() != null && criteria.getCheckedoutOnly()) {
-				whereclause.add(cb.isNull(loanrec.<Date> get("returned")));
-		}		
+		if (criteria.getCheckedoutOnly() != null
+				&& criteria.getCheckedoutOnly()) {
+			Expression<java.lang.Boolean> truelit = cb
+					.literal(new Boolean(true));
+			whereclause.add(cb.equal(
+					loanrec.<Boolean> get("currentlycheckedout"), truelit));
+		}
 		return whereclause;
 
 	}
-
 
 	private void setParametersInQuery(LendingSearchCriteria criteria,
 			TypedQuery q, Long clientid) {
@@ -164,7 +183,7 @@ public class LendingSearchServiceImpl implements LendingSearchService {
 
 		// do returned on
 		if (criteria.getReturnedon() != null) {
-				q.setParameter("returned", criteria.getReturnedon());
+			q.setParameter("returned", criteria.getReturnedon());
 		}
 
 		// do forschoolgroup
@@ -188,57 +207,46 @@ public class LendingSearchServiceImpl implements LendingSearchService {
 
 	}
 
-	
 	/*
 	 * 
-	@Override
-	public List<LoanHistoryDisplay> findLoanHistoryByCriteria(
-			LendingSearchCriteria criteria, Long clientid) {
-		// set clientid in criteria
-		criteria.setClientid(clientid);
-
-		// put together joins
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<Tuple> c = cb.createTupleQuery();
-		Root<LoanHistoryDao> loanrec = c.from(LoanHistoryDao.class);
-		Join<LoanHistoryDao, BookDao> book = loanrec.join("book");
-		Join<LoanHistoryDao, PersonDao> person = loanrec.join("borrower");
-		Join<PersonDao, SchoolGroupDao> sgroup = person.join("schoolgroup");
-
-		// build select clause
-		c.select(cb.tuple(book, person, loanrec, sgroup.<Long> get("id")));
-
-		// add predicate
-		List<Predicate> whereclause = getPredicatesForCriteria(criteria, cb,
-				book, person, sgroup, null, loanrec,
-				LendingSearchCriteria.SearchType.RETURNED);
-
-		// putting where clause together
-		c.where(cb.and(whereclause.toArray(new Predicate[whereclause.size()])));
-
-		// creating query
-		TypedQuery<Tuple> q = em.createQuery(c);
-
-		// adding parameters
-		setParametersInQuery(criteria, q, clientid,LendingSearchCriteria.SearchType.RETURNED);
-
-		// running query
-		List<Tuple> results = q.getResultList();
-		List<LoanHistoryDisplay> toreturn = new ArrayList<LoanHistoryDisplay>();
-
-		for (Tuple t : results) {
-			// LoanRecordDisplay result = (LoanRecordDisplay) t.get(0);
-			BookDao bookres = (BookDao) t.get(0);
-			PersonDao personres = (PersonDao) t.get(1);
-			LoanHistoryDao lrec = (LoanHistoryDao) t.get(2);
-			Long classid = (Long) t.get(3);
-			LoanHistoryDisplay display = new LoanHistoryDisplay(lrec,
-					personres, bookres, classid);
-			toreturn.add(display);
-		}
-
-		return toreturn;
-
-	}
+	 * @Override public List<LoanHistoryDisplay> findLoanHistoryByCriteria(
+	 * LendingSearchCriteria criteria, Long clientid) { // set clientid in
+	 * criteria criteria.setClientid(clientid);
+	 * 
+	 * // put together joins CriteriaBuilder cb = em.getCriteriaBuilder();
+	 * CriteriaQuery<Tuple> c = cb.createTupleQuery(); Root<LoanHistoryDao>
+	 * loanrec = c.from(LoanHistoryDao.class); Join<LoanHistoryDao, BookDao>
+	 * book = loanrec.join("book"); Join<LoanHistoryDao, PersonDao> person =
+	 * loanrec.join("borrower"); Join<PersonDao, SchoolGroupDao> sgroup =
+	 * person.join("schoolgroup");
+	 * 
+	 * // build select clause c.select(cb.tuple(book, person, loanrec,
+	 * sgroup.<Long> get("id")));
+	 * 
+	 * // add predicate List<Predicate> whereclause =
+	 * getPredicatesForCriteria(criteria, cb, book, person, sgroup, null,
+	 * loanrec, LendingSearchCriteria.SearchType.RETURNED);
+	 * 
+	 * // putting where clause together c.where(cb.and(whereclause.toArray(new
+	 * Predicate[whereclause.size()])));
+	 * 
+	 * // creating query TypedQuery<Tuple> q = em.createQuery(c);
+	 * 
+	 * // adding parameters setParametersInQuery(criteria, q,
+	 * clientid,LendingSearchCriteria.SearchType.RETURNED);
+	 * 
+	 * // running query List<Tuple> results = q.getResultList();
+	 * List<LoanHistoryDisplay> toreturn = new ArrayList<LoanHistoryDisplay>();
+	 * 
+	 * for (Tuple t : results) { // LoanRecordDisplay result =
+	 * (LoanRecordDisplay) t.get(0); BookDao bookres = (BookDao) t.get(0);
+	 * PersonDao personres = (PersonDao) t.get(1); LoanHistoryDao lrec =
+	 * (LoanHistoryDao) t.get(2); Long classid = (Long) t.get(3);
+	 * LoanHistoryDisplay display = new LoanHistoryDisplay(lrec, personres,
+	 * bookres, classid); toreturn.add(display); }
+	 * 
+	 * return toreturn;
+	 * 
+	 * }
 	 */
 }

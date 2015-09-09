@@ -1,24 +1,28 @@
 package meg.biblio.lending.web.model;
 
 import meg.biblio.lending.LendingSearchCriteria;
+import meg.biblio.lending.LendingSearchCriteria.SortByDir;
+import meg.biblio.lending.LendingSearchCriteria.SortKey;
 
 
 public class LendingSearchModel {
 
 	private LendingSearchCriteria criteria;
-	
+
 	private Long classselect;
 	private Long timeselect;
 	private Long lendtypeselect;
-	
-	
-	
+	private Long sorttype;
+	private Long sortdir;
+
+
+
 	public LendingSearchModel() {
 		super();
 		this.criteria = new LendingSearchCriteria();
 	}
-	
-	
+
+
 	public Long getClassselect() {
 		return classselect;
 	}
@@ -41,7 +45,7 @@ public class LendingSearchModel {
 				this.criteria = new LendingSearchCriteria();
 			}
 			this.criteria.setTimeselect(timeselect);
-		}		
+		}
 	}
 	public Long getLendtypeselect() {
 		return lendtypeselect;
@@ -53,7 +57,7 @@ public class LendingSearchModel {
 				this.criteria = new LendingSearchCriteria();
 			}
 			this.criteria.setLendtypeselect(lendtypeselect);
-		}			
+		}
 	}
 	public LendingSearchCriteria getCriteria() {
 		return criteria;
@@ -61,7 +65,42 @@ public class LendingSearchModel {
 	public void setCriteria(LendingSearchCriteria criteria) {
 		this.criteria = criteria;
 	}
+
+
+	public Long getSorttype() {
+		if (sorttype==null) {
+			return getDefaultSorttype();
+		}
+		return sorttype;
+	}
+
+
+	public void setSorttype(Long sorttype) {
+		this.sorttype = sorttype;
+	}
+
+
+	public Long getSortdir() {
+		if (sortdir==null) {
+			return getDefaultSortDir();
+		}
+		return sortdir;
+	}
+
+
+	public void setSortdir(Long sortdir) {
+		this.sortdir = sortdir;
+	}
+
+
+	private long getDefaultSorttype() {
+		return LendingSearchCriteria.SortKey.CHECKEDOUT;
+	}
+
+	private long getDefaultSortDir() {
+		return LendingSearchCriteria.SortByDir.DESC;
+	}
 	
-	
-	
+
+
 }

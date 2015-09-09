@@ -7,25 +7,17 @@ done - LendingSearchServiceImpl rework for LoanHistory removal
 done - begin at LendingSearchServiceImpl
 
 LoanHistoryController -
-	DateUtils - make method for first date in current school year
-	finish LendingSearchModel - add sort info
+done - 	DateUtils - make method for first date in current school year
+	done - finish LendingSearchModel - add sort info
 	finish LendingSearchCriteria - processing inputs from model (select boxes to concrete dates, query parameters)
-	insert LSM into LoanHistoryController
+	done - insert LSM into LoanHistoryController
 	
 	
-... make LoanRecordDisplay into a view - so we don't have to insert teacher info
-select r.*, b.clientbookid, bd.title, auth.firstname, auth.lastname , p.*
-from loanrecord r inner join book b on r.book = b.id 
-	inner join bookdetail bd on bd.id = b.bookdetail
-	inner join person p on p.id = r.borrower
-	left outer join book_author ba on ba.bookdetail_id = bd.id and authororder = 0 
-	left outer join artist auth on auth.id = ba.artist_id
-	left outer join artist auth on auth.id = ba.artist_id
-where r.client=68	
-	
- need view version of overdue which covers 2 cases - overdue when returned, overdue today
- need to add Teacher / Student to LoanRecordDisplay view
- 
+hard coded to labels  - finish select boxes, title of page
+time select - add year selects
+
+show student page - including all books checked out
+checkout record for book
 
 
 
@@ -37,6 +29,14 @@ done - check for "if duplicate" after search - and copy shelf info.
 done - begin last development / testing with new client 
 done - images to checkout / return!
 done - barcodelendingcontroller - return book which is not checked out....
+done ... make LoanRecordDisplay into a view - so we don't have to insert teacher info
+done -  need view version of overdue which covers 2 cases - overdue when returned, overdue today
+done -  need to add Teacher / Student to LoanRecordDisplay view
+done - format dates in lendinghistory
+done - bookid in lending history
+done - sorting ability to lendingsearch
+done - sort only in one direction
+done - 	add sort for book sort (sorting bookid alphabetically....)
 
 ---- end commit changes ----
 

@@ -26,11 +26,17 @@ import javax.xml.bind.annotation.XmlTransient;
 		@FieldResult(name = "borrowerln", column = "borrowerln"),
 		@FieldResult(name = "booktitle", column = "booktitle"),
 		@FieldResult(name = "bookclientid", column = "bookclientid"),
+		@FieldResult(name = "bookclientidsort", column = "bookclientidsort"),
 		@FieldResult(name = "author", column = "author"),
 		@FieldResult(name = "shelfclass", column = "shelfclass"),
 		@FieldResult(name = "checkedout", column = "checkedout"),
 		@FieldResult(name = "returned", column = "returned"),
 		@FieldResult(name = "duedate", column = "duedate"),
+		@FieldResult(name = "returnedlate", column = "returnedlate"),
+		@FieldResult(name = "currentlyoverdue", column = "currentlyoverdue"),
+		@FieldResult(name = "currentlycheckedout", column = "currentlycheckedout"),
+		@FieldResult(name = "overdue", column = "overdue"),
+		@FieldResult(name = "isteacher", column = "isteacher"),
 		@FieldResult(name = "teacherfirstname", column = "teacherfirstname"),
 		@FieldResult(name = "teacherlastname", column = "teacherlastname")
  }) }, columns = {})
@@ -46,6 +52,7 @@ public class LoanRecordDisplay {
 	private String borrowerln;
 	private String booktitle;
 	private String bookclientid;
+	private Long bookclientidsort;
 	private String author;
 	private Long shelfclass;
 	private Date checkedout;
@@ -53,7 +60,14 @@ public class LoanRecordDisplay {
 	private Date duedate;
 	private String teacherfirstname;
 	private String teacherlastname;
-
+	private Boolean returnedlate;
+	private Boolean currentlyoverdue;
+	private Boolean currentlycheckedout;
+	private Boolean overdue;
+	private Boolean isteacher;
+	
+	
+	
 	public Long getLoanrecordid() {
 		return loanrecordid;
 	}
@@ -139,4 +153,34 @@ public class LoanRecordDisplay {
 		return teacherlastname;
 	}
 
+	@XmlElement
+	public Boolean getReturnedlate() {
+		return returnedlate;
+	}
+
+	@XmlElement
+	public Boolean getCurrentlyoverdue() {
+		return currentlyoverdue;
+	}
+
+	@XmlElement
+	public Boolean getCurrentlycheckedout() {
+		return currentlycheckedout;
+	}
+
+	@XmlElement
+	public Boolean getOverdue() {
+		return overdue;
+	}
+
+	@XmlElement
+	public Boolean getIsteacher() {
+		return isteacher;
+	}
+
+	public Long getBookclientidsort() {
+		return bookclientidsort;
+	}
+
+	
 }

@@ -14,28 +14,47 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
     <spring:message code="menu_adminsearch" var="searchtitle"/>
     <h1>${searchtitle}</h1>
 
-<spring:message code="label_book_searchkeyword" htmlEscape="false" var="lkeyword"/>    
+<spring:message code="label_class" htmlEscape="false" var="lclass"/>    
+<spring:message code="label_class_student" htmlEscape="false" var="lstudent"/>    
+<spring:message code="label_book_clientbookid" htmlEscape="false" var="lbookid"/>    
 <spring:message code="label_book_title" htmlEscape="false" var="ltitle"/>    
 <spring:message code="label_book_author" htmlEscape="false" var="lauthor"/>    
-<spring:message code="label_book_illustrator" htmlEscape="false" var="lillustrator"/>    
-<spring:message code="label_book_publisher" htmlEscape="false" var="lpublisher"/>    
-<spring:message code="action_updateclass" htmlEscape="false" var="lscupdate"/>    
-<spring:message code="action_updatestatus" htmlEscape="false" var="lupdstatus"/>    
-<spring:message code="select_emptyoption" htmlEscape="false" var="lemptyselect"/>
-<spring:message code="label_book_clientbookid" htmlEscape="false" var="lclientbookid"/>    
-<spring:message code="label_book_classification" htmlEscape="false" var="lshelfclass"/>    
-<spring:message code="label_book_status" htmlEscape="false" var="lstatus"/>    
-<spring:message code="label_book_detailstatus" htmlEscape="false" var="ldetailstatus"/>    
-<spring:message code="label_book_btype" htmlEscape="false" var="lbooktype"/>    
-<spring:message code="label_book_information" htmlEscape="false" var="linfo"/>    
-<spring:message code="entity_edit" htmlEscape="false" var="ledit"/>    
-<spring:message code="select_emptyoption" htmlEscape="false" var="lemptyoption"/>    
-<spring:message code="field_invalid" arguments="${lstatus}" htmlEscape="false" var="missingstatus"/>    
-<spring:message code="field_invalid" arguments="${lshelfclass}" htmlEscape="false" var="missingshelfclass"/> 
+<spring:message code="label_lending_checkedout" htmlEscape="false" var="lcheckedout"/>    
+<spring:message code="label_lending_duedate" htmlEscape="false" var="lduedate"/>    
+<spring:message code="label_lendingreturned" htmlEscape="false" var="lreturned"/>    
+
 
 <spring:message code="button_sortby" htmlEscape="false" var="lsortby"/>    
 
 <spring:url value="/lendinghistory" var="actionurl"/>
+<script type="text/javascript">
+ require([
+          'dojo/dom',"dojo/on","dijit/TooltipDialog", "dijit/popup",
+          'dojo/domReady!'
+      ], function (dom,on,TooltipDialog,popup) {
+	 
+	function getIndex(prefix, text) {
+			// gets a substring of the text, starting at the char after the length of the prefix
+			var stripped = text.substr(prefix.length);
+			return stripped;
+		}
+
+		// wire up sort buttons
+		dojo.query("th[id^='aSort']").forEach(function(node) {
+			var id = node.id;
+
+			on(dojo.byId(id), 'click', function(event) {
+				clickedid = event.currentTarget.id;
+				sortaction = getIndex('aSort', clickedid);
+				var form = dojo.byId('resultlist');
+				form.action = "${actionurl}/sortby/" + sortaction;
+				form.submit();
+			});
+		});
+
+	});
+ 
+</script>
 
 
 <form:form action="${actionurl}" id="resultlist" method="POST" modelAttribute="lendingSearchModel">
@@ -63,7 +82,10 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 							<c:forEach items="${lendtypeselect}" var="tmp">
 								<form:option value="${tmp.key}" label="${tmp.value}" />
 							</c:forEach>
-						</form:select></td>
+						</form:select>
+						<form:input type="hidden" path="sorttype"></form:input>
+						<form:input type="hidden" path="sortdir"></form:input>
+						</td>
 				</tr>
 			</tbody>
 		</table>
@@ -75,15 +97,14 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 
 		<TABLE>
 		<thead>		
-		
-		
-				<tr >
-			<th>Class</th>
-			<th>Student</th>
-			<th>Title / Author</th>
-			<th>Checked Out</th>
-			<th>Due Date</th>
-			<th>Returned</th>
+			<tr >
+			<th id="aSort1">${lclass}</th>
+			<th id="aSort2">${lstudent}</th>
+			<th id="aSort3">${lbookid}</th>
+			<th id="aSort5">${ltitle} / ${lauthor}</th>
+			<th id="aSort4">${lcheckedout}<br />
+			${lduedate}</th>
+			<th id="aSort6">${lreturned}</th>
 		</tr>	 			
 		</thead>
 		<tbody>
@@ -91,11 +112,14 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
  <c:forEach var="histRec" items="${historyRecords}" varStatus="bookstatus">
 					<tr>
 			<td>${histRec.teacherfirstname }</td>
-			<td>${histRec.borrowerfn }</td>
+			<td>${histRec.borrowerfn } ${histRec.borrowerln }</td>
+			<td>${histRec.bookclientid}</td>
 			<td>${histRec.booktitle }<br></br>${histRec.author }</td>
-			<td>${histRec.checkedout }</td>
-			<td>${histRec.duedate }</td>
-			<td>${histRec.returned }</td>
+			<td><fmt:formatDate type="date" 
+            value="${histRec.checkedout}" /><br /><fmt:formatDate type="date" 
+            value="${histRec.duedate }" /></td>
+			<td><fmt:formatDate type="date" 
+            value="${histRec.returned  }" /></td>
 					</tr>
 				</c:forEach>		
 		</tbody>

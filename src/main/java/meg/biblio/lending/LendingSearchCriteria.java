@@ -32,11 +32,24 @@ public class LendingSearchCriteria {
 	
 	public final static class LendingType {
 		public final static Long ALL = 1L;
-		public final static Long OVERDUE= 2L;
-		public final static Long CHECKEDOUT = 3L;
+		public final static Long CHECKEDOUT= 2L;
+		public final static Long OVERDUE = 3L;
 	}	
 	
+	public final static class SortKey {
+		public final static long CLASS = 1L;
+		public final static long STUDENTFIRSTNAME = 2L;
+		public final static long BOOKID = 3L;
+		public final static long CHECKEDOUT = 4L;
+		public final static long TITLE = 5L;
+		public final static long RETURNED = 6L;
+	}	
 
+	public static final class SortByDir {
+		public static final long ASC = 1;
+		public static final long DESC = 2;
+	}
+	
 	private Date checkedouton;
 	private Date returnedon;
 	private Long forschoolgroup;
@@ -46,6 +59,10 @@ public class LendingSearchCriteria {
 	private Long borrowerid;
 	private Long bookid;
 	private Boolean checkedout;
+	private Long lendingType;
+	
+	private long sortkey;
+	private long sortdir;
 
 
 	public Date getCheckedouton() {
@@ -155,7 +172,19 @@ public class LendingSearchCriteria {
 
 
 	public void setLendtypeselect(Long lendtypeselect) {
-		//this.lendtypeselect = lendtypeselect;
+		this.lendingType = lendtypeselect;
+		if (this.lendingType!=null) {
+			if (this.lendingType == LendingType.CHECKEDOUT) {
+				setCheckedoutOnly(true);
+				setOverdueOnly(false);
+			} else if (this.lendingType == LendingType.OVERDUE) {
+				setCheckedoutOnly(true);
+				setOverdueOnly(true);				
+			}
+		} else {
+			setCheckedoutOnly(false);
+			setOverdueOnly(false);
+		}
 	}
 
 	public void reset() {
@@ -170,4 +199,39 @@ public class LendingSearchCriteria {
 		checkedout = null;
 	}
 
+	public void setSortKey(long sortkey) {
+		this.sortkey = sortkey;
+	}
+
+	public void setSortDir(long sortdir) {
+		if (sortdir>0) {
+			this.sortdir= sortdir;
+		} 
+	}
+	
+	public long getSortKey() {
+		if (sortkey>0) {
+			return this.sortkey;
+		} else {
+			
+			return getDefaultSortKey();
+		}
+	}
+	
+	private long getDefaultSortKey() {
+		return SortKey.CHECKEDOUT;
+	}
+
+	private long getDefaultSortDir() {
+		return SortByDir.DESC;
+	}
+	
+	public long getSortDir() {
+		if (sortdir>0) {
+			return this.sortdir;
+		} else {
+			
+			return getDefaultSortDir();
+		}
+	}
 }

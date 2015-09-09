@@ -13,6 +13,7 @@ import meg.biblio.common.db.dao.ClientDao;
 import meg.biblio.lending.ClassManagementService;
 import meg.biblio.lending.LendingSearchCriteria;
 import meg.biblio.lending.LendingService;
+import meg.biblio.lending.LendingSearchCriteria.SortByDir;
 import meg.biblio.lending.web.model.LendingSearchModel;
 import meg.biblio.lending.web.model.LoanRecordDisplay;
 import meg.biblio.lending.web.model.TeacherInfo;
@@ -21,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -82,14 +84,32 @@ public class LendingHistoryController {
 
 
 
-	@RequestMapping(value = "/sortby/{sortby}", method = RequestMethod.GET, produces = "text/html")
-	public String sortHistoryPage(
+	@RequestMapping(value = "/sortby/{sortby}", method = RequestMethod.POST, produces = "text/html")
+	public String sortHistoryPage(@PathVariable("sortby") Long sortkey,
 			@ModelAttribute("lendingSearchModel") LendingSearchModel lendingSearchModel,
 			Model uiModel, HttpServletRequest httpServletRequest,
 			Principal principal) {
 		ClientDao client = clientService.getCurrentClient(principal);
 
 		LendingSearchCriteria criteria = lendingSearchModel.getCriteria();
+
+		// determine new direction
+		Long origsort = lendingSearchModel.getSorttype();
+		Long origdir = lendingSearchModel.getSortdir();
+		Long newdir=origdir;
+		if (origsort!=null) {
+			if (origsort==sortkey) {
+				newdir =origdir==LendingSearchCriteria.SortByDir.ASC?LendingSearchCriteria.SortByDir.DESC:LendingSearchCriteria.SortByDir.ASC;
+			}
+		}
+		// set in criteria
+		criteria.setSortKey(sortkey);
+		criteria.setSortDir(newdir);
+		// set in model
+		lendingSearchModel.setSorttype(sortkey);
+		lendingSearchModel.setSortdir(newdir);
+		
+		// corresponding search
 		List<LoanRecordDisplay> historyrecords = searchLoanHistory(client,criteria);
 
 		// put results in model
@@ -113,13 +133,17 @@ public class LendingHistoryController {
 	}
 
 	@RequestMapping(value = "/student/{id}", method = RequestMethod.GET, produces = "text/html")
-	public String drillDownToStudent(
+	public String drillDownToStudent(@PathVariable("id") Long studentid,
 			@ModelAttribute("lendingSearchModel") LendingSearchModel lendingSearchModel,
 			Model uiModel, HttpServletRequest httpServletRequest,
 			Principal principal) {
 		ClientDao client = clientService.getCurrentClient(principal);
 
 		LendingSearchCriteria criteria = lendingSearchModel.getCriteria();
+		
+		// get student id from class select
+		
+		// 
 		List<LoanRecordDisplay> historyrecords = searchLoanHistory(client,criteria);
 
 		// put results in model
@@ -130,6 +154,14 @@ public class LendingHistoryController {
 		return "lending/history";
 	}
 
+			
+			
+			
+			
+			
+			
+			
+			
 	/** Methods where the work is done **/
 	private List<LoanRecordDisplay> searchLoanHistory(ClientDao client,
 			LendingSearchCriteria lendingSearchCriteria) {
