@@ -25,5 +25,9 @@
         <put-attribute name="body" value="/WEB-INF/views/schoolgroups/editstudent.jspx"/>
     </definition>    
     
+    <definition extends="default" name="schoolgroups/showstudent">
+        <put-attribute name="body" value="/WEB-INF/views/schoolgroups/showstudent.jspx"/>
+    </definition>      
+    
    
 </tiles-definitions>

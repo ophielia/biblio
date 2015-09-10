@@ -319,4 +319,20 @@ public class LendingServiceImpl implements LendingService {
 		return report;
 	}
 
+	@Override
+	public List<LoanRecordDisplay> getLendingHistoryByLender(Long studentid,
+			Long clientid) {
+		// assemble criteria (studentid only, by checkout date, descending)
+		LendingSearchCriteria criteria = new LendingSearchCriteria();
+		criteria.setBorrowerid(studentid);
+		criteria.setSortKey(LendingSearchCriteria.SortKey.CHECKEDOUT);
+		criteria.setSortDir(LendingSearchCriteria.SortByDir.DESC);
+
+		// perform search
+		List<LoanRecordDisplay> history = searchLendingHistory(criteria, clientid);
+		
+		// return records
+		return history;
+	}
+
 }

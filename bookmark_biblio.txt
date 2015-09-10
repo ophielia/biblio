@@ -1,28 +1,40 @@
 Branch - inventory
 	inventory
 	rework lending - lending search
-	
-	
-done - LendingSearchServiceImpl rework for LoanHistory removal	
-done - begin at LendingSearchServiceImpl
 
 LoanHistoryController -
-done - 	DateUtils - make method for first date in current school year
-	done - finish LendingSearchModel - add sort info
-	finish LendingSearchCriteria - processing inputs from model (select boxes to concrete dates, query parameters)
-	done - insert LSM into LoanHistoryController
 	
 	
-hard coded to labels  - finish select boxes, title of page
 time select - add year selects
 
 show student page - including all books checked out
+	add edit link to student page
+	add back link for lendinghistory page
+	
+link show student page to lending history	
+link show student page to class list
+
+
+stop, revisit, reprioritize	
+
+
 checkout record for book
 
 
 
 
 ---- begin commit changes ----
+done - 	DateUtils - make method for first date in current school year
+	done - finish LendingSearchModel - add sort info
+	done - finish LendingSearchCriteria - processing inputs from model (select boxes to concrete dates, query parameters)
+	done - insert LSM into LoanHistoryController
+done - hard coded to labels  - finish select boxes, title of page
+
+---- end commit changes ----
+
+
+
+----- begin branch changes ----
 
 done - author/subject/illustrator error with 9782215067207 - the forest.  check parsing upon add book
 done - check for "if duplicate" after search - and copy shelf info.
@@ -38,159 +50,6 @@ done - sorting ability to lendingsearch
 done - sort only in one direction
 done - 	add sort for book sort (sorting bookid alphabetically....)
 
----- end commit changes ----
-
-
-
------ begin branch changes ----
-
-done - redo adding books
-done - db to heroku
-done - small bugfixes - 
-test - login user - don't list superadmins - and cancel create new validates - doesn't back out..
-test - consistent order for classes, logins
-done - lock down admin pages for admin
-done - Edit info box in different color
-done - "No title" books go to full edit
-done - Return by class - Severus de classe 
-done - error assign code to book - title, then isbn.
-done - also - validation - check length of barcodes.
-done - editall verify....
-done - overdue books - last name (or first initial of)
-done - emprunter message - bigandbold
-done - modify book doesn't save with isbn 9782867268915
-not now - think about this.... in edit page?? it's own page?? assigncode to book which already has assigned.
-done - Amazon Search - rework copy authors into bookdetail
-done - move copy authors into book detail to base finder - put into google
-done  - add query switch to amazon - title, author, publisher, isbn
-done - add into founddetails....
-done - complete test of insertAuthorsIntoBookDetail.....
-done - move setDetailStatus in BaseDetailFinder to FinderObj
-done - get findercode in findobj up and going
-done - Recheck set detail status multi
-done - Make eligible look at find object
-done - Set status - moves book detail to ft if status is detail found
-done - Find object log search Add to list of longs
-done - Update previous search (findobj)
-done - Get current search log
-done - new BookModelValidatorTest  
-done - SearchServiceTest
-done - CatalogServiceTest	
-done - LendingServiceTest
-done - BookModelValidatorTest 	
-done - extricate search from catalog service
-done - BaseDetailFinder - isEligible		
-done - GoogleSearch - done
-done - Move to bookdetail
-done - massage tests... (for bookdetail)
-done - CService findBookByClientBookId - load / check BookDetail
-done - CService new - findBookByISBN - load / check BookDetail fill in
-done - BNF search working - parse out data
-done - break text by <b> 
-done - large swipe take care of listed type - type....
-done -  adding addl codes to book detail in DetailSearchManager....
-done - import books with Jour de lessive - currently works in normal detail search, but not import
-done -   BNF - rework - 1) book by isbn 2) look for addl codes 3) do catalog search
-done -  some sort of problem - not being added in import books.
-done -  check import books
-done - amazondescriptionsearch coded
-useless! -  amazondescriptionsearch
-done - SearchService findBooksForIdentifier - build in or statement.....
-done -  begin CatalogService saveBookDetail - save authors carefully (detached)
-done - add saveBookDetail to saveBook - hopefully get rid of detached errors in save	
-done - 	bookmark - in detailservice for copying bookdetail and in catalog service
-done - import - with barcode and isbn/ean
-done - fix problem that imported books which aren't looked up aren't saved with a detail status		
-done - offlinesearch - looks in existing book details
-done - backend client codes as bar codes
-done - import - needs to do offline search for everything before saving.  Then online
-done - search for batch maximum after save.
-done - put max count in amazon found details....
-done - add ark codes	
-done - input for description, select for fiction, language
-done - client specific swap out
-done - clientspecific swap - only discard db if db is not already clientspecific!
-done - swap out of clientspecific in CatalogService - formal test - seems to be working....
-done -	implement written correctly in finders
-done - BNF, Google, and internal left - implement noted correctly in finders
-done - clientbookid not saved.  barcode also not saved.	
-done - work out isbnnodetail for search - case where not found by isbn, should search again by title, author
-done - adding multi results and isbnsearch read to BNFFinder
-done - will need to update isEligible
-done - resultsIntoFoundDetail
-done - implement swapped out in save
-done - display not working /books/display/62767 as redirect, but yes when called directly
-done - redirect hell!!!  :-) reworking bookcontroller into redirect controller
-done - start RedirectController addBookCreate - put real book in there!!!
-done - check internal search, and detail id.  same book should have same bookid
-done - save shows book code and processing status
-done - title - create.jspx - add book
-done - editbook - findinfo context - title as Verify Information,
-done - button save as add book to catalog
-done - show - change title to about this book
-nevermind - add button - add another book (add book context only....)						
-done - wire function onButtonClick to a link for authors
-done - move link after creation of new slot
-done - polish
-done - write to field (on submit)		
-done - make authors, illustrators, and subjects editable
-done - test edit author/ill/subj capability - together with clientspecific
-done - add subjects to edit book / display book
-done - display shows all authors, illustrators
-done - implement front end "search again" button (verification changes)
-done - validation changes....
-done - bad clientspecific - isbn 222 title jour de lessive author stehr
-done -two things - should be set to false on save
-done - illustrators still tripping bad clientspecific?
-done - nevermind - save goes to display - display makes an add another button available
-done - GoogleSearch - test multi details....	
-done - eventually - subjects will need to be fixed; change saves to new subject; subject changes trigger new subject save.	
-done - thread cache problem with db and client specific swap out.
-done -   enabling entry for authors, illustrators and subjects - front end
-done - choosedetails page - isbnfield only shown if no isbn in bookdetail
-done - choosedetails title change
-done - choosedetails message
-done - Search - check - every "Chevaliers + Autocollant" is clientspecific, isbn "9782215089971"
-done -  complete AssignDetail for BNF
-done - test AssignDetail for BNF
-done - do test for whole chain - test in DetailSearchService....
-done - wire in to front end
-done - wire in to front end
-done - remove isbn references in choosedetails
-done - backend - assign founddetails
-done - 	detailsearchservice - reset finderlog, finder fills in details, rerun normal search chain
-done -	finders - implement calling for specific id (fill from found detail) 
-done / General - check that quick and dirt search is working
-done - BNF - strip - from isbns  or maybe in setISBN??
-done - validation for entering book which already has a client nr.  currently has to do with assign code
-done - nevermind....show isbns in choosedetail listing
-done - copy image to other books with matching titles and authors when found....
-done - showpublisher in editbook
-done -	editbook - message - Modify the information as you wish, then click on the button add to add the book to the catalog.
-done - current formatting 
-done -1mm for top margin
-done - -3 mm for left margin
-done - trouble with barcode cells being too narrow (33mm not 38mm)
-done - barcode cells too tall (22mm not 21 mm)	
-done - General - check that advanced search is working 
-done - reflect code / class / type changes in search
-done - Navigation - remove assigncode pages.
-done - move redirect back to book
-done - broken shelfcode display in editbook 
-done - finish checking the pig.  client specific? why??
-done - error with this url - http://localhost:8080/biblio/books/display/69460
-done - remove old redirect controller and views
-done - barcode printouts
-done - from / to page for Book Barcodes - start GenerateBarcodeController
-done - begin generateBookBarcodeSheetRange PdfController
-done - generateBookBarcodeSheetRange - put errors in uiModel
-done - BarcodeServiceImple - fill in!!
-done - bug - assign barcodes to people
-done - look for clientspecific in internalfinder 
-done - 	 build structure to pass client into search (in findobj)
-done - fill in search methods in InternalDetailFinder
-done - google - strip html from description
-	
 
 
 ---- end branch changes ----
@@ -655,6 +514,158 @@ done - checkout return symbols
 done - in general - looking good!!
 done - put new look and feel in default.
 
+last branch -
+
+
+
+
+done - redo adding books
+done - db to heroku
+done - small bugfixes - 
+test - login user - don't list superadmins - and cancel create new validates - doesn't back out..
+test - consistent order for classes, logins
+done - lock down admin pages for admin
+done - Edit info box in different color
+done - "No title" books go to full edit
+done - Return by class - Severus de classe 
+done - error assign code to book - title, then isbn.
+done - also - validation - check length of barcodes.
+done - editall verify....
+done - overdue books - last name (or first initial of)
+done - emprunter message - bigandbold
+done - modify book doesn't save with isbn 9782867268915
+not now - think about this.... in edit page?? it's own page?? assigncode to book which already has assigned.
+done - Amazon Search - rework copy authors into bookdetail
+done - move copy authors into book detail to base finder - put into google
+done  - add query switch to amazon - title, author, publisher, isbn
+done - add into founddetails....
+done - complete test of insertAuthorsIntoBookDetail.....
+done - move setDetailStatus in BaseDetailFinder to FinderObj
+done - get findercode in findobj up and going
+done - Recheck set detail status multi
+done - Make eligible look at find object
+done - Set status - moves book detail to ft if status is detail found
+done - Find object log search Add to list of longs
+done - Update previous search (findobj)
+done - Get current search log
+done - new BookModelValidatorTest  
+done - SearchServiceTest
+done - CatalogServiceTest	
+done - LendingServiceTest
+done - BookModelValidatorTest 	
+done - extricate search from catalog service
+done - BaseDetailFinder - isEligible		
+done - GoogleSearch - done
+done - Move to bookdetail
+done - massage tests... (for bookdetail)
+done - CService findBookByClientBookId - load / check BookDetail
+done - CService new - findBookByISBN - load / check BookDetail fill in
+done - BNF search working - parse out data
+done - break text by <b> 
+done - large swipe take care of listed type - type....
+done -  adding addl codes to book detail in DetailSearchManager....
+done - import books with Jour de lessive - currently works in normal detail search, but not import
+done -   BNF - rework - 1) book by isbn 2) look for addl codes 3) do catalog search
+done -  some sort of problem - not being added in import books.
+done -  check import books
+done - amazondescriptionsearch coded
+useless! -  amazondescriptionsearch
+done - SearchService findBooksForIdentifier - build in or statement.....
+done -  begin CatalogService saveBookDetail - save authors carefully (detached)
+done - add saveBookDetail to saveBook - hopefully get rid of detached errors in save	
+done - 	bookmark - in detailservice for copying bookdetail and in catalog service
+done - import - with barcode and isbn/ean
+done - fix problem that imported books which aren't looked up aren't saved with a detail status		
+done - offlinesearch - looks in existing book details
+done - backend client codes as bar codes
+done - import - needs to do offline search for everything before saving.  Then online
+done - search for batch maximum after save.
+done - put max count in amazon found details....
+done - add ark codes	
+done - input for description, select for fiction, language
+done - client specific swap out
+done - clientspecific swap - only discard db if db is not already clientspecific!
+done - swap out of clientspecific in CatalogService - formal test - seems to be working....
+done -	implement written correctly in finders
+done - BNF, Google, and internal left - implement noted correctly in finders
+done - clientbookid not saved.  barcode also not saved.	
+done - work out isbnnodetail for search - case where not found by isbn, should search again by title, author
+done - adding multi results and isbnsearch read to BNFFinder
+done - will need to update isEligible
+done - resultsIntoFoundDetail
+done - implement swapped out in save
+done - display not working /books/display/62767 as redirect, but yes when called directly
+done - redirect hell!!!  :-) reworking bookcontroller into redirect controller
+done - start RedirectController addBookCreate - put real book in there!!!
+done - check internal search, and detail id.  same book should have same bookid
+done - save shows book code and processing status
+done - title - create.jspx - add book
+done - editbook - findinfo context - title as Verify Information,
+done - button save as add book to catalog
+done - show - change title to about this book
+nevermind - add button - add another book (add book context only....)						
+done - wire function onButtonClick to a link for authors
+done - move link after creation of new slot
+done - polish
+done - write to field (on submit)		
+done - make authors, illustrators, and subjects editable
+done - test edit author/ill/subj capability - together with clientspecific
+done - add subjects to edit book / display book
+done - display shows all authors, illustrators
+done - implement front end "search again" button (verification changes)
+done - validation changes....
+done - bad clientspecific - isbn 222 title jour de lessive author stehr
+done -two things - should be set to false on save
+done - illustrators still tripping bad clientspecific?
+done - nevermind - save goes to display - display makes an add another button available
+done - GoogleSearch - test multi details....	
+done - eventually - subjects will need to be fixed; change saves to new subject; subject changes trigger new subject save.	
+done - thread cache problem with db and client specific swap out.
+done -   enabling entry for authors, illustrators and subjects - front end
+done - choosedetails page - isbnfield only shown if no isbn in bookdetail
+done - choosedetails title change
+done - choosedetails message
+done - Search - check - every "Chevaliers + Autocollant" is clientspecific, isbn "9782215089971"
+done -  complete AssignDetail for BNF
+done - test AssignDetail for BNF
+done - do test for whole chain - test in DetailSearchService....
+done - wire in to front end
+done - wire in to front end
+done - remove isbn references in choosedetails
+done - backend - assign founddetails
+done - 	detailsearchservice - reset finderlog, finder fills in details, rerun normal search chain
+done -	finders - implement calling for specific id (fill from found detail) 
+done / General - check that quick and dirt search is working
+done - BNF - strip - from isbns  or maybe in setISBN??
+done - validation for entering book which already has a client nr.  currently has to do with assign code
+done - nevermind....show isbns in choosedetail listing
+done - copy image to other books with matching titles and authors when found....
+done - showpublisher in editbook
+done -	editbook - message - Modify the information as you wish, then click on the button add to add the book to the catalog.
+done - current formatting 
+done -1mm for top margin
+done - -3 mm for left margin
+done - trouble with barcode cells being too narrow (33mm not 38mm)
+done - barcode cells too tall (22mm not 21 mm)	
+done - General - check that advanced search is working 
+done - reflect code / class / type changes in search
+done - Navigation - remove assigncode pages.
+done - move redirect back to book
+done - broken shelfcode display in editbook 
+done - finish checking the pig.  client specific? why??
+done - error with this url - http://localhost:8080/biblio/books/display/69460
+done - remove old redirect controller and views
+done - barcode printouts
+done - from / to page for Book Barcodes - start GenerateBarcodeController
+done - begin generateBookBarcodeSheetRange PdfController
+done - generateBookBarcodeSheetRange - put errors in uiModel
+done - BarcodeServiceImple - fill in!!
+done - bug - assign barcodes to people
+done - look for clientspecific in internalfinder 
+done - 	 build structure to pass client into search (in findobj)
+done - fill in search methods in InternalDetailFinder
+done - google - strip html from description
+	
 
 
 

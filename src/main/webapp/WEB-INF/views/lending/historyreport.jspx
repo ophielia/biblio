@@ -11,7 +11,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
  
 <link rel="stylesheet" href="${imagebasedir}/resources/mydojo/widget/css/ShelfClassWidget.css" media="screen"></link>
 <link rel="stylesheet" href="${imagebasedir}/resources/mydojo/widget/css/ShelfClassSelectWidget.css" media="screen"></link>
-    <spring:message code="menu_adminsearch" var="searchtitle"/>
+    <spring:message code="menu_lendinghistory" var="searchtitle"/>
     <h1>${searchtitle}</h1>
 
 <spring:message code="label_class" htmlEscape="false" var="lclass"/>    
@@ -22,6 +22,9 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <spring:message code="label_lending_checkedout" htmlEscape="false" var="lcheckedout"/>    
 <spring:message code="label_lending_duedate" htmlEscape="false" var="lduedate"/>    
 <spring:message code="label_lendingreturned" htmlEscape="false" var="lreturned"/>    
+<spring:message code="label_lendingtimeperiod" htmlEscape="false" var="ltimeperiod"/>    
+<spring:message code="label_lendingstatus" htmlEscape="false" var="lstatus"/>    
+<spring:message code="button_criteria" htmlEscape="false" var="lcriteria"/>    
 
 
 <spring:message code="button_sortby" htmlEscape="false" var="lsortby"/>    
@@ -62,23 +65,18 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 		<table class="clear">
 			<tbody>
 				<tr>
-					<td>class</td>
-					<td>time</td>
-					<td>lendingtype</td>
-				</tr>
-				<tr>
-					<td><form:select path="classselect">
+					<td>${lcriteria}:</td>
+					<td>${lclass} - <form:select path="classselect">
 							<c:forEach items="${classselect}" var="tmp">
 								<form:option value="${tmp.key}" label="${tmp.value}" />
 							</c:forEach>
 						</form:select></td>
-					
-					<td><form:select path="timeselect">
+					<td>${ltimeperiod} - <form:select path="timeselect">
 							<c:forEach items="${timeperiods}" var="tmp">
 								<form:option value="${tmp.key}" label="${tmp.value}" />
 							</c:forEach>
 						</form:select></td>
-					<td><form:select path="lendtypeselect">
+					<td>${lstatus} - <form:select path="lendtypeselect">
 							<c:forEach items="${lendtypeselect}" var="tmp">
 								<form:option value="${tmp.key}" label="${tmp.value}" />
 							</c:forEach>
@@ -86,12 +84,13 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 						<form:input type="hidden" path="sorttype"></form:input>
 						<form:input type="hidden" path="sortdir"></form:input>
 						</td>
+						<td><spring:message code="button_display" htmlEscape="false" var="search_button"/>
+						<input class="linkbutton" id="searchbutton" type="submit" value="${search_button}"/></td>
 				</tr>
 			</tbody>
 		</table>
-		<spring:message code="button_search" htmlEscape="false" var="search_button"/>
-        <input class="linkbutton" id="searchbutton" type="submit" value="${search_button}"/>
-       <br />
+		
+        
 <hr />
 <br />
 

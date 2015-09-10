@@ -107,7 +107,7 @@ public class LendingSearchServiceImpl implements LendingSearchService {
 		if (criteria.getCheckedouton() != null) {
 			ParameterExpression<Date> param = cb.parameter(Date.class,
 					"checkoutdate");
-			whereclause.add(cb.equal(loanrec.<Date> get("checkedout"), param));
+			whereclause.add(cb.greaterThanOrEqualTo(loanrec.<Date> get("checkedout"), param));
 
 		}
 
@@ -115,7 +115,7 @@ public class LendingSearchServiceImpl implements LendingSearchService {
 		if (criteria.getReturnedon() != null) {
 			ParameterExpression<Date> param = cb.parameter(Date.class,
 					"returned");
-			whereclause.add(cb.equal(loanrec.<Date> get("returned"), param));
+			whereclause.add(cb.greaterThanOrEqualTo(loanrec.<Date> get("returned"), param));
 		}
 
 		// do forschoolgroup

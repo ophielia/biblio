@@ -39,5 +39,7 @@ public interface LendingService {
 	List<LoanRecordDisplay> searchLendingHistory(
 			LendingSearchCriteria criteria, Long clientid);
 
+	List<LoanRecordDisplay> getLendingHistoryByLender(Long studentid, Long id);
+
 	
 }

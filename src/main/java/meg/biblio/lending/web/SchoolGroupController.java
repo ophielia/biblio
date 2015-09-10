@@ -12,9 +12,11 @@ import meg.biblio.common.ClientService;
 import meg.biblio.common.SelectKeyService;
 import meg.biblio.common.db.dao.ClientDao;
 import meg.biblio.lending.ClassManagementService;
+import meg.biblio.lending.LendingService;
 import meg.biblio.lending.db.dao.SchoolGroupDao;
 import meg.biblio.lending.db.dao.StudentDao;
 import meg.biblio.lending.web.model.ClassModel;
+import meg.biblio.lending.web.model.LoanRecordDisplay;
 import meg.biblio.lending.web.validator.ClassModelValidator;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,9 +37,11 @@ public class SchoolGroupController {
 
 
 	@Autowired
-	ClassManagementService lendingService;
+	ClassManagementService classMgmtService;
 
-
+	@Autowired
+	LendingService lendingService;
+	
 	@Autowired
 	SelectKeyService keyService;
 
@@ -54,7 +58,7 @@ public class SchoolGroupController {
     	ClientDao client = clientService.getCurrentClient(principal);
     	Long clientkey = client.getId();
 
-		List<SchoolGroupDao> classes = lendingService.getClassesForClient(clientkey);
+		List<SchoolGroupDao> classes = classMgmtService.getClassesForClient(clientkey);
     	uiModel.addAttribute("listofclasses",classes);
 		return "schoolgroups/list";
 	}
@@ -85,10 +89,10 @@ public class SchoolGroupController {
     	uiModel.asMap().clear();
 
     	// create class for teacher - and load class model
-    	ClassModel newclass = lendingService.createClassFromClassModel(model, clientkey);
+    	ClassModel newclass = classMgmtService.createClassFromClassModel(model, clientkey);
 
     	// add list of unassigned students to model
-    	List<StudentDao> unassigned = lendingService.getUnassignedStudents(clientkey);
+    	List<StudentDao> unassigned = classMgmtService.getUnassignedStudents(clientkey);
     	newclass.setUnassignedstudents(unassigned);
 
     	uiModel.addAttribute("classModel", newclass);
@@ -102,7 +106,7 @@ public class SchoolGroupController {
     @RequestMapping(value="/editstudent/{id}", method = RequestMethod.GET, produces = "text/html")
     public String showEditStudentForm(@PathVariable("id") Long studentid, Model uiModel, HttpServletRequest httpServletRequest, Principal principal) {
     	// load ClassModel
-    	ClassModel sclass = lendingService.loadClassModelForStudent(studentid);
+    	ClassModel sclass = classMgmtService.loadClassModelForStudent(studentid);
 
     	// set student in model
     	sclass.setStudentInModel(studentid);
@@ -124,8 +128,8 @@ public class SchoolGroupController {
 			// put model back in uiModel and return to edit
 			uiModel.addAttribute("classModel",classModel);
 			return "schoolgroups/editstudent";
-		}    	
-    	
+		}
+
     	// get info from model
     	Long sid = classModel.getStudentid();
     	String firstname= classModel.getStudentfirstname();
@@ -133,13 +137,13 @@ public class SchoolGroupController {
     	Long sectionid = classModel.getStudentsection();
 
     	// save info in database
-    	lendingService.editStudent(client.getId(), sid, firstname, lastname, sectionid);
+    	classMgmtService.editStudent(client.getId(), sid, firstname, lastname, sectionid);
 
     	// load model
-    	ClassModel sclass = lendingService.loadClassModelForStudent(sid);
+    	ClassModel sclass = classMgmtService.loadClassModelForStudent(sid);
 
     	// add list of unassigned students to model
-    	List<StudentDao> unassigned = lendingService.getUnassignedStudents(client.getId());
+    	List<StudentDao> unassigned = classMgmtService.getUnassignedStudents(client.getId());
     	sclass.setUnassignedstudents(unassigned);
 
     	// put classmodel in model
@@ -150,15 +154,36 @@ public class SchoolGroupController {
 
     	}
 
+    @RequestMapping(value="/showstudent/{id}", method = RequestMethod.GET, produces = "text/html")
+    public String showStudent(@PathVariable("id") Long studentid, Model uiModel,
+    		HttpServletRequest httpServletRequest, Principal principal) {
+    	ClientDao client = clientService.getCurrentClient(principal);
+    	// load ClassModel
+    	ClassModel sclass = classMgmtService.loadClassModelForStudent(studentid);
+
+    	// get lending history for student
+    	List<LoanRecordDisplay> lendhistory = lendingService.getLendingHistoryByLender(studentid, client.getId());
+    	
+    	// set student in model
+    	sclass.setStudentInModel(studentid);
+
+    	// put classmodel in model
+    	uiModel.addAttribute("classModel",sclass);
+    	uiModel.addAttribute("lendinghistory",lendhistory);
+
+    	// return edit view
+    	return "schoolgroups/showstudent";
+    	}
+    
     @RequestMapping(value="/editstudent/{id}", params="cancel", method = RequestMethod.POST, produces = "text/html")
     public String cancelEditStudent(@ModelAttribute("classModel") ClassModel classModel,@PathVariable("id") Long studentid, Model uiModel, HttpServletRequest httpServletRequest, Principal principal) {
     	ClientDao client = clientService.getCurrentClient(principal);
 
     	// load model
-    	ClassModel sclass = lendingService.loadClassModelById(classModel.getClassid());
+    	ClassModel sclass = classMgmtService.loadClassModelById(classModel.getClassid());
 
     	// add list of unassigned students to model
-    	List<StudentDao> unassigned = lendingService.getUnassignedStudents(client.getId());
+    	List<StudentDao> unassigned = classMgmtService.getUnassignedStudents(client.getId());
     	sclass.setUnassignedstudents(unassigned);
 
     	// put classmodel in model
@@ -173,11 +198,11 @@ public class SchoolGroupController {
     public String showEditClassForm(@PathVariable("id") Long id, Model uiModel, HttpServletRequest httpServletRequest, Principal principal) {
     	ClientDao client = clientService.getCurrentClient(principal);
     	// load ClassModel
-    	ClassModel sclass = lendingService.loadClassModelById(id);
+    	ClassModel sclass = classMgmtService.loadClassModelById(id);
 
 
     	// add list of unassigned students to model
-    	List<StudentDao> unassigned = lendingService.getUnassignedStudents(client.getId());
+    	List<StudentDao> unassigned = classMgmtService.getUnassignedStudents(client.getId());
     	sclass.setUnassignedstudents(unassigned);
 
 
@@ -198,29 +223,29 @@ public class SchoolGroupController {
 	public String addNewStudent(@ModelAttribute("classModel") ClassModel classModel,@PathVariable("id") Long id, BindingResult bindingResult,Model uiModel, HttpServletRequest httpServletRequest, Principal principal) {
     	// Add attribute "add another" here
     	uiModel.addAttribute("addanother",false);
-    	
+
     	return newStudent( classModel,id, bindingResult,uiModel, httpServletRequest, principal);
 
 	}
-    
+
     @RequestMapping(value="/display/{id}", params="addnewandagain",method = RequestMethod.POST, produces = "text/html")
 	public String addNewStudentAndAgain(@ModelAttribute("classModel") ClassModel classModel,@PathVariable("id") Long id, BindingResult bindingResult,Model uiModel, HttpServletRequest httpServletRequest, Principal principal) {
     	// Add attribute "add another" here
     	uiModel.addAttribute("addanother",true);
-    	
+
     	return newStudent( classModel,id, bindingResult,uiModel, httpServletRequest, principal);
-	}    
-    
+	}
+
 	private String newStudent(ClassModel classModel,Long id, BindingResult bindingResult,Model uiModel, HttpServletRequest httpServletRequest, Principal principal) {
     	ClientDao client = clientService.getCurrentClient(principal);
     	Long clientkey = client.getId();
 
-		ClassModel start = lendingService.loadClassModelById(id);
+		ClassModel start = classMgmtService.loadClassModelById(id);
 		// validation
 		classValidator.validateNewStudentEntry(classModel, bindingResult);
 		if (bindingResult.hasErrors()) {
 	    	classModel.setSchoolGroup(start.getSchoolGroup());
-			
+
 			// put classmodel in model
 	    	uiModel.addAttribute("classModel",classModel);
 
@@ -229,22 +254,22 @@ public class SchoolGroupController {
 		}
 
 		// save student
-		lendingService.addNewStudentToClass(classModel.getStudentname(), classModel.getStudentsection(), start.getSchoolGroup(), clientkey);	
+		classMgmtService.addNewStudentToClass(classModel.getStudentname(), classModel.getStudentsection(), start.getSchoolGroup(), clientkey);
 
     	// add list of unassigned students to model
-		start = lendingService.loadClassModelById(id);		
-    	List<StudentDao> unassigned = lendingService.getUnassignedStudents(clientkey);
+		start = classMgmtService.loadClassModelById(id);
+    	List<StudentDao> unassigned = classMgmtService.getUnassignedStudents(clientkey);
     	start.setUnassignedstudents(unassigned);
 
     	// put classmodel in model
     	uiModel.addAttribute("classModel",start);
 
     	// Add attribute "add another" here
-    	
-    	
+
+
     	// return edit view
     	return "schoolgroups/edit";
-	}    
+	}
 
     @RequestMapping(value="/display/{id}", params="addstudents",method = RequestMethod.POST, produces = "text/html")
 	public String assignStudents(@ModelAttribute("classModel") ClassModel classModel,@PathVariable("id") Long id, Model uiModel, HttpServletRequest httpServletRequest, Principal principal) {
@@ -255,11 +280,11 @@ public class SchoolGroupController {
 		List<Long> idstoadd=classModel.getSelectedUnassignedIds();
 
 		// assign students
-		ClassModel start = lendingService.loadClassModelById(id);
-		ClassModel model = lendingService.assignStudentsToClass(idstoadd, start.getSchoolGroup(), clientkey);
+		ClassModel start = classMgmtService.loadClassModelById(id);
+		ClassModel model = classMgmtService.assignStudentsToClass(idstoadd, start.getSchoolGroup(), clientkey);
 
     	// add list of unassigned students to model
-    	List<StudentDao> unassigned = lendingService.getUnassignedStudents(clientkey);
+    	List<StudentDao> unassigned = classMgmtService.getUnassignedStudents(clientkey);
     	model.setUnassignedstudents(unassigned);
 
     	// put classmodel in model
@@ -279,11 +304,11 @@ public class SchoolGroupController {
 		List<Long> idstoremove=classModel.getSelectedIdsToRemove();
 
 		// assign students
-		ClassModel start = lendingService.loadClassModelById(id);
-		ClassModel model = lendingService.removeStudentsFromClass(idstoremove, start.getSchoolGroup(), clientkey);
+		ClassModel start = classMgmtService.loadClassModelById(id);
+		ClassModel model = classMgmtService.removeStudentsFromClass(idstoremove, start.getSchoolGroup(), clientkey);
 
     	// add list of unassigned students to model
-    	List<StudentDao> unassigned = lendingService.getUnassignedStudents(clientkey);
+    	List<StudentDao> unassigned = classMgmtService.getUnassignedStudents(clientkey);
     	model.setUnassignedstudents(unassigned);
 
     	// put classmodel in model
@@ -297,7 +322,7 @@ public class SchoolGroupController {
     public String deleteClass(@PathVariable("id") Long id, Model uiModel, HttpServletRequest httpServletRequest, Principal principal) {
     	ClientDao client = clientService.getCurrentClient(principal);
 
-    	lendingService.deleteClass(id, client.getId());
+    	classMgmtService.deleteClass(id, client.getId());
 
     	// return class list view
     	return "redirect:/classes";
@@ -314,7 +339,7 @@ public class SchoolGroupController {
     public String incrementStudents( Model uiModel, HttpServletRequest httpServletRequest, Principal principal) {
     	ClientDao client = clientService.getCurrentClient(principal);
 
-    	lendingService.moveAllStudentsToNextSection(client.getId());
+    	classMgmtService.moveAllStudentsToNextSection(client.getId());
 
     	// return edit class view
     	return "schoolgroups/settings";
@@ -326,7 +351,7 @@ public class SchoolGroupController {
     	ClientDao client = clientService.getCurrentClient(principal);
 
 
-    	lendingService.clearStudentListsForClient(client.getId());
+    	classMgmtService.clearStudentListsForClient(client.getId());
 
     	// return edit class view
     	return "schoolgroups/settings";
@@ -341,7 +366,7 @@ public class SchoolGroupController {
 
 		// add list of unassigned students to model
 		ClassModel model = new ClassModel();
-		List<StudentDao> unassigned = lendingService
+		List<StudentDao> unassigned = classMgmtService
 				.getUnassignedStudents(client.getId());
 		model.setUnassignedstudents(unassigned);
 
@@ -359,7 +384,7 @@ public class SchoolGroupController {
 		// get selected students
 		List<Long> idstoremove=classModel.getSelectedUnassignedIds();
 
-		lendingService.setStudentsAsInactive(idstoremove, client.getId());
+		classMgmtService.setStudentsAsInactive(idstoremove, client.getId());
     	// return edit class view
     	return "redirect:/classes";
     	}
