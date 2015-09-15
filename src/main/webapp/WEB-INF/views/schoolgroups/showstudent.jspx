@@ -12,7 +12,9 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 
 
 <spring:message code="button_cancel" htmlEscape="false" var="bcancel"/>
+<spring:message code="action_lending_returntohistory" htmlEscape="false" var="breturnhist"/>
 <spring:message code="label_class_classof" htmlEscape="false" var="lclassof"/>
+<spring:message code="entity_edit" htmlEscape="false" var="ledit"/>
 <spring:message code="label_book_clientbookid" htmlEscape="false" var="lbookid"/>    
 <spring:message code="label_book_title" htmlEscape="false" var="ltitle"/>    
 <spring:message code="label_book_author" htmlEscape="false" var="lauthor"/>    
@@ -24,7 +26,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 
 <h1>${classModel.studentfirstname} ${classModel.studentname} - ${sectionSelect[classModel.studentsection]} </h1>
 
-<spring:url value="/classes/editstudent/${classModel.studentid}" var="actionurl"/>
+<spring:url value="/classes/editstudent/${classModel.studentid}" var="editurl"/>
 
 <h2>${lclassof} ${classModel.teacher.firstname} ${classModel.teacher.lastname}</h2>
 
@@ -53,10 +55,19 @@ Lending History
 				</c:forEach>		
 		</tbody>
 		</TABLE>   
+<c:choose>
+<c:when test="${fromlending != null}">
+	<spring:url value="/lendinghistory" var="histurl"/>
+	<a class="linkbutton" href="${histurl}">${breturnhist}</a>
 
+</c:when>
+<c:otherwise>
+	<a class="linkbutton" href="${editurl}">${ledit}</a>
+	<spring:url value="/classes/display/${classModel.schoolGroup.id}" var="cancelurl"/>
+	<a class="linkbutton" href="${cancelurl}">${bcancel}</a>
+</c:otherwise>
+</c:choose>
 
-	<input id="save" class="linkbutton" name="addnew" type="submit" value="${bsave}"/> 
-	<input id="cancel" class="linkbutton" type="submit" value="${bcancel}"/> 
 </div>
 
 

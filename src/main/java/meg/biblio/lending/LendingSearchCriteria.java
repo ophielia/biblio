@@ -9,6 +9,8 @@ public class LendingSearchCriteria {
 	public final static String LendTypeLkup="lendtypeselect";
 	public final static String ClassTypeLkup="classselect";
 	public final static String TimeTypeLkup="timeperiodselect";
+	public final static String SchoolYearLkup="schoolyear";
+	public final static String SchoolYearKey="1";
 	
 	public final static class LentToType {
 		public final static Long TEACHER = 1L;
@@ -27,7 +29,7 @@ public class LendingSearchCriteria {
 		public final static Long CURRENTMONTH = 2L;
 		public final static Long LASTTHREEMONTHS = 3L;
 		public final static Long CURRENTSCHOOLYEAR = 4L;
-		public final static Long ALL = 4L;
+		public final static Long ALL = 5L;
 	}	
 	
 	public final static class LendingType {

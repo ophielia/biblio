@@ -6,7 +6,7 @@ insert into select_value (id, display,disporder,value,active,languagekey,version
 insert into select_value (id, display,disporder,value,active,languagekey,version,keyid) values (nextval('hibernate_sequence'),'Overdue',3,'3',true,'en',0,(select id from select_key where lookup='lendtypeselect'));
 
 insert into select_value (id, display,disporder,value,active,languagekey,version,keyid) values (nextval('hibernate_sequence'),'Toutes',1,'1',true,'fr',0,(select id from select_key where lookup='lendtypeselect'));
-insert into select_value (id, display,disporder,value,active,languagekey,version,keyid) values (nextval('hibernate_sequence'),'Emprunt�',2,'2',true,'fr',0,(select id from select_key where lookup='lendtypeselect'));
+insert into select_value (id, display,disporder,value,active,languagekey,version,keyid) values (nextval('hibernate_sequence'),'Emprunté',2,'2',true,'fr',0,(select id from select_key where lookup='lendtypeselect'));
 insert into select_value (id, display,disporder,value,active,languagekey,version,keyid) values (nextval('hibernate_sequence'),'En retard',3,'3',true,'fr',0,(select id from select_key where lookup='lendtypeselect'));
 
 
@@ -29,8 +29,15 @@ insert into select_value (id, display,disporder,value,active,languagekey,version
 insert into select_value (id, display,disporder,value,active,languagekey,version,keyid) values (nextval('hibernate_sequence'),'cette semaine',1,'1',true,'fr',0,(select id from select_key where lookup='timeperiodselect'));
 insert into select_value (id, display,disporder,value,active,languagekey,version,keyid) values (nextval('hibernate_sequence'),'ce mois',2,'2',true,'fr',0,(select id from select_key where lookup='timeperiodselect'));
 insert into select_value (id, display,disporder,value,active,languagekey,version,keyid) values (nextval('hibernate_sequence'),'trois derniers mois',3,'3',true,'fr',0,(select id from select_key where lookup='timeperiodselect'));
-insert into select_value (id, display,disporder,value,active,languagekey,version,keyid) values (nextval('hibernate_sequence'),'ann�e Scolaire',4,'4',true,'fr',0,(select id from select_key where lookup='timeperiodselect'));
+insert into select_value (id, display,disporder,value,active,languagekey,version,keyid) values (nextval('hibernate_sequence'),'année Scolaire',4,'4',true,'fr',0,(select id from select_key where lookup='timeperiodselect'));
 insert into select_value (id, display,disporder,value,active,languagekey,version,keyid) values (nextval('hibernate_sequence'),'tous',5,'5',true,'fr',0,(select id from select_key where lookup='timeperiodselect'));
+
+/** time period select */
+insert into select_key (id, lookup,version) values (nextval('hibernate_sequence'),'schoolyear',0);
+
+insert into select_value (id, display,disporder,value,active,languagekey,version,keyid) values (nextval('hibernate_sequence'),'School Year',1,'1',true,'en',0,(select id from select_key where lookup='schoolyear'));
+insert into select_value (id, display,disporder,value,active,languagekey,version,keyid) values (nextval('hibernate_sequence'),'année Scolaire',1,'1',true,'fr',0,(select id from select_key where lookup='schoolyear'));
+
 
 /** new view **/
 CREATE OR REPLACE VIEW loanrecorddisplay AS 

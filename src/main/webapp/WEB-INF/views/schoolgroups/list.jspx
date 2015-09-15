@@ -14,7 +14,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <spring:message code="label_class_overview" htmlEscape="false" var="ltitle"/>
 <spring:message code="label_class_studentcount" htmlEscape="false" var="lstudentcount"/>
 <spring:message code="label_class_teacher" htmlEscape="false" var="lteacher"/>
-<spring:message code="entity_edit" htmlEscape="false" var="ledit"/>
+<spring:message code="entity_display" htmlEscape="false" var="ledit"/>
 <spring:message code="entity_deletenoargs" htmlEscape="false" var="ldelete"/>
 <spring:message code="entity_create" arguments="${lclass}" htmlEscape="false" var="lcreate"/>
 

@@ -22,8 +22,14 @@
 						url="/lending/checkout" /></li>
 				<li><moo:menulink label="menu_lending_returnbyclass"
 						url="/lending/return" /></li>
-				<li><moo:menulink label="menu_lending_summaryforclasses"
-						url="/lending/summary/all" /></li>
+				<li><moo:menulink label="menu_lendinghistory"
+						url="/lendinghistory" />
+						<ul>
+						<li><moo:menulink label="menu_lending_summaryforclasses"
+								url="/lending/summary/all"  /></li>
+						<li><moo:menulink label="menu_lendinghistory"
+								url="/lendinghistory" /></li>
+					</ul></li>
 				<li><moo:menulink label="menu_lending_alloverdue"
 						url="/lending/overdue/all" /></li>
 				<li><moo:menulink label="menu_lending_allcheckedout"

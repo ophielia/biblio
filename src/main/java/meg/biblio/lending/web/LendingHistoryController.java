@@ -1,6 +1,7 @@
 package meg.biblio.lending.web;
 
 import java.security.Principal;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -17,6 +18,7 @@ import meg.biblio.lending.LendingSearchCriteria.SortByDir;
 import meg.biblio.lending.web.model.LendingSearchModel;
 import meg.biblio.lending.web.model.LoanRecordDisplay;
 import meg.biblio.lending.web.model.TeacherInfo;
+import meg.tools.DateUtils;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -206,10 +208,26 @@ public class LendingHistoryController {
 	private HashMap<Long, String> getTimePeriods(HttpServletRequest httpServletRequest,
 			Principal principal, Locale locale) {
 		String lang = locale.getLanguage();
-
+		ClientDao client = clientService.getCurrentClient(principal);
 		// get display hash for key, language
 		HashMap<Long, String> classselect = keyService.getDisplayHashForKey(
 				LendingSearchCriteria.TimeTypeLkup, lang);
+		// determine new school years to add
+		// get current year
+		Integer currentyear = DateUtils.getSchoolYearBeginForDate(new Date());
+		// get first year
+		Integer firstlent = lendingService.getFirstLendingYearForClient(client.getId());
+		// compare and add lines if necessary
+		if (firstlent!=null && firstlent.intValue()!=currentyear.intValue()) {
+			// get year label
+			String label = keyService.getDisplayForKeyValue(LendingSearchCriteria.SchoolYearLkup, LendingSearchCriteria.SchoolYearKey, lang);
+			while (firstlent.intValue()<currentyear.intValue()) {
+				String yearlabel = label + " " + firstlent + " - " + (firstlent.intValue()+1);
+				classselect.put(new Long(firstlent), yearlabel);		
+				firstlent = firstlent+ 1;
+			}
+		} 
+		
 		return classselect;
 	}
 	

@@ -41,5 +41,7 @@ public interface LendingService {
 
 	List<LoanRecordDisplay> getLendingHistoryByLender(Long studentid, Long id);
 
+	Integer getFirstLendingYearForClient(Long clientid);
+
 	
 }

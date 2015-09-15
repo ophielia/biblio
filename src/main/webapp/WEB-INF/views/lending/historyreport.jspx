@@ -111,7 +111,10 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
  <c:forEach var="histRec" items="${historyRecords}" varStatus="bookstatus">
 					<tr>
 			<td>${histRec.teacherfirstname }</td>
-			<td>${histRec.borrowerfn } ${histRec.borrowerln }</td>
+			<td>
+<spring:url value="/classes/showstudent/${histRec.borrowerid}?from=lend" var="showurl"/>
+<a class="tableboldlink" href="${showurl}">${histRec.borrowerfn } ${histRec.borrowerln }</a>			
+			</td>
 			<td>${histRec.bookclientid}</td>
 			<td>${histRec.booktitle }<br></br>${histRec.author }</td>
 			<td><fmt:formatDate type="date" 

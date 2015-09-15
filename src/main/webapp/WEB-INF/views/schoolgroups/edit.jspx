@@ -13,8 +13,10 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 
 <spring:message code="label_class" htmlEscape="false" var="lclass"/>
 <spring:message code="entity_show" arguments="${lclass}" htmlEscape="false" var="pagetitle"/>
+<spring:message code="entity_edit" htmlEscape="false" var="ledit"/>
 <spring:message code="message_successcreated" htmlEscape="false" var="msgsuccess"/>
 <spring:message code="message_nostudents" htmlEscape="false" var="msgnostudents"/>
+<spring:message code="entity_display" htmlEscape="false" var="lshow"/>
 
 <spring:message code="label_class_classof" htmlEscape="false" var="lclassof"/>
 <spring:message code="label_class_studentpl" htmlEscape="false" var="lstudents"/>
@@ -172,7 +174,8 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <tr>
 <td>${tmp.firstname} ${tmp.lastname}</td>
 <td>${sectionLkup[tmp.sectionkey]}</td>
-<td><spring:url value="/classes/editstudent/${tmp.id}" var="editurl"/><a class="linkbutton" href="${editurl}">Edit</a></td>
+<td><spring:url value="/classes/editstudent/${tmp.id}" var="editurl"/><a class="linkbutton" href="${editurl}">${ledit}</a>
+ <spring:url value="/classes/showstudent/${tmp.id}" var="showurl"/><a class="linkbutton" href="${showurl}">${lshow}</a></td>
 </tr>
 </c:forEach>
 </c:when>

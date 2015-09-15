@@ -75,4 +75,12 @@ privileged aspect LoanRecordDao_Roo_JavaBean {
         this.teacherid = teacherid;
     }
     
+    public Long LoanRecordDao.getBorrowersection() {
+        return this.borrowersection;
+    }
+    
+    public void LoanRecordDao.setBorrowersection(Long borrowersection) {
+        this.borrowersection = borrowersection;
+    }
+    
 }

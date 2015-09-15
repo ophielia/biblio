@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 
 @RequestMapping("/classes")
@@ -155,7 +156,7 @@ public class SchoolGroupController {
     	}
 
     @RequestMapping(value="/showstudent/{id}", method = RequestMethod.GET, produces = "text/html")
-    public String showStudent(@PathVariable("id") Long studentid, Model uiModel,
+    public String showStudent(@PathVariable("id") Long studentid,@RequestParam(value="from", required=false) String lendinghistory,Model uiModel,
     		HttpServletRequest httpServletRequest, Principal principal) {
     	ClientDao client = clientService.getCurrentClient(principal);
     	// load ClassModel
@@ -170,7 +171,10 @@ public class SchoolGroupController {
     	// put classmodel in model
     	uiModel.addAttribute("classModel",sclass);
     	uiModel.addAttribute("lendinghistory",lendhistory);
-
+    	if (lendinghistory !=null) {
+    		uiModel.addAttribute("fromlending",true);
+    	}
+    	
     	// return edit view
     	return "schoolgroups/showstudent";
     	}

@@ -2,18 +2,13 @@ Branch - inventory
 	inventory
 	rework lending - lending search
 
-LoanHistoryController -
-	
-	
+
 time select - add year selects
 
-show student page - including all books checked out
-	add edit link to student page
-	add back link for lendinghistory page
-	
-link show student page to lending history	
-link show student page to class list
+fix in checkout book - use DateUtils.
 
+pages for showing book lending history
+booklent count - select count(id) from loanrecord where book = 22728
 
 stop, revisit, reprioritize	
 
@@ -24,12 +19,13 @@ checkout record for book
 
 
 ---- begin commit changes ----
-done - 	DateUtils - make method for first date in current school year
-	done - finish LendingSearchModel - add sort info
-	done - finish LendingSearchCriteria - processing inputs from model (select boxes to concrete dates, query parameters)
-	done - insert LSM into LoanHistoryController
-done - hard coded to labels  - finish select boxes, title of page
-
+done - show student page - including all books checked out
+done - 	add edit link to student page
+done - 	add back link for lendinghistory page
+done - link show student page to lending history	
+done - link show student page to class list
+done - fix menu - lending history as main link, under links lending history and daily summary
+	
 ---- end commit changes ----
 
 
@@ -49,6 +45,11 @@ done - bookid in lending history
 done - sorting ability to lendingsearch
 done - sort only in one direction
 done - 	add sort for book sort (sorting bookid alphabetically....)
+done - 	DateUtils - make method for first date in current school year
+	done - finish LendingSearchModel - add sort info
+	done - finish LendingSearchCriteria - processing inputs from model (select boxes to concrete dates, query parameters)
+	done - insert LSM into LoanHistoryController
+done - hard coded to labels  - finish select boxes, title of page
 
 
 

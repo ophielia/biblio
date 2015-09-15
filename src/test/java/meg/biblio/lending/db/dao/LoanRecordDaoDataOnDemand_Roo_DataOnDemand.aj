@@ -44,12 +44,18 @@ privileged aspect LoanRecordDaoDataOnDemand_Roo_DataOnDemand {
     
     public LoanRecordDao LoanRecordDaoDataOnDemand.getNewTransientLoanRecordDao(int index) {
         LoanRecordDao obj = new LoanRecordDao();
+        setBorrowersection(obj, index);
         setCheckoutdate(obj, index);
         setDuedate(obj, index);
         setReturned(obj, index);
         setSchoolyear(obj, index);
         setTeacherid(obj, index);
         return obj;
+    }
+    
+    public void LoanRecordDaoDataOnDemand.setBorrowersection(LoanRecordDao obj, int index) {
+        Long borrowersection = new Integer(index).longValue();
+        obj.setBorrowersection(borrowersection);
     }
     
     public void LoanRecordDaoDataOnDemand.setCheckoutdate(LoanRecordDao obj, int index) {

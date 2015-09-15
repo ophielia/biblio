@@ -45,4 +45,6 @@ public class LoanRecordDao {
 	private Integer schoolyear;
 
 	private Long teacherid;
+	
+	private Long borrowersection;
 }

@@ -10,6 +10,7 @@ import meg.biblio.catalog.CatalogService;
 import meg.biblio.catalog.db.BookRepository;
 import meg.biblio.catalog.db.dao.BookDao;
 import meg.biblio.common.ClientService;
+import meg.biblio.common.ScalarFunction;
 import meg.biblio.common.db.dao.ClientDao;
 import meg.biblio.common.report.ClassSummaryReport;
 import meg.biblio.common.report.DailySummaryReport;
@@ -36,6 +37,9 @@ public class LendingServiceImpl implements LendingService {
 	@Autowired
 	ClientService clientService;
 
+	@Autowired
+	ScalarFunction<Integer> scalarDb;
+	
 	@Autowired
 	CatalogService catalogService;
 
@@ -70,8 +74,8 @@ public class LendingServiceImpl implements LendingService {
 
 		Integer schoolyear = 0;
 		boolean isteacher = true;
-		String teachername = null;
 		Long teacherid = null;
+		Long studentsection = null;
 		if (person instanceof StudentDao) {
 			isteacher = false;
 			StudentDao st = (StudentDao) person;
@@ -81,6 +85,7 @@ public class LendingServiceImpl implements LendingService {
 			if (tch!=null ) {
 				teacherid =tch.getId();
 			}
+			studentsection = st.getSectionkey();
 		} else if (person instanceof TeacherDao) {
 			TeacherDao st = (TeacherDao) person;
 			SchoolGroupDao sg = st.getSchoolgroup();
@@ -96,6 +101,7 @@ public class LendingServiceImpl implements LendingService {
 		loanrec.setClient(client);
 		loanrec.setSchoolyear(schoolyear);
 		loanrec.setTeacherid(teacherid);
+		loanrec.setBorrowersection(studentsection);
 		
 		// insert dates - checkedout and due
 		Integer checkoutdays = isteacher ? client.getTeachercheckouttime()
@@ -335,4 +341,11 @@ public class LendingServiceImpl implements LendingService {
 		return history;
 	}
 
+	@Override
+	public Integer getFirstLendingYearForClient(Long clientid) {
+		String sql = "select  min(schoolyear)  from loanrecord where client=" + clientid;
+		Integer minlendyear = scalarDb.singleResult(sql);
+		
+		return minlendyear;
+	}
 }
