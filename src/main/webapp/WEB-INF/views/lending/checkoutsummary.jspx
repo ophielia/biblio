@@ -40,8 +40,8 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <td>${classInfo[checkedout.classid].firstname}</td>
 <td>${checkedout.booktitle} </td>
 <td>${checkedout.author} </td>
-<td>${checkedout.checkedout} </td>
-<td>${checkedout.duedate} </td>
+<td nowrap="true">${checkedout.checkedoutDisplay} </td>
+<td  nowrap="true">${checkedout.duedateDisplay} </td>
 
 </tr>
 </c:forEach>

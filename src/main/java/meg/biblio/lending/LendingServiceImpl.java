@@ -3,7 +3,6 @@ package meg.biblio.lending;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
 import meg.biblio.catalog.CatalogService;
@@ -23,7 +22,7 @@ import meg.biblio.lending.db.dao.SchoolGroupDao;
 import meg.biblio.lending.db.dao.StudentDao;
 import meg.biblio.lending.db.dao.TeacherDao;
 import meg.biblio.lending.web.model.LoanRecordDisplay;
-import meg.biblio.lending.web.model.TeacherInfo;
+import meg.tools.DateUtils;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -76,11 +75,11 @@ public class LendingServiceImpl implements LendingService {
 		boolean isteacher = true;
 		Long teacherid = null;
 		Long studentsection = null;
+		schoolyear =DateUtils.getSchoolYearBeginForDate(new Date());
 		if (person instanceof StudentDao) {
 			isteacher = false;
 			StudentDao st = (StudentDao) person;
 			SchoolGroupDao sg = st.getSchoolgroup();
-			schoolyear = sg.getSchoolyearbegin();
 			TeacherDao tch = sg.getTeacher();
 			if (tch!=null ) {
 				teacherid =tch.getId();
@@ -89,7 +88,6 @@ public class LendingServiceImpl implements LendingService {
 		} else if (person instanceof TeacherDao) {
 			TeacherDao st = (TeacherDao) person;
 			SchoolGroupDao sg = st.getSchoolgroup();
-			schoolyear = sg.getSchoolyearbegin();
 			teacherid = person.getId();
 		}
 
@@ -261,7 +259,7 @@ public class LendingServiceImpl implements LendingService {
 		// checkedout on date
 		LendingSearchCriteria criteria = new LendingSearchCriteria();
 		criteria.setSchoolgroup(classid);
-		criteria.setCheckedouton(date);
+		criteria.setCheckedoutafter(date);
 		criteria.setCheckedoutOnly(true);
 		List<LoanRecordDisplay> checkedout = lendingSearch
 				.findLoanRecordsByCriteria(criteria, clientid);

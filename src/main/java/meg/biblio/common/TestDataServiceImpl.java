@@ -299,7 +299,7 @@ criteria.setStatus(CatalogService.Status.SHELVED);
 		for (ClassModel cm:classes) {
 			LendingSearchCriteria lsc = new LendingSearchCriteria();
 			lsc.setSchoolgroup(cm.getClassid());
-			lsc.setCheckedouton(lastweekco);
+			lsc.setCheckedoutafter(lastweekco);
 			lsc.setCheckedoutOnly(true);
 			List<LoanRecordDisplay> lrs = lendingSearchService.findLoanRecordsByCriteria(lsc, clientid);
 			

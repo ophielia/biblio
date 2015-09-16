@@ -5,12 +5,26 @@ Branch - inventory
 
 time select - add year selects
 
-fix in checkout book - use DateUtils.
+test - fix in checkout book - use DateUtils.
+
+fix - lending history by person - Soren - descending order default
 
 pages for showing book lending history
 booklent count - select count(id) from loanrecord where book = 22728
 
+done - datedisplay - make display methods (getters)
+
+
 stop, revisit, reprioritize	
+get online up and going
+
+new features
+pagination
+new statuses - in repair, removed from circulation
+assign detail results in detail found
+remove "view book" link
+norwegian classification
+housekeeping non-fiction
 
 
 checkout record for book

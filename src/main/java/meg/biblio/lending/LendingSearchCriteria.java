@@ -1,5 +1,6 @@
 package meg.biblio.lending;
 
+import java.util.Calendar;
 import java.util.Date;
 
 import meg.tools.DateUtils;
@@ -52,7 +53,8 @@ public class LendingSearchCriteria {
 		public static final long DESC = 2;
 	}
 	
-	private Date checkedouton;
+	private Date checkedoutafter;
+	private Date checkedoutbefore;
 	private Date returnedon;
 	private Long forschoolgroup;
 	private Long lentToType;
@@ -67,12 +69,22 @@ public class LendingSearchCriteria {
 	private long sortdir;
 
 
-	public Date getCheckedouton() {
-		return checkedouton;
+	public Date getCheckedoutafter() {
+		return checkedoutafter;
 	}
 
-	public void setCheckedouton(Date checkedouton) {
-		this.checkedouton = checkedouton;
+	public void setCheckedoutafter(Date checkedouton) {
+		this.checkedoutafter = checkedouton;
+	}
+
+	
+	
+	public Date getCheckedoutbefore() {
+		return checkedoutbefore;
+	}
+
+	public void setCheckedoutbefore(Date checkedoutbefore) {
+		this.checkedoutbefore = checkedoutbefore;
 	}
 
 	public Boolean getCheckedoutOnly() {
@@ -166,8 +178,17 @@ public class LendingSearchCriteria {
 			} else if (timeselect.longValue()==TimePeriodType.CURRENTSCHOOLYEAR) {
 				// september 1 of current school year through present
 				startdate = DateUtils.getFirstDayOfSchoolYear(new Date());
+			} else if (timeselect.longValue()>100) {
+				// asking for a different school year
+				Calendar cal = Calendar.getInstance();
+				cal.set(Calendar.YEAR, timeselect.intValue());
+				cal.set(Calendar.MONTH, Calendar.SEPTEMBER);
+				cal.set(Calendar.DAY_OF_MONTH,1);
+				startdate = DateUtils.getFirstDayOfSchoolYear(cal.getTime());
+				Date enddate = DateUtils.getLastDayOfSchoolYear(startdate);
+				setCheckedoutbefore(enddate);
 			}
-			setCheckedouton(startdate);
+			setCheckedoutafter(startdate);
 		}
 
 	}
@@ -190,7 +211,7 @@ public class LendingSearchCriteria {
 	}
 
 	public void reset() {
-		checkedouton = null;
+		checkedoutafter = null;
 		returnedon = null;
 		forschoolgroup = null;
 		lentToType = null;

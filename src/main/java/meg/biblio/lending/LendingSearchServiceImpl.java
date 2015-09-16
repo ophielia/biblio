@@ -103,13 +103,21 @@ public class LendingSearchServiceImpl implements LendingSearchService {
 				"clientid");
 		whereclause.add(cb.equal(loanrec.<Long> get("clientid"), clientparam));
 
-		// do checkedouton
-		if (criteria.getCheckedouton() != null) {
+		// do checkedoutonafter
+		if (criteria.getCheckedoutafter() != null) {
 			ParameterExpression<Date> param = cb.parameter(Date.class,
 					"checkoutdate");
 			whereclause.add(cb.greaterThanOrEqualTo(loanrec.<Date> get("checkedout"), param));
 
 		}
+		
+		// do checkedoutonafter
+		if (criteria.getCheckedoutafter() != null) {
+			ParameterExpression<Date> param = cb.parameter(Date.class,
+					"checkoutdatebefore");
+			whereclause.add(cb.lessThanOrEqualTo(loanrec.<Date> get("checkedout"), param));
+
+		}		
 
 		// do returned on
 		if (criteria.getReturnedon() != null) {
@@ -177,10 +185,15 @@ public class LendingSearchServiceImpl implements LendingSearchService {
 		q.setParameter("clientid", clientid);
 
 		// do checkedouton
-		if (criteria.getCheckedouton() != null) {
-			q.setParameter("checkoutdate", criteria.getCheckedouton());
+		if (criteria.getCheckedoutafter() != null) {
+			q.setParameter("checkoutdate", criteria.getCheckedoutafter());
 		}
-
+		
+		// do checkedouton
+		if (criteria.getCheckedoutafter() != null) {
+			q.setParameter("checkoutdatebefore", criteria.getCheckedoutbefore());
+		}		
+		
 		// do returned on
 		if (criteria.getReturnedon() != null) {
 			q.setParameter("returned", criteria.getReturnedon());

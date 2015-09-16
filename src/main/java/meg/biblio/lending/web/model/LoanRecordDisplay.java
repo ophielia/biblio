@@ -1,5 +1,6 @@
 package meg.biblio.lending.web.model;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.persistence.Entity;
@@ -123,16 +124,41 @@ public class LoanRecordDisplay {
 		return checkedout;
 	}
 
+	public String getCheckedoutDisplay() {
+
+		
+		if (duedate!=null) {
+			SimpleDateFormat fmt = new SimpleDateFormat("dd-MM-YYYY");
+			return fmt.format(checkedout);	
+		}
+		return "";
+	}
+
 	@XmlElement
 	public Date getReturned() {
 		return returned;
 	}
 
+	public String getReturnedDisplay() {
+		if (duedate!=null) {
+			SimpleDateFormat fmt = new SimpleDateFormat("dd-MM-YYYY");
+			return fmt.format(returned);	
+		}
+		return "";
+		
+	}	
 	@XmlElement
 	public Date getDuedate() {
 		return duedate;
 	}
 
+	public String getDuedateDisplay() {
+		if (duedate!=null) {
+			SimpleDateFormat fmt = new SimpleDateFormat("dd-MM-YYYY");
+			return fmt.format(duedate);	
+		}
+		return "";
+	}	
 	@XmlElement
 	public Boolean getIsoverdue() {
 		if (returned!=null && duedate!=null) {

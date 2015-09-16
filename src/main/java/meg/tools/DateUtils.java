@@ -81,6 +81,21 @@ public class DateUtils {
 		return cal.getTime();
 	}	
 	
+	public static Date getLastDayOfSchoolYear(Date currentdate) {
+		Date firstday = getFirstDayOfSchoolYear(currentdate);
+		Calendar cal = new GregorianCalendar();
+		cal.setTime(firstday);
+		// set month to july
+		cal.set(Calendar.MONTH, Calendar.JULY);
+		// set day to 1
+		cal.set(Calendar.DAY_OF_MONTH, 1);
+		// set year to firstday year + 1
+		cal.set(Calendar.YEAR, cal.get(Calendar.YEAR)+1);
+		
+		// return date
+		return cal.getTime();
+	}
+	
 	
 	
 }
