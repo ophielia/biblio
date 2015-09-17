@@ -45,8 +45,8 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <td>${classInfo[checkedout.classid].firstname}</td>
 <td>${checkedout.booktitle} </td>
 <td>${checkedout.author} </td>
-<td>${checkedout.checkedout} </td>
-<td>${checkedout.duedate} </td>
+<td> <fmt:formatDate type="date" value="${checkedout.checkedout}" /></td>
+<td> <fmt:formatDate type="date" value="${checkedout.duedate}" /></td>
 </tr>
 </c:forEach>
 </tbody>

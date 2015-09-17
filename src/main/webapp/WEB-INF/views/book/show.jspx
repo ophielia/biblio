@@ -35,6 +35,12 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <spring:message code="button_edit" htmlEscape="false" var="bedit"/>
 <spring:message code="label_book_aboutthis"  htmlEscape="false" var="pagetitle"/>
 
+<spring:message code="msg_lending_nocheckout" htmlEscape="false"  var="msgnocheckout"/>
+<spring:message code="msg_lending_checkoutcnt" arguments="${bookModel.checkoutcount}" htmlEscape="false"  var="msgcheckoutcount"/>
+<c:if test="${bookModel.checkoutcount==1}">
+<spring:message code="msg_lending_checkoutcntone" arguments="${bookModel.checkoutcount}" htmlEscape="false" var="msgcheckoutcount"/>
+</c:if>
+
 <script type="text/javascript">
  require([
           'dojo/dom',"dojo/on","dojo/dom-construct","dojo/dom-style",
@@ -138,8 +144,16 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 			<div>
 				<spring:url value="/books/update/${bookModel.bookid}" var="linkurl" />
 				<a href="${linkurl}" class="linkbutton" id="showaddl">${bedit}</a>
-
-
+				<c:choose>
+				<c:when test="${bookModel.checkoutcount==0}">
+				<a href="#" class="linkbutton" id="checkoutcnt">${msgnocheckout}</a>
+</c:when>
+<c:otherwise>
+				<spring:url value="/books/displayhistory/${bookModel.bookid}" var="linkurl" />
+				<a href="${linkurl}" class="linkbutton" id="checkoutcnt">${msgcheckoutcount}</a>
+</c:otherwise>
+				
+				</c:choose>
 			</div>
 
 		</div>

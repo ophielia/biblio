@@ -74,8 +74,14 @@ public class CatalogServiceTest {
 	public void setup() {
 		// make artist susan cooper
 		ArtistDao artist = bMemberService.textToArtistName("Susan Cooper");
-		artist = artistRepo.save(artist);
-		artistid = artist.getId();
+		ArtistDao dbfound = searchService.findArtistMatchingName(artist);
+		if (dbfound==null) {
+			artist = artistRepo.save(artist);
+			artistid = artist.getId();
+		} else {
+			artistid = dbfound.getId();
+		}
+
 
 		// add "eating" to ignored words list
 		IgnoredWordsDao ignored = new IgnoredWordsDao();

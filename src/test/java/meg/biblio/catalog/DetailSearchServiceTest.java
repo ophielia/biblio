@@ -125,7 +125,7 @@ public class DetailSearchServiceTest {
 	}
 	
 	
-	@Test
+	/** removed as test because of difficulties with data.bnf **/
 	public void testFillInDetailsForBookAddlCodes() {
 		// make book model
 		Long clientid = clientService.getTestClientId();

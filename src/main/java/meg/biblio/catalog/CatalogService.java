@@ -23,10 +23,11 @@ public interface CatalogService {
 	public final static  class Status {
 		public static final long CHECKEDOUT = 1;
 		public static final long SHELVED = 2;
-		public static final long LOSTBYLENDER = 3;
+		public static final long LOSTBYBORROWER = 3;
 		public static final long REMOVEDFROMCIRC = 4;
 		public static final long INVNOTFOUND = 5;
 		public static final long PROCESSING = 6;
+		public static final long INREPAIR = 7;
 	}
 
 	public final static  class BookType {

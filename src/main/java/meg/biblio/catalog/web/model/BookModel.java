@@ -12,6 +12,7 @@ import meg.biblio.catalog.db.dao.BookDetailDao;
 import meg.biblio.catalog.db.dao.FoundDetailsDao;
 import meg.biblio.catalog.db.dao.PublisherDao;
 import meg.biblio.catalog.db.dao.SubjectDao;
+import meg.biblio.lending.web.model.LoanRecordDisplay;
 
 public class BookModel  implements Serializable {
 
@@ -38,7 +39,9 @@ public class BookModel  implements Serializable {
 
 	private Long previousshelfcode;
 	private Long previousbooktype;
-
+	private Integer checkoutcount;
+	
+	private List<LoanRecordDisplay> history;
 	
 	// *** constructors ***//
 	public BookModel(BookDao book) {
@@ -556,6 +559,29 @@ public class BookModel  implements Serializable {
 	public void setPreviousBookType(Long booktype) {
 		previousbooktype = booktype;
 	}
+
+	public Integer getCheckoutcount() {
+		return checkoutcount;
+	}
+
+	public void setCheckoutcount(Integer checkoutcount) {
+		if (checkoutcount!=null) {
+			this.checkoutcount = checkoutcount;	
+		} else {
+			this.checkoutcount=0;
+		}
+		
+	}
+
+	public void setLendingHistory(List<LoanRecordDisplay> history) {
+		this.history = history;
+	}
+
+	public List<LoanRecordDisplay> getLendingHistory() {
+		return history;
+	}
+	
+	
 
 
 }

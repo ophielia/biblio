@@ -65,6 +65,8 @@ public class LendingServiceTest {
 	private Long student4id;
 	private Long clientid;
 
+	Long overdueid;
+	
 	private Long c2classid;
 	private Long c2student1id;
 	@Before
@@ -131,6 +133,17 @@ public class LendingServiceTest {
 		
 		model = classService.loadClassModelById(model.getClassid());
 		c2classid = model.getClassid();
+		
+		// make one overdue book - checkout book and then fiddle with db.
+		LoanRecordDao makeoverdue = lendingService.checkoutBook(bookid3,
+				student3id, clientid);
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.YEAR, -1);
+		Date fiddledate = cal.getTime();
+		makeoverdue.setDuedate(fiddledate);
+		makeoverdue.setCheckoutdate(fiddledate);
+		lrRepo.save(makeoverdue);
+		overdueid = makeoverdue.getId();
 	}
 
 	@Test
@@ -345,7 +358,7 @@ public class LendingServiceTest {
 		List<LoanRecordDisplay> results = lendingService
 				.getOverdueBooksForClient(clientid);
 
-		// ensure that size >0 and student/ book appear at leas once in list
+		// ensure that size >0 and student/ book appear at least once in list
 		Assert.assertNotNull(results);
 		Assert.assertTrue(results.size() > 0);
 		boolean lrfound = false;

@@ -1,5 +1,6 @@
 package meg.biblio.lending;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -38,6 +39,9 @@ public class LendingServiceImpl implements LendingService {
 
 	@Autowired
 	ScalarFunction<Integer> scalarDb;
+	
+	@Autowired
+	ScalarFunction<BigInteger> scalarCountDb;	
 	
 	@Autowired
 	CatalogService catalogService;
@@ -340,10 +344,34 @@ public class LendingServiceImpl implements LendingService {
 	}
 
 	@Override
+	public List<LoanRecordDisplay> getLendingHistoryForBook(Long bookid,
+			Long clientid) {
+		// assemble criteria (studentid only, by checkout date, descending)
+		LendingSearchCriteria criteria = new LendingSearchCriteria();
+		criteria.setBookid(bookid);
+		criteria.setSortKey(LendingSearchCriteria.SortKey.CHECKEDOUT);
+		criteria.setSortDir(LendingSearchCriteria.SortByDir.DESC);
+
+		// perform search
+		List<LoanRecordDisplay> history = searchLendingHistory(criteria, clientid);
+		
+		// return records
+		return history;
+	}	
+	
+	@Override
 	public Integer getFirstLendingYearForClient(Long clientid) {
 		String sql = "select  min(schoolyear)  from loanrecord where client=" + clientid;
 		Integer minlendyear = scalarDb.singleResult(sql);
 		
 		return minlendyear;
 	}
+	
+	@Override
+	public Integer getCheckoutCountForBook(Long bookid, Long clientid) {
+		String sql = "select count(id) from loanrecord where book = "+bookid+" and client=" + clientid;
+		BigInteger checkoutcnt = scalarCountDb.singleResult(sql);
+		
+		return checkoutcnt.intValue();
+	}	
 }

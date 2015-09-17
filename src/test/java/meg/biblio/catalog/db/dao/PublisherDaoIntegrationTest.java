@@ -3,7 +3,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.roo.addon.test.RooIntegrationTest;
 
-@RooIntegrationTest(entity = PublisherDao.class)
+@RooIntegrationTest(entity = PublisherDao.class,findAll=false)
 public class PublisherDaoIntegrationTest {
 
     @Test

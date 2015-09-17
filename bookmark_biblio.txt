@@ -2,44 +2,31 @@ Branch - inventory
 	inventory
 	rework lending - lending search
 
-
-time select - add year selects
-
-test - fix in checkout book - use DateUtils.
-
-fix - lending history by person - Soren - descending order default
-
-pages for showing book lending history
-booklent count - select count(id) from loanrecord where book = 22728
-
-done - datedisplay - make display methods (getters)
-
-
-stop, revisit, reprioritize	
-get online up and going
-
 new features
 pagination
-new statuses - in repair, removed from circulation
-assign detail results in detail found
-remove "view book" link
-norwegian classification
-housekeeping non-fiction
 
-
-checkout record for book
-
-
-
+theory / strategy / new learning
+db testing - problem with views.  LendingSearchService fails.  check this link - 
+	http://dbunit.sourceforge.net/intro.html
 
 ---- begin commit changes ----
-done - show student page - including all books checked out
-done - 	add edit link to student page
-done - 	add back link for lendinghistory page
-done - link show student page to lending history	
-done - link show student page to class list
-done - fix menu - lending history as main link, under links lending history and daily summary
-	
+done - time select - add year selects
+done - fix in checkout book - use DateUtils.
+done - lending history by person - Soren - descending order default
+done - in process - pages for showing book lending history
+done - booklent count - select count(id) from loanrecord where book = 22728
+done - fill in show lending history by book page (showhistory)
+done  - show history page - title and back button
+done - datedisplay - make display methods (getters)
+done - manual checkout page datedisplay - make display methods (getters)
+done - stop, revisit, reprioritize	
+done - get online up and going
+done - new statuses - in repair
+done - assign detail results in detail found
+done - remove "view book" link
+done - norwegian classification
+done - housekeeping non-fiction
+done - checkout record for book
 ---- end commit changes ----
 
 
@@ -64,7 +51,13 @@ done - 	DateUtils - make method for first date in current school year
 	done - finish LendingSearchCriteria - processing inputs from model (select boxes to concrete dates, query parameters)
 	done - insert LSM into LoanHistoryController
 done - hard coded to labels  - finish select boxes, title of page
-
+done - show student page - including all books checked out
+done - 	add edit link to student page
+done - 	add back link for lendinghistory page
+done - link show student page to lending history	
+done - link show student page to class list
+done - fix menu - lending history as main link, under links lending history and daily summary
+	
 
 
 ---- end branch changes ----

@@ -24,6 +24,8 @@ import meg.biblio.common.AppSettingService;
 import meg.biblio.common.ClientService;
 import meg.biblio.common.SelectKeyService;
 import meg.biblio.common.db.dao.ClientDao;
+import meg.biblio.lending.LendingService;
+import meg.biblio.lending.web.model.LoanRecordDisplay;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -62,6 +64,9 @@ public class BookController {
 
 	@Autowired
 	AppSettingService settingService;
+	
+	@Autowired
+	LendingService lendingService;	
 
 	@Autowired
 	BookModelValidator bookValidator;
@@ -152,7 +157,7 @@ public class BookController {
 					BookDao existing = catalogService.findBookByClientBookId(bookModel.getClientbookid(), client);
 					if (existing !=null) {
 						Long existid = existing.getId();
-						String link = "/book/display/" + existid;
+						String link = "/books/display/" + existid;
 						uiModel.addAttribute("numbertaken",true);
 						uiModel.addAttribute("displaylink",link);
 					}
@@ -246,7 +251,9 @@ public class BookController {
 			BookModel bookModel, Model uiModel,
 			HttpServletRequest httpServletRequest, BindingResult bindingResult,
 			Principal principal, Locale locale) {
-
+		// multi-details found shouldn't be saved to db.  
+		// manually change status to "no details found"
+		bookModel.setDetailstatus(CatalogService.DetailStatus.NODETAIL);
 		return "book/editbook";
 	}
 
@@ -270,6 +277,8 @@ public class BookController {
 		String shortname = client.getShortname();
 		Long detailstatus = bookModel.getDetailstatus();
 		Boolean createnewid = bookModel.getCreatenewid();
+		
+
 		
 		bookValidator.validateUpdateBook(bookModel, bindingResult);
 		if (bindingResult.hasErrors()) {
@@ -452,9 +461,32 @@ FoundDetailsDao fd = fdetails.get(detailidx.intValue());
 		uiModel.addAttribute("clientname", shortname);
 
 		BookModel bmodel = catalogService.loadBookModel(id);
+		// get checkout count
+		Integer count = lendingService.getCheckoutCountForBook(id, client.getId());
+		bmodel.setCheckoutcount(count);
+		
 		uiModel.addAttribute("bookModel", bmodel);
 		return "book/show";
 	}
+	
+	@RequestMapping(value = "/displayhistory/{id}", produces = "text/html")
+	public String displayBookLendingHistory(@PathVariable("id") Long id, Model uiModel,
+			HttpServletRequest httpServletRequest, Principal principal,
+			Locale locale) {
+		ClientDao client = clientService.getCurrentClient(principal);
+		fillLookups(uiModel, httpServletRequest, principal, locale);
+		String shortname = client.getShortname();
+		uiModel.addAttribute("clientname", shortname);
+
+		BookModel bmodel = catalogService.loadBookModel(id);
+		// get checkout history
+		List<LoanRecordDisplay> history = lendingService.getLendingHistoryForBook(id, client.getId());
+		// set checkout history in model
+		bmodel.setLendingHistory(history);
+		
+		uiModel.addAttribute("bookModel", bmodel);
+		return "book/showhistory";
+	}	
 
 	String encodeUrlPathSegment(String pathSegment,
 			HttpServletRequest httpServletRequest) {

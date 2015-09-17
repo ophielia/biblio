@@ -72,3 +72,17 @@ CREATE OR REPLACE VIEW loanrecorddisplay AS
    LEFT JOIN artist auth ON auth.id = ba.artist_id;
 
 
+/** correction select_key / select_value **/
+update select_value set display ='lost by borrower' where id = (select id from select_value where keyid=(select id from select_key where lookup='bookstatus')
+and display='lost by lender' and languagekey='en');
+update select_value set display ='perdu par l''emprunteur' where id = (select id from select_value where keyid=(select id from select_key where lookup='bookstatus')
+and display='lost by lender' and languagekey='fr');
+insert into select_value (id, display,disporder,value,active,languagekey,version,keyid) values (nextval('hibernate_sequence'),'In Repair',7,'7',true,'en',0,(select id from select_key where lookup='bookstatus'));
+insert into select_value (id, display,disporder,value,active,languagekey,version,keyid) values (nextval('hibernate_sequence'),'dans la réparation',7,'7',true,'fr',0,(select id from select_key where lookup='bookstatus'));
+
+/** correction - non-fiction categories to non-fiction  book type **/
+update  book set clientbooktype = 2 where clientshelfcode in (1,2,4,9,11,12,13,14,15,16,17,18,19,20,21,22,22) and clientbooktype <> 2 and clientid = 68;
+update  book set clientbooktype = 3 where clientshelfcode in (8) and clientbooktype <> 2 and clientid = 68;
+
+/** adding norwegian flag **/
+INSERT INTO classification( id, clientid, description, version, imagedisplay, key, language, textdisplay) VALUES (nextval('hibernate_sequence'), (select id from client where name like '%Mareschale%'), 'norwegian books', 0, '/images/mareschale/classification/norwegianflag.gif', 32, 'en','norwegian flag' );

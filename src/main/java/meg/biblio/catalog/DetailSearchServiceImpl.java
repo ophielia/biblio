@@ -1,7 +1,5 @@
 package meg.biblio.catalog;
 
-import java.io.IOException;
-import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -101,16 +99,7 @@ public class DetailSearchServiceImpl implements DetailSearchService {
 		return null;
 	}
 
-	public void assignDetailToBook(Long detailid, Long bookid)
-			throws GeneralSecurityException, IOException {
-		// get found detail
 
-		// copy found detail into bookdetail
-
-		// update detailstatus of bookdetail
-
-		// delete found details for book detail
-	}
 
 	@Override
 	public BookModel fillInDetailsForBook(BookModel model, ClientDao client) {

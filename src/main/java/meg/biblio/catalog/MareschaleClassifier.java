@@ -39,6 +39,7 @@ public class MareschaleClassifier implements Classifier {
 		public static final Long fict_uvwxyz = 29L;
 		public static final Long fict_boardbooks = 30L;
 		public static final Long fict_comicbooks = 31L;
+		public static final Long norwegianbooks = 32L;
 
 	}
 

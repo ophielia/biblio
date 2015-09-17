@@ -14,6 +14,9 @@
         <put-attribute name="body" value="/WEB-INF/views/book/show.jspx"/>
     </definition>  
     
+             <definition extends="default" name="book/showhistory">
+        <put-attribute name="body" value="/WEB-INF/views/book/showhistory.jspx"/>
+    </definition> 
              <definition extends="default" name="book/choosedetails">
         <put-attribute name="body" value="/WEB-INF/views/book/choosedetails.jspx"/>
     </definition>  

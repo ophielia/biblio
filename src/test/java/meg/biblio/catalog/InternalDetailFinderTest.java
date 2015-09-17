@@ -41,7 +41,7 @@ public class InternalDetailFinderTest {
 	BookDetailRepository bookDetRepo;
 
 	@Autowired
-	BaseDetailFinder internalSearch;
+	InternalDetailFinder internalSearch;
 
 	Long isbnid;
 	Long titleauthorid;

@@ -4,7 +4,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.roo.addon.test.RooIntegrationTest;
 
-@RooIntegrationTest(entity = BookDao.class)
+@RooIntegrationTest(entity = BookDao.class,findAll=false)
 public class BookDaoIntegrationTest {
 
     @Test

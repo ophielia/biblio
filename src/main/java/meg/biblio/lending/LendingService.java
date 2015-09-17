@@ -43,5 +43,9 @@ public interface LendingService {
 
 	Integer getFirstLendingYearForClient(Long clientid);
 
+	Integer getCheckoutCountForBook(Long bookid, Long clientid);
+
+	List<LoanRecordDisplay> getLendingHistoryForBook(Long bookid, Long clientid);
+
 	
 }
