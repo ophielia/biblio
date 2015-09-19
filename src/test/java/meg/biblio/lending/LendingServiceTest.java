@@ -185,7 +185,7 @@ public class LendingServiceTest {
 		BookSearchCriteria bscrit = new BookSearchCriteria();
 		bscrit.setClientid(clientid);
 		List<BookDao> books = searchService.findBooksForCriteria(bscrit,
-				clientid);
+				null, clientid);
 		i = 0;
 		for (BookDao book : books) {
 			if (book != null && i == selectnr) {

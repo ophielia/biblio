@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import meg.biblio.catalog.db.dao.BookDao;
+import meg.biblio.common.web.model.Pager;
 import meg.biblio.search.BookSearchCriteria;
 
 public class BookListModel implements Serializable {
@@ -12,17 +13,21 @@ public class BookListModel implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private BookSearchCriteria criteria;
+	private Pager pager;
+	
 	private List<BookDao> books;
 	private List<Boolean> checked;
 	private Long statusUpdate;
 	private Long shelfclassUpdate;
 	private String clientbookid;
 	private List<Long> idref;
+	private boolean hasNext;
+	private boolean hasPrevious;
 	
-
 	public BookListModel(BookSearchCriteria criteria) {
 		super();
 		this.criteria = criteria;
+		this.pager = new Pager();
 	}
 
 	public BookSearchCriteria getCriteria() {
@@ -31,6 +36,15 @@ public class BookListModel implements Serializable {
 
 	public void setCriteria(BookSearchCriteria criteria) {
 		this.criteria = criteria;
+	}
+
+	
+	public Pager getPager() {
+		return pager;
+	}
+
+	public void setPager(Pager pager) {
+		this.pager = pager;
 	}
 
 	public List<BookDao> getBooks() {
@@ -73,11 +87,40 @@ public class BookListModel implements Serializable {
 		this.shelfclassUpdate = shelfclassUpdate;
 	}
 
+	/** Setters on pager object **/
+
+	public Integer getResultsperpage() {
+		return pager.getResultsperpage();
+	}
+
+	public void setResultsperpage(Integer resultsperpage) {
+		 pager.setResultsperpage(resultsperpage);
+	}
+
+	public Integer getCurrentpage() {
+		return pager.getCurrentpage();
+	}
+
+	public void setCurrentpage(Integer currentpage) {
+		pager.setCurrentpage(currentpage);
+	}	
+	
+	
+	
+	public int getResultcount() {
+		return pager.getResultcount();
+	}
+
+	public void setResultcount(int resultcount) {
+		this.pager.setResultcount(resultcount);
+	}
+
 	/** Setters on criteria object **/
 
 	public String getClientbookid() {
 		return criteria.getClientbookid();
 	}
+
 
 	public void setClientbookid(String clientbookid) {
 		criteria.setClientbookid(clientbookid);
@@ -191,6 +234,18 @@ public class BookListModel implements Serializable {
 		this.idref = idref;
 	}	
 	
+	
+	public boolean getHasNext() {
+		return pager.hasNext();
+	}
+	
+	
+	public boolean getHasPrevious() {
+		return pager.hasPrevious();
+	}
+	
+	
+
 	public List<Long> getCheckedBookIds() {
 		// make new empty list 
 		List<Long> checkedexp = new ArrayList<Long>();

@@ -548,6 +548,18 @@ margin-right: 10px;
 background-color: #2e537d;
 text-decoration: none;
 }  
+span.linkbuttonquiet  {
+display: inline-block;
+overflow: hidden;
+padding: 7px;
+color: #A0A0A0;
+margin-left: 10px;
+margin-right: 10px;
+background-color: #2e537d;
+vertical-align: bottom;
+font-weight:bolder;
+font-family:Arial
+} 
 .inputspace  {
 	margin-bottom: 5px;
 }

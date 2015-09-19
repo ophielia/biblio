@@ -182,7 +182,32 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 	</form:select>
 	<input class="linkbutton" id="shelfclassUpdate" name="updateshelfclass" type="submit" value="${lscupdate}"/>   
 </span>
+<div    style="float: right;margin-top: 10px;background-color: #BBBBBB;clear: both;">
+<c:choose>
+		<c:when test="${bookListModel.hasPrevious}">
+		<input id="nextbutton" name="first" class="linkbutton" type="submit" value="|&lt;"/>
+        <input id="nextbutton" name="prev" class="linkbutton" type="submit" value="&lt;&lt;"/>
+		</c:when>
+		<c:otherwise>
+		<span class="linkbuttonquiet" >|&lt;</span>
+		<span class="linkbuttonquiet" >&lt;&lt;</span>
+		</c:otherwise>
+		</c:choose>
+		<c:choose>
+		<c:when test="${bookListModel.hasNext}">
+		<input id="nextbutton" name="next" class="linkbutton" type="submit" value="&gt;&gt;"/>
+        <input id="nextbutton" name="last" class="linkbutton" type="submit" value="&gt;|"/>
+        </c:when>
+		<c:otherwise>
+		<span class="linkbuttonquiet" >&gt;&gt;</span>
+		<span class="linkbuttonquiet" >&gt;|</span>
+		</c:otherwise>
+		</c:choose>
 
+        <form:input type="hidden" path="resultcount" />
+        <form:input type="hidden" path="resultsperpage" />
+        <form:input type="hidden" path="currentpage" />
+</div>
 		<TABLE>
 		<thead>		
 		

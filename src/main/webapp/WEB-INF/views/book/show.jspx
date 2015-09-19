@@ -146,7 +146,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 				<a href="${linkurl}" class="linkbutton" id="showaddl">${bedit}</a>
 				<c:choose>
 				<c:when test="${bookModel.checkoutcount==0}">
-				<a href="#" class="linkbutton" id="checkoutcnt">${msgnocheckout}</a>
+				<span href="#" class="linkbuttonquiet" id="checkoutcnt">${msgnocheckout}</span>
 </c:when>
 <c:otherwise>
 				<spring:url value="/books/displayhistory/${bookModel.bookid}" var="linkurl" />

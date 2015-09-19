@@ -265,7 +265,7 @@ public class TestDataServiceImpl implements TestDataService {
 		// get books to checkout
 BookSearchCriteria criteria = new BookSearchCriteria();
 criteria.setStatus(CatalogService.Status.SHELVED);
-		List<BookDao> books = searchService.findBooksForCriteria(criteria, clientid);
+		List<BookDao> books = searchService.findBooksForCriteria(criteria, null, clientid);
 		int bookcount=0;
 		int booklength=books.size();
 		// go through classes

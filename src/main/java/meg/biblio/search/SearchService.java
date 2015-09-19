@@ -8,6 +8,7 @@ import meg.biblio.catalog.db.dao.ArtistDao;
 import meg.biblio.catalog.db.dao.BookDao;
 import meg.biblio.catalog.db.dao.BookDetailDao;
 import meg.biblio.common.db.dao.ClientDao;
+import meg.biblio.common.web.model.Pager;
 
 
 public interface SearchService {
@@ -24,6 +25,9 @@ public interface SearchService {
 	public List<BookDao> findBooksWithoutDetails(int maxresults, ClientDao client);
 
 	List<BookDao> findBooksForCriteria(BookSearchCriteria criteria,
+			Pager pager, Long clientid);
+	
+	Long getBookCountForCriteria(BookSearchCriteria criteria,
 			Long clientid);
 
 	HashMap<Long, Long> breakoutByBookField(long bookkey, Long clientid);

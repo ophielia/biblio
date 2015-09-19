@@ -112,7 +112,7 @@ public class LendingSearchServiceImpl implements LendingSearchService {
 		}
 		
 		// do checkedoutonafter
-		if (criteria.getCheckedoutafter() != null) {
+		if (criteria.getCheckedoutbefore() != null) {
 			ParameterExpression<Date> param = cb.parameter(Date.class,
 					"checkoutdatebefore");
 			whereclause.add(cb.lessThanOrEqualTo(loanrec.<Date> get("checkedout"), param));
@@ -190,7 +190,7 @@ public class LendingSearchServiceImpl implements LendingSearchService {
 		}
 		
 		// do checkedouton
-		if (criteria.getCheckedoutafter() != null) {
+		if (criteria.getCheckedoutbefore() != null) {
 			q.setParameter("checkoutdatebefore", criteria.getCheckedoutbefore());
 		}		
 		

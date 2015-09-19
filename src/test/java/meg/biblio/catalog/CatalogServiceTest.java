@@ -365,7 +365,7 @@ public class CatalogServiceTest {
 		BookSearchCriteria bc = new BookSearchCriteria();
 		bc.setClientspecific(false);
 		List<BookDao> notclientspecific = searchService.findBooksForCriteria(
-				bc, clientid);
+				bc, null, clientid);
 		BookDao toplaywith = null;
 
 		if (notclientspecific != null) {
