@@ -51,16 +51,6 @@ privileged aspect BookDetailDaoIntegrationTest_Roo_IntegrationTest {
     }
     
     @Test
-    public void BookDetailDaoIntegrationTest.testFindAll() {
-        Assert.assertNotNull("Data on demand for 'BookDetailDao' failed to initialize correctly", dod.getRandomBookDetailDao());
-        long count = bookDetailRepository.count();
-        Assert.assertTrue("Too expensive to perform a find all test for 'BookDetailDao', as there are " + count + " entries; set the findAllMaximum to exceed this value or set findAll=false on the integration test annotation to disable the test", count < 250);
-        List<BookDetailDao> result = bookDetailRepository.findAll();
-        Assert.assertNotNull("Find all method for 'BookDetailDao' illegally returned null", result);
-        Assert.assertTrue("Find all method for 'BookDetailDao' failed to return any data", result.size() > 0);
-    }
-    
-    @Test
     public void BookDetailDaoIntegrationTest.testFindEntries() {
         Assert.assertNotNull("Data on demand for 'BookDetailDao' failed to initialize correctly", dod.getRandomBookDetailDao());
         long count = bookDetailRepository.count();

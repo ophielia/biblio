@@ -239,7 +239,7 @@ ${msgsearchagain}
 		<div style="width: 55%; float: left">
 
 
-			<div style="border: 1px dotted grey; padding: 5px; margin: 10px;">
+			<div class="elementcontainer">
 				<c:if test="${bookModel.clientbookid!=null}"><div>
 					<span class="stress">${clientname} ${lnumber}:</span> ${bookModel.clientbookid}
 				</div></c:if>

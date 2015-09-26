@@ -106,11 +106,11 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <form:errors id="errors" class="errors" path="*" /> 
 <thead>
 <tr>
-<td>${lfirstname}</td>
-<td>${llastname}</td>
-<td>${lsection }</td>
+<th>${lfirstname}</th>
+<th>${llastname}</th>
+<th>${lsection }</th>
 
-<td></td>
+<th></th>
 </tr>
 </thead>
 <tbody>

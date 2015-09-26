@@ -80,9 +80,9 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <table>
 <thead>
 <tr>
-<td>${lname }</td>
-<td>${lbooktitle }</td>
-<td>${lauthor }</td>
+<th>${lname }</th>
+<th>${lbooktitle }</th>
+<th>${lauthor }</th>
 
 <td></td>
 </tr>

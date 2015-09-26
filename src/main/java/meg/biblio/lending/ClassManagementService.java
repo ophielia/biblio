@@ -58,4 +58,7 @@ public interface ClassManagementService {
 	SchoolGroupDao getClassForClient(Long classid, Long clientid);
 
 
+	TeacherInfo getTeacherByTeacherid(Long teacherid);
+
+
 }

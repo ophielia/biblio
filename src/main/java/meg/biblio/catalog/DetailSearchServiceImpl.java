@@ -176,7 +176,7 @@ public class DetailSearchServiceImpl implements DetailSearchService {
 					criteria.setIsbn13(isbn);
 				}
 				List<BookDao> found = searchService.findBooksForCriteria(
-						criteria, client.getId());
+						criteria, null, client.getId());
 				if (found != null && found.size() > 0) {
 					// found a book with the same isbn belonging to this client
 					// copy the classification from found book to new book

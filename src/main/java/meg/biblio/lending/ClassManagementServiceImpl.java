@@ -430,6 +430,22 @@ public class ClassManagementServiceImpl implements ClassManagementService {
 		}
 		return info;
 	}
+	
+	@Override
+	public TeacherInfo getTeacherByTeacherid( Long teacherid) {
+		// make result hash
+		HashMap<Long, TeacherInfo> info = new HashMap<Long, TeacherInfo>();
+
+		// get teachers
+		TeacherDao teacher = teacherRepo
+				.findOne(teacherid);
+
+		if (teacher!=null) {
+			return new TeacherInfo(teacher);
+		}
+		
+		return null;
+		}	
 
 	private List<StudentDao> getStudentsForClass(SchoolGroupDao sgroup,
 			ClientDao client) {

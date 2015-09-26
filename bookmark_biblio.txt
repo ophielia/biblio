@@ -3,30 +3,36 @@ Branch - inventory
 	rework lending - lending search
 
 new features
-pagination
 
+bug - error deleting class
+		
+bugfix / improvement - increment grade shows success page.... otherwise no sign it was done.			
+print out names for kids??  (future)
 theory / strategy / new learning
 db testing - problem with views.  LendingSearchService fails.  check this link - 
 	http://dbunit.sourceforge.net/intro.html
 
 ---- begin commit changes ----
-done - time select - add year selects
-done - fix in checkout book - use DateUtils.
-done - lending history by person - Soren - descending order default
-done - in process - pages for showing book lending history
-done - booklent count - select count(id) from loanrecord where book = 22728
-done - fill in show lending history by book page (showhistory)
-done  - show history page - title and back button
-done - datedisplay - make display methods (getters)
-done - manual checkout page datedisplay - make display methods (getters)
-done - stop, revisit, reprioritize	
-done - get online up and going
-done - new statuses - in repair
-done - assign detail results in detail found
-done - remove "view book" link
-done - norwegian classification
-done - housekeeping non-fiction
-done - checkout record for book
+done - backend work
+done - new l&f in alt
+done - grid	styling
+	done - menu sizing needs some help
+	done - don't like the gray in the menu....		
+	done - input.linkbutton - grey text	    
+done - take grid to admin search - nevermind - need details there
+done - finish admin search
+done - pagination
+done - grid
+done - new look and feel
+done - bug on lending history for teacher - don't show teacher link (for now....)
+done - new look and feel
+done - fix footer.
+done - check all pages for headers / tables	  
+done - try different background, color combinations
+done - 	implement gumball colors
+done - 	implement jacks colors
+done - fix menu jacks
+	
 ---- end commit changes ----
 
 
@@ -57,7 +63,34 @@ done - 	add back link for lendinghistory page
 done - link show student page to lending history	
 done - link show student page to class list
 done - fix menu - lending history as main link, under links lending history and daily summary
-	
+done - time select - add year selects
+done - fix in checkout book - use DateUtils.
+done - lending history by person - Soren - descending order default
+done - in process - pages for showing book lending history
+done - booklent count - select count(id) from loanrecord where book = 22728
+done - fill in show lending history by book page (showhistory)
+done  - show history page - title and back button
+done - datedisplay - make display methods (getters)
+done - manual checkout page datedisplay - make display methods (getters)
+done - stop, revisit, reprioritize	
+done - get online up and going
+done - new statuses - in repair
+done - assign detail results in detail found
+done - remove "view book" link
+done - norwegian classification
+done - housekeeping non-fiction
+done - checkout record for book
+
+merged with master - put online
+
+done - base through controller
+done - test - base through controller blow up test
+done - results in getting list (setting the offset, and limit)
+done - showing the pagination in the front end
+fine tuning and expansion
+done - hasNext and hasPrev to disable pagination buttons
+done - front end - disable buttons <a id="checkoutcnt" class="linkbutton" href="#">Not yet checked out</a>
+done - take to admin search	
 
 
 ---- end branch changes ----

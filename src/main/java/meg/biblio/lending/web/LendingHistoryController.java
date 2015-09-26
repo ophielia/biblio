@@ -14,7 +14,7 @@ import meg.biblio.common.db.dao.ClientDao;
 import meg.biblio.lending.ClassManagementService;
 import meg.biblio.lending.LendingSearchCriteria;
 import meg.biblio.lending.LendingService;
-import meg.biblio.lending.LendingSearchCriteria.SortByDir;
+import meg.biblio.lending.db.dao.TeacherDao;
 import meg.biblio.lending.web.model.LendingSearchModel;
 import meg.biblio.lending.web.model.LoanRecordDisplay;
 import meg.biblio.lending.web.model.TeacherInfo;
@@ -134,26 +134,35 @@ public class LendingHistoryController {
 		return "lending/history";
 	}
 
-	@RequestMapping(value = "/student/{id}", method = RequestMethod.GET, produces = "text/html")
-	public String drillDownToStudent(@PathVariable("id") Long studentid,
+	@RequestMapping(value = "/class/{id}", method = RequestMethod.GET, produces = "text/html")
+	public String drillDownToStudent(@PathVariable("id") Long teacherid,
 			@ModelAttribute("lendingSearchModel") LendingSearchModel lendingSearchModel,
 			Model uiModel, HttpServletRequest httpServletRequest,
 			Principal principal) {
 		ClientDao client = clientService.getCurrentClient(principal);
-
 		LendingSearchCriteria criteria = lendingSearchModel.getCriteria();
 		
-		// get student id from class select
-		
-		// 
+		// set teacheridin criteria
+		criteria.setBorrowerid(teacherid);
+		// set order by, direction
+		criteria.setSortKey(LendingSearchCriteria.SortKey.CHECKEDOUT);
+		criteria.setSortDir(LendingSearchCriteria.SortByDir.DESC);
+		// retrieve list
 		List<LoanRecordDisplay> historyrecords = searchLoanHistory(client,criteria);
 
+		// retrieve teacher name
+		TeacherInfo info= classService.getTeacherByTeacherid(teacherid);
+		if (info!=null) {
+			String teachername = info.getDisplayname();
+			uiModel.addAttribute("teachername", teachername);
+		}
+		
 		// put results in model
 		uiModel.addAttribute("historyRecords", historyrecords);
 		uiModel.addAttribute("lendingSearchModel",lendingSearchModel);
 		
 		// return view
-		return "lending/history";
+		return "lending/classhistory";
 	}
 
 			

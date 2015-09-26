@@ -37,5 +37,9 @@
         
              <definition extends="default" name="lending/overduesummary">
         <put-attribute name="body" value="/WEB-INF/views/lending/overduesummary.jspx"/>
-    </definition>     
+    </definition>   
+    
+	<definition extends="default" name="lending/classhistory">
+        <put-attribute name="body" value="/WEB-INF/views/lending/classhistory.jspx"/>
+    </definition>   
 </tiles-definitions>

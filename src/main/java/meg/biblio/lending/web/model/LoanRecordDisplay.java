@@ -201,7 +201,7 @@ public class LoanRecordDisplay {
 
 	@XmlElement
 	public Boolean getIsteacher() {
-		return isteacher;
+		return isteacher!=null && isteacher;
 	}
 
 	public Long getBookclientidsort() {

@@ -17,6 +17,7 @@ import meg.biblio.common.ClientService;
 import meg.biblio.common.SelectKeyService;
 import meg.biblio.common.db.dao.ClientDao;
 import meg.biblio.common.db.dao.SelectValueDao;
+import meg.biblio.common.web.model.Pager;
 import meg.biblio.search.BookSearchCriteria;
 import meg.biblio.search.SearchService;
 
@@ -59,13 +60,21 @@ public class BookAdminSearchController {
 		ClientDao client = clientService.getCurrentClient(principal);
 		Long clientkey = client.getId();
 		BookSearchCriteria criteria = model.getCriteria();
+		Pager pager = model.getPager();
 		HttpSession session = request.getSession();
 		session.setAttribute(sessioncriteria,criteria);
-		List<BookDao> list = searchService.findBooksForCriteria(criteria, clientkey);
-		// cap list at 500
-		if (list!=null && list.size()>500) {
-			list = list.subList(0, 499);
-		}
+		
+		// initialize pager if necessary
+		pager = initPager(pager);
+		// get total result count for criteria
+		Long resultcount = searchService.getBookCountForCriteria(criteria, clientkey);
+		pager.setResultcount(resultcount.intValue());
+		// reset pager in model - new search, so resetting page
+		pager.setCurrentpage(0);
+		model.setPager(pager);
+		
+		List<BookDao> list = searchService.findBooksForCriteria(criteria, pager, clientkey);
+		
 		model.setBooks(list);
 		return "book/admin/resultlist";
     }
@@ -75,18 +84,84 @@ public class BookAdminSearchController {
 		ClientDao client = clientService.getCurrentClient(principal);
 		Long clientkey = client.getId();
 		BookSearchCriteria criteria = model.getCriteria();
+		Pager pager= model.getPager();
 		HttpSession session = request.getSession();
 		session.setAttribute(sessioncriteria,criteria);
-		List<BookDao> list = searchService.findBooksForCriteria(criteria, clientkey);
-		// cap list at 500
-		if (list!=null && list.size()>500) {
-			list = list.subList(0, 499);
-		}
+		
+		// initialize pager if necessary
+		pager = initPager(pager);
+		// get total result count for criteria
+		Long resultcount = searchService.getBookCountForCriteria(criteria, clientkey);
+		pager.setResultcount(resultcount.intValue());
+		// reset pager in model - new search, so resetting page
+		pager.setCurrentpage(0);
+		model.setPager(pager);
+		
+		List<BookDao> list = searchService.findBooksForCriteria(criteria, pager, clientkey);
 		model.setBooks(list);
 
 		return "book/admin/resultlist";
 	}
 	
+	@RequestMapping(params = "prev",method = RequestMethod.PUT,  produces = "text/html")
+	public String prevPage(
+			@ModelAttribute("bookListModel") BookListModel model,
+			Model uiModel, HttpServletRequest request, Principal principal) {
+		return gotoPageResults(BookSearchController.PageDir.PREV, model, uiModel, request, principal);
+	}
+	
+	@RequestMapping(params = "first",method = RequestMethod.PUT,  produces = "text/html")
+	public String firstPage(
+			@ModelAttribute("bookListModel") BookListModel model,
+			Model uiModel, HttpServletRequest request, Principal principal) {
+		return gotoPageResults(BookSearchController.PageDir.FIRST, model, uiModel, request, principal);
+	}
+	
+	@RequestMapping(params = "last",method = RequestMethod.PUT,  produces = "text/html")
+	public String lastPage(
+			@ModelAttribute("bookListModel") BookListModel model,
+			Model uiModel, HttpServletRequest request, Principal principal) {
+		return gotoPageResults(BookSearchController.PageDir.LAST, model, uiModel, request, principal);
+	}	
+	
+	
+	
+	
+	private String gotoPageResults(String pageparam,
+		@ModelAttribute("bookListModel") BookListModel model,
+		Model uiModel, HttpServletRequest request, Principal principal) {
+	ClientDao client = clientService.getCurrentClient(principal);
+	Long clientkey = client.getId();
+	
+	BookSearchCriteria criteria = model.getCriteria();
+	Pager pager = model.getPager();
+	
+	// initialize pager if necessary
+	pager = initPager(pager);
+	
+	// increment pager
+	if (pageparam!=null) {
+		pager.gotoPage(pageparam);
+	}
+	HttpSession session = request.getSession();
+	session.setAttribute(sessioncriteria, criteria);
+	
+	// get total result count for criteria
+	if (pager.getResultcount()<0) {
+		Long resultcount = searchService.getBookCountForCriteria(criteria, clientkey);	
+		pager.setResultcount(resultcount.intValue());
+	}
+	
+	// reset pager in model - new search, so resetting page
+	model.setPager(pager);
+	
+	// search for results, and set in model
+	List<BookDao> list = searchService.findBooksForCriteria(criteria,
+			pager, clientkey);
+	model.setBooks(list);
+	
+	return "book/admin/resultlist";
+	}
 	
 	@RequestMapping(method = RequestMethod.PUT,params="sort" ,produces = "text/html")
 	public String sortBooks(@RequestParam("sort") Long sorttype,@ModelAttribute("bookListModel") BookListModel model,
@@ -106,7 +181,9 @@ public class BookAdminSearchController {
 		}
 		HttpSession session = request.getSession();
 		session.setAttribute(sessioncriteria,criteria);
-		List<BookDao> list = searchService.findBooksForCriteria(criteria, clientkey);
+		// not doing anything with pager, because results haven't changed - only
+		// ordering
+		List<BookDao> list = searchService.findBooksForCriteria(criteria, model.getPager(), clientkey);
 		model.setBooks(list);
 
 		return "book/admin/resultlist";
@@ -118,6 +195,7 @@ public class BookAdminSearchController {
 		ClientDao client = clientService.getCurrentClient(principal);
 		Long clientkey = client.getId();
 		BookSearchCriteria criteria = model.getCriteria();
+		Pager pager = model.getPager();
 		HttpSession session = request.getSession();
 		session.setAttribute(sessioncriteria,criteria);
 		
@@ -128,8 +206,17 @@ public class BookAdminSearchController {
 		// update books
 		catalogService.assignShelfClassToBooks(model.getShelfclassUpdate(),toupdate);
 		
+		// initialize pager if necessary
+		pager = initPager(pager);
+		// get total result count for criteria
+		Long resultcount = searchService.getBookCountForCriteria(criteria, clientkey);
+		pager.setResultcount(resultcount.intValue());
+		// reset pager in model - new search, so resetting page
+		pager.setCurrentpage(0);
+		model.setPager(pager);
+		
 		// retrieve and set list
-		List<BookDao> list = searchService.findBooksForCriteria(criteria, clientkey);
+		List<BookDao> list = searchService.findBooksForCriteria(criteria, pager, clientkey);
 		model.setBooks(list);		
 		// return
 		return "book/admin/resultlist";
@@ -140,6 +227,7 @@ public class BookAdminSearchController {
 		ClientDao client = clientService.getCurrentClient(principal);
 		Long clientkey = client.getId();
 		BookSearchCriteria criteria = model.getCriteria();
+		Pager pager= model.getPager();
 		HttpSession session = request.getSession();
 		session.setAttribute(sessioncriteria,criteria);
 		
@@ -150,14 +238,35 @@ public class BookAdminSearchController {
 		// update books
 		catalogService.assignStatusToBooks(model.getStatusUpdate(),toupdate);
 		
+		// initialize pager if necessary
+		pager = initPager(pager);
+		// get total result count for criteria
+		Long resultcount = searchService.getBookCountForCriteria(criteria, clientkey);
+		pager.setResultcount(resultcount.intValue());
+		// reset pager in model - new search, so resetting page
+		pager.setCurrentpage(0);
+		model.setPager(pager);
+		
 		// retrieve and set list
-		List<BookDao> list = searchService.findBooksForCriteria(criteria, clientkey);
+		List<BookDao> list = searchService.findBooksForCriteria(criteria, pager, clientkey);
 		model.setBooks(list);		
 		// return
 		return "book/admin/resultlist";
 	}		
 	
-	
+	public Pager initPager(Pager pager) {
+		// determine if init is needed (no resultsperpage set)
+		if (pager != null && pager.getResultsperpage() < 0) {
+			// get results per page from appsetting
+			Integer resultsperpage = settingService
+					.getSettingAsInteger("biblio.display.bookresultsperpage");
+			// set results per page
+			pager.setResultsperpage(resultsperpage);
+			// set current page to 0
+			pager.setCurrentpage(0);
+		}
+		return pager;
+	}
 	
 	@InitBinder
 	public void initBinder(WebDataBinder binder) {

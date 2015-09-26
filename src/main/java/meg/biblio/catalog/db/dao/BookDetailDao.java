@@ -84,6 +84,10 @@ public class BookDetailDao {
 		return hasisbn;
 	}
 	
+	public boolean getHasImage() {
+		boolean hasimage = (imagelink!=null && imagelink.length()>0) ;
+		return hasimage;
+	}
 	
 	public void setIsbn(String isbncode) {
 		if (isbncode != null) {

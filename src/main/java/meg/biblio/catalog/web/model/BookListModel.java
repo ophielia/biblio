@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import meg.biblio.catalog.db.dao.BookDao;
+import meg.biblio.common.web.model.Pager;
 import meg.biblio.search.BookSearchCriteria;
 
 public class BookListModel implements Serializable {
@@ -12,17 +13,21 @@ public class BookListModel implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private BookSearchCriteria criteria;
+	private Pager pager;
+	
 	private List<BookDao> books;
 	private List<Boolean> checked;
 	private Long statusUpdate;
 	private Long shelfclassUpdate;
-	private String clientbookid;
 	private List<Long> idref;
+	private int gridColumns=-1; 
 	
-
+	
+	
 	public BookListModel(BookSearchCriteria criteria) {
 		super();
 		this.criteria = criteria;
+		this.pager = new Pager();
 	}
 
 	public BookSearchCriteria getCriteria() {
@@ -31,6 +36,15 @@ public class BookListModel implements Serializable {
 
 	public void setCriteria(BookSearchCriteria criteria) {
 		this.criteria = criteria;
+	}
+
+	
+	public Pager getPager() {
+		return pager;
+	}
+
+	public void setPager(Pager pager) {
+		this.pager = pager;
 	}
 
 	public List<BookDao> getBooks() {
@@ -45,7 +59,47 @@ public class BookListModel implements Serializable {
 		}		
 	}
 	
+	public List<List<BookDao>> getBookRows() {
+		List<List<BookDao>> rows = new ArrayList<List<BookDao>>();
+		// go through all books, placing them in rows
+		// prepare first row
+		List<BookDao> singlerow = new ArrayList<BookDao>();
+		int count=0;
+		for (BookDao book:this.books) {
+			// add book to single row
+			singlerow.add(book);
+			// check if this is the last column
+			if (count==gridColumns-1) {
+				// if last column, add singlerow to rows, initialize new singlerow 
+				// and reset counter
+				rows.add(singlerow);
+				singlerow = new ArrayList<BookDao>();
+				count=0;
+			} else {
+				// otherwise, increment counter
+				count++;
+			}
+		}
+		// add last row in progress to list of rows
+		if (singlerow.size()>0) {
+			rows.add(singlerow);
+		}
+		
+		
+		return rows;
+	}
 	
+	public boolean getUsesGrid() {
+		return (gridColumns > 1);
+	}
+	
+	public int getGridColumns() {
+		return gridColumns;
+	}
+
+	public void setGridColumns(int gridColumns) {
+		this.gridColumns = gridColumns;
+	}
 
 	public List<Boolean> getChecked() {
 		return checked;
@@ -73,11 +127,40 @@ public class BookListModel implements Serializable {
 		this.shelfclassUpdate = shelfclassUpdate;
 	}
 
+	/** Setters on pager object **/
+
+	public Integer getResultsperpage() {
+		return pager.getResultsperpage();
+	}
+
+	public void setResultsperpage(Integer resultsperpage) {
+		 pager.setResultsperpage(resultsperpage);
+	}
+
+	public Integer getCurrentpage() {
+		return pager.getCurrentpage();
+	}
+
+	public void setCurrentpage(Integer currentpage) {
+		pager.setCurrentpage(currentpage);
+	}	
+	
+	
+	
+	public int getResultcount() {
+		return pager.getResultcount();
+	}
+
+	public void setResultcount(int resultcount) {
+		this.pager.setResultcount(resultcount);
+	}
+
 	/** Setters on criteria object **/
 
 	public String getClientbookid() {
 		return criteria.getClientbookid();
 	}
+
 
 	public void setClientbookid(String clientbookid) {
 		criteria.setClientbookid(clientbookid);
@@ -191,6 +274,18 @@ public class BookListModel implements Serializable {
 		this.idref = idref;
 	}	
 	
+	
+	public boolean getHasNext() {
+		return pager.hasNext();
+	}
+	
+	
+	public boolean getHasPrevious() {
+		return pager.hasPrevious();
+	}
+	
+	
+
 	public List<Long> getCheckedBookIds() {
 		// make new empty list 
 		List<Long> checkedexp = new ArrayList<Long>();
