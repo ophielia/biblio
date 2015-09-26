@@ -19,10 +19,10 @@ public class BookListModel implements Serializable {
 	private List<Boolean> checked;
 	private Long statusUpdate;
 	private Long shelfclassUpdate;
-	private String clientbookid;
 	private List<Long> idref;
-	private boolean hasNext;
-	private boolean hasPrevious;
+	private int gridColumns=-1; 
+	
+	
 	
 	public BookListModel(BookSearchCriteria criteria) {
 		super();
@@ -59,7 +59,47 @@ public class BookListModel implements Serializable {
 		}		
 	}
 	
+	public List<List<BookDao>> getBookRows() {
+		List<List<BookDao>> rows = new ArrayList<List<BookDao>>();
+		// go through all books, placing them in rows
+		// prepare first row
+		List<BookDao> singlerow = new ArrayList<BookDao>();
+		int count=0;
+		for (BookDao book:this.books) {
+			// add book to single row
+			singlerow.add(book);
+			// check if this is the last column
+			if (count==gridColumns-1) {
+				// if last column, add singlerow to rows, initialize new singlerow 
+				// and reset counter
+				rows.add(singlerow);
+				singlerow = new ArrayList<BookDao>();
+				count=0;
+			} else {
+				// otherwise, increment counter
+				count++;
+			}
+		}
+		// add last row in progress to list of rows
+		if (singlerow.size()>0) {
+			rows.add(singlerow);
+		}
+		
+		
+		return rows;
+	}
 	
+	public boolean getUsesGrid() {
+		return (gridColumns > 1);
+	}
+	
+	public int getGridColumns() {
+		return gridColumns;
+	}
+
+	public void setGridColumns(int gridColumns) {
+		this.gridColumns = gridColumns;
+	}
 
 	public List<Boolean> getChecked() {
 		return checked;

@@ -45,23 +45,9 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <form:errors path="code"></form:errors>
  <form:input class="therebutnot" autocomplete="off" type="text" path="code"></form:input><br/>
 
-<div style="
-    border-color: #2E537D;
-    border-width: 1px;
-    border-style: dashed;
-    position: absolute;
-">
-<div style="float:left">
-<spring:url var="checkedout" value="/resources/images/happyface.gif" />
-<img width="475px" src="${checkedout}" style="float:left"/>
-</div>
-<div style="
-    background-color: #2E537D;
-    float: right;
-    width: 300px;
-    height: 375px;
-    padding-left: 15px;
-">
+<div class="selfcheckoutcontainer">
+<div class="happyface">  .</div>
+<div class="selfcheckouttext">
 <p class="bigandbold" style="color:white">${msg }</p>
 <div>
 <img height="250px" style="  max-width: 290px;" src="${bookimagelink}"/>

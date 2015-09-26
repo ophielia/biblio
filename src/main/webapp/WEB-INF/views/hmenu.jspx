@@ -45,7 +45,7 @@
 				<li><moo:menulink label="menu_adminsearch" url="/admin/search" /></li>
 				
 				<li><moo:menulink label="menu_classlist" url="/classes" /></li>
-				
+								<li><moo:menulink label="menu_classmanage" url="/classes/manage" /></li>
 				<li><moo:menulink label="menu_barcodes_generate"
 						url="/generatebarcode/books" />
 					<ul>

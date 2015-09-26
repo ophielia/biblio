@@ -111,50 +111,46 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 		</c:choose>
 
         <form:input type="hidden" path="resultcount" />
+        <form:input type="hidden" path="gridColumns" />
         <form:input type="hidden" path="resultsperpage" />
         <form:input type="hidden" path="currentpage" />
-		<TABLE>
-		<thead>
-		
-				<tr >
-			<th></th> 
-			<th>${ltitle}</th>
-			<th>${lauthor} / <br />${lillustrator} </th>
-			<th>${lpublisher}</th>
-			<th>${linfo}</th>
-		</tr>
-		</thead>
+		<TABLE class="gridresults">
+
 		<tbody>
-		
- <c:forEach var="book" items="${bookListModel.books}" varStatus="expstatus">
+		<spring:url var="emptybook" value="/resources/images/emptybook.gif" />
+ <c:forEach var="bookrow" items="${bookListModel.bookRows}" varStatus="expstatus">
  			<tr>
  			
-			<td><c:if test="${book.bookdetail.imagelink != null}"><img src="${book.bookdetail.imagelink}" /></c:if></td>
-			<td>
-						<spring:url value="/books/display/${book.id}" var="editurl"/>
-			<a class="tableboldlink" href="${editurl}">${book.bookdetail.title}</a>
-			</td>
-			<td>${book.bookdetail.authorsAsString} / <br />${book.bookdetail.illustratorsAsString}</td>
-			<td>${book.bookdetail.publisher.name}</td>
-			<td>
-				<c:set var="shelfclass" value="${classHash[book.clientshelfcode]}" /> 
-				<c:choose>
-				<c:when test="${ not empty shelfclass.imagedisplay}">
-				<img id="shelfimg" src="${imagebasedir}${shelfclass.imagedisplay}" width="50x"
-				 />
-				</c:when>
-				<c:otherwise>
-				${shelfclass.textdisplay}
-				</c:otherwise>
-				</c:choose>
-				<br />
-	 			${lclientbookid}:${book.clientbookid} / <br />
-	 			${lstatus}:${statusLkup[book.status]} 
-	 		</td> 			
+ <c:forEach var="book" items="${bookrow}" varStatus="expstatus">
+		
+  <spring:url value="/books/display/${book.id}" var="editurl"/>
+ <td>
+ <div class="imagecontainer">
+ <c:choose>
+ <c:when test="${book.bookdetail.hasImage}">
+ <a href="${editurl}" class="imagecontainer"><img class="bookimage" src="${book.bookdetail.imagelink}" /></a>
+ </c:when>
+ <c:otherwise>
+<a href="${editurl}" class="imagecontainer"><img class="emptybook" src="${emptybook}" /></a>
+ </c:otherwise>
+ </c:choose>
+ 
+ 
+ 
+ <c:set var="shelfclass" value="${classHash[book.clientshelfcode]}" />
+ <div class="overlay">
+ <a href="${editurl}" class="gridresults"><img id="shelfimg" src="${imagebasedir}${shelfclass.imagedisplay}" width="50x"/></a>
+ </div>
+ </div>
+<div><a href="${editurl}" class="grtext">${book.bookdetail.title}</a></div>
+</td>
+ </c:forEach>			
+ 			
+			</tr>
  			
 
- 			</tr>
  </c:forEach>		
+ 
 		</tbody>
 		</TABLE>    
 <div>

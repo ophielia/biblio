@@ -22,5 +22,23 @@
      <put-attribute name="hmenu" value="/WEB-INF/views/hmenu.jspx" />
     <put-attribute name="footer" value="/WEB-INF/views/footer.jspx" />
   </definition>  
+  
+  <definition name="bubbles" template="/WEB-INF/layouts/bubbles.jspx">
+    <put-attribute name="header" value="/WEB-INF/views/header.jspx" />
+     <put-attribute name="hmenu" value="/WEB-INF/views/hmenu.jspx" />
+    <put-attribute name="footer" value="/WEB-INF/views/footer.jspx" />
+  </definition>  
+  
+      <definition name="bubbles2" template="/WEB-INF/layouts/bubbles.jspx">
+    <put-attribute name="header" value="/WEB-INF/views/header.jspx" />
+     <put-attribute name="hmenu" value="/WEB-INF/views/hmenu.jspx" />
+    <put-attribute name="footer" value="/WEB-INF/views/footer.jspx" />
+  </definition>  
+  
+          <definition name="bubbles3" template="/WEB-INF/layouts/bubbles.jspx">
+    <put-attribute name="header" value="/WEB-INF/views/header.jspx" />
+     <put-attribute name="hmenu" value="/WEB-INF/views/hmenu.jspx" />
+    <put-attribute name="footer" value="/WEB-INF/views/footer.jspx" />
+  </definition>    
 
 </tiles-definitions>

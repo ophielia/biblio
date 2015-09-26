@@ -26,14 +26,14 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <br></br>
 <table>
 <thead>
-<tr>
-<td>${lborrower}</td>
-<td>${lclass}</td>
-<td>${lbooktitle}</td>
-<td>${lauthor}</td>
-<td>${lcheckedout}</td>
-<td>${lduedate}</td>
-
+	<tr>
+	<th>${lborrower}</th>
+	<th>${lclass}</th>
+	<th>${lbooktitle}</th>
+	<th>${lauthor}</th>
+	<th>${lcheckedout}</th>
+	<th>${lduedate}</th>
+	
 </tr>
 </thead>
 <tbody>

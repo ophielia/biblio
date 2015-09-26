@@ -3,43 +3,36 @@ Branch - inventory
 	rework lending - lending search
 
 new features
-pagination
-grid
-new look and feel
 
-
-
-pagination - 
-
+bug - error deleting class
 		
-grid
-		
-		
-
-
-
-
-
-
-
-
-
-
-
-
+bugfix / improvement - increment grade shows success page.... otherwise no sign it was done.			
+print out names for kids??  (future)
 theory / strategy / new learning
 db testing - problem with views.  LendingSearchService fails.  check this link - 
 	http://dbunit.sourceforge.net/intro.html
 
 ---- begin commit changes ----
-done - base through controller
-done - test - base through controller blow up test
-done - results in getting list (setting the offset, and limit)
-done - showing the pagination in the front end
-fine tuning and expansion
-done - hasNext and hasPrev to disable pagination buttons
-done - front end - disable buttons <a id="checkoutcnt" class="linkbutton" href="#">Not yet checked out</a>
-done - take to admin search
+done - backend work
+done - new l&f in alt
+done - grid	styling
+	done - menu sizing needs some help
+	done - don't like the gray in the menu....		
+	done - input.linkbutton - grey text	    
+done - take grid to admin search - nevermind - need details there
+done - finish admin search
+done - pagination
+done - grid
+done - new look and feel
+done - bug on lending history for teacher - don't show teacher link (for now....)
+done - new look and feel
+done - fix footer.
+done - check all pages for headers / tables	  
+done - try different background, color combinations
+done - 	implement gumball colors
+done - 	implement jacks colors
+done - fix menu jacks
+	
 ---- end commit changes ----
 
 
@@ -90,7 +83,14 @@ done - checkout record for book
 
 merged with master - put online
 
-	
+done - base through controller
+done - test - base through controller blow up test
+done - results in getting list (setting the offset, and limit)
+done - showing the pagination in the front end
+fine tuning and expansion
+done - hasNext and hasPrev to disable pagination buttons
+done - front end - disable buttons <a id="checkoutcnt" class="linkbutton" href="#">Not yet checked out</a>
+done - take to admin search	
 
 
 ---- end branch changes ----

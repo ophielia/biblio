@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page" 
+xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" 
+xmlns:c="http://java.sun.com/jsp/jstl/core" 
+xmlns:spring="http://www.springframework.org/tags" 
+xmlns:form="http://www.springframework.org/tags/form" 
+xmlns:fmt="http://java.sun.com/jsp/jstl/fmt" 
+xmlns:fn="http://java.sun.com/jsp/jstl/functions" 
+xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+
+
+<spring:message code="button_cancel" htmlEscape="false" var="bcancel"/>
+<spring:message code="action_lending_returntohistory" htmlEscape="false" var="breturnhist"/>
+<spring:message code="label_class_classof" htmlEscape="false" var="lclassof"/>
+<spring:message code="entity_edit" htmlEscape="false" var="ledit"/>
+<spring:message code="label_book_clientbookid" htmlEscape="false" var="lbookid"/>    
+<spring:message code="label_book_title" htmlEscape="false" var="ltitle"/>    
+<spring:message code="label_book_author" htmlEscape="false" var="lauthor"/>    
+<spring:message code="label_lending_checkedout" htmlEscape="false" var="lcheckedout"/>    
+<spring:message code="label_lending_duedate" htmlEscape="false" var="lduedate"/>    
+<spring:message code="label_lendingreturned" htmlEscape="false" var="lreturned"/>    
+<spring:message code="button_save" htmlEscape="false" var="bsave"/>
+
+<h1>${lclassof} ${teachername}</h1>
+
+<hr />
+Lending History
+		<TABLE>
+		<thead>		
+			<tr >
+			<th >${ltitle} (${lbookid})/ ${lauthor}</th>
+			<th >${lcheckedout}<br />
+			${lduedate}</th>
+			<th >${lreturned}</th>
+		</tr>	 			
+		</thead>
+		<tbody>
+		
+ <c:forEach var="histRec" items="${historyRecords}" varStatus="bookstatus">
+					<tr>
+			<td>${histRec.booktitle } (${histRec.bookclientid})<br></br>${histRec.author }</td>
+			<td><fmt:formatDate type="date" 
+            value="${histRec.checkedout}" /><br /><fmt:formatDate type="date" 
+            value="${histRec.duedate }" /></td>
+			<td><fmt:formatDate type="date" 
+            value="${histRec.returned  }" /></td>
+					</tr>
+				</c:forEach>		
+		</tbody>
+		</TABLE>   
+	<spring:url value="/lendinghistory" var="histurl"/>
+	<a class="linkbutton" href="${histurl}">${breturnhist}</a>
+
+
+</div>
+
+

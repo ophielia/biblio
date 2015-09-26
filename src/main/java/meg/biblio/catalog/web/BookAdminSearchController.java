@@ -73,7 +73,7 @@ public class BookAdminSearchController {
 		pager.setCurrentpage(0);
 		model.setPager(pager);
 		
-		List<BookDao> list = searchService.findBooksForCriteria(criteria, null, clientkey);
+		List<BookDao> list = searchService.findBooksForCriteria(criteria, pager, clientkey);
 		
 		model.setBooks(list);
 		return "book/admin/resultlist";
@@ -97,7 +97,7 @@ public class BookAdminSearchController {
 		pager.setCurrentpage(0);
 		model.setPager(pager);
 		
-		List<BookDao> list = searchService.findBooksForCriteria(criteria, null, clientkey);
+		List<BookDao> list = searchService.findBooksForCriteria(criteria, pager, clientkey);
 		model.setBooks(list);
 
 		return "book/admin/resultlist";
@@ -183,7 +183,7 @@ public class BookAdminSearchController {
 		session.setAttribute(sessioncriteria,criteria);
 		// not doing anything with pager, because results haven't changed - only
 		// ordering
-		List<BookDao> list = searchService.findBooksForCriteria(criteria, null, clientkey);
+		List<BookDao> list = searchService.findBooksForCriteria(criteria, model.getPager(), clientkey);
 		model.setBooks(list);
 
 		return "book/admin/resultlist";
@@ -216,7 +216,7 @@ public class BookAdminSearchController {
 		model.setPager(pager);
 		
 		// retrieve and set list
-		List<BookDao> list = searchService.findBooksForCriteria(criteria, null, clientkey);
+		List<BookDao> list = searchService.findBooksForCriteria(criteria, pager, clientkey);
 		model.setBooks(list);		
 		// return
 		return "book/admin/resultlist";
@@ -248,7 +248,7 @@ public class BookAdminSearchController {
 		model.setPager(pager);
 		
 		// retrieve and set list
-		List<BookDao> list = searchService.findBooksForCriteria(criteria, null, clientkey);
+		List<BookDao> list = searchService.findBooksForCriteria(criteria, pager, clientkey);
 		model.setBooks(list);		
 		// return
 		return "book/admin/resultlist";

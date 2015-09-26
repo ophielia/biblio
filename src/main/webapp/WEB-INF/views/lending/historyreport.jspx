@@ -112,8 +112,15 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 					<tr>
 			<td>${histRec.teacherfirstname }</td>
 			<td>
-<spring:url value="/classes/showstudent/${histRec.borrowerid}?from=lend" var="showurl"/>
+			<c:choose>
+			<c:when test="${histRec.isteacher!=false}">
+<spring:url value="/lendinghistory/class/${histRec.borrowerid}" var="showurl"/>
 <a class="tableboldlink" href="${showurl}">${histRec.borrowerfn } ${histRec.borrowerln }</a>			
+			</c:when>
+			<c:otherwise><spring:url value="/classes/showstudent/${histRec.borrowerid}?from=lend" var="showurl"/>
+<a class="tableboldlink" href="${showurl}">${histRec.borrowerfn } ${histRec.borrowerln }</a>			
+			</c:otherwise>
+			</c:choose>
 			</td>
 			<td>${histRec.bookclientid}</td>
 			<td>${histRec.booktitle }<br></br>${histRec.author }</td>

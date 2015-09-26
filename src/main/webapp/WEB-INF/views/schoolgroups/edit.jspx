@@ -163,9 +163,9 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <table id="classlist">
 <thead>
 <tr>
-<td>${lname}</td>
-<td>${lsection}</td>
-<td></td>
+<th>${lname}</th>
+<th>${lsection}</th>
+<th></th>
 </tr>
 </thead>
 <tbody>
@@ -207,10 +207,10 @@ ${lsection}
 <table >
 <thead>
 <tr>
-<td></td>
-<td>${lname}</td>
-<td>${lsection}</td>
-<td></td>
+<th></th>
+<th>${lname}</th>
+<th>${lsection}</th>
+<th></th>
 </tr>
 </thead>
 <tbody>
@@ -234,9 +234,9 @@ ${lsection}
 <table >
 <thead>
 <tr>
-<td></td>
-<td>${lname}</td>
-<td>${lsection}</td>
+<th></th>
+<th>${lname}</th>
+<th>${lsection}</th>
 </tr>
 </thead>
 <tbody>

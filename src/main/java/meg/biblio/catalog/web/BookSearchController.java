@@ -78,6 +78,8 @@ public class BookSearchController {
 		// reset pager in model - new search, so resetting page
 		pager.setCurrentpage(0);
 		model.setPager(pager);
+		// initialize grid columns
+		model = initGridColumns(model);
 
 		// search for results, and set in model
 		List<BookDao> list = searchService.findBooksForCriteria(criteria,
@@ -208,7 +210,7 @@ public class BookSearchController {
 		binder.setAutoGrowCollectionLimit(100024);
 	}
 
-	public Pager initPager(Pager pager) {
+	private Pager initPager(Pager pager) {
 		// determine if init is needed (no resultsperpage set)
 		if (pager != null && pager.getResultsperpage() < 0) {
 			// get results per page from appsetting
@@ -220,6 +222,18 @@ public class BookSearchController {
 			pager.setCurrentpage(0);
 		}
 		return pager;
+	}
+	
+	private BookListModel initGridColumns(BookListModel model) {
+		// determine if init is needed (no gridColumns set)
+		if (model.getGridColumns()<0) {
+			// get results per page from appsetting
+			Integer gridcols = settingService
+					.getSettingAsInteger("biblio.display.bookresultgridcol");
+			// set results per page
+			model.setGridColumns(gridcols);
+		}
+		return model;
 	}
 
 	private BookSearchCriteria getDefaultCriteria(Long clientkey) {
