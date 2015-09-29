@@ -5,33 +5,23 @@ Branch - inventory
 new features
 
 bug - error deleting class
+bug - error displaying student which is no longer in a class
+done - redo callisons header and footer color, accentboxlook		
 		
+	
+bugfix / improvement - default name splitting put extra names in last name.		
+bugfix / improvement - new student - shouldn't have heading "Students".		
+bugfix / improvement - add existing student - shouldn't have heading "Students".		
 bugfix / improvement - increment grade shows success page.... otherwise no sign it was done.			
 print out names for kids??  (future)
+future feature - no internet entry for books....
+future feature - backwards checkout for no internet.
 theory / strategy / new learning
 db testing - problem with views.  LendingSearchService fails.  check this link - 
 	http://dbunit.sourceforge.net/intro.html
 
 ---- begin commit changes ----
-done - backend work
-done - new l&f in alt
-done - grid	styling
-	done - menu sizing needs some help
-	done - don't like the gray in the menu....		
-	done - input.linkbutton - grey text	    
-done - take grid to admin search - nevermind - need details there
-done - finish admin search
-done - pagination
-done - grid
-done - new look and feel
-done - bug on lending history for teacher - don't show teacher link (for now....)
-done - new look and feel
-done - fix footer.
-done - check all pages for headers / tables	  
-done - try different background, color combinations
-done - 	implement gumball colors
-done - 	implement jacks colors
-done - fix menu jacks
+
 	
 ---- end commit changes ----
 
@@ -92,6 +82,26 @@ done - hasNext and hasPrev to disable pagination buttons
 done - front end - disable buttons <a id="checkoutcnt" class="linkbutton" href="#">Not yet checked out</a>
 done - take to admin search	
 
+online september 25, 2015
+done - backend work
+done - new l&f in alt
+done - grid	styling
+	done - menu sizing needs some help
+	done - don't like the gray in the menu....		
+	done - input.linkbutton - grey text	    
+done - take grid to admin search - nevermind - need details there
+done - finish admin search
+done - pagination
+done - grid
+done - new look and feel
+done - bug on lending history for teacher - don't show teacher link (for now....)
+done - new look and feel
+done - fix footer.
+done - check all pages for headers / tables	  
+done - try different background, color combinations
+done - 	implement gumball colors
+done - 	implement jacks colors
+done - fix menu jacks
 
 ---- end branch changes ----
 

@@ -1,6 +1,5 @@
 package meg.biblio.lending;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -59,6 +58,9 @@ public interface ClassManagementService {
 
 
 	TeacherInfo getTeacherByTeacherid(Long teacherid);
+
+
+	StudentDao getStudentById(Long studentid, Long clientid);
 
 
 }

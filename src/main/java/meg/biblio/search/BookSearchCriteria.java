@@ -203,7 +203,7 @@ public class BookSearchCriteria {
 		if (hasKeyword()) {
 			return OrderBy.PERTINENCE;
 		} else {
-			return OrderBy.DATEADDED;
+			return OrderBy.BOOKID;
 		}
 	}
 

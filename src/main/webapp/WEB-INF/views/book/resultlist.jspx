@@ -83,7 +83,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
        <br />
 		<span style="float: right"> ${lsortby}: <form:select
 				path="orderby" id="orderbyselect">
-				<option id="" label="- - Select - - " />
+				<option value="0" label="- - Select - - " />
 				<c:forEach var="sortitem" items="${sortlist}">
 					<form:option value="${sortitem.value}" label="${sortitem.display}" />
 				</c:forEach>
@@ -142,7 +142,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
  <a href="${editurl}" class="gridresults"><img id="shelfimg" src="${imagebasedir}${shelfclass.imagedisplay}" width="50x"/></a>
  </div>
  </div>
-<div><a href="${editurl}" class="grtext">${book.bookdetail.title}</a></div>
+<div><a href="${editurl}" class="grtext">${book.bookdetail.titleForDisplay}</a></div>
 </td>
  </c:forEach>			
  			

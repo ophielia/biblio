@@ -371,4 +371,15 @@ public class BookDetailDao {
 	public void setIsbn13(String isbn13) {
 		setIsbn(isbn13);
     }
+
+	public String getTitle() {
+        return this.title;
+    }
+	
+	public String getTitleForDisplay() {
+        if (this.title!=null && this.title.length()> 75) {
+        	return this.title.substring(0,74) + "...";
+        }
+		return this.title;
+    }
 }

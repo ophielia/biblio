@@ -17,9 +17,6 @@
           <spring:param name="size" value="${param.size}" />
         </c:if>
       </spring:url>
-      <spring:message code="global_theme_standard" var="theme_standard" htmlEscape="false" />
-      <a href="${url_theme1}" title="${fn:escapeXml(theme_standard)}">${fn:escapeXml(theme_standard)}</a>
-      <c:out value=" | " />
       <spring:url var="url_theme2" value="">
         <spring:param name="theme" value="jacks" />
         <c:if test="${not empty param.page}">

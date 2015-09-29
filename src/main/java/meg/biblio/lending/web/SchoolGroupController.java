@@ -162,14 +162,29 @@ public class SchoolGroupController {
     	// load ClassModel
     	ClassModel sclass = classMgmtService.loadClassModelForStudent(studentid);
 
+    	// fill model with student info
+    	if (sclass!=null) {
+        	// set student in model
+    		sclass.setStudentInModel(studentid);
+    		uiModel.addAttribute("classModel",sclass);
+    		uiModel.addAttribute("studentfirstname",sclass.getStudentfirstname());
+    		uiModel.addAttribute("studentname",sclass.getStudentname());
+    		uiModel.addAttribute("studentsection",sclass.getStudentsection());
+    		uiModel.addAttribute("studentid",sclass.getStudentid());
+    		uiModel.addAttribute("hasclass",true);
+    	} else {
+    		StudentDao student = classMgmtService.getStudentById(studentid, client.getId());
+    		uiModel.addAttribute("studentfirstname",student.getFirstname());
+    		uiModel.addAttribute("studentname",student.getLastname());
+    		uiModel.addAttribute("studentsection",student.getSectionkey());
+    		uiModel.addAttribute("studentid",student.getId());
+    		uiModel.addAttribute("hasclass",false);
+    	}
+    	
     	// get lending history for student
     	List<LoanRecordDisplay> lendhistory = lendingService.getLendingHistoryByLender(studentid, client.getId());
     	
-    	// set student in model
-    	sclass.setStudentInModel(studentid);
-
     	// put classmodel in model
-    	uiModel.addAttribute("classModel",sclass);
     	uiModel.addAttribute("lendinghistory",lendhistory);
     	if (lendinghistory !=null) {
     		uiModel.addAttribute("fromlending",true);

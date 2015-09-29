@@ -84,7 +84,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <th>${lbooktitle }</th>
 <th>${lauthor }</th>
 
-<td></td>
+<th></th>
 </tr>
 </thead>
 <tbody>

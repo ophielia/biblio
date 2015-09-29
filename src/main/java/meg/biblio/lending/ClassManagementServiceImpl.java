@@ -294,8 +294,12 @@ public class ClassManagementServiceImpl implements ClassManagementService {
 		// get class from student
 		SchoolGroupDao sclass = student.getSchoolgroup();
 		// load model
-		ClassModel model = loadClassModelById(sclass.getId());
-		return model;
+		if (sclass!=null) {
+			ClassModel model = loadClassModelById(sclass.getId());
+			return model;
+		}
+		
+		return null;
 	}
 
 	@Override
@@ -409,6 +413,22 @@ public class ClassManagementServiceImpl implements ClassManagementService {
 		// return students
 		return new ArrayList<StudentDao>();
 	}
+	
+	@Override
+	public StudentDao getStudentById(Long studentid, Long clientid) {
+		// get client id
+		ClientDao client = clientService.getClientForKey(clientid);
+
+		// get student
+		StudentDao student = studentRepo.findOne(studentid);
+
+		if (student.getClient().getId().longValue() == clientid.longValue()) {
+			return student;
+		}
+
+		// return students
+		return null;
+	}	
 
 	@Override
 	public HashMap<Long, TeacherInfo> getTeacherByClassForClient(Long clientid) {
