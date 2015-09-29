@@ -24,11 +24,18 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <spring:message code="button_save" htmlEscape="false" var="bsave"/>
 
 
-<h1>${classModel.studentfirstname} ${classModel.studentname} - ${sectionSelect[classModel.studentsection]} </h1>
+<h1>${studentfirstname} ${studentname} - ${sectionSelect[studentsection]} </h1>
 
-<spring:url value="/classes/editstudent/${classModel.studentid}" var="editurl"/>
+<spring:url value="/classes/editstudent/${studentid}" var="editurl"/>
 
-<h2>${lclassof} ${classModel.teacher.firstname} ${classModel.teacher.lastname}</h2>
+<c:choose>
+<c:when test="${hasclass eq true}"><h2>${lclassof} ${classModel.teacher.firstname} ${classModel.teacher.lastname}</h2></c:when>
+<c:otherwise>
+<spring:message code="msg_class_noclass" htmlEscape="false" var="msgnoclass"/>
+<h2>${msgnoclass}</h2>
+</c:otherwise>
+</c:choose>
+
 
 <hr />
 Lending History
