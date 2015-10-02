@@ -11,7 +11,6 @@ import meg.biblio.catalog.db.dao.SubjectDao;
 
 privileged aspect BookDetailDao_Roo_JavaBean {
     
-        
     public List<SubjectDao> BookDetailDao.getSubjects() {
         return this.subjects;
     }

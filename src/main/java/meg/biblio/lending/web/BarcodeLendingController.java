@@ -19,11 +19,11 @@ import meg.biblio.lending.ClassManagementService;
 import meg.biblio.lending.LendingService;
 import meg.biblio.lending.db.PersonRepository;
 import meg.biblio.lending.db.dao.LoanRecordDao;
+import meg.biblio.lending.db.dao.LoanRecordDisplay;
 import meg.biblio.lending.db.dao.PersonDao;
 import meg.biblio.lending.db.dao.StudentDao;
 import meg.biblio.lending.db.dao.TeacherDao;
 import meg.biblio.lending.web.model.BarcodeLendModel;
-import meg.biblio.lending.web.model.LoanRecordDisplay;
 import meg.biblio.lending.web.validator.BarcodeLendValidator;
 
 import org.springframework.beans.factory.annotation.Autowired;

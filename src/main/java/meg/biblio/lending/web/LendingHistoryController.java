@@ -14,9 +14,9 @@ import meg.biblio.common.db.dao.ClientDao;
 import meg.biblio.lending.ClassManagementService;
 import meg.biblio.lending.LendingSearchCriteria;
 import meg.biblio.lending.LendingService;
+import meg.biblio.lending.db.dao.LoanRecordDisplay;
 import meg.biblio.lending.db.dao.TeacherDao;
 import meg.biblio.lending.web.model.LendingSearchModel;
-import meg.biblio.lending.web.model.LoanRecordDisplay;
 import meg.biblio.lending.web.model.TeacherInfo;
 import meg.tools.DateUtils;
 

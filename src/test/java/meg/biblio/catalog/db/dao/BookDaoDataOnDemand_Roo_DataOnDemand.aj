@@ -43,8 +43,14 @@ privileged aspect BookDaoDataOnDemand_Roo_DataOnDemand {
         setClientid(obj, index);
         setClientshelfclass(obj, index);
         setClientshelfcode(obj, index);
+        setCounted(obj, index);
+        setCounteddate(obj, index);
         setCreatedon(obj, index);
+        setNote(obj, index);
+        setReconciled(obj, index);
         setStatus(obj, index);
+        setTocount(obj, index);
+        setUserid(obj, index);
         return obj;
     }
     
@@ -83,14 +89,44 @@ privileged aspect BookDaoDataOnDemand_Roo_DataOnDemand {
         obj.setClientshelfcode(clientshelfcode);
     }
     
+    public void BookDaoDataOnDemand.setCounted(BookDao obj, int index) {
+        Boolean counted = Boolean.TRUE;
+        obj.setCounted(counted);
+    }
+    
+    public void BookDaoDataOnDemand.setCounteddate(BookDao obj, int index) {
+        Date counteddate = new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR), Calendar.getInstance().get(Calendar.MONTH), Calendar.getInstance().get(Calendar.DAY_OF_MONTH), Calendar.getInstance().get(Calendar.HOUR_OF_DAY), Calendar.getInstance().get(Calendar.MINUTE), Calendar.getInstance().get(Calendar.SECOND) + new Double(Math.random() * 1000).intValue()).getTime();
+        obj.setCounteddate(counteddate);
+    }
+    
     public void BookDaoDataOnDemand.setCreatedon(BookDao obj, int index) {
         Date createdon = new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR), Calendar.getInstance().get(Calendar.MONTH), Calendar.getInstance().get(Calendar.DAY_OF_MONTH), Calendar.getInstance().get(Calendar.HOUR_OF_DAY), Calendar.getInstance().get(Calendar.MINUTE), Calendar.getInstance().get(Calendar.SECOND) + new Double(Math.random() * 1000).intValue()).getTime();
         obj.setCreatedon(createdon);
     }
     
+    public void BookDaoDataOnDemand.setNote(BookDao obj, int index) {
+        String note = "note_" + index;
+        obj.setNote(note);
+    }
+    
+    public void BookDaoDataOnDemand.setReconciled(BookDao obj, int index) {
+        Boolean reconciled = Boolean.TRUE;
+        obj.setReconciled(reconciled);
+    }
+    
     public void BookDaoDataOnDemand.setStatus(BookDao obj, int index) {
         Long status = new Integer(index).longValue();
         obj.setStatus(status);
+    }
+    
+    public void BookDaoDataOnDemand.setTocount(BookDao obj, int index) {
+        Boolean tocount = Boolean.TRUE;
+        obj.setTocount(tocount);
+    }
+    
+    public void BookDaoDataOnDemand.setUserid(BookDao obj, int index) {
+        Long userid = new Integer(index).longValue();
+        obj.setUserid(userid);
     }
     
     public BookDao BookDaoDataOnDemand.getSpecificBookDao(int index) {

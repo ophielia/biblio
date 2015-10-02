@@ -1,4 +1,4 @@
-package meg.biblio.lending.web.model;
+package meg.biblio.lending.db.dao;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -17,7 +17,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @Table(name = "loanrecorddisplay")
 @SqlResultSetMapping(name = "LRDisp", entities = { 
-		@EntityResult(entityClass = meg.biblio.lending.web.model.LoanRecordDisplay.class, fields = {
+		@EntityResult(entityClass = LoanRecordDisplay.class, fields = {
 		@FieldResult(name = "loanrecordid", column = "loanrecordid"),
 		@FieldResult(name = "bookid", column = "bookid"),
 		@FieldResult(name = "classid", column = "classid"),

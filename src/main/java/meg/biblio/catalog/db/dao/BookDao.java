@@ -5,7 +5,10 @@ import javax.persistence.CascadeType;
 import javax.persistence.FetchType;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.jpa.entity.RooJpaEntity;
 import org.springframework.roo.addon.tostring.RooToString;
@@ -28,6 +31,14 @@ private String barcodeid;
 @OneToOne(cascade = CascadeType.ALL, fetch=FetchType.EAGER)/*@JoinColumn(name="ID")*/
 private BookDetailDao bookdetail;
 private Long clientbooktype;
+private String note;
+private Boolean tocount;
+private Boolean counted;
+@Temporal(TemporalType.DATE)
+@DateTimeFormat(style = "M-")
+private Date counteddate;
+private Long userid;
+private Boolean reconciled;
 
 	public void setClientbookid(String clientbookid) {
         this.clientbookid = clientbookid;

@@ -15,7 +15,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import meg.biblio.catalog.CatalogService;
-import meg.biblio.lending.web.model.LoanRecordDisplay;
+import meg.biblio.lending.db.dao.LoanRecordDisplay;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

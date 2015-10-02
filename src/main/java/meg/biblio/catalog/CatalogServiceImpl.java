@@ -388,7 +388,7 @@ public class CatalogServiceImpl implements CatalogService {
 
 		// add default entries for status, detail status, type
 		if (book.getStatus()==null) {
-			book.setStatus(Status.PROCESSING);
+			book.setStatus(Status.SHELVED);
 		}
 		book.setCreatedon(new Date());
 		if (bookdetail.getDetailstatus() == null) {

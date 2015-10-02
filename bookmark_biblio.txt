@@ -2,11 +2,29 @@ Branch - inventory
 	inventory
 	rework lending - lending search
 
-new features
+INVENTORY !! (finally)
+done - skeleton of DAOs and Service made
+done -  fill in Service with pseudo code and documentation
+done - continuing beginInventory - 
+done - 	update BookDao - add inventoryid and tocount = true
+done - add fields to BookDao - note, provenance, tocount, counted, counteddate, counterid, reconciledid
+done - finished cancel inventory
+
+next - need InventoryStatus - pjo with fields for tocount, counted, reconciled and added
+	to do this, counted needs to be changed to a status with either counted (1) or reconciled (2)
+	InventoryStatus will be filled with 2 queries - one breakout by countstatus, and one to inventoryhistory, to find added books
+	method signature public InventoryStatus getInventoryStatus(InventoryDao inv, ClientDao client) 
+	
+	
+	
+add later - fill in counted books in cancelInventory.
+
+
+approach - jpa... bookdao using ids, not objects.  InvStackDisplay built upon query (hopefully not view).
+InvHistoryDao can hold InventoryDao object.
+
 
 bug - error deleting class
-bug - error displaying student which is no longer in a class
-done - redo callisons header and footer color, accentboxlook		
 		
 	
 bugfix / improvement - default name splitting put extra names in last name.		
@@ -21,6 +39,8 @@ db testing - problem with views.  LendingSearchService fails.  check this link -
 	http://dbunit.sourceforge.net/intro.html
 
 ---- begin commit changes ----
+done - error displaying student which is no longer in a class
+done - redo callisons header and footer color, accentboxlook		
 
 	
 ---- end commit changes ----

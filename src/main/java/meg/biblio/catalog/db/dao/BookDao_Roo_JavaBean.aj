@@ -81,4 +81,52 @@ privileged aspect BookDao_Roo_JavaBean {
         this.clientbooktype = clientbooktype;
     }
     
+    public String BookDao.getNote() {
+        return this.note;
+    }
+    
+    public void BookDao.setNote(String note) {
+        this.note = note;
+    }
+    
+    public Boolean BookDao.getTocount() {
+        return this.tocount;
+    }
+    
+    public void BookDao.setTocount(Boolean tocount) {
+        this.tocount = tocount;
+    }
+    
+    public Boolean BookDao.getCounted() {
+        return this.counted;
+    }
+    
+    public void BookDao.setCounted(Boolean counted) {
+        this.counted = counted;
+    }
+    
+    public Date BookDao.getCounteddate() {
+        return this.counteddate;
+    }
+    
+    public void BookDao.setCounteddate(Date counteddate) {
+        this.counteddate = counteddate;
+    }
+    
+    public Long BookDao.getUserid() {
+        return this.userid;
+    }
+    
+    public void BookDao.setUserid(Long userid) {
+        this.userid = userid;
+    }
+    
+    public Boolean BookDao.getReconciled() {
+        return this.reconciled;
+    }
+    
+    public void BookDao.setReconciled(Boolean reconciled) {
+        this.reconciled = reconciled;
+    }
+    
 }

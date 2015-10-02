@@ -679,8 +679,8 @@ public class SearchServiceImpl implements SearchService {
 			q.setParameter("shelfcode", criteria.getShelfclasskey());
 		}
 		// status
-		if (criteria.hasStatus()) {
-			q.setParameter("status", criteria.getStatus());
+		if (criteria.hasSingleStatus()) {
+			q.setParameter("status", criteria.getSingleStatus());
 		}
 		// status
 		if (criteria.hasBooktype()) {
@@ -783,12 +783,22 @@ public class SearchServiceImpl implements SearchService {
 		}
 
 		// status
-		if (criteria.hasStatus()) {
+		if (criteria.hasSingleStatus()) {
 			ParameterExpression<Long> param = cb
 					.parameter(Long.class, "status");
 			whereclause.add(cb.equal(bookroot.<Long> get("status"), param));
 
 		}
+		
+		// statuslist
+		if (criteria.hasStatusList()) {
+			if (criteria.getInstatuslist()!=null && criteria.getInstatuslist().booleanValue()) {
+				whereclause.add(bookroot.<Long> get("status").in(criteria.getStatuslist()));	
+			} else {
+				whereclause.add(cb.not(bookroot.<Long> get("status").in(criteria.getStatuslist())));
+			}
+			
+		}		
 
 		// type
 		if (criteria.hasBooktype()) {

@@ -6,8 +6,8 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import meg.biblio.lending.db.dao.LoanRecordDisplay;
 import meg.biblio.lending.db.dao.SchoolGroupDao;
-import meg.biblio.lending.web.model.LoanRecordDisplay;
 
 @XmlRootElement(name = "classreport")
 public class ClassSummaryReport {
