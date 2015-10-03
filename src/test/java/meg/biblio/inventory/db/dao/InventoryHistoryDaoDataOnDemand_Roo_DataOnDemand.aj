@@ -10,7 +10,9 @@ import java.util.List;
 import java.util.Random;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
+import meg.biblio.catalog.db.dao.BookDaoDataOnDemand;
 import meg.biblio.inventory.db.InventoryHistRepository;
+import meg.biblio.inventory.db.dao.InventoryDaoDataOnDemand;
 import meg.biblio.inventory.db.dao.InventoryHistoryDao;
 import meg.biblio.inventory.db.dao.InventoryHistoryDaoDataOnDemand;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,11 +27,29 @@ privileged aspect InventoryHistoryDaoDataOnDemand_Roo_DataOnDemand {
     private List<InventoryHistoryDao> InventoryHistoryDaoDataOnDemand.data;
     
     @Autowired
+    BookDaoDataOnDemand InventoryHistoryDaoDataOnDemand.bookDaoDataOnDemand;
+    
+    @Autowired
+    InventoryDaoDataOnDemand InventoryHistoryDaoDataOnDemand.inventoryDaoDataOnDemand;
+    
+    @Autowired
     InventoryHistRepository InventoryHistoryDaoDataOnDemand.inventoryHistRepository;
     
     public InventoryHistoryDao InventoryHistoryDaoDataOnDemand.getNewTransientInventoryHistoryDao(int index) {
         InventoryHistoryDao obj = new InventoryHistoryDao();
+        setNewstatus(obj, index);
+        setOriginalstatus(obj, index);
         return obj;
+    }
+    
+    public void InventoryHistoryDaoDataOnDemand.setNewstatus(InventoryHistoryDao obj, int index) {
+        Long newstatus = new Integer(index).longValue();
+        obj.setNewstatus(newstatus);
+    }
+    
+    public void InventoryHistoryDaoDataOnDemand.setOriginalstatus(InventoryHistoryDao obj, int index) {
+        Long originalstatus = new Integer(index).longValue();
+        obj.setOriginalstatus(originalstatus);
     }
     
     public InventoryHistoryDao InventoryHistoryDaoDataOnDemand.getSpecificInventoryHistoryDao(int index) {

@@ -97,12 +97,12 @@ privileged aspect BookDao_Roo_JavaBean {
         this.tocount = tocount;
     }
     
-    public Boolean BookDao.getCounted() {
-        return this.counted;
+    public Long BookDao.getCountstatus() {
+        return this.countstatus;
     }
     
-    public void BookDao.setCounted(Boolean counted) {
-        this.counted = counted;
+    public void BookDao.setCountstatus(Long countstatus) {
+        this.countstatus = countstatus;
     }
     
     public Date BookDao.getCounteddate() {

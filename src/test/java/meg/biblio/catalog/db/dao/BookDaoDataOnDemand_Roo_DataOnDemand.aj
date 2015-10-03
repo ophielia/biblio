@@ -43,8 +43,8 @@ privileged aspect BookDaoDataOnDemand_Roo_DataOnDemand {
         setClientid(obj, index);
         setClientshelfclass(obj, index);
         setClientshelfcode(obj, index);
-        setCounted(obj, index);
         setCounteddate(obj, index);
+        setCountstatus(obj, index);
         setCreatedon(obj, index);
         setNote(obj, index);
         setReconciled(obj, index);
@@ -89,14 +89,14 @@ privileged aspect BookDaoDataOnDemand_Roo_DataOnDemand {
         obj.setClientshelfcode(clientshelfcode);
     }
     
-    public void BookDaoDataOnDemand.setCounted(BookDao obj, int index) {
-        Boolean counted = Boolean.TRUE;
-        obj.setCounted(counted);
-    }
-    
     public void BookDaoDataOnDemand.setCounteddate(BookDao obj, int index) {
         Date counteddate = new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR), Calendar.getInstance().get(Calendar.MONTH), Calendar.getInstance().get(Calendar.DAY_OF_MONTH), Calendar.getInstance().get(Calendar.HOUR_OF_DAY), Calendar.getInstance().get(Calendar.MINUTE), Calendar.getInstance().get(Calendar.SECOND) + new Double(Math.random() * 1000).intValue()).getTime();
         obj.setCounteddate(counteddate);
+    }
+    
+    public void BookDaoDataOnDemand.setCountstatus(BookDao obj, int index) {
+        Long countstatus = new Integer(index).longValue();
+        obj.setCountstatus(countstatus);
     }
     
     public void BookDaoDataOnDemand.setCreatedon(BookDao obj, int index) {

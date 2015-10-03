@@ -15,11 +15,25 @@ import meg.biblio.inventory.db.dao.InventoryDao;
 
 public interface InventoryService {
 
+
+	public static final class CountStatus {
+		public static final long COUNTED = 2;
+		public static final long RECONCILED = 3;
+	}
+
 	InventoryDao beginInventory(ClientDao client);
 
 	void cancelCurrentInventory(ClientDao client);
 
 	InventoryDao getCurrentInventory(ClientDao client);
+
+	boolean getInventoryIsComplete(ClientDao client);
+
+	InventoryStatus getInventoryStatus(InventoryDao inv, ClientDao client);
+
+	List<InventoryDao> getInventoryList(ClientDao client);
+
+	void countBook(BookDao book, Long userid, ClientDao client);
 
 	
 }

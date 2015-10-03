@@ -1,3 +1,2 @@
 /**  app setting **/
-INSERT INTO appsetting(id, key, value, version) VALUES (nextval('hibernate_sequence'), 'biblio.display.bookresultsperpage', '50', 0);
-INSERT INTO appsetting(id, key, value, version) VALUES (nextval('hibernate_sequence'), 'biblio.display.bookresultgridcol', '5', 0);
+INSERT INTO appsetting(id, key, value, version) VALUES (nextval('hibernate_sequence'), 'biblio.testclient', '1', 0);

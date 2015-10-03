@@ -33,7 +33,8 @@ private BookDetailDao bookdetail;
 private Long clientbooktype;
 private String note;
 private Boolean tocount;
-private Boolean counted;
+
+private Long countstatus;
 @Temporal(TemporalType.DATE)
 @DateTimeFormat(style = "M-")
 private Date counteddate;
@@ -50,7 +51,7 @@ private Boolean reconciled;
 			if (clientbid.matches("^[0-9]+$")) {
 				// only numbers - save in sort field
 				Long longclientid = new Long(clientbid);
-				setClientbookidsort(longclientid);
+				this.clientbookidsort=longclientid;
 			}
 		}
 	}

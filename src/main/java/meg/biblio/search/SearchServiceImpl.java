@@ -42,6 +42,8 @@ public class SearchServiceImpl implements SearchService {
 
 	@Autowired
 	private CatalogService catalogService;
+	
+
 
 	@Autowired
 	BookMemberService bMemberService;
@@ -315,12 +317,14 @@ public class SearchServiceImpl implements SearchService {
 	}
 
 	@Override
-	public HashMap<Long, Long> breakoutByBookField(long bookkey, Long clientid) {
+	public HashMap<Long, Long> breakoutByBookField(long breakoutkey, Long clientid) {
 
 		// determine field string
 		String fieldstring = "status";
-		if (bookkey == SearchService.Breakoutfield.DETAILSTATUS) {
+		if (breakoutkey == SearchService.Breakoutfield.DETAILSTATUS) {
 			fieldstring = "detailstatus";
+		} else if (breakoutkey == SearchService.Breakoutfield.COUNTSTATUS) {
+			fieldstring = "countstatus";
 		}
 		// put together query
 		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
