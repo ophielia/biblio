@@ -3,12 +3,19 @@ Branch - inventory
 	rework lending - lending search
 
 INVENTORY !! (finally)
-done - fill in counted books in cancelInventory.
-next ---> reconcileBook 
-done - countBook
-done - test for countBook.
-done - implement countBook
-done - test green for countBook.
+in reconcile book, lost book, check for duplicates in invhistory 
+
+begin skeleton of controller
+
+
+for tying into Checkout/Return
+	need aspect on ENTRY to checkout - if inventory in progress, "lost" , mark in inventory history
+	need aspect on EXIT from return - if inventory in progress, mark as counted
+	
+
+test for InvStackDisplay methods, which use a query, will need to be done with DBUtils.
+
+
 
 
 
@@ -32,7 +39,21 @@ db testing - problem with views.  LendingSearchService fails.  check this link -
 
 ---- begin commit changes ----
 
-
+done - tailor retrieveInvStackDisplays for different types
+done - implement getUncountedBooks
+done - getStackForUser
+done - implement internal retrieveInvStackDisplays
+done - test for getStackForUser.
+done - implement getStackForUser
+done - test green for getStackForUser.
+done - reconcileBook 
+done - test for reconcileBook.
+done - implement reconcileBook
+done - test green for reconcileBook.
+done - test for reconcileBooks....
+done - fill in counted books in cancelInventory.
+done -  finishInventory, test and implement
+done - backend implementation of Inventory
 
 ---- end commit changes ----
 

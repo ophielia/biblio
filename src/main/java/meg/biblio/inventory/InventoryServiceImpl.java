@@ -7,15 +7,19 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.CriteriaUpdate;
 import javax.persistence.criteria.Expression;
+import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import meg.biblio.catalog.CatalogService;
 import meg.biblio.catalog.db.BookRepository;
 import meg.biblio.catalog.db.dao.BookDao;
+import meg.biblio.catalog.db.dao.BookDetailDao;
 import meg.biblio.common.db.dao.ClientDao;
 import meg.biblio.inventory.db.InventoryHistRepository;
 import meg.biblio.inventory.db.InventoryRepository;
@@ -53,12 +57,17 @@ public class InventoryServiceImpl implements InventoryService {
 	/* Get actual class name to be printed on */
 	static Logger log = Logger.getLogger(InventoryServiceImpl.class.getName());
 
+	public static final class StackSearchType {
+		public static final long UNCOUNTED = 1;
+		public static final long STACK = 2;
+	}
+
 	/**
 	 * Creates a new InventoryDao object for the client, fills it with
 	 * information and returns the new client object. Note: only one Inventory
 	 * can run at a time for a client. If a client has a current inventory in
 	 * progress, null will be returned.
-	 * 
+	 *
 	 * @param client
 	 * @return
 	 */
@@ -114,7 +123,7 @@ public class InventoryServiceImpl implements InventoryService {
 	 * This method cancels an inventory in progress. It resets all book counts
 	 * to 0, sets the end date in the inventory object, and sets completed in
 	 * the inventory object to false.
-	 * 
+	 *
 	 * @param client
 	 *            ClientDao
 	 * @return
@@ -145,27 +154,39 @@ public class InventoryServiceImpl implements InventoryService {
 	 * inventory, and fills these in in the InventoryDao object. Finally, all
 	 * inventory data - counted to count, counted date, counterid, and
 	 * reconciled are cleared from the BookDaos.
-	 * 
+	 *
 	 * @param client
 	 *            ClientDao
 	 * @return
 	 */
+	@Override
 	public InventoryDao finishInventory(ClientDao client) {
 		// get current inventory
-
+		InventoryDao current = getCurrentInventory(client);
 		// if no inventory is current, return null
-
-		// get InventoryStatus for inventory
-
-		// fill in status info in InventoryDao
-		// number counted, number added, number reconciled
-
-		// fill in enddate, and completed as true
-
-		// save InventoryDao
-
-		// reset inventory information in BookDao.
-
+		if (current != null ) {
+			if (getInventoryIsComplete(client)) {
+			// get InventoryStatus for inventory
+			InventoryStatus status = getInventoryStatus(current, client);
+			// fill in status info in InventoryDao
+			// number counted, number added, number reconciled
+			Long countedlong = new Long(status.getCountedbooks());
+			Long addedlong = new Long(status.getRefoundbooks());
+			Long reconciledlong = new Long(status.getReconciledbooks());
+			current.setTotalcounted(countedlong.intValue());
+			current.setAddedtocount(addedlong.intValue());
+			current.setReconciled(reconciledlong.intValue());
+			// fill in enddate, and completed as true
+			current.setEnddate(new Date());
+			current.setCompleted(true);
+			// save InventoryDao
+			invRepo.save(current);
+			// reset inventory information in BookDao.
+			clearInventoryDataInBooks(client.getId());
+			// return finished inventory
+			return current;
+		}
+			}
 		return null;
 	}
 
@@ -173,7 +194,7 @@ public class InventoryServiceImpl implements InventoryService {
 	 * Returns the InventoryDao object for the inventory in progress for the
 	 * given client. If nothing is in progress, 0 is returned. An InventoryDao
 	 * object is in progress when the enddate is null.
-	 * 
+	 *
 	 * @param client
 	 *            ClientDao
 	 * @return
@@ -189,7 +210,7 @@ public class InventoryServiceImpl implements InventoryService {
 	/**
 	 * This method returns an InventoryStatus object - a pojo object which
 	 * contains information about the status of the given inventory.
-	 * 
+	 *
 	 * @param inv
 	 *            InventoryDao
 	 * @param client
@@ -232,7 +253,7 @@ public class InventoryServiceImpl implements InventoryService {
 	/**
 	 * An inventory is deemed complete when all books marked as tocount have
 	 * been either counted or reconciled.
-	 * 
+	 *
 	 * @param inv
 	 * @return
 	 */
@@ -248,7 +269,7 @@ public class InventoryServiceImpl implements InventoryService {
 
 	/**
 	 * Returns a list of all inventories saved for the client.
-	 * 
+	 *
 	 * @param client
 	 * @return
 	 */
@@ -269,29 +290,53 @@ public class InventoryServiceImpl implements InventoryService {
 	 * user. This method returns all books belonging to the current stack - in
 	 * other words, all books counted with the passed userid in the counterid
 	 * slot.
-	 * 
+	 *
 	 * @param userid
 	 * @param client
 	 * @return
 	 */
+	@Override
 	public List<InvStackDisplay> getStackForUser(Long userid, ClientDao client) {
 		// retrieve all InvStackDisplay objects with the counterid matching the
 		// passed userid, for the given client.
-		return null;
+		return retrieveInvStackDisplays(StackSearchType.STACK, userid,
+				client.getId());
 	}
 
 	/**
 	 * This method clears the stack for a user, so that another stack can be
 	 * counted and verified. All books with the counterid matching the passed
 	 * userid have the counterid updated to 0.
-	 * 
+	 *
 	 * @param userid
 	 * @param client
 	 */
-
+	@Override
 	public void clearStackForUser(Long userid, ClientDao client) {
 		// run update for all BookDao objects matching userid and client.
 		// set userid to 0.
+		// query for all books belonging to client
+		// with tocount as true
+		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+		CriteriaUpdate<BookDao> q = cb.createCriteriaUpdate(BookDao.class);
+		Root<BookDao> bookroot = q.from(BookDao.class);
+
+		// create predicate list
+		List<Predicate> whereclause = new ArrayList<Predicate>();
+		// add clientid
+		whereclause.add(cb.equal(bookroot.<Long> get("clientid"),
+				client.getId()));
+		whereclause.add(cb.equal(bookroot.<Long> get("userid"), userid));
+
+		// put query together
+		Expression<Long> nullLong = cb.nullLiteral(Long.class);
+		q.set(bookroot.get("userid"), nullLong);
+
+		q.where(cb.and(whereclause.toArray(new Predicate[whereclause.size()])));
+		int result = entityManager.createQuery(q).executeUpdate();
+		log.info("clearStackForUser: updated " + result + " books.");
+
+		entityManager.flush();
 	}
 
 	/**
@@ -299,51 +344,56 @@ public class InventoryServiceImpl implements InventoryService {
 	 * by setting the counted flag to true. If the book has been previously
 	 * "lost" - meaning it has a status of not counted in inventory or lost by
 	 * borrower, than it is also saved as an InvHistoryDao object.
-	 * 
+	 *
 	 * @param book
 	 * @param userid
 	 */
 	@Override
 	public void countBook(BookDao book, Long userid, ClientDao client) {
 		InventoryDao inv = getCurrentInventory(client);
-		if (inv!=null) {
-		if (book != null) {
-			// retrieve book
-			BookDao countedbook = bookRepo.findOne(book.getId());
-			// determine if lost book
-			Long bookstatus = countedbook.getStatus();
-			if (bookstatus != null
-					&& (bookstatus.longValue() == CatalogService.Status.LOSTBYBORROWER
-							|| bookstatus.longValue() == CatalogService.Status.REMOVEDFROMCIRC || bookstatus
-							.longValue() == CatalogService.Status.INVNOTFOUND)) {
-				// this is a lost book
-				Long newstatus = CatalogService.Status.SHELVED;
-				// if lost book, save as InvHistory object
-				InventoryHistoryDao hist = new InventoryHistoryDao();
-				hist.setInventory(inv);
-				hist.setOriginalstatus(bookstatus);
-				hist.setNewstatus(newstatus);
-				// set status of "shelved" in book
-				countedbook.setStatus(newstatus);
-				// set counterid to userid
-				countedbook.setUserid(userid);
+		if (inv != null) {
+			if (book != null) {
+				// retrieve book
+				BookDao countedbook = bookRepo.findOne(book.getId());
+				// determine if lost book
+				Long bookstatus = countedbook.getStatus();
+				if (bookstatus != null
+						&& (bookstatus.longValue() == CatalogService.Status.LOSTBYBORROWER
+								|| bookstatus.longValue() == CatalogService.Status.REMOVEDFROMCIRC || bookstatus
+								.longValue() == CatalogService.Status.INVNOTFOUND)) {
+					// this is a lost book
+					Long newstatus = CatalogService.Status.SHELVED;
+					// if lost book, save as InvHistory object
+					InventoryHistoryDao hist = new InventoryHistoryDao();
+					hist.setInventory(inv);
+					hist.setOriginalstatus(bookstatus);
+					hist.setNewstatus(newstatus);
+					// set status of "shelved" in book
+					countedbook.setStatus(newstatus);
+					// set counterid to userid
+					countedbook.setUserid(userid);
 
-				// save changes
-				countedbook = bookRepo.save(countedbook);
-				hist.setBook(countedbook);
-				hist = invHistRepo.save(hist);
-				long beep=1;
-			} else {
-				// set counterid to userid, and counted to true
-				// update counted status for book
-				countedbook
-						.setCountstatus(InventoryService.CountStatus.COUNTED);
-				// set userid for book
-				countedbook.setUserid(userid);
-				// save book
-				bookRepo.save(countedbook);
+					// save changes
+					countedbook = bookRepo.save(countedbook);
+					entityManager.flush();
+					entityManager.refresh(countedbook);
+					hist.setBook(countedbook);
+					hist = invHistRepo.save(hist);
+					entityManager.refresh(countedbook);
+				} else {
+					// set counterid to userid, and counted to true
+					// update counted status for book
+					countedbook
+							.setCountstatus(InventoryService.CountStatus.COUNTED);
+					// set userid for book
+					countedbook.setUserid(userid);
+					countedbook.setCounteddate(new Date());
+					// save book
+					bookRepo.save(countedbook);
+					bookRepo.flush();
+					entityManager.refresh(countedbook);
+				}
 			}
-		}
 		}
 	}
 
@@ -351,25 +401,18 @@ public class InventoryServiceImpl implements InventoryService {
 
 	/**
 	 * Returns a list of InvStackDisplay objects for the inventory which have
-	 * not been counted: all BookDao objects with tobecounted true, and counted
-	 * as false.
-	 * 
+	 * not been counted: all BookDao objects with tobecounted true, and
+	 * countstatus not in counted (counted, reconciled)
+	 *
 	 * @param client
 	 * @return
 	 */
+	@Override
 	public List<InvStackDisplay> getUncountedBooks(ClientDao client) {
 
-		return null;
-	}
+		return retrieveInvStackDisplays(StackSearchType.UNCOUNTED, null,
+				client.getId());
 
-	/**
-	 * Returns a list of InvStackDisplay objects for the inventory which have
-	 * been reconciled: all BookDao objects with tobecounted true, and
-	 * reconciled as true.
-	 * 
-	 */
-	public List<InvStackDisplay> getReconciledBooks(ClientDao client) {
-		return null;
 	}
 
 	/**
@@ -378,71 +421,136 @@ public class InventoryServiceImpl implements InventoryService {
 	 * book is marked as reconciled (BookDao reconciled field set to true) and a
 	 * record of the reconciled book, with the original status and the final
 	 * status is saved in InvHistory.
-	 * 
+	 *
 	 * @param client
 	 * @param bookid
 	 * @param updatestatus
 	 */
+	@Override
 	public void reconcileBook(ClientDao client, Long bookid, Long updatestatus) {
 		// get inventory
-		
+		InventoryDao inv = getCurrentInventory(client);
+
 		// only proceed if inventory in progress
-		
-		
+		if (inv != null) {
+			BookDao book = bookRepo.findOne(bookid);
+			reconcileBook(inv, book, updatestatus);
+		}
+
 	}
 
-	private void reconcileBook(InventoryDao invinprogress,Long bookid, Long updatestatus) {
-		// create InventoryHistDao
-		
-				// set inventory in InventoryHistDao
-				
-				// set original status, and new status in IHD
-				
-				// set new status in book
-				
-				// persist the book
-				
-				// set the book in the IHD and persist 
-	}
-	
 	/**
 	 * This method performs a reconcileBook operation for an entire book list.
-	 * 
+	 *
 	 * @param client
 	 * @param bookid
 	 * @param updatestatus
 	 */
+	@Override
 	public void reconcileBookList(ClientDao client, List<Long> bookidlist,
 			Long updatestatus) {
+		// get inventory
+		InventoryDao inv = getCurrentInventory(client);
+
+		// only proceed if inventory in progress
+		if (inv != null) {
+			List<BookDao> toreconcile = bookRepo.findAll(bookidlist);
+			for (BookDao book : toreconcile) {
+				reconcileBook(inv, book, updatestatus);
+			}
+		}
 
 	}
 
 	/** Private Internal Methods **/
+	/**
+	 * Where the real work is done to reconcile a book. This updates the status
+	 * of the book to the passed updatestatus, sets the countstatus to
+	 * reconciled, and creates an invhistorydao object for the book.
+	 *
+	 * @param invinprogress
+	 * @param book
+	 * @param updatestatus
+	 */
+	private void reconcileBook(InventoryDao invinprogress, BookDao book,
+			Long updatestatus) {
+		// create InventoryHistDao
+		InventoryHistoryDao invHist = new InventoryHistoryDao();
+
+		// get book
+		if (book != null) {
+			// set inventory in InventoryHistDao
+			invHist.setInventory(invinprogress);
+			// set original status, and new status in IHD
+			invHist.setOriginalstatus(book.getStatus());
+			invHist.setNewstatus(updatestatus);
+
+			// set new status in book
+			book.setStatus(updatestatus);
+			// set countstatus
+			book.setCountstatus(InventoryService.CountStatus.RECONCILED);
+			book.setCounteddate(new Date());
+			// persist the book
+			book = bookRepo.save(book);
+			// set the book in the IHD and persist
+			entityManager.flush();
+			entityManager.refresh(book);
+			invHist.setBook(book);
+			invHistRepo.save(invHist);
+		}
+	}
 
 	/**
 	 * Retrieves a list of InvStackDisplays. Type of search depends upon an
 	 * internalsearchclass parameter passed with the displays, which is either
 	 * uncounted, reconciled, or stack.
-	 * 
+	 *
 	 * @return
 	 */
-	private List<InvStackDisplay> retrieveInvStackDisplays(// use internal class
-	/* search type - uncounted, reconciled, or stack */) {
+	private List<InvStackDisplay> retrieveInvStackDisplays(long searchtype,
+			Long userid, Long clientid) {
+		// prepare query
+		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+		CriteriaQuery<InvStackDisplay> c = cb
+				.createQuery(InvStackDisplay.class);
+		Root<BookDao> bookroot = c.from(BookDao.class);
+		Join<BookDao, BookDetailDao> bookdetail = bookroot.join("bookdetail");
 
-		/*
-		 * c.select(cb.construct(BaseListDisp.class, rec.get("name"),
-		 * rec.get("id").alias("recipeid"),
-		 * rec.get("createdBy").get("username").alias("recipeownername"),
-		 * rec.get("budget"), rec.get("description"), rec.get("easeofprep"),
-		 * rec.get("kidrating"),
-		 */
-		return null;
+		c.select(cb.construct(InvStackDisplay.class,
+				bookroot.get("id").alias("bookid"), bookroot.get("clientid"),
+				bookroot.get("clientbookid").alias("clientbooknr"),
+				bookroot.get("clientshelfcode"), bookroot.get("status"),
+				bookroot.get("note"), bookroot.get("counteddate"),
+				bookroot.get("reconciled"), bookroot.get("tocount"),
+				bookroot.get("userid"), bookroot.get("countstatus"),
+				bookdetail.get("title")));
+
+		// create predicate list
+		List<Predicate> whereclause = new ArrayList<Predicate>();
+		// add clientid
+		whereclause.add(cb.equal(bookroot.<Long> get("clientid"), clientid));
+		if (searchtype == StackSearchType.STACK) {
+			whereclause.add(cb.equal(bookroot.<Long> get("userid"), userid));
+			whereclause.add(cb.equal(bookroot.<Boolean> get("tocount"), true));
+		} else if (searchtype == StackSearchType.UNCOUNTED) {
+			List<Long> excludedstatus = new ArrayList<Long>();
+			excludedstatus.add(InventoryService.CountStatus.COUNTED);
+			excludedstatus.add(InventoryService.CountStatus.RECONCILED);
+
+			whereclause.add(cb.not(bookroot.<Long> get("countstatus").in(
+					excludedstatus)));
+			whereclause.add(cb.equal(bookroot.<Boolean> get("tocount"), true));
+		}
+		c.where(cb.and(whereclause.toArray(new Predicate[whereclause.size()])));
+
+		TypedQuery<InvStackDisplay> q = entityManager.createQuery(c);
+		return q.getResultList();
 	}
 
 	/**
 	 * This method prepares the BookDao objects for the inventory by setting the
 	 * tobecounted flag for all eligible books.
-	 * 
+	 *
 	 * @param clientid
 	 * @return
 	 */
@@ -472,6 +580,10 @@ public class InventoryServiceImpl implements InventoryService {
 		int result = entityManager.createQuery(q).executeUpdate();
 		log.info("prepareInventoryDataInBooks: updated " + result + " books.");
 
+		// flush and clear
+		entityManager.flush();
+		entityManager.clear();
+
 		// return update count
 		return result;
 	}
@@ -479,7 +591,7 @@ public class InventoryServiceImpl implements InventoryService {
 	/**
 	 * This method clears all inventory data (tocount, counted, counteddate,
 	 * userid and reconciled) from the BookDao for the given client.
-	 * 
+	 *
 	 * @param clientid
 	 * @return
 	 */
@@ -508,7 +620,10 @@ public class InventoryServiceImpl implements InventoryService {
 		int result = entityManager.createQuery(q).executeUpdate();
 		log.info("clearInventoryDataInBooks: updated " + result + " books.");
 
+		// flush and clear
 		entityManager.flush();
+		entityManager.clear();
+
 		// return update count
 		return result;
 

@@ -11,6 +11,7 @@ import meg.biblio.catalog.db.dao.ClassificationDao;
 import meg.biblio.catalog.db.dao.FoundDetailsDao;
 import meg.biblio.catalog.web.model.BookModel;
 import meg.biblio.common.db.dao.ClientDao;
+import meg.biblio.inventory.db.dao.InvStackDisplay;
 import meg.biblio.inventory.db.dao.InventoryDao;
 
 public interface InventoryService {
@@ -34,6 +35,19 @@ public interface InventoryService {
 	List<InventoryDao> getInventoryList(ClientDao client);
 
 	void countBook(BookDao book, Long userid, ClientDao client);
+
+	void reconcileBook(ClientDao client, Long bookid, Long updatestatus);
+
+	void reconcileBookList(ClientDao client, List<Long> bookidlist,
+			Long updatestatus);
+
+	List<InvStackDisplay> getStackForUser(Long userid, ClientDao client);
+
+	void clearStackForUser(Long userid, ClientDao client);
+
+	List<InvStackDisplay> getUncountedBooks(ClientDao client);
+
+	InventoryDao finishInventory(ClientDao client);
 
 	
 }
