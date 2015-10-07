@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page" 
+xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" 
+xmlns:c="http://java.sun.com/jsp/jstl/core" 
+xmlns:spring="http://www.springframework.org/tags" 
+xmlns:form="http://www.springframework.org/tags/form" 
+xmlns:fmt="http://java.sun.com/jsp/jstl/fmt" 
+xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+
+<spring:url value="/inventory/clearstack" var="clearurl"/>
+<script type="text/javascript">
+ require(['dojo/dom',"dojo/on","dijit/focus",'dojo/domReady!'], 
+		 function (dom,on,focusUtil) {
+		focusUtil.focus(dom.byId("manualentry"));
+		dojo.byId("manualentry").value="";
+		// wire up clear stack button
+		dojo.query("span#clearstack").forEach(function(node) {
+			var id = node.id;
+
+			on(dojo.byId(id), 'click', function(event) {
+				clickedid = event.currentTarget.id;
+				var form = dojo.byId('countbook');
+				form.action = "${clearurl}";
+				form.submit();
+			});
+		});
+
+	});
+</script>
+
+
+    
+    <h1>{!Count Books!}</h1>
+    
+<div>Progress 20% - Counted x of y books</div>
+
+<spring:url value="/inventory/count" var="actionurl"/>
+<form:form action="${actionurl}" id="countbook" method="POST" modelAttribute="countModel">
+
+<h2>Count Stack</h2>
+{!Book Nr.!} <form:input  type="text" path="manualentry"></form:input> <input class="linkbutton" id="countbook" name="countbook"
+					type="submit" value="{!Count Book!}" />
+<span class="linkbuttonquiet" id="clearstack" style="float: right;
+    margin-bottom: 15px;" >{!Clear Stack!}js help</span>
+<table>
+<THEAD>
+<tr>
+<th>{!nr!}</th>
+<th>{!title!}</th>
+<th>{!clientshelfcode!}</th>
+<th>{!clientshelfcode2!}</th>
+<th></th>
+</tr>
+</THEAD>
+<tbody>
+
+<c:forEach var="bookinstack" items="${countModel.userStack}" varStatus="expstatus">
+<tr>
+<td>${bookinstack.clientbooknr}</td>
+<td>${bookinstack.title}</td>
+<td>
+<c:if test="${not empty bookinstack.clientshelfcode}"> 
+<c:set var="shelfcode" value="${classHash[bookinstack.clientshelfcode]}" />
+<c:choose>
+	<c:when test="${ not empty shelfcode.imagedisplay}">
+<span>	<img id="shelfimg" src="${imagebasedir}${shelfcode.imagedisplay}"
+			style="    max-width: 30px;
+    display: block;
+    margin: 0 auto;" /></span>	
+	</c:when>
+	<c:otherwise>
+${shelfcode.textdisplay}
+</c:otherwise>
+</c:choose>
+</c:if></td>
+<td>${bookinstack.clientshelfclass}</td>
+<td><spring:url value="/books/update/${bookinstack.bookid}" var="editbook"/>
+<a href="${editbook}" class="linkbutton">{!Edit Book!}</a></td>
+</tr>
+</c:forEach>
+
+</tbody>
+</table>
+<span class="linkbuttonquiet" style="float: right;
+    margin-bottom: 15px;" >
+    
+    <spring:url value="/inventory/count?changepref=2" var="changepref"/>
+<a href="${changepref}" class="linkbutton">{!Count with scanner!}</a></span>
+
+<form:input  type="hidden" path="countTypePref"></form:input><br/>
+</form:form>
+
+</div>

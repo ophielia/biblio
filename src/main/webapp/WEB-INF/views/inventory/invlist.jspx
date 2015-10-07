@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page" 
+xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" 
+xmlns:c="http://java.sun.com/jsp/jstl/core" 
+xmlns:spring="http://www.springframework.org/tags" 
+xmlns:form="http://www.springframework.org/tags/form" 
+xmlns:fmt="http://java.sun.com/jsp/jstl/fmt" 
+xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    
+    <h1>{!Inventory List!}</h1>
+<br />
+ <spring:url value="/inventory/create" var="actionurl"/>
+<form:form action="${actionurl}" method="POST">
+<spring:message code="button_search" htmlEscape="false" var="search_button"/>
+<input id="newinventory" class="linkbutton" type="submit" value="{!Begin New Inventory!}"/>
+</form:form>
+  
+
+<h2>{!Previous Inventories!}</h2>
+<table>
+<THEAD>
+<tr>
+<th>{!started!}</th>
+<th>{!ended!}</th>
+<th>{!tocount!}</th>
+<th>{!counted!}</th>
+<th>{!reconciled!}</th>
+<th></th>
+<th></th>
+</tr>
+</THEAD>
+<tbody>
+
+<c:forEach var="previnv" items="${previous}" varStatus="expstatus">
+<tr>
+<td><fmt:formatDate type="date" 
+            value="${previnv.startdate }" /></td>
+<td><fmt:formatDate type="date" 
+            value="${previnv.enddate }" /></td>
+<td>${previnv.tobecounted}</td>
+<td>${previnv.totalcounted}</td>
+<td>${previnv.reconciled}</td>
+<td><c:if test = "${!previnv.completed}" >incomplete</c:if></td>
+<td><spring:url value="/inventory/detail/${previnv.id}" var="actionurl"/>
+<a href="${actionurl}" class="linkbutton">{!View!}</a></td>
+</tr>
+</c:forEach>
+
+
+
+</tbody>
+</table>
+
+
+</div>

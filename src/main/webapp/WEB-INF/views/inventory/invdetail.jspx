@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page" 
+xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" 
+xmlns:c="http://java.sun.com/jsp/jstl/core" 
+xmlns:spring="http://www.springframework.org/tags" 
+xmlns:form="http://www.springframework.org/tags/form" 
+xmlns:fmt="http://java.sun.com/jsp/jstl/fmt" 
+xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    
+    <h1>{!Inventory Information!}</h1>
+
+Started	Ended	<br />
+Counted	Reconciled Found	
+
+<h2>{!Reconciled Books!}</h2>
+<table>
+<THEAD>
+<tr>
+<th>{!clientnr!}</th>
+<th>{!title!}</th>
+<th>{!origstatus!}</th>
+<th>{!newstatus!}</th>
+<th>{!note!}</th>
+</tr>
+</THEAD>
+<tbody>
+<tr>
+<td>{!clientnr!}</td>
+<td>{!title!}</td>
+<td>{!origstatus!}</td>
+<td>{!newstatus!}</td>
+<td>{!note!}</td>
+</tr>
+</tbody>
+</table>
+
+<spring:url value="/inventory/list" var="overviewurl"/>
+<a id="cancelpass"  href="${overviewurl}" class="linkbutton">{!All Inventories!}</a>
+
+
+
+</div>

@@ -17,4 +17,7 @@ public interface InventoryRepository {
 	@Query("select r from InventoryDao as r where r.clientid = :clientid")
 	List<InventoryDao> getInventoryListForClient(@Param("clientid") Long clientid, Sort sort);
 	
+	@Query("select r from InventoryDao as r where r.clientid = :clientid and r.enddate is not null")
+	List<InventoryDao> getPreviousInventoriesForClient(@Param("clientid") Long clientid, Sort sort);
+
 }

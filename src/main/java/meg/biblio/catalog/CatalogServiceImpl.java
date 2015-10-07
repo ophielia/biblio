@@ -518,6 +518,14 @@ public class CatalogServiceImpl implements CatalogService {
 	}
 
 	@Override
+	public BookDao findBookById(Long bookid) {
+		if (bookid != null) {
+			return bookRepo.findOne(bookid);
+		}
+		return null;
+	}
+
+	@Override
 	public BookDao findBookByClientBookId(String bookid, ClientDao client) {
 		// call repository
 		List<BookDao> books = bookRepo.findBookByClientAssignedId(

@@ -603,6 +603,7 @@ input.linkbutton {
 	margin-left: 20px;
 	margin-right: 20px;
 	background-color: rgba(46, 99, 171, 0.68);
+	    text-align: center;
 }
 
 .selectspanactive {
@@ -613,6 +614,7 @@ input.linkbutton {
 	margin-left: 20px;
 	margin-right: 20px;
 	background-color: #2E63AB;
+	    text-align: center;
 }
 
 table a.tableboldlink {

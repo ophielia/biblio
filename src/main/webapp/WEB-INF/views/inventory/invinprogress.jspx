@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page" 
+xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" 
+xmlns:c="http://java.sun.com/jsp/jstl/core" 
+xmlns:spring="http://www.springframework.org/tags" 
+xmlns:form="http://www.springframework.org/tags/form" 
+xmlns:fmt="http://java.sun.com/jsp/jstl/fmt" 
+xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+ 
+
+    
+    <h1>{!Inventory in Progress!}</h1>
+Progress 20% - Counted x of y books
+<br />
+<br />
+<span>
+ <spring:url value="/inventory/complete" var="actionurl"/>
+<form:form action="${actionurl}" method="POST">
+<spring:url value="/inventory/count" var="counturl"/>
+<a href="${counturl}"  class="linkbutton">{!Count Books!}</a>
+<spring:url value="/inventory/reconcile" var="reconcileurl"/>
+<a id="reconcile" href="${reconcileurl}"  class="linkbutton">{!Reconcile!}</a>
+<spring:message code="button_search" htmlEscape="false" var="search_button"/>
+<input id="newinventory" class="linkbutton" type="submit" value="{!Complete Inventory!}"/>
+</form:form>
+</span>
+
+
+</div>

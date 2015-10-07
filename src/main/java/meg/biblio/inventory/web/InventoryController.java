@@ -1,0 +1,412 @@
+package meg.biblio.inventory.web;
+
+import java.security.Principal;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+
+import javax.servlet.http.HttpServletRequest;
+
+import meg.biblio.catalog.CatalogService;
+import meg.biblio.catalog.db.dao.BookDao;
+import meg.biblio.catalog.db.dao.ClassificationDao;
+import meg.biblio.common.AppSettingService;
+import meg.biblio.common.ClientService;
+import meg.biblio.common.LoginService;
+import meg.biblio.common.SelectKeyService;
+import meg.biblio.common.db.dao.ClientDao;
+import meg.biblio.common.db.dao.UserLoginDao;
+import meg.biblio.inventory.InventoryService;
+import meg.biblio.inventory.InventoryStatus;
+import meg.biblio.inventory.db.dao.InvStackDisplay;
+import meg.biblio.inventory.db.dao.InventoryDao;
+import meg.biblio.inventory.web.model.CountModel;
+import meg.biblio.inventory.web.model.ReconcileModel;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+
+@RequestMapping("/inventory")
+@Controller
+public class InventoryController {
+
+	@Autowired
+	InventoryService invService;
+
+	@Autowired
+	ClientService clientService;
+
+	@Autowired
+	LoginService loginService;
+
+	@Autowired
+	CatalogService catalogService;
+
+	@Autowired
+	SelectKeyService keyService;
+
+	@Autowired
+	AppSettingService settingService;
+
+	@RequestMapping(method = RequestMethod.GET, produces = "text/html")
+	public String showInventoryEntryPoint(Model uiModel,
+			HttpServletRequest httpServletRequest, Principal principal,
+			Locale locale) {
+		ClientDao client = clientService.getCurrentClient(principal);
+
+		// check if inventory is in progress
+		InventoryDao inv = invService.getCurrentInventory(client);
+		if (inv != null) {
+			// if in progress, show current inventory page
+			return showCurrentInventory(client, inv, uiModel);
+		} else {
+			// if no inventory in progress, show inventory list
+			return showNonCurrentInventoryList(client, uiModel);
+		}
+	}
+
+	@RequestMapping(value = "/list", method = RequestMethod.GET, produces = "text/html")
+	public String showInventoryList(Model uiModel,
+			HttpServletRequest httpServletRequest, Principal principal,
+			Locale locale) {
+		ClientDao client = clientService.getCurrentClient(principal);
+
+		return showNonCurrentInventoryList(client, uiModel);
+	}
+
+	@RequestMapping(value = "/detail/{id}", method = RequestMethod.GET, produces = "text/html")
+	public String showInventoryDetail(@PathVariable("id") Long inventoryid,
+			Model uiModel, HttpServletRequest httpServletRequest,
+			Principal principal, Locale locale) {
+
+		return "inventory/detail";
+	}
+
+	@RequestMapping(value = "/reconcile", method = RequestMethod.GET, produces = "text/html")
+	public String showReconcileInventory(ReconcileModel reconcileModel,
+			Model uiModel, HttpServletRequest httpServletRequest,
+			Principal principal, Locale locale) {
+		ClientDao client = clientService.getCurrentClient(principal);
+		return showReconcileList(client, reconcileModel, uiModel, principal,
+				locale, httpServletRequest);
+	}
+
+	@RequestMapping(value = "/complete", method = RequestMethod.POST, produces = "text/html")
+	public String completeInventory(ReconcileModel reconcileModel,
+			Model uiModel, HttpServletRequest httpServletRequest,
+			Principal principal, Locale locale) {
+		ClientDao client = clientService.getCurrentClient(principal);
+		// get current inventory
+		InventoryDao current = invService.getCurrentInventory(client);
+
+		boolean isComplete = invService.getInventoryIsComplete(client);
+
+		if (isComplete) {
+			Long invid = current.getId();
+			invService.finishInventory(client);
+
+			// load inventory
+			InventoryDao inv = invService.getInventoryById(invid);
+			InventoryStatus status = invService.getInventoryStatus(inv, client);
+			uiModel.addAttribute("status", status);
+
+		} else {
+			// if not complete, add error (inv detail page)
+			// MM TODO
+		}
+
+		return "inventory/detail";
+	}
+
+	@RequestMapping(value = "/reconcile/{id}", method = RequestMethod.GET, produces = "text/html")
+	public String showBookToReconcile(@PathVariable("id") Long bookid,
+			ReconcileModel recModel, Model uiModel,
+			HttpServletRequest httpServletRequest, Principal principal,
+			Locale locale) {
+		ClientDao client = clientService.getCurrentClient(principal);
+		InventoryDao current = invService.getCurrentInventory(client);
+		fillLookups(uiModel, httpServletRequest, principal, locale);
+
+		if (current != null) {
+			// lookup book by id
+			BookDao book = catalogService.findBookById(bookid);
+			// place in model
+			recModel.setReconcileBook(book);
+			// get inventory status
+			InventoryStatus status = invService.getInventoryStatus(current,
+					client);
+			recModel.setInventoryStatus(status);
+		}
+		// MM TODO inventtory not in progress error
+		return "inventory/reconciledetail";
+	}
+
+	@RequestMapping(value = "/count", method = RequestMethod.GET, produces = "text/html")
+	public String showCountBooks(
+			HttpServletRequest httpServletRequest,
+			@RequestParam(value = "changepref", required = false) Long changepref,
+			CountModel model, Model uiModel, Principal principal, Locale locale) {
+		ClientDao client = clientService.getCurrentClient(principal);
+
+		// switching count type??
+		model.setCountTypePref(getCountType(client, model, changepref));
+
+		InventoryDao current = invService.getCurrentInventory(client);
+		if (current != null) {
+
+			// get stack for user
+			Long userid = getIdFromPrincipal(principal);
+			List<InvStackDisplay> stack = invService.getStackForUser(userid,
+					client);
+			model.setUserStack(stack);
+
+			// get inventory status
+			InventoryStatus status = invService.getInventoryStatus(current,
+					client);
+			model.setInventoryStatus(status);
+
+			// clear entry fields
+			model.setBarcodeentry(null);
+			model.setManualentry(null);
+		}
+
+		// fill Lookups
+		fillLookups(uiModel, httpServletRequest, principal, locale);
+
+		if (model.getCountTypePref() == CountModel.CountType.BARCODE) {
+			return "inventory/barcodecount";
+		} else {
+			return "inventory/manualcount";
+		}
+	}
+
+	@RequestMapping(value = "/create", method = RequestMethod.POST, produces = "text/html")
+	public String createInventory(HttpServletRequest httpServletRequest,
+			Model uiModel, Principal principal, Locale locale) {
+		ClientDao client = clientService.getCurrentClient(principal);
+		// check if current inventory in progress
+		InventoryDao current = invService.getCurrentInventory(client);
+		// if not, create new inventory
+		if (current == null) {
+			current = invService.beginInventory(client);
+
+		}
+		// get status for new inventory
+		InventoryStatus status = invService.getInventoryStatus(current, client);
+		// put data in page
+		uiModel.addAttribute("inventorystatus", status);
+		// return inventory/current page
+		return "inventory/current";
+	}
+
+	@RequestMapping(value = "/count", method = RequestMethod.POST, produces = "text/html")
+	public String countBook(CountModel countModel, Model uiModel,
+			BindingResult bindingResult, HttpServletRequest httpServletRequest,
+			Principal principal, Locale locale) {
+		ClientDao client = clientService.getCurrentClient(principal);
+		Long userid = getIdFromPrincipal(principal);
+
+		// get current inventory
+		InventoryDao current = invService.getCurrentInventory(client);
+		if (current != null) {
+			// get book - according to entry type
+			BookDao book = null;
+			if (countModel.getCountTypePref() == CountModel.CountType.BARCODE) {
+				String code = countModel.getBarcodeentry();
+				if (code != null) {
+					book = catalogService.findBookByBarcode(code);
+				}
+			} else {
+				String clientnr = countModel.getManualentry();
+				if (clientnr != null) {
+					clientnr = clientnr.trim();
+					book = catalogService.findBookByClientBookId(clientnr,
+							client);
+				}
+			}
+
+			if (book != null) {
+				// count book
+				invService.countBook(book, userid, client);
+				// get stack for user
+				List<InvStackDisplay> stack = invService.getStackForUser(
+						userid, client);
+				// get inventory status
+				InventoryStatus status = invService.getInventoryStatus(current,
+						client);
+				// put info in model
+				countModel.setUserStack(stack);
+				countModel.setInventoryStatus(status);
+				// reset entries
+				countModel.setBarcodeentry(null);
+				countModel.setManualentry(null);
+			}
+		}
+
+		// fill Lookups
+		fillLookups(uiModel, httpServletRequest, principal, locale);
+
+		// return page
+		if (countModel.getCountTypePref() == CountModel.CountType.BARCODE) {
+			return "inventory/barcodecount";
+		} else {
+			return "inventory/manualcount";
+		}
+	}
+
+	@RequestMapping(value = "/clearstack", method = RequestMethod.POST, produces = "text/html")
+	public String clearCountStack(CountModel countModel, Model uiModel,
+			BindingResult bindingResult, HttpServletRequest httpServletRequest,
+			Principal principal, Locale locale) {
+		ClientDao client = clientService.getCurrentClient(principal);
+		Long userid = getIdFromPrincipal(principal);
+
+		// get current inventory
+		InventoryDao current = invService.getCurrentInventory(client);
+		if (current != null) {
+			// clear user stack
+			invService.clearStackForUser(userid, client);
+			// get new (empty) stack for user
+			List<InvStackDisplay> stack = invService.getStackForUser(userid,
+					client);
+			// get inventory status
+			InventoryStatus status = invService.getInventoryStatus(current,
+					client);
+			// put info in model
+			countModel.setUserStack(stack);
+			countModel.setInventoryStatus(status);
+
+		}
+
+		// fill Lookups
+		fillLookups(uiModel, httpServletRequest, principal, locale);
+		// return page
+		if (countModel.getCountTypePref() == CountModel.CountType.BARCODE) {
+			return "inventory/barcodecount";
+		} else {
+			return "inventory/manualcount";
+		}
+	}
+
+	@RequestMapping(value = "/reconcile", method = RequestMethod.POST, produces = "text/html")
+	public String reconcileBookList(ReconcileModel reconcileModel,
+			Model uiModel, HttpServletRequest httpServletRequest,
+			Principal principal, Locale locale) {
+		// get client and inventory
+		ClientDao client = clientService.getCurrentClient(principal);
+
+		// get list of ids
+		List<Long> bookids = reconcileModel.getCheckedBookIds();
+
+		// get status
+		Long status = reconcileModel.getUpdateStatus();
+
+		// reconcile book list
+		invService.reconcileBookList(client, bookids, status);
+
+		return showReconcileList(client, reconcileModel, uiModel, principal,
+				locale, httpServletRequest);
+	}
+
+	@RequestMapping(value = "/reconcile/{id}", method = RequestMethod.POST, produces = "text/html")
+	public String reconcileSingleBook(@PathVariable("id") Long bookid,
+			ReconcileModel countModel, Model uiModel,
+			HttpServletRequest httpServletRequest, Principal principal,
+			Locale locale) {
+
+		return "inventory/reconciledetail";
+	}
+
+	private long getCountType(ClientDao client, CountModel model,
+			Long changepref) {
+		long origcounttype = model.getCountTypePref();
+		if (changepref != null) {
+			return changepref;
+		} else {
+			if (origcounttype == 0) {
+				// setting default countype
+				if (client.getUsesBarcodes() != null
+						&& client.getUsesBarcodes()) {
+					return CountModel.CountType.BARCODE;
+				}
+			}
+		}
+		return model.getCountTypePref();
+	}
+
+	private Long getIdFromPrincipal(Principal principal) {
+		String username = principal.getName();
+		UserLoginDao udet = loginService.getUserLoginDaoByName(username);
+		Long userid = udet.getId();
+		return userid;
+	}
+
+	private String showNonCurrentInventoryList(ClientDao client, Model uiModel) {
+		// get previous inventories
+		List<InventoryDao> previous = invService.getPreviousInventories(client);
+		// set in model
+		uiModel.addAttribute("previous", previous);
+		return "inventory/list";
+	}
+
+	private String showCurrentInventory(ClientDao client, InventoryDao inv,
+			Model uiModel) {
+		// put inventory in model
+		uiModel.addAttribute("currentinv", inv);
+		// get inventorystatus
+		InventoryStatus status = invService.getInventoryStatus(inv, client);
+		// put inventorystatus in model
+		uiModel.addAttribute("status", status);
+		return "inventory/current";
+	}
+
+	private String showReconcileList(ClientDao client,
+			ReconcileModel reconcileModel, Model uiModel, Principal principal,
+			Locale locale, HttpServletRequest httpServletRequest) {
+		// get current inventory
+		InventoryDao current = invService.getCurrentInventory(client);
+	
+		boolean isComplete = invService.getInventoryIsComplete(client);
+		// get inventory status
+		InventoryStatus status = invService.getInventoryStatus(current, client);
+		// get uncounted list
+		List<InvStackDisplay> uncountedlist = invService
+				.getUncountedBooks(client);
+		// set info in model
+		reconcileModel.setInventoryStatus(status);
+		reconcileModel.setUncountedBooks(uncountedlist);
+		reconcileModel.setInventoryComplete(isComplete);
+		// fill Lookups
+		fillLookups(uiModel, httpServletRequest, principal, locale);
+		return "inventory/reconcilelist";
+	
+	}
+
+	private void fillLookups(Model uiModel,
+			HttpServletRequest httpServletRequest, Principal principal,
+			Locale locale) {
+		String lang = locale.getLanguage();
+		ClientDao client = clientService.getCurrentClient(principal);
+		Long clientkey = client.getId();
+
+		// @ModelAttribute("statusLkup")
+		HashMap<Long, String> statusLkup = keyService.getDisplayHashForKey(
+				CatalogService.bookstatuslkup, lang);
+		uiModel.addAttribute("statusLkup", statusLkup);
+
+		String imagebasedir = settingService
+				.getSettingAsString("biblio.imagebase");
+		uiModel.addAttribute("imagebasedir", imagebasedir);
+
+		HashMap<Long, ClassificationDao> shelfclasses = catalogService
+				.getShelfClassHash(clientkey, lang);
+		uiModel.addAttribute("classHash", shelfclasses);
+	}
+
+}

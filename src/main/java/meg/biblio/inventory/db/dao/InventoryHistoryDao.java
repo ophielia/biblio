@@ -12,7 +12,7 @@ import org.springframework.roo.addon.tostring.RooToString;
 
 @RooJavaBean
 @RooToString
-@RooJpaEntity(inheritanceType = "SINGLE_TABLE")
+@RooJpaEntity
 @Table(name="inventoryhistory")
 public class InventoryHistoryDao {
 	

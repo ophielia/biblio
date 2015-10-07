@@ -4,23 +4,16 @@
 package meg.biblio.inventory.db.dao;
 
 import javax.persistence.Column;
-import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
 import javax.persistence.Version;
 import meg.biblio.inventory.db.dao.InventoryDao;
 
 privileged aspect InventoryDao_Roo_Jpa_Entity {
     
     declare @type: InventoryDao: @Entity;
-    
-    declare @type: InventoryDao: @Inheritance(strategy = InheritanceType.SINGLE_TABLE);
-    
-    declare @type: InventoryDao: @DiscriminatorColumn;
     
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

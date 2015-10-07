@@ -599,6 +599,7 @@ input.linkbutton {
 	padding: 5px;
 	color: #e7e5e5;
 	margin-left: 20px;
+	    text-align: center;
 	margin-right: 20px;
 	    background-color: rgba(72, 108, 148, 0.71);
 }
@@ -610,6 +611,7 @@ input.linkbutton {
 	color: #e7e5e5;
 	margin-left: 20px;
 	margin-right: 20px;
+	    text-align: center;
 	background-color: #2e537d;
 }
 

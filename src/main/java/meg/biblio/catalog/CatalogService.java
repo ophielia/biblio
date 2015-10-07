@@ -85,6 +85,8 @@ public interface CatalogService {
 
 	BookDetailDao saveBookDetail(BookDetailDao newdetail);
 
+	BookDao findBookById(Long bookid);
+
 
 
 }

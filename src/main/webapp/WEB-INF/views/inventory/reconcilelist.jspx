@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page" 
+xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" 
+xmlns:c="http://java.sun.com/jsp/jstl/core" 
+xmlns:spring="http://www.springframework.org/tags" 
+xmlns:form="http://www.springframework.org/tags/form" 
+xmlns:fmt="http://java.sun.com/jsp/jstl/fmt" 
+xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    
+ <spring:url value="/inventory/complete" var="completeurl"/>
+ <script type="text/javascript">
+ require(['dojo/dom',"dojo/on",'dojo/domReady!'], 
+		 function (dom,on) {
+	var masterstatus = false;	
+	 
+		// wire up complete inventory button
+		dojo.query("span#completeinv").forEach(function(node) {
+			var id = node.id;
+
+			on(dojo.byId(id), 'click', function(event) {
+				clickedid = event.currentTarget.id;
+				var form = dojo.byId('reconcilebooks');
+				form.action = "${completeurl}";
+				form.submit();
+			});
+		});
+
+		// wire up mastercheck
+		on(dojo.byId("mastercheck"), 'click', function(event) {
+			var master = dojo.byId('mastercheck');
+			masterstatus = master.checked;
+			dojo.query("input[name^='checked']").forEach(function(node) {
+				var id = node.id;
+				var box = dojo.byId(id);
+				
+				if (masterstatus) {
+						box.checked = true;
+					} else {
+						box.checked =false;
+					}
+				});
+
+			});
+
+		});
+	</script>
+
+    <h1>{!Reconcile Books!}</h1>
+    
+      
+<div>Progress 20% - Counted x of y books</div>
+
+<spring:url value="/inventory/reconcile" var="actionurl"/>
+<form:form action="${actionurl}" id="reconcilebooks" method="POST" modelAttribute="reconcileModel">
+
+<h2>{!Uncounted Books!}</h2>
+
+
+
+<c:choose>
+<c:when test="${reconcileModel.complete}">
+{!No uncounted books!}
+		<span class="selectspanactive" id="completeinv" style="float: right;
+		    margin-bottom: 15px;" >{!Complete Inventory!}js help</span>
+</c:when>
+<c:otherwise>
+
+
+<span style="float:right"> 
+	<form:select path="updateStatus" id="updateStatus">
+	<option id="" label="- - Select - - " />
+	<c:forEach var="tmp" items="${classHash}">
+	<form:option value="${tmp.key}" label="${tmp.value.description}" />
+	</c:forEach>
+	</form:select>
+<input class="linkbutton" id="updateStatus" type="submit" name="updatestatus" value="{!Reconcile Status!}"/>   
+</span>
+
+<table>
+<THEAD>
+<tr>
+<th><input id="mastercheck" name="mastercheck" value="false" type="checkbox" /></th>
+<th>{!nr!}</th>
+<th>{!title!}</th>
+<th>{!clientshelfcode!}</th>
+<th>{!status!}</th>
+<th>{!note!}</th>
+<th></th>
+</tr>
+</THEAD>
+<tbody>
+
+
+<c:forEach var="uncounted" items="${reconcileModel.uncountedBooks}" varStatus="expstatus">
+<tr>
+<td><div style="margin: 0px auto;text-align: center;"><form:checkbox path="checked[${expstatus.index}]"  />
+					<form:input path="idref[${expstatus.index}]" value="${uncounted.bookid}" type="hidden"></form:input></div></td>
+<td>${uncounted.clientbooknr}</td>
+<td>${uncounted.title}</td>
+<td>
+<c:if test="${not empty uncounted.clientshelfcode}"> 
+<c:set var="shelfcode" value="${classHash[uncounted.clientshelfcode]}" />
+<c:choose>
+	<c:when test="${ not empty shelfcode.imagedisplay}">
+<span>	<img id="shelfimg" src="${imagebasedir}${shelfcode.imagedisplay}"
+			style="    max-width: 30px;
+    display: block;
+    margin: 0 auto;" /></span>	
+	</c:when>
+	<c:otherwise>
+${shelfcode.textdisplay}
+</c:otherwise>
+</c:choose>
+</c:if>
+</td>
+<td>${statusLkup[uncounted.status]}</td>
+<td>${uncounted.note}</td>
+<td><spring:url value="/inventory/reconcile/${uncounted.bookid}" var="reconcilesingle"/>
+<a href="${reconcilesingle}" class="linkbutton">{!Reconcile!}</a></td>
+</tr>
+</c:forEach>
+
+</tbody>
+</table>
+
+</c:otherwise>
+</c:choose>
+
+
+
+</form:form>
+
+</div>

@@ -49,5 +49,9 @@ public interface InventoryService {
 
 	InventoryDao finishInventory(ClientDao client);
 
+	List<InventoryDao> getPreviousInventories(ClientDao client);
+
+	InventoryDao getInventoryById(Long invid);
+
 	
 }

@@ -166,23 +166,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <hr />
 <br />
 <form:errors cssClass="errors" path="statusUpdate" />
-	<form:select path="statusUpdate">
-		<form:option value="" label="${lemptyoption}" />
-		<c:forEach items="${statusLkup}" var="tmp" >
-						<form:option value="${tmp.key}"  label="${tmp.value}"/>
-		</c:forEach>
-	</form:select>	 
-<input class="linkbutton" id="updateStatus" type="submit" name="updatestatus" value="${lupdstatus}"/>
-<span style="float:right"> 
-	<form:select path="shelfclassUpdate" id="shelfclassentry">
-	<option id="" label="- - Select - - " />
-	<c:forEach var="tmp" items="${classHash}">
-	<form:option value="${tmp.key}" label="${tmp.value.description}" />
-	</c:forEach>
-	</form:select>
-	<input class="linkbutton" id="shelfclassUpdate" name="updateshelfclass" type="submit" value="${lscupdate}"/>   
-</span>
-<div    style="float: right;margin-top: 10px;background-color: #BBBBBB;clear: both;">
+	<div    style="float: right;margin-top: 10px;background-color: #BBBBBB;clear: both;">
 <c:choose>
 		<c:when test="${bookListModel.hasPrevious}">
 		<input id="nextbutton" name="first" class="linkbutton" type="submit" value="|&lt;"/>
@@ -208,6 +192,23 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
         <form:input type="hidden" path="resultsperpage" />
         <form:input type="hidden" path="currentpage" />
 </div>
+	<form:select path="statusUpdate">
+		<form:option value="" label="${lemptyoption}" />
+		<c:forEach items="${statusLkup}" var="tmp" >
+						<form:option value="${tmp.key}"  label="${tmp.value}"/>
+		</c:forEach>
+	</form:select>	 
+<input class="linkbutton" id="updateStatus" type="submit" name="updatestatus" value="${lupdstatus}"/>
+<span style="float:right"> 
+	<form:select path="shelfclassUpdate" id="shelfclassentry">
+	<option id="" label="- - Select - - " />
+	<c:forEach var="tmp" items="${classHash}">
+	<form:option value="${tmp.key}" label="${tmp.value.description}" />
+	</c:forEach>
+	</form:select>
+	<input class="linkbutton" id="shelfclassUpdate" name="updateshelfclass" type="submit" value="${lscupdate}"/>   
+</span>
+
 		<TABLE>
 		<thead>		
 		

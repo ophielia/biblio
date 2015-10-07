@@ -39,6 +39,7 @@
 
 		<li><moo:menulink label="menu_admin" url="#" />
 			<ul>
+			<li><moo:menulink label="menu_barcodes_verifybarcode" url="/inventory" /></li>
 				<!-- <li><moo:menulink label="menu_import" url="/import?form" /></li> -->
 				<li><moo:menulink label="menu_dashboard" url="/dashboard" /></li>
 
@@ -57,6 +58,7 @@
 
 
 				<li><moo:menulink label="menu_barcodes_verifybarcode" url="/barcode/checkout/verify" /></li>
+
 
 
 				<sec:authorize ifAnyGranted='ROLE_ADMIN,ROLE_SUPERADMIN'>

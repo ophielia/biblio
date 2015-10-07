@@ -1,2 +1,8 @@
 /**  app setting **/
 INSERT INTO appsetting(id, key, value, version) VALUES (nextval('hibernate_sequence'), 'biblio.testclient', '1', 0);
+
+/** new select keys / values **/
+insert into select_key (id, lookup,version) values (nextval('hibernate_sequence'),'reconcilestatus',0);
+insert into select_value (id, active,display,disporder,value,version,keyid,languagekey) 
+select nextval('hibernate_sequence'), active,display,disporder,value,version,(select id from select_key where lookup='reconcilestatus'),languagekey
+from select_value where keyid = (select id from select_key where lookup = 'bookstatus') and value in ('3','4','5')

@@ -164,29 +164,29 @@ public class InventoryServiceImpl implements InventoryService {
 		// get current inventory
 		InventoryDao current = getCurrentInventory(client);
 		// if no inventory is current, return null
-		if (current != null ) {
+		if (current != null) {
 			if (getInventoryIsComplete(client)) {
-			// get InventoryStatus for inventory
-			InventoryStatus status = getInventoryStatus(current, client);
-			// fill in status info in InventoryDao
-			// number counted, number added, number reconciled
-			Long countedlong = new Long(status.getCountedbooks());
-			Long addedlong = new Long(status.getRefoundbooks());
-			Long reconciledlong = new Long(status.getReconciledbooks());
-			current.setTotalcounted(countedlong.intValue());
-			current.setAddedtocount(addedlong.intValue());
-			current.setReconciled(reconciledlong.intValue());
-			// fill in enddate, and completed as true
-			current.setEnddate(new Date());
-			current.setCompleted(true);
-			// save InventoryDao
-			invRepo.save(current);
-			// reset inventory information in BookDao.
-			clearInventoryDataInBooks(client.getId());
-			// return finished inventory
-			return current;
-		}
+				// get InventoryStatus for inventory
+				InventoryStatus status = getInventoryStatus(current, client);
+				// fill in status info in InventoryDao
+				// number counted, number added, number reconciled
+				Long countedlong = new Long(status.getCountedbooks());
+				Long addedlong = new Long(status.getRefoundbooks());
+				Long reconciledlong = new Long(status.getReconciledbooks());
+				current.setTotalcounted(countedlong.intValue());
+				current.setAddedtocount(addedlong.intValue());
+				current.setReconciled(reconciledlong.intValue());
+				// fill in enddate, and completed as true
+				current.setEnddate(new Date());
+				current.setCompleted(true);
+				// save InventoryDao
+				invRepo.save(current);
+				// reset inventory information in BookDao.
+				clearInventoryDataInBooks(client.getId());
+				// return finished inventory
+				return current;
 			}
+		}
 		return null;
 	}
 
@@ -205,6 +205,14 @@ public class InventoryServiceImpl implements InventoryService {
 		InventoryDao current = invRepo.getCurrentInventoryForClient(client
 				.getId());
 		return current;
+	}
+
+	@Override
+	public InventoryDao getInventoryById(Long invid) {
+		if (invid != null) {
+			return invRepo.findOne(invid);
+		}
+		return null;
 	}
 
 	/**
@@ -246,6 +254,17 @@ public class InventoryServiceImpl implements InventoryService {
 
 			// return inventory status
 			return invstatus;
+		}
+		return null;
+	}
+
+	@Override
+	public List<InventoryDao> getPreviousInventories(ClientDao client) {
+		if (client != null) {
+			List<InventoryDao> previous = invRepo
+					.getPreviousInventoriesForClient(client.getId(), new Sort(
+							Sort.Direction.DESC, "startdate"));
+			return previous;
 		}
 		return null;
 	}
@@ -519,7 +538,7 @@ public class InventoryServiceImpl implements InventoryService {
 		c.select(cb.construct(InvStackDisplay.class,
 				bookroot.get("id").alias("bookid"), bookroot.get("clientid"),
 				bookroot.get("clientbookid").alias("clientbooknr"),
-				bookroot.get("clientshelfcode"), bookroot.get("status"),
+				bookroot.get("clientshelfcode"),bookroot.get("clientshelfclass"), bookroot.get("status"),
 				bookroot.get("note"), bookroot.get("counteddate"),
 				bookroot.get("reconciled"), bookroot.get("tocount"),
 				bookroot.get("userid"), bookroot.get("countstatus"),
@@ -533,12 +552,12 @@ public class InventoryServiceImpl implements InventoryService {
 			whereclause.add(cb.equal(bookroot.<Long> get("userid"), userid));
 			whereclause.add(cb.equal(bookroot.<Boolean> get("tocount"), true));
 		} else if (searchtype == StackSearchType.UNCOUNTED) {
+			Expression<Long> nullLong = cb.nullLiteral(Long.class);
 			List<Long> excludedstatus = new ArrayList<Long>();
 			excludedstatus.add(InventoryService.CountStatus.COUNTED);
 			excludedstatus.add(InventoryService.CountStatus.RECONCILED);
 
-			whereclause.add(cb.not(bookroot.<Long> get("countstatus").in(
-					excludedstatus)));
+			whereclause.add(cb.isNull(bookroot.<Long> get("countstatus")));
 			whereclause.add(cb.equal(bookroot.<Boolean> get("tocount"), true));
 		}
 		c.where(cb.and(whereclause.toArray(new Predicate[whereclause.size()])));
