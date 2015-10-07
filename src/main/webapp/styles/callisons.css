@@ -2,12 +2,12 @@
 body,div,td {
 	font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
 	font-size: 14px;
-	color: #C52501;
+	color: #655260;
 }
 
 body {
 	background-color: #f4f4f4;
-	background-image: url("../images/callisons.gif");
+	background-image: url("../images/callisons2.gif");
 	text-align: center;
 	margin-top: 0px;
 	margin-right: 0px;
@@ -42,7 +42,7 @@ body {
 	max-width: 900px;
 	margin-right: auto;
 	margin-left: auto;
-	background-color: #C52501;
+	background-color: #655260;
 	/* fix max-width incompatibility in IE6 */
 	width: expression(document.body.clientWidth > 900 ? "900px" : "auto");
 	display: block;
@@ -79,8 +79,8 @@ body {
 	/* fix max-width incompatibility in IE6 */
 	width: expression(document.body.clientWidth > 900 ? "900px" : "auto");
 	padding-left: 20px;
-	background-color: #C52501; 
-	padding-right : 10px; padding-bottom : 10px;
+	background-color: #655260;
+	 padding-right : 10px; padding-bottom : 10px;
 	border : #A8A8A8 1px solid;
 	overflow: hidden;
 	display: block;
@@ -103,7 +103,7 @@ body {
 
 #header {
 	position: relative;
-	background-color: #C52501;
+	background-color: #655260;
 	width: auto;
 	height: 75px;
 }
@@ -115,9 +115,9 @@ body {
 }
 
 #footer {
-	background: #C52501;
+	background: #655260;
 	border: none;
-	color: #ffffff;
+	color: #0B1E3E;
 	/*margin-top:15px;
 	border-top:1px solid #999999;*/
 }
@@ -127,13 +127,13 @@ body {
 }
 
 #footer a:link {
-	    color: white;
+	       color: white;
     text-decoration: none;
     font-weight: bold;
 }
 
 #footer a:visited {
-	    color: white;
+	     color: white;
     text-decoration: none;
     font-weight: bold;
 }
@@ -158,8 +158,8 @@ span.stress {
 
 
 div.accentboxlook {
-background-color: #FEE6A1;
-border: 1px solid #C52501;
+    background-color: #F47078;
+    border: 1px solid #655260;
 	padding: 5px;
 	margin: 10px;
 }
@@ -177,7 +177,7 @@ label {
 }
 
 hr {
-	    border-color: #7EB830;
+	    border-color: #655260;
 }
 
 input {
@@ -217,7 +217,7 @@ a.menu,a.menu:link,a.menu:visited {
 /* text styles */
 h1,h2,h3 {
 	font-family: Helvetica, sans-serif;
-	color: #C52501;
+	color: #655260;
 }
 
 h1 {
@@ -266,7 +266,7 @@ tr:nth-child(even) {
 	background-color: #EFEFEF;
 }*/
 a:link {
-	color: #C52501;
+	color: #655260;
 }
 
 a:hover {
@@ -274,11 +274,11 @@ a:hover {
 }
 
 a:active {
-	color: #C52501;
+	color: #655260;
 }
 
 a:visited {
-	color: #C52501;
+	color: #655260;
 }
 
 li {
@@ -324,7 +324,7 @@ table th {
 	text-align: left;
 	font-weight: bold;
 	color: #FFF;
-	background-color:#C52501;
+	background: #655260;
 	    padding-left: 3px;
 }
 
@@ -341,7 +341,7 @@ table a:link {
 	color: #e7e5e5;
 	margin-left: 8px;
 	margin-right: 8px;
-	background-color: #C52501;
+	background-color: #655260;
 	text-decoration: none;
 }
 
@@ -352,7 +352,7 @@ table a:visited {
 	color: #e7e5e5;
 	margin-left: 8px;
 	margin-right: 8px;
-	background-color: #C52501;
+	background-color: #655260;
 	text-decoration: none;
 }
 
@@ -363,7 +363,7 @@ table a.linkbutton:link {
 	color: #e7e5e5;
 	margin-left: 8px;
 	margin-right: 8px;
-	background-color: #C52501;
+	background-color: #655260;
 	text-decoration: none;
 }
 
@@ -435,7 +435,7 @@ fieldset th {
 	color: #e7e5e5;
 	margin-left: 10px;
 	margin-right: 10px;
-	background-color: #C52501;
+	background-color: #655260;
 	text-decoration: none;
 	vertical-align: bottom;
 	outline: 0;
@@ -485,7 +485,7 @@ fieldset th {
 	color: #e7e5e5;
 	margin-left: 20px;
 	margin-right: 20px;
-	background-color: rgba(72, 108, 148, 0.96);
+	background-color: rgba(101, 82, 96, 0.73);
 }
 
 .selectspanactive {
@@ -495,7 +495,7 @@ fieldset th {
 	color: #e7e5e5;
 	margin-left: 20px;
 	margin-right: 20px;
-	background-color: #C52501;
+	background-color: #655260;
 }
 
 .linkbutton a {
@@ -505,7 +505,7 @@ fieldset th {
 	color: #e7e5e5;
 	margin-left: 20px;
 	margin-right: 20px;
-	background-color: #C52501;
+	background-color: #655260;
 	text-decoration: none;
 	vertical-align: bottom;
 }
@@ -517,7 +517,7 @@ a.linkbutton {
 	color: white;
 	margin-left: 10px;
 	margin-right: 10px;
-	background-color: #C52501;
+	background-color: #655260;
 	text-decoration: none;
 	vertical-align: bottom;
 }
@@ -529,7 +529,7 @@ a.linkbutton:visited {
 	color: white;
 	margin-left: 10px;
 	margin-right: 10px;
-	background-color: #C52501;
+	background-color: #655260;
 	text-decoration: none;
 }
 
@@ -540,7 +540,7 @@ a.linkbutton:link {
 	color: white;
 	margin-left: 10px;
 	margin-right: 10px;
-	background-color: #C52501;
+	background-color: #655260;
 	text-decoration: none;
 }
 
@@ -548,10 +548,10 @@ span.linkbuttonquiet {
 	display: inline-block;
 	overflow: hidden;
 	padding: 7px;
-	    color: #F7E08E;
+	    color: #8A8187;
 	margin-left: 10px;
 	margin-right: 10px;
-	background-color: #C52501;
+	background-color: #655260;
 	vertical-align: bottom;
 	font-weight: bolder;
 	font-family: Arial
@@ -588,7 +588,7 @@ input.linkbutton {
 	color: white;
 	margin-left: 10px;
 	margin-right: 10px;
-	background-color: #C52501;
+	background-color: #655260;
 	text-decoration: none;
 	vertical-align: bottom;
 	outline: 0;
@@ -603,7 +603,7 @@ input.linkbutton {
 	color: #e7e5e5;
 	margin-left: 20px;
 	margin-right: 20px;
-	background-color: rgba(235, 138, 68, 0.71);
+	background-color:rgba(101, 82, 96, 0.73);
 }
 
 .selectspanactive {
@@ -613,11 +613,11 @@ input.linkbutton {
 	color: #e7e5e5;
 	margin-left: 20px;
 	margin-right: 20px;
-	background-color: #C52501;
+	background-color: #655260;
 }
 
 table a.tableboldlink {
-	color: #C52501;;
+	color: #655260;;
 	background-color: white;
 	font-weight: bolder;
 }
@@ -644,14 +644,14 @@ div.elementcontainer div {
 /** checkout images, styles **/
 
 .selfcheckoutcontainer {
-	    border-color: #C52501;
+	    border-color: #655260;
     border-width: 1px;
     border-style: dashed;
     position: absolute;
 }
 
 .selfcheckouttext {
-	background-color: #C52501;
+	background-color: #655260;
     float: right;
     width: 300px;
     height: 375px;
@@ -660,7 +660,7 @@ div.elementcontainer div {
 
 .happyface {
     float: left;
-    background-color: #C52501;
+    background-color: #655260;
     background-image: url("../images/happyfaceshell.gif");
     width: 475px;
     height: 375px;
@@ -669,7 +669,7 @@ div.elementcontainer div {
 
 .returnarrow {
     float: left;
-    background-color: #C52501;
+    background-color: #655260;
     background-image: url("../images/arrowshell.gif");
     width: 475px;
     height: 375px;
@@ -678,6 +678,7 @@ div.elementcontainer div {
 
 
 /** table grid results and members**/
+
 table.gridresults {
 	border-color: #FFFFFF;
 	border-spacing: 0px;
@@ -721,28 +722,23 @@ margin-bottom: -5px;
 table.gridresults a:visited {
 	color: rgba(193, 193, 186, 0.52);
 	background-color: rgba(193, 193, 186, 0.52);
-	    width: 150px;
-    padding: 0px;
-    margin:0px;
-    margin-bottom: -5px;
-
 }
 
 
 table.gridresults a.grtext:visited {
-	color:#C52501;
+	color:#655260;
 	background-color: white;
 	font-weight: bold;
 }
 
 table.gridresults a.grtext:link {
-	color:#C52501;
+	color:#655260;
 	background-color: white;
 	font-weight: bold;
 }
 
 table.gridresults a.grtext:focus {
-	color:#C52501;
+	color:#655260;
 	background-color: white;
 	font-weight: bold;
 }
@@ -781,8 +777,8 @@ div.overlay {
 #nav {
 	margin: 0;
 	width: 900px;
-	padding: 6px 5px 0;
-	background: #C52501 repeat-x 0 -110px;
+	padding: 6px 6px 0;
+	background: #655260 repeat-x 0 -110px;
 	line-height: 100%;
 }
 
@@ -798,7 +794,7 @@ div.overlay {
 /* main level link */
 #nav a {
 	font-weight: bold;
-	color: #fff;
+	    color: #FFFFFF;
 	text-decoration: none;
 	display: block;
 	padding: 8px 20px;
@@ -814,7 +810,7 @@ div.overlay {
 
 /* main level link hover */
 #nav .current a,#nav li:hover>a {
-	background: #C52501;
+	    background: #73ACB7;
 	color: #fff;
 	z-index: 999;
 }
@@ -823,18 +819,17 @@ div.overlay {
 #nav ul li:hover a,#nav li:hover li a {
 	background: none;
 	border: none;
-	color: #C52501;
+	color: #666;
 	z-index: 999;
 	-webkit-box-shadow: none;
 	-moz-box-shadow: none;
-	    background-color: #FEF2D1;
+	    background-color: #fff;
 }
 
 #nav ul a:hover {
-	background: #FF3800  repeat-x 0 -100px !important;
+	background: #4B9AA9 repeat-x 0 -100px !important;
 	color: #fff !important;
 	z-index: 999;
-	font-weight: bold;
 	-webkit-border-radius: 0;
 	-moz-border-radius: 0;
 	text-shadow: 0 1px 1px rgba(0, 0, 0, .1);
@@ -854,7 +849,7 @@ div.overlay {
 	width: 185px;
 	position: absolute;
 	left: 0;
-	background: #ddd repeat-x 0 0;
+	background: #FEFFFC repeat-x 0 0;
 	/*	top: 35px;
 border: solid 1px #b4b4b4;
 -webkit-border-radius: 10px;
