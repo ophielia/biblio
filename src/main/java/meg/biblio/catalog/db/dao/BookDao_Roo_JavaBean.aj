@@ -121,12 +121,4 @@ privileged aspect BookDao_Roo_JavaBean {
         this.userid = userid;
     }
     
-    public Boolean BookDao.getReconciled() {
-        return this.reconciled;
-    }
-    
-    public void BookDao.setReconciled(Boolean reconciled) {
-        this.reconciled = reconciled;
-    }
-    
 }

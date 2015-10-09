@@ -47,7 +47,6 @@ privileged aspect BookDaoDataOnDemand_Roo_DataOnDemand {
         setCountstatus(obj, index);
         setCreatedon(obj, index);
         setNote(obj, index);
-        setReconciled(obj, index);
         setStatus(obj, index);
         setTocount(obj, index);
         setUserid(obj, index);
@@ -107,11 +106,6 @@ privileged aspect BookDaoDataOnDemand_Roo_DataOnDemand {
     public void BookDaoDataOnDemand.setNote(BookDao obj, int index) {
         String note = "note_" + index;
         obj.setNote(note);
-    }
-    
-    public void BookDaoDataOnDemand.setReconciled(BookDao obj, int index) {
-        Boolean reconciled = Boolean.TRUE;
-        obj.setReconciled(reconciled);
     }
     
     public void BookDaoDataOnDemand.setStatus(BookDao obj, int index) {
