@@ -374,8 +374,9 @@ public class InventoryServiceImpl implements InventoryService {
 			if (book != null) {
 				// retrieve book
 				BookDao countedbook = bookRepo.findOne(book.getId());
-				// determine if lost book
+				// determine if lost book - or WAS a lost book
 				Long bookstatus = countedbook.getStatus();
+				InventoryHistoryDao wasfound = invHistRepo.getFoundInInventory(inv,countedbook);
 				if (bookstatus != null
 						&& (bookstatus.longValue() == CatalogService.Status.LOSTBYBORROWER
 								|| bookstatus.longValue() == CatalogService.Status.REMOVEDFROMCIRC || bookstatus
@@ -391,6 +392,10 @@ public class InventoryServiceImpl implements InventoryService {
 					countedbook.setStatus(newstatus);
 					// set counterid to userid
 					countedbook.setUserid(userid);
+					// set countstatus and date
+					countedbook
+					.setCountstatus(InventoryService.CountStatus.COUNTED);	
+					countedbook.setCounteddate(new Date());
 
 					// save changes
 					countedbook = bookRepo.save(countedbook);
@@ -399,7 +404,9 @@ public class InventoryServiceImpl implements InventoryService {
 					hist.setBook(countedbook);
 					hist = invHistRepo.save(hist);
 					entityManager.refresh(countedbook);
-				} else {
+				} else if (wasfound==null) {
+					// wasfound check to make sure that the book wasn't already marked as found in the inventory history.
+				
 					// set counterid to userid, and counted to true
 					// update counted status for book
 					countedbook
@@ -446,14 +453,14 @@ public class InventoryServiceImpl implements InventoryService {
 	 * @param updatestatus
 	 */
 	@Override
-	public void reconcileBook(ClientDao client, Long bookid, Long updatestatus) {
+	public void reconcileBook(ClientDao client, Long bookid, Long updatestatus, String note) {
 		// get inventory
 		InventoryDao inv = getCurrentInventory(client);
 
 		// only proceed if inventory in progress
 		if (inv != null) {
 			BookDao book = bookRepo.findOne(bookid);
-			reconcileBook(inv, book, updatestatus);
+			reconcileBook(inv, book, updatestatus,note);
 		}
 
 	}
@@ -475,7 +482,7 @@ public class InventoryServiceImpl implements InventoryService {
 		if (inv != null) {
 			List<BookDao> toreconcile = bookRepo.findAll(bookidlist);
 			for (BookDao book : toreconcile) {
-				reconcileBook(inv, book, updatestatus);
+				reconcileBook(inv, book, updatestatus,null);
 			}
 		}
 
@@ -492,7 +499,7 @@ public class InventoryServiceImpl implements InventoryService {
 	 * @param updatestatus
 	 */
 	private void reconcileBook(InventoryDao invinprogress, BookDao book,
-			Long updatestatus) {
+			Long updatestatus,String note) {
 		// create InventoryHistDao
 		InventoryHistoryDao invHist = new InventoryHistoryDao();
 
@@ -506,6 +513,12 @@ public class InventoryServiceImpl implements InventoryService {
 
 			// set new status in book
 			book.setStatus(updatestatus);
+			
+			// if note isn't null, set in book
+			if (note!=null) {
+				book.setNote(note);
+			}
+			
 			// set countstatus
 			book.setCountstatus(InventoryService.CountStatus.RECONCILED);
 			book.setCounteddate(new Date());
@@ -550,7 +563,6 @@ public class InventoryServiceImpl implements InventoryService {
 		whereclause.add(cb.equal(bookroot.<Long> get("clientid"), clientid));
 		if (searchtype == StackSearchType.STACK) {
 			whereclause.add(cb.equal(bookroot.<Long> get("userid"), userid));
-			whereclause.add(cb.equal(bookroot.<Boolean> get("tocount"), true));
 		} else if (searchtype == StackSearchType.UNCOUNTED) {
 			Expression<Long> nullLong = cb.nullLiteral(Long.class);
 			List<Long> excludedstatus = new ArrayList<Long>();
@@ -646,5 +658,14 @@ public class InventoryServiceImpl implements InventoryService {
 		// return update count
 		return result;
 
+	}
+
+	@Override
+	public List<InventoryHistoryDao> getDetailForInventory(
+			InventoryDao inventory) {
+		if (inventory!=null ) {
+			return invHistRepo.getHistoryForInventory(inventory);
+		}
+		return null;
 	}
 }

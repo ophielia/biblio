@@ -41,6 +41,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
           'dojo/dom',"dojo/on","dijit/TooltipDialog", "dijit/popup",
           'dojo/domReady!'
       ], function (dom,on,TooltipDialog,popup) {
+	 var masterstatus = false;
 	 
 	function getIndex(prefix, text) {
 			// gets a substring of the text, starting at the char after the length of the prefix
@@ -86,7 +87,22 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 	   	   }
 	   	});
 		
-		
+		// wire up mastercheck
+		on(dojo.byId("mastercheck"), 'click', function(event) {
+			var master = dojo.byId('mastercheck');
+			masterstatus = master.checked;
+			dojo.query("input[name^='checked']").forEach(function(node) {
+				var id = node.id;
+				var box = dojo.byId(id);
+				
+				if (masterstatus) {
+						box.checked = true;
+					} else {
+						box.checked =false;
+					}
+				});
+
+			});
 		
 	});
  
@@ -192,6 +208,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
         <form:input type="hidden" path="resultsperpage" />
         <form:input type="hidden" path="currentpage" />
 </div>
+<div>
 	<form:select path="statusUpdate">
 		<form:option value="" label="${lemptyoption}" />
 		<c:forEach items="${statusLkup}" var="tmp" >
@@ -208,13 +225,13 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 	</form:select>
 	<input class="linkbutton" id="shelfclassUpdate" name="updateshelfclass" type="submit" value="${lscupdate}"/>   
 </span>
-
+</div>
 		<TABLE>
 		<thead>		
 		
 		
 				<tr >
-			<th></th>
+			<th><input id="mastercheck" name="mastercheck" value="false" type="checkbox" /></th>
 			<th id="aSort6">${lclientbookid}</th>
 			<th id="aSort3">${ltitle}</th>
 			<th id="aSort4">${lauthor} / <br />${lillustrator} </th>

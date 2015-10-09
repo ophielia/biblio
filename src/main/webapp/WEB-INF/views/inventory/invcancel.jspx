@@ -8,13 +8,13 @@ xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
-    
-    <spring:url value="/inventory/clearstack" var="clearurl"/>
+
+<spring:url value="/inventory/clearstack" var="clearurl"/>
 <script type="text/javascript">
  require(['dojo/dom',"dojo/on","dijit/focus",'dojo/domReady!'], 
 		 function (dom,on,focusUtil) {
-		focusUtil.focus(dom.byId("barcodeentry"));
-		dojo.byId("barcodeentry").value="";
+		focusUtil.focus(dom.byId("manualentry"));
+		dojo.byId("manualentry").value="";
 		// wire up clear stack button
 		dojo.query("span#clearstack").forEach(function(node) {
 			var id = node.id;
@@ -29,44 +29,19 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 
 	});
 </script>
-<style>
-#progress {
- width: 98%;   
- border: 1px solid black;
- background-color:white;
- position: relative;
- padding: 0px;
-}
 
-#bar {
- height: 20px;
- background-color:  #2E537D;
- width: 50%; 
- min-height:20px;
-}
 
-</style>
+    
     <h1>{!Count Books!}</h1>
     
-      
-<div >
-    <div style="border: 2px #2E537D dotted;
-    padding: 5px;color:#1B3F68;
-    background-color: #7390B1;font-weight: bolder;">
-<div style="color:#1B3F68;">Inventory ${countModel.inventoryStatus.percentcompleted}% complete</div> 
-<span style="float:right"> {!Begun!}:<fmt:formatDate type="date" 
-            value="${countModel.inventoryStatus.startdate}" />   </span> ${countModel.inventoryStatus.countedbooks} of  ${countModel.inventoryStatus.totaltocount} books counted
-<div id="progress">
-    <!-- <span id="percent"></span>-->
-    <div id="bar" style="width:${countModel.inventoryStatus.percentcompleted}%"></div>
-</div>
-</div>
-</div>
+<div>Progress 20% - Counted x of y books</div>
 
 <spring:url value="/inventory/count" var="actionurl"/>
 <form:form action="${actionurl}" id="countbook" method="POST" modelAttribute="countModel">
 
 <h2>Count Stack</h2>
+{!Book Nr.!} <form:input  type="text" path="manualentry"></form:input> <input class="linkbutton" id="countbook" name="countbook"
+					type="submit" value="{!Count Book!}" />
 <span class="linkbuttonquiet" id="clearstack" style="float: right;
     margin-bottom: 15px;" >{!Clear Stack!}js help</span>
 <table>
@@ -111,9 +86,9 @@ ${shelfcode.textdisplay}
 <span class="linkbuttonquiet" style="float: right;
     margin-bottom: 15px;" >
     
-    <spring:url value="/inventory/count?changepref=1" var="changepref"/>
-<a href="${changepref}" class="linkbutton">{!Count manually!}</a></span>
-<form:input class="therebutnot" type="text" path="barcodeentry" autocomplete="off"></form:input><br/>
+    <spring:url value="/inventory/count?changepref=2" var="changepref"/>
+<a href="${changepref}" class="linkbutton">{!Count with scanner!}</a></span>
+
 <form:input  type="hidden" path="countTypePref"></form:input><br/>
 </form:form>
 

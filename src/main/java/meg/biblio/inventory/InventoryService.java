@@ -1,18 +1,12 @@
 package meg.biblio.inventory;
 
-import java.io.IOException;
-import java.security.GeneralSecurityException;
-import java.util.HashMap;
 import java.util.List;
 
 import meg.biblio.catalog.db.dao.BookDao;
-import meg.biblio.catalog.db.dao.BookDetailDao;
-import meg.biblio.catalog.db.dao.ClassificationDao;
-import meg.biblio.catalog.db.dao.FoundDetailsDao;
-import meg.biblio.catalog.web.model.BookModel;
 import meg.biblio.common.db.dao.ClientDao;
 import meg.biblio.inventory.db.dao.InvStackDisplay;
 import meg.biblio.inventory.db.dao.InventoryDao;
+import meg.biblio.inventory.db.dao.InventoryHistoryDao;
 
 public interface InventoryService {
 
@@ -22,6 +16,8 @@ public interface InventoryService {
 		public static final long RECONCILED = 3;
 	}
 
+	public static final String reconcilestatuslkup = "reconcilestatus";
+	
 	InventoryDao beginInventory(ClientDao client);
 
 	void cancelCurrentInventory(ClientDao client);
@@ -36,7 +32,7 @@ public interface InventoryService {
 
 	void countBook(BookDao book, Long userid, ClientDao client);
 
-	void reconcileBook(ClientDao client, Long bookid, Long updatestatus);
+	void reconcileBook(ClientDao client, Long bookid, Long updatestatus, String note);
 
 	void reconcileBookList(ClientDao client, List<Long> bookidlist,
 			Long updatestatus);
@@ -52,6 +48,8 @@ public interface InventoryService {
 	List<InventoryDao> getPreviousInventories(ClientDao client);
 
 	InventoryDao getInventoryById(Long invid);
+
+	List<InventoryHistoryDao> getDetailForInventory(InventoryDao inventory);
 
 	
 }

@@ -9,13 +9,51 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
  
+<style>
+#progress {
+ width: 98%;   
+ border: 1px solid black;
+ background-color:white;
+ position: relative;
+ padding: 0px;
+}
 
+#percent {
+ position: absolute;   
+ color:#1B3F68;
+ left:50%;
+ min-height:20px;
+}
+
+#bar {
+ height: 20px;
+ background-color:  #2E537D;
+ width: 50%; 
+ min-height:20px;
+}
+
+</style>
     
     <h1>{!Inventory in Progress!}</h1>
-Progress 20% - Counted x of y books
+
+<div >
+    <div style="border: 2px #2E537D dotted;
+    padding: 5px;color:#1B3F68;
+    background-color: #7390B1;font-weight: bolder;">
+<div style="color:#1B3F68;">Inventory ${status.percentcompleted}% complete</div> 
+<span style="float:right"> {!Begun!}:<fmt:formatDate type="date" 
+            value="${status.startdate}" />   </span> ${status.countedbooks} of  ${status.totaltocount} books counted
+<div id="progress">
+    <!-- <span id="percent"></span>-->
+    <div id="bar" style="width:${status.percentcompleted}%"></div>
+</div>
+</div>
+</div>
+
+
 <br />
 <br />
-<span>
+<div>
  <spring:url value="/inventory/complete" var="actionurl"/>
 <form:form action="${actionurl}" method="POST">
 <spring:url value="/inventory/count" var="counturl"/>
@@ -25,7 +63,7 @@ Progress 20% - Counted x of y books
 <spring:message code="button_search" htmlEscape="false" var="search_button"/>
 <input id="newinventory" class="linkbutton" type="submit" value="{!Complete Inventory!}"/>
 </form:form>
-</span>
+</div>
 
 
 </div>

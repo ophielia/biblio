@@ -383,7 +383,7 @@ public class InventoryServiceTest {
 		bookRepo.save(book);
 		
 		// count book - service call
-		invService.reconcileBook(client,shelvedid,CatalogService.Status.INVNOTFOUND);  
+		invService.reconcileBook(client,shelvedid,CatalogService.Status.INVNOTFOUND, null);  
 
 		// reretrieve shelved book - ensure that
 		BookDao test = bookRepo.findOne(shelvedid);
@@ -412,7 +412,7 @@ public class InventoryServiceTest {
 		book = bookRepo.findOne(shelvedid);
 		entityManager.refresh(book);
 		// count book - service call
-		invService.reconcileBook(client,shelvedid,CatalogService.Status.INVNOTFOUND);
+		invService.reconcileBook(client,shelvedid,CatalogService.Status.INVNOTFOUND, null);
 		// reretrieve shelved book - ensure that
 		test = bookRepo.findOne(shelvedid);
 		// book not null

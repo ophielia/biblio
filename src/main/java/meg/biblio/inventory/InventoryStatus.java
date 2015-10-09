@@ -1,5 +1,7 @@
 package meg.biblio.inventory;
 
+import java.util.Date;
+
 import meg.biblio.inventory.db.dao.InventoryDao;
 
 public class InventoryStatus {
@@ -8,6 +10,7 @@ public class InventoryStatus {
 	private long countedbooks=0;
 	private long reconciledbooks=0;
 	private long refoundbooks=0;
+	
 	
 	public InventoryStatus(InventoryDao inv) {
 		super();
@@ -45,6 +48,31 @@ public class InventoryStatus {
 	public void setRefoundBooks(int refound) {
 		Long refoundlong = new Long(refound);
 		this.refoundbooks = refoundlong.longValue();
+	}
+
+	public Integer getTotaltocount() {
+		if (this.inventory!=null) {
+			return this.inventory.getTobecounted();
+		}
+		return null;
+	}
+
+	public double getPercentcompleted() {
+		if (this.inventory!=null) {
+			double totalcnt=new Long(this.countedbooks).doubleValue();
+			double tocnt=this.inventory.getTobecounted().doubleValue();
+			double percent = Math.round((totalcnt* 100.0 / tocnt ));
+			return percent;
+		}
+		
+		return 0.0;
+	}
+
+	public Date getStartdate() {
+		if (this.inventory!=null) {
+			return this.inventory.getStartdate();
+		}
+		return null;
 	}
 	
 	

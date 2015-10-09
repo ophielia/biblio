@@ -9,41 +9,106 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
     
+<spring:message code="label_book_author" htmlEscape="false" var="lauthor"/>
+<spring:message code="label_book_classification" htmlEscape="false" var="lclassification"/>
+<spring:message code="label_book_description" htmlEscape="false" var="ldescription"/>
+<spring:message code="label_book_isbn10" htmlEscape="false" var="lisbn10"/>
+<spring:message code="label_book_isbn13" htmlEscape="false" var="lisbn13"/>
+<spring:message code="label_number" htmlEscape="false" var="lnumber" />
+<spring:message code="label_book_language" htmlEscape="false" var="llanguage"/>
+<spring:message code="label_book_published" htmlEscape="false" var="lpublished"/>
+<spring:message code="label_book_publisher" htmlEscape="false" var="lpublisher"/>
+<spring:message code="label_book_title" htmlEscape="false" var="ltitle"/>    
+    
     <h1>{!Reconcile Book!}</h1>
+<spring:url value="/inventory/reconcile/${reconcileModel.reconcileBook.id}" var="actionurl"/>
+<form:form action="${actionurl}" id="countbook" method="POST" modelAttribute="reconcileModel">
 
-<div style="width:60%;float:left">
+
+<div style="width:40%;float:left">
+<div class="elementcontainer">
 	<div>
-		<span class="stress">{!Book Nr!}:</span> ${reconcileBook.clientbookid}
+		<span class="stress">${clientname} ${lnumber}:</span> ${reconcileModel.reconcileBook.clientbookid}
+	</div>
+<div>
+
+	<span class="stress">{!Current Status!}: </span>${statusLkup[bookModel.status]}
 	</div>
 	
-		
+				<div>
+					<span class="stress" style="vertical-align: top;">{!Note!}:</span><form:textarea path="note" cols="30" row="15" style="height: 100px;"></form:textarea>
+				</div>
+								<div>
+					<span class="stress">{!Reconcile Status!}:</span>
+						<form:select path="updateStatus" id="updateStatus">
+			<c:forEach items="${recStatusLkup}" var="tmp" >
+						<form:option value="${tmp.key}"  label="${tmp.value}"/>
+		</c:forEach>
+	</form:select>
+				</div>	
+
+</div>	
+			<div>
+	<input id="reconcile" class="linkbutton" type="submit" value="{!Reconcile Book!}"/>
+				<spring:url value="/inventory/reconcile" var="reconcilelist" />
+				<a href="${reconcilelist}" class="linkbutton" id="showaddl">{!Cancel!}</a>
+				
+			</div>
 </div>
-		<div class="accentboxlayout">
+		<div class="accentboxlayout" style="width:50%">
 			<div class="accentboxlook">
 				<!-- accent box -->
 
-				<c:if test="${reconcileBook.bookdetail.imagelink !=null}">
+			
 					<div>
-						<img src="${reconcileBook.bookdetail.imagelink}" />
+						<img src="${reconcileModel.reconcileBook.bookdetail.imagelink}" />
 					</div>
-				</c:if>
-				<div><span class="stress">{!detail status!}:</span>
-					${detailstatusLkup[reconcileBook.detailstatus]}</div>
-				<div><span class="stress">${lisbn10}:</span>
-					 ${reconcileBook.isbn10}<br />
-					 <span class="stress">${lisbn13}:</span>
-					 ${reconcileBook.isbn13}
+	<div>
+	<span class="stress">${ltitle}:</span> ${reconcileModel.reconcileBook.bookdetail.title}
+	</div>
+	<div>
+	<span class="stress">${lauthor}:</span>${reconcileModel.reconcileBook.bookdetail.authorsAsString}
+	</div>
+	<div>
+	<span class="stress">${lpublisher}:</span> ${reconcileModel.reconcileBook.bookdetail.publisher.name}
+	</div>	
+	<div>
+	<span class="stress">${lpublished}:</span> ${reconcileModel.reconcileBook.bookdetail.publishyear}
+	</div>
+		<div>
+			<span class="stress">${clientname} ${lclassification}:</span>
+			<c:if test="${not empty reconcileModel.reconcileBook.clientshelfcode}"> 
+	<c:set var="shelfcode" value="${classHash[reconcileModel.reconcileBook.clientshelfcode]}" />
+				
+		
+						<img id="shelfimg" src="${imagebasedir}${shelfcode.imagedisplay}"
+							width="50x" style="margin-bottom: -10px" />
+						<span id="shelfinfo" style="display: none">${shelfcode.textdisplay}:${shelfcode.description}</span>
+				
+					
+				
+			</c:if>
+		</div>
+		
+		<div>
+			<span class="stress">${lclassification} :</span>
+					${reconcileModel.reconcileBook.clientshelfclass}
 				</div>
 
+
+				<div><span class="stress">${lisbn10}:</span>
+					 ${reconcileModel.reconcileBook.bookdetail.isbn10}<br />
+					 <span class="stress">${lisbn13}:</span>
+					 ${reconcileModel.reconcileBook.bookdetail.isbn13}
+				</div>
+	<div>
+	<span class="stress">${ldescription}:</span> ${reconcileModel.reconcileBook.bookdetail.description}
+	</div>	
 			</div>
-			<div>
-				<spring:url value="/books/update/${reconcileBook.bookid}" var="linkurl" />
-				<a href="${linkurl}" class="linkbutton" id="showaddl">${bedit}</a>
-				
-			</div>
+			
+
 
 		</div>
 
-
-
+</form:form>
 </div>

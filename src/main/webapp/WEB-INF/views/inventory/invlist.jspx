@@ -27,6 +27,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <th>{!tocount!}</th>
 <th>{!counted!}</th>
 <th>{!reconciled!}</th>
+<th>{!found!}</th>
 <th></th>
 <th></th>
 </tr>
@@ -42,6 +43,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <td>${previnv.tobecounted}</td>
 <td>${previnv.totalcounted}</td>
 <td>${previnv.reconciled}</td>
+<td>${previnv.addedtocount}</td>
 <td><c:if test = "${!previnv.completed}" >incomplete</c:if></td>
 <td><spring:url value="/inventory/detail/${previnv.id}" var="actionurl"/>
 <a href="${actionurl}" class="linkbutton">{!View!}</a></td>

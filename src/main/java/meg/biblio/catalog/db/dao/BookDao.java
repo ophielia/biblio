@@ -39,7 +39,6 @@ private Long countstatus;
 @DateTimeFormat(style = "M-")
 private Date counteddate;
 private Long userid;
-private Boolean reconciled;
 
 	public void setClientbookid(String clientbookid) {
         this.clientbookid = clientbookid;

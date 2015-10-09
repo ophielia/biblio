@@ -20,6 +20,7 @@ import meg.biblio.inventory.InventoryService;
 import meg.biblio.inventory.InventoryStatus;
 import meg.biblio.inventory.db.dao.InvStackDisplay;
 import meg.biblio.inventory.db.dao.InventoryDao;
+import meg.biblio.inventory.db.dao.InventoryHistoryDao;
 import meg.biblio.inventory.web.model.CountModel;
 import meg.biblio.inventory.web.model.ReconcileModel;
 
@@ -41,6 +42,9 @@ public class InventoryController {
 
 	@Autowired
 	ClientService clientService;
+
+	@Autowired
+	AppSettingService appSetting;
 
 	@Autowired
 	LoginService loginService;
@@ -84,8 +88,11 @@ public class InventoryController {
 	public String showInventoryDetail(@PathVariable("id") Long inventoryid,
 			Model uiModel, HttpServletRequest httpServletRequest,
 			Principal principal, Locale locale) {
+		ClientDao client = clientService.getCurrentClient(principal);
 
-		return "inventory/detail";
+		// get inventory and status for id
+		InventoryDao inventory = invService.getInventoryById(inventoryid);
+		return showInventoryDetail(inventory, client,uiModel,httpServletRequest,principal,locale);
 	}
 
 	@RequestMapping(value = "/reconcile", method = RequestMethod.GET, produces = "text/html")
@@ -97,6 +104,26 @@ public class InventoryController {
 				locale, httpServletRequest);
 	}
 
+	private String showInventoryDetail(InventoryDao inventory, ClientDao client,Model uiModel,HttpServletRequest httpServletRequest,
+			Principal principal, Locale locale) {
+		
+		
+		// get inventory and status for id
+		InventoryStatus status = invService.getInventoryStatus(inventory,
+				client);
+
+		// get history for id
+		List<InventoryHistoryDao> history = invService
+				.getDetailForInventory(inventory);
+		// fill model
+		uiModel.addAttribute("status", status);
+		uiModel.addAttribute("history", history);
+		// fill lookups
+		fillLookups(uiModel, httpServletRequest, principal, locale);
+		// return view
+		return "inventory/detail";
+	}
+	
 	@RequestMapping(value = "/complete", method = RequestMethod.POST, produces = "text/html")
 	public String completeInventory(ReconcileModel reconcileModel,
 			Model uiModel, HttpServletRequest httpServletRequest,
@@ -111,11 +138,7 @@ public class InventoryController {
 			Long invid = current.getId();
 			invService.finishInventory(client);
 
-			// load inventory
-			InventoryDao inv = invService.getInventoryById(invid);
-			InventoryStatus status = invService.getInventoryStatus(inv, client);
-			uiModel.addAttribute("status", status);
-
+			return showInventoryDetail(current, client,uiModel,httpServletRequest,principal,locale);
 		} else {
 			// if not complete, add error (inv detail page)
 			// MM TODO
@@ -316,11 +339,24 @@ public class InventoryController {
 
 	@RequestMapping(value = "/reconcile/{id}", method = RequestMethod.POST, produces = "text/html")
 	public String reconcileSingleBook(@PathVariable("id") Long bookid,
-			ReconcileModel countModel, Model uiModel,
+			ReconcileModel recModel, Model uiModel,
 			HttpServletRequest httpServletRequest, Principal principal,
 			Locale locale) {
+		ClientDao client = clientService.getCurrentClient(principal);
+		InventoryDao current = invService.getCurrentInventory(client);
 
-		return "inventory/reconciledetail";
+		if (bookid != null) {
+			// get update status
+			Long status = recModel.getUpdateStatus();
+			// note
+			String note = recModel.getNote();
+			// reconcile book
+			invService.reconcileBook(client, bookid, status, note);
+		}
+
+		// show Reconcile list
+return showReconcileList(client, recModel, uiModel, principal, locale, httpServletRequest);
+		
 	}
 
 	private long getCountType(ClientDao client, CountModel model,
@@ -371,13 +407,27 @@ public class InventoryController {
 			Locale locale, HttpServletRequest httpServletRequest) {
 		// get current inventory
 		InventoryDao current = invService.getCurrentInventory(client);
-	
+
 		boolean isComplete = invService.getInventoryIsComplete(client);
 		// get inventory status
 		InventoryStatus status = invService.getInventoryStatus(current, client);
 		// get uncounted list
 		List<InvStackDisplay> uncountedlist = invService
 				.getUncountedBooks(client);
+		// get maximum size of list
+		Integer maxreconcile = appSetting.getSettingAsInteger("biblio.inventory.showtoreconcile");
+		// check if we need to deal with this
+		if (maxreconcile.intValue()<uncountedlist.size()) {
+			// get number of results
+			int totaltoreconcile = uncountedlist.size();
+			// cut list
+			uncountedlist = uncountedlist.subList(0, maxreconcile.intValue());
+			// set result total and cap in model
+			reconcileModel.setTotalUncounted(totaltoreconcile);
+			reconcileModel.setMaxUncounted(maxreconcile);
+		}
+		
+
 		// set info in model
 		reconcileModel.setInventoryStatus(status);
 		reconcileModel.setUncountedBooks(uncountedlist);
@@ -385,7 +435,7 @@ public class InventoryController {
 		// fill Lookups
 		fillLookups(uiModel, httpServletRequest, principal, locale);
 		return "inventory/reconcilelist";
-	
+
 	}
 
 	private void fillLookups(Model uiModel,
@@ -407,6 +457,38 @@ public class InventoryController {
 		HashMap<Long, ClassificationDao> shelfclasses = catalogService
 				.getShelfClassHash(clientkey, lang);
 		uiModel.addAttribute("classHash", shelfclasses);
+
+		HashMap<Long, String> recStatusLkup = keyService.getDisplayHashForKey(
+				InventoryService.reconcilestatuslkup, lang);
+		uiModel.addAttribute("recStatusLkup", recStatusLkup);
+
+		String shortname = client.getShortname();
+		uiModel.addAttribute("clientname", shortname);
 	}
 
+	@RequestMapping(value = "/cancel", method = RequestMethod.GET, produces = "text/html")
+	public String showCancelInventory(Model uiModel, HttpServletRequest httpServletRequest,
+			Principal principal, Locale locale) {
+		ClientDao client = clientService.getCurrentClient(principal);
+		// get current inventory
+		InventoryDao current = invService.getCurrentInventory(client);
+
+		uiModel.addAttribute("showmessage",true);
+
+		return "inventory/cancel";
+	}
+
+	@RequestMapping(value = "/cancel", method = RequestMethod.POST, produces = "text/html")
+	public String cancelInventory(Model uiModel, HttpServletRequest httpServletRequest,
+			Principal principal, Locale locale) {
+		ClientDao client = clientService.getCurrentClient(principal);
+		// get current inventory
+		InventoryDao current = invService.getCurrentInventory(client);
+
+		// cancel inventory
+		uiModel.addAttribute("cancelsuccess",true);
+
+		return showInventoryDetail(current, client, uiModel, httpServletRequest, principal, locale);
+	}
+	
 }

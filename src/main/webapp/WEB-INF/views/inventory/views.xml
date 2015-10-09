@@ -36,5 +36,9 @@
 			value="/WEB-INF/views/inventory/reconciledetail.jspx" />
 	</definition>
 
+	<definition extends="default" name="inventory/cancel">
+		<put-attribute name="body"
+			value="/WEB-INF/views/inventory/invcancel.jspx" />
+	</definition>
 
 </tiles-definitions>

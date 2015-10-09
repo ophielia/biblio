@@ -1,5 +1,6 @@
 /**  app setting **/
 INSERT INTO appsetting(id, key, value, version) VALUES (nextval('hibernate_sequence'), 'biblio.testclient', '1', 0);
+INSERT INTO appsetting(id, key, value, version) VALUES (nextval('hibernate_sequence'), 'biblio.inventory.showtoreconcile', '15', 0);
 
 /** new select keys / values **/
 insert into select_key (id, lookup,version) values (nextval('hibernate_sequence'),'reconcilestatus',0);

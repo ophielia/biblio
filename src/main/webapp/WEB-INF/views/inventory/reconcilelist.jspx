@@ -67,15 +67,15 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 </c:when>
 <c:otherwise>
 
-
+<c:if test="${reconcileModel.maxUncounted != null }"><span>{!message only some shown!}${reconcileModel.maxUncounted}-${reconcileModel.totalUncounted}</span></c:if>
 <span style="float:right"> 
+<span class="stress">{!Reconcile Status!}</span>
 	<form:select path="updateStatus" id="updateStatus">
-	<option id="" label="- - Select - - " />
-	<c:forEach var="tmp" items="${classHash}">
-	<form:option value="${tmp.key}" label="${tmp.value.description}" />
-	</c:forEach>
+			<c:forEach items="${recStatusLkup}" var="tmp" >
+						<form:option value="${tmp.key}"  label="${tmp.value}"/>
+		</c:forEach>
 	</form:select>
-<input class="linkbutton" id="updateStatus" type="submit" name="updatestatus" value="{!Reconcile Status!}"/>   
+<input class="linkbutton" id="updateStatus" type="submit" name="updatestatus" value="{!Update Selected!}"/>   
 </span>
 
 <table>
