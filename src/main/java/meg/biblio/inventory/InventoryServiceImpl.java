@@ -263,7 +263,7 @@ public class InventoryServiceImpl implements InventoryService {
 		if (client != null) {
 			List<InventoryDao> previous = invRepo
 					.getPreviousInventoriesForClient(client.getId(), new Sort(
-							Sort.Direction.DESC, "startdate"));
+							Sort.Direction.DESC, "id"));
 			return previous;
 		}
 		return null;
@@ -376,7 +376,7 @@ public class InventoryServiceImpl implements InventoryService {
 				BookDao countedbook = bookRepo.findOne(book.getId());
 				// determine if lost book - or WAS a lost book
 				Long bookstatus = countedbook.getStatus();
-				InventoryHistoryDao wasfound = invHistRepo.getFoundInInventory(inv,countedbook);
+				List<InventoryHistoryDao> wasfound = invHistRepo.getFoundInInventory(inv,countedbook);
 				if (bookstatus != null
 						&& (bookstatus.longValue() == CatalogService.Status.LOSTBYBORROWER
 								|| bookstatus.longValue() == CatalogService.Status.REMOVEDFROMCIRC || bookstatus
@@ -404,7 +404,7 @@ public class InventoryServiceImpl implements InventoryService {
 					hist.setBook(countedbook);
 					hist = invHistRepo.save(hist);
 					entityManager.refresh(countedbook);
-				} else if (wasfound==null) {
+				} else if (wasfound==null || wasfound.size()==0) {
 					// wasfound check to make sure that the book wasn't already marked as found in the inventory history.
 				
 					// set counterid to userid, and counted to true
@@ -552,8 +552,7 @@ public class InventoryServiceImpl implements InventoryService {
 				bookroot.get("id").alias("bookid"), bookroot.get("clientid"),
 				bookroot.get("clientbookid").alias("clientbooknr"),
 				bookroot.get("clientshelfcode"),bookroot.get("clientshelfclass"), bookroot.get("status"),
-				bookroot.get("note"), bookroot.get("counteddate"),
-				bookroot.get("reconciled"), bookroot.get("tocount"),
+				bookroot.get("note"), bookroot.get("counteddate"), bookroot.get("tocount"),
 				bookroot.get("userid"), bookroot.get("countstatus"),
 				bookdetail.get("title")));
 
@@ -645,7 +644,6 @@ public class InventoryServiceImpl implements InventoryService {
 		q.set(bookroot.get("countstatus"), nullLong);
 		q.set(bookroot.get("counteddate"), nullDate);
 		q.set(bookroot.get("userid"), nullLong);
-		q.set(bookroot.get("reconciled"), false);
 
 		q.where(cb.and(whereclause.toArray(new Predicate[whereclause.size()])));
 		int result = entityManager.createQuery(q).executeUpdate();

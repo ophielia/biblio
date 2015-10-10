@@ -22,6 +22,6 @@ public interface InventoryHistRepository {
 	List<InventoryHistoryDao> getHistoryForInventory(@Param("inventory") InventoryDao inv);
 
 	@Query("select r from InventoryHistoryDao as r where r.inventory = :inventory and r.book = :book")
-	InventoryHistoryDao getFoundInInventory(@Param("inventory") InventoryDao inv,
+	List<InventoryHistoryDao> getFoundInInventory(@Param("inventory") InventoryDao inv,
 			@Param("book") BookDao countedbook);
 }

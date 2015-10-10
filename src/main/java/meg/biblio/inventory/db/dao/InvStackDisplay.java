@@ -24,7 +24,6 @@ public class InvStackDisplay {
 	private Long status;
 	private String note;
 	private Date counteddate;
-	private Boolean reconciled;
 	private Boolean tocount;
 	private Long userid;
 	private Long countstatus;
@@ -33,8 +32,7 @@ public class InvStackDisplay {
 	
 	
 	public InvStackDisplay(Long bookid, Long clientid, String clientbooknr,
-			Long clientshelfcode, String clientshelfclass,Long status, String note, Date counteddate,
-			Boolean reconciled, Boolean tocount, Long userid, Long countstatus,
+			Long clientshelfcode, String clientshelfclass,Long status, String note, Date counteddate,Boolean tocount, Long userid, Long countstatus,
 			String title) {
 		super();
 		this.bookid = bookid;
@@ -45,7 +43,6 @@ public class InvStackDisplay {
 		this.status = status;
 		this.note = note;
 		this.counteddate = counteddate;
-		this.reconciled = reconciled;
 		this.tocount = tocount;
 		this.userid = userid;
 		this.countstatus = countstatus;
@@ -75,9 +72,7 @@ public class InvStackDisplay {
 	public Date getCounteddate() {
 		return counteddate;
 	}
-	public Boolean getReconciled() {
-		return reconciled;
-	}
+
 	public Boolean getTocount() {
 		return tocount;
 	}

@@ -4,14 +4,13 @@ Branch - inventory
 
 INVENTORY !! (finally)
 labels throughout
-widget for inventory detail
-link back to inventoryinprogress throughout
-	cancel button on invinprogress - leads to confirmation page, and cancel
-	something wrong with page after complete.  Reconciled books not shown.		
-invinprogress page - add cancel inventory
-invinprogress page - add show previous inventories
-invinprogress page - complete inventory only shown when available
+clean up widget for inventory in progress
+	style in style
 	
+link back to inventoryinprogress under widget throughout
+invinprogress page - complete inventory only shown when available - dead link otherwise
+inventory detail - show found separate from reconciled
+
 noted during rough draft.... 
 showNonCurrentInventoryList - pull out most recent completed to be shown separately
 	also show status for most recently completed
@@ -23,8 +22,7 @@ for tying into Checkout/Return
 	need aspect on ENTRY to checkout - if inventory in progress, "lost" , mark in inventory history
 	need aspect on EXIT from return - if inventory in progress, mark as counted
 	
-test for InvStackDisplay methods, which use a query, will need to be done with DBUtils.
-
+improvement - checkout page - name more evident....
 bugfix - error deleting class
 bugfix / improvement - default name splitting put extra names in last name.		
 bugfix / improvement - new student - shouldn't have heading "Students".		
@@ -38,24 +36,13 @@ db testing - problem with views.  LendingSearchService fails.  check this link -
 	http://dbunit.sourceforge.net/intro.html
 
 ---- begin commit changes ----
-done - approach - jpa... bookdao using ids, not objects.  InvStackDisplay built upon query (hopefully not view).
-done - InvHistoryDao can hold InventoryDao object.
-done - continue with InventoryController countBook
-done - in BookDao - remove reconciled field
-done - countBook - add shelfclass to InvStackDisplay
-done - begin skeleton of controller
-done - begin filling in controller
-done - reconcile detail  - complete jsp
-done - complete controller method
-done - add clientname to fillLookups
-done - change status to selectbox with reconciled statuses
-done - wire up links
-done - 	reconcile list - post (add update, checkboxes, etc.)
-done - limit to reconciles shown - with message
-done - change update box to label, select, button (Status, select, Update Selected)
-done - countBook - add color lookup
-done - 	"widget" for inventory in progress....
-done - in reconcile book, lost book, check for duplicates in invhistory
+done - inventories in list sorted by id desc
+done - inventorystatus return a default percent of 0
+	done - cancel button on invinprogress - leads to confirmation page, and cancel
+	done - something wrong with page after complete.  Reconciled books not shown.		
+done - invinprogress page - add cancel inventory
+done - invinprogress page - add show previous inventories
+done - inventorystatus - subtract found from total counted
 ---- end commit changes ----
 
 
@@ -166,6 +153,24 @@ done - test for reconcileBooks....
 done - fill in counted books in cancelInventory.
 done -  finishInventory, test and implement
 done - backend implementation of Inventory
+done - approach - jpa... bookdao using ids, not objects.  InvStackDisplay built upon query (hopefully not view).
+done - InvHistoryDao can hold InventoryDao object.
+done - continue with InventoryController countBook
+done - in BookDao - remove reconciled field
+done - countBook - add shelfclass to InvStackDisplay
+done - begin skeleton of controller
+done - begin filling in controller
+done - reconcile detail  - complete jsp
+done - complete controller method
+done - add clientname to fillLookups
+done - change status to selectbox with reconciled statuses
+done - wire up links
+done - 	reconcile list - post (add update, checkboxes, etc.)
+done - limit to reconciles shown - with message
+done - change update box to label, select, button (Status, select, Update Selected)
+done - countBook - add color lookup
+done - 	"widget" for inventory in progress....
+done - in reconcile book, lost book, check for duplicates in invhistory
 
 ---- end branch changes ----
 

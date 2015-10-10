@@ -49,20 +49,21 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
     <h1>{!Count Books!}</h1>
     
       
+ <spring:url value="/inventory" var="currentinvurl"/>
 <div >
     <div style="border: 2px #2E537D dotted;
     padding: 5px;color:#1B3F68;
-    background-color: #7390B1;font-weight: bolder;">
+    background-color: #7390B1;font-weight: bolder;"><a href="${currentinvurl}"     style="text-decoration: none;">
 <div style="color:#1B3F68;">Inventory ${countModel.inventoryStatus.percentcompleted}% complete</div> 
 <span style="float:right"> {!Begun!}:<fmt:formatDate type="date" 
-            value="${countModel.inventoryStatus.startdate}" />   </span> ${countModel.inventoryStatus.countedbooks} of  ${countModel.inventoryStatus.totaltocount} books counted
+            value="${countModel.inventoryStatus.startdate}" />   </span> ${countModel.inventoryStatus.countedbooks - countModel.inventoryStatus.refoundbooks} of  ${countModel.inventoryStatus.totaltocount} books counted
 <div id="progress">
     <!-- <span id="percent"></span>-->
     <div id="bar" style="width:${countModel.inventoryStatus.percentcompleted}%"></div>
 </div>
+</a>
 </div>
 </div>
-
 <spring:url value="/inventory/count" var="actionurl"/>
 <form:form action="${actionurl}" id="countbook" method="POST" modelAttribute="countModel">
 

@@ -106,8 +106,8 @@ public class InventoryController {
 
 	private String showInventoryDetail(InventoryDao inventory, ClientDao client,Model uiModel,HttpServletRequest httpServletRequest,
 			Principal principal, Locale locale) {
-		
-		
+
+
 		// get inventory and status for id
 		InventoryStatus status = invService.getInventoryStatus(inventory,
 				client);
@@ -123,7 +123,7 @@ public class InventoryController {
 		// return view
 		return "inventory/detail";
 	}
-	
+
 	@RequestMapping(value = "/complete", method = RequestMethod.POST, produces = "text/html")
 	public String completeInventory(ReconcileModel reconcileModel,
 			Model uiModel, HttpServletRequest httpServletRequest,
@@ -223,7 +223,7 @@ public class InventoryController {
 		// get status for new inventory
 		InventoryStatus status = invService.getInventoryStatus(current, client);
 		// put data in page
-		uiModel.addAttribute("inventorystatus", status);
+		uiModel.addAttribute("status", status);
 		// return inventory/current page
 		return "inventory/current";
 	}
@@ -356,7 +356,7 @@ public class InventoryController {
 
 		// show Reconcile list
 return showReconcileList(client, recModel, uiModel, principal, locale, httpServletRequest);
-		
+
 	}
 
 	private long getCountType(ClientDao client, CountModel model,
@@ -426,7 +426,7 @@ return showReconcileList(client, recModel, uiModel, principal, locale, httpServl
 			reconcileModel.setTotalUncounted(totaltoreconcile);
 			reconcileModel.setMaxUncounted(maxreconcile);
 		}
-		
+
 
 		// set info in model
 		reconcileModel.setInventoryStatus(status);
@@ -473,6 +473,12 @@ return showReconcileList(client, recModel, uiModel, principal, locale, httpServl
 		// get current inventory
 		InventoryDao current = invService.getCurrentInventory(client);
 
+		// get status
+		InventoryStatus status = invService.getInventoryStatus(current, client);
+
+		// cancel inventory
+		uiModel.addAttribute("status",status);
+		uiModel.addAttribute("cancelsuccess",false);
 		uiModel.addAttribute("showmessage",true);
 
 		return "inventory/cancel";
@@ -482,13 +488,13 @@ return showReconcileList(client, recModel, uiModel, principal, locale, httpServl
 	public String cancelInventory(Model uiModel, HttpServletRequest httpServletRequest,
 			Principal principal, Locale locale) {
 		ClientDao client = clientService.getCurrentClient(principal);
-		// get current inventory
-		InventoryDao current = invService.getCurrentInventory(client);
 
+		invService.cancelCurrentInventory(client);
 		// cancel inventory
 		uiModel.addAttribute("cancelsuccess",true);
+		uiModel.addAttribute("showmessage",false);
 
-		return showInventoryDetail(current, client, uiModel, httpServletRequest, principal, locale);
+		return "inventory/cancel";
 	}
-	
+
 }

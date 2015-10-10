@@ -47,7 +47,7 @@ public class InventoryStatus {
 
 	public void setRefoundBooks(int refound) {
 		Long refoundlong = new Long(refound);
-		this.refoundbooks = refoundlong.longValue();
+		this.refoundbooks = refoundlong!=null?refoundlong.longValue():0;
 	}
 
 	public Integer getTotaltocount() {
@@ -59,13 +59,13 @@ public class InventoryStatus {
 
 	public double getPercentcompleted() {
 		if (this.inventory!=null) {
-			double totalcnt=new Long(this.countedbooks).doubleValue();
+			double totalcnt=new Long(this.countedbooks).doubleValue()-new Long(this.refoundbooks).doubleValue();
 			double tocnt=this.inventory.getTobecounted().doubleValue();
 			double percent = Math.round((totalcnt* 100.0 / tocnt ));
 			return percent;
 		}
 		
-		return 0.0;
+		return 0D;
 	}
 
 	public Date getStartdate() {
