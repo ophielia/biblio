@@ -48,6 +48,38 @@ Counted	Reconciled Found
 </tbody>
 </table>
 
+<h2>{!Refound / Added Books!}</h2>
+<table>
+<THEAD>
+<tr>
+<th>{!clientnr!}</th>
+<th>{!title!}</th>
+<th>{!origstatus!}</th>
+<th>{!reconcilestatus!}</th>
+<th>{!note!}</th>
+</tr>
+</THEAD>
+<tbody>
+
+<c:choose>
+<c:when test="${fn:length(historyadded)>0}">
+<c:forEach var="detail" items="${historyadded}" varStatus="expstatus">
+<tr>
+<td>${detail.book.clientbookid}</td>
+<td>${detail.book.bookdetail.title}</td>
+<td>${statusLkup[detail.originalstatus]}</td>
+<td>${statusLkup[detail.newstatus]}</td>
+<td>${detail.book.note}</td>
+</tr>
+</c:forEach>
+</c:when>
+
+<c:otherwise><tr><td colspan="5">{!no books added or found in this inventory!}</td></tr></c:otherwise>
+</c:choose>
+
+
+</tbody>
+</table>
 <spring:url value="/inventory/list" var="overviewurl"/>
 <a id="cancelpass"  href="${overviewurl}" class="linkbutton">{!All Inventories!}</a>
 

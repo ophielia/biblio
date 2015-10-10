@@ -26,5 +26,7 @@ public class InventoryHistoryDao {
 	
 	private Long newstatus;
 	
+	private Boolean foundbook;
+	
 	
 }

@@ -12,10 +12,10 @@ import org.springframework.roo.addon.layers.repository.jpa.RooJpaRepository;
 @RooJpaRepository(domainType = InventoryHistoryDao.class)
 public interface InventoryHistRepository {
 
-	@Query("select r from InventoryHistoryDao as r where r.newstatus = 2 and r.inventory = :inventory") // shelved
+	@Query("select r from InventoryHistoryDao as r where r.foundbook = true and r.inventory = :inventory") 
 	List<InventoryHistoryDao> getRefoundBooksForInventory(@Param("inventory") InventoryDao inv);
 	
-	@Query("select r from InventoryHistoryDao as r where r.newstatus <> 2 and r.inventory = :inventory") // shelved
+	@Query("select r from InventoryHistoryDao as r where r.foundbook= false and r.inventory = :inventory") // shelved
 	List<InventoryHistoryDao> getReconciledBooksForInventory(@Param("inventory") InventoryDao inv);
 	
 	@Query("select r from InventoryHistoryDao as r where  r.inventory = :inventory") // shelved

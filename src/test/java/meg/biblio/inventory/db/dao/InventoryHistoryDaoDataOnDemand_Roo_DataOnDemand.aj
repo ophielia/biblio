@@ -37,9 +37,15 @@ privileged aspect InventoryHistoryDaoDataOnDemand_Roo_DataOnDemand {
     
     public InventoryHistoryDao InventoryHistoryDaoDataOnDemand.getNewTransientInventoryHistoryDao(int index) {
         InventoryHistoryDao obj = new InventoryHistoryDao();
+        setFoundbook(obj, index);
         setNewstatus(obj, index);
         setOriginalstatus(obj, index);
         return obj;
+    }
+    
+    public void InventoryHistoryDaoDataOnDemand.setFoundbook(InventoryHistoryDao obj, int index) {
+        Boolean foundbook = Boolean.TRUE;
+        obj.setFoundbook(foundbook);
     }
     
     public void InventoryHistoryDaoDataOnDemand.setNewstatus(InventoryHistoryDao obj, int index) {

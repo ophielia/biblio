@@ -204,7 +204,7 @@ public class InventoryServiceTest {
 		int countcount = found.size();
 		// Assert that all these books have tocount as true
 		for (BookDao book:found) {
-				invService.countBook(book, dummyuserid, client);
+				invService.countBook(book, dummyuserid, client, true);
 		}
 		
 		// service call
@@ -306,7 +306,7 @@ public class InventoryServiceTest {
 		// get shelved book
 		BookDao book = bookRepo.findOne(shelvedid);
 		// count book - service call
-		invService.countBook(book,dummyuserid,client);
+		invService.countBook(book,dummyuserid,client, true);
 		// reretrieve shelved book - ensure that
 		BookDao test = bookRepo.findOne(shelvedid);
 		// book not null
@@ -320,7 +320,7 @@ public class InventoryServiceTest {
 		// next test - lost book
 		book = bookRepo.findOne(lostid);
 		// count book - service call
-		invService.countBook(book,dummyuserid,client);
+		invService.countBook(book,dummyuserid,client, true);
 		// reretrieve lost book - ensure that
 		test = bookRepo.findOne(lostid);
 		// book not null
@@ -347,7 +347,7 @@ public class InventoryServiceTest {
 		book = bookRepo.findOne(shelvedid);
 		entityManager.refresh(book);
 		// count book - service call
-		invService.countBook(book,dummyuserid,client);
+		invService.countBook(book,dummyuserid,client, true);
 		// reretrieve shelved book - ensure that
 		test = bookRepo.findOne(shelvedid);
 		// book not null
@@ -495,10 +495,10 @@ public class InventoryServiceTest {
 		
 		// count shelved
 		BookDao book = bookRepo.findOne(shelvedid);
-		invService.countBook(book, dummyuserid, client);
+		invService.countBook(book, dummyuserid, client, true);
 		entityManager.refresh(book);
 		book = bookRepo.findOne(lostid);
-		invService.countBook(book, dummyuserid, client);	
+		invService.countBook(book, dummyuserid, client, true);	
 		
 		// service call
 		List<InvStackDisplay> dips = invService.getStackForUser(dummyuserid,client);
@@ -547,9 +547,9 @@ public class InventoryServiceTest {
 		
 		// count shelved
 		BookDao book = bookRepo.findOne(shelvedid);
-		invService.countBook(book, dummyuserid, client);
+		invService.countBook(book, dummyuserid, client, true);
 		book = bookRepo.findOne(lostid);
-		invService.countBook(book, dummyuserid, client);	
+		invService.countBook(book, dummyuserid, client, true);	
 
 		
 		// service call
@@ -583,9 +583,9 @@ public class InventoryServiceTest {
 		// count counted
 		BookDao book = bookRepo.findOne(countedid);
 		entityManager.refresh(book);
-		invService.countBook(book, dummyuserid, client);
+		invService.countBook(book, dummyuserid, client, true);
 		book = bookRepo.findOne(lostid);
-		invService.countBook(book, dummyuserid, client);	
+		invService.countBook(book, dummyuserid, client, true);	
 
 		// service call
 		List<InvStackDisplay> uncounted = invService.getUncountedBooks(client);

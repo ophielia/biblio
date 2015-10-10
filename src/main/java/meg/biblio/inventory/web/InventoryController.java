@@ -113,11 +113,14 @@ public class InventoryController {
 				client);
 
 		// get history for id
-		List<InventoryHistoryDao> history = invService
-				.getDetailForInventory(inventory);
+		List<InventoryHistoryDao> reconciled = invService
+				.getDetailForInventory(inventory,InventoryService.HistoryType.RECONCILED);
+		List<InventoryHistoryDao> added = invService
+				.getDetailForInventory(inventory,InventoryService.HistoryType.ADDED);
 		// fill model
 		uiModel.addAttribute("status", status);
-		uiModel.addAttribute("history", history);
+		uiModel.addAttribute("history", reconciled);
+		uiModel.addAttribute("historyadded", added);
 		// fill lookups
 		fillLookups(uiModel, httpServletRequest, principal, locale);
 		// return view
@@ -256,22 +259,24 @@ public class InventoryController {
 
 			if (book != null) {
 				// count book
-				invService.countBook(book, userid, client);
-				// get stack for user
-				List<InvStackDisplay> stack = invService.getStackForUser(
-						userid, client);
-				// get inventory status
-				InventoryStatus status = invService.getInventoryStatus(current,
-						client);
-				// put info in model
-				countModel.setUserStack(stack);
-				countModel.setInventoryStatus(status);
-				// reset entries
-				countModel.setBarcodeentry(null);
-				countModel.setManualentry(null);
+				invService.countBook(book, userid, client, true);
+
+
 			}
 		}
-
+		// get stack for user
+		List<InvStackDisplay> stack = invService.getStackForUser(
+				userid, client);
+		// get inventory status
+		InventoryStatus status = invService.getInventoryStatus(current,
+				client);
+		// put info in model
+		countModel.setUserStack(stack);
+		countModel.setInventoryStatus(status);
+		// reset entries
+		countModel.setBarcodeentry(null);
+		countModel.setManualentry(null);
+		
 		// fill Lookups
 		fillLookups(uiModel, httpServletRequest, principal, locale);
 

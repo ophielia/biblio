@@ -41,4 +41,12 @@ privileged aspect InventoryHistoryDao_Roo_JavaBean {
         this.newstatus = newstatus;
     }
     
+    public Boolean InventoryHistoryDao.getFoundbook() {
+        return this.foundbook;
+    }
+    
+    public void InventoryHistoryDao.setFoundbook(Boolean foundbook) {
+        this.foundbook = foundbook;
+    }
+    
 }

@@ -15,6 +15,11 @@ public interface InventoryService {
 		public static final long COUNTED = 2;
 		public static final long RECONCILED = 3;
 	}
+	
+	public static final class HistoryType {
+		public static final long ADDED = 1;
+		public static final long RECONCILED = 2;
+	}	
 
 	public static final String reconcilestatuslkup = "reconcilestatus";
 	
@@ -30,7 +35,7 @@ public interface InventoryService {
 
 	List<InventoryDao> getInventoryList(ClientDao client);
 
-	void countBook(BookDao book, Long userid, ClientDao client);
+	void countBook(BookDao book, Long userid, ClientDao client, Boolean saveinstack);
 
 	void reconcileBook(ClientDao client, Long bookid, Long updatestatus, String note);
 
@@ -49,7 +54,7 @@ public interface InventoryService {
 
 	InventoryDao getInventoryById(Long invid);
 
-	List<InventoryHistoryDao> getDetailForInventory(InventoryDao inventory);
+	List<InventoryHistoryDao> getDetailForInventory(InventoryDao inventory, long detailtype);
 
 	
 }
