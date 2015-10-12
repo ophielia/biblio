@@ -7,7 +7,7 @@ body,div,td {
 
 body {
 	background-color: #f4f4f4;
-	background-image: url("../images/sr_denim_02.gif");
+	background-image: url("../images/gumballs2.gif");
 	text-align: center;
 	margin-top: 0px;
 	margin-right: 0px;
@@ -166,6 +166,19 @@ div.accentboxlayout {
 	float: right;
 }
 
+div.reportboxlook {
+	border: 2px #2E537D dotted;
+	padding: 5px;
+	color: #1B3F68;
+	background-color: #7390B1;
+	font-weight: bolder;
+	text-decoration:none;
+}
+
+div.reportboxlook a {
+	text-decoration: none;
+}
+
 label {
 	width: 100px;
 	float: left;
@@ -210,6 +223,30 @@ a.menu,a.menu:link,a.menu:visited {
 	width: 150px;
 	height: 25px;
 }
+
+/* progress bar elements */
+#progress {
+ width: 98%;   
+ border: 1px solid black;
+ background-color:white;
+ position: relative;
+ padding: 0px;
+}
+
+#percent {
+ position: absolute;   
+ color:#1B3F68;
+ left:50%;
+ min-height:20px;
+}
+
+#bar {
+ height: 20px;
+ background-color:  #2E537D;
+ width: 50%; 
+ min-height:20px;
+}
+
 
 /* text styles */
 h1,h2,h3 {
@@ -495,6 +532,14 @@ fieldset th {
 	background-color: #2e537d;
 }
 
+.inlineh2 {
+	font-family: Helvetica, sans-serif;
+    color: #1B3F68;
+    font-size: 18px;
+    line-height: 20px;
+    font-weight: bold;
+}
+    
 .linkbutton a {
 	display: inline-block;
 	overflow: hidden;
@@ -542,6 +587,19 @@ a.linkbutton:link {
 }
 
 span.linkbuttonquiet {
+	display: inline-block;
+	overflow: hidden;
+	padding: 7px;
+	color: #A0A0A0;
+	margin-left: 10px;
+	margin-right: 10px;
+	background-color: #2e537d;
+	vertical-align: bottom;
+	font-weight: bolder;
+	font-family: Arial
+}
+
+a.linkbuttonquiet {
 	display: inline-block;
 	overflow: hidden;
 	padding: 7px;

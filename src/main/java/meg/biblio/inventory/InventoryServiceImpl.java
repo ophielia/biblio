@@ -228,28 +228,56 @@ public class InventoryServiceImpl implements InventoryService {
 	@Override
 	public InventoryStatus getInventoryStatus(InventoryDao inv, ClientDao client) {
 		if (inv != null) {
+			// determine if this is a current inventory
+			boolean iscurrent = false;
+			InventoryDao current = getCurrentInventory(client);
+			if (current != null
+					&& current.getId().longValue() == inv.getId().longValue()) {
+				iscurrent = true;
+			}
+
 			// make new InventoryStatus object
 			InventoryStatus invstatus = new InventoryStatus(inv);
 
-			// get breakout by countstatus
-			HashMap<Long, Long> counts = catalogSearch.breakoutByBookField(
-					SearchService.Breakoutfield.COUNTSTATUS, client.getId());
+			if (iscurrent) {
+				// get breakout by countstatus
+				HashMap<Long, Long> counts = catalogSearch
+						.breakoutByBookField(
+								SearchService.Breakoutfield.COUNTSTATUS,
+								client.getId());
 
-			// get count of "refound" books from InventoryHistory
-			List<InventoryHistoryDao> refound = invHistRepo
-					.getRefoundBooksForInventory(inv);
+				// add counts
+				if (counts.containsKey(InventoryService.CountStatus.COUNTED)) {
+					invstatus.setCountedBooks(counts
+							.get(InventoryService.CountStatus.COUNTED));
+				}
+				if (counts.containsKey(InventoryService.CountStatus.RECONCILED)) {
+					invstatus.setReconciledBooks(counts
+							.get(InventoryService.CountStatus.RECONCILED));
+				}
+				// get count of "refound" books from InventoryHistory
+				List<InventoryHistoryDao> refound = invHistRepo
+						.getRefoundBooksForInventory(inv);
 
-			// add counts
-			if (counts.containsKey(InventoryService.CountStatus.COUNTED)) {
-				invstatus.setCountedBooks(counts
-						.get(InventoryService.CountStatus.COUNTED));
-			}
-			if (counts.containsKey(InventoryService.CountStatus.RECONCILED)) {
-				invstatus.setReconciledBooks(counts
-						.get(InventoryService.CountStatus.RECONCILED));
-			}
-			if (refound != null) {
-				invstatus.setRefoundBooks(refound.size());
+				if (refound != null) {
+					invstatus.setRefoundBooks(refound.size());
+				}
+
+			} else {
+				// get counted from inventory object
+				if (inv.getTotalcounted() != null) {
+					invstatus.setCountedBooks(new Long(inv.getTotalcounted()));
+				}
+
+				// get reconciled from inventory object
+				if (inv.getReconciled() != null) {
+					invstatus.setReconciledBooks(new Long(inv.getReconciled()));
+				}
+
+				// get added from inventory object
+				if (inv.getAddedtocount() != null) {
+					invstatus.setRefoundBooks(inv.getAddedtocount());
+				}
 			}
 
 			// return inventory status
@@ -307,9 +335,9 @@ public class InventoryServiceImpl implements InventoryService {
 			InventoryDao inventory, long detailtype) {
 		if (inventory != null) {
 			if (detailtype == InventoryService.HistoryType.ADDED) {
-				return invHistRepo.getRefoundBooksForInventory(inventory);	
+				return invHistRepo.getRefoundBooksForInventory(inventory);
 			} else if (detailtype == InventoryService.HistoryType.RECONCILED) {
-				return invHistRepo.getReconciledBooksForInventory(inventory);	
+				return invHistRepo.getReconciledBooksForInventory(inventory);
 			}
 		}
 		return null;
@@ -381,7 +409,8 @@ public class InventoryServiceImpl implements InventoryService {
 	 * @param userid
 	 */
 	@Override
-	public void countBook(BookDao book, Long userid, ClientDao client, Boolean saveinstack) {
+	public void countBook(BookDao book, Long userid, ClientDao client,
+			Boolean saveinstack) {
 		InventoryDao inv = getCurrentInventory(client);
 		if (inv != null) {
 			if (book != null) {
@@ -398,7 +427,7 @@ public class InventoryServiceImpl implements InventoryService {
 							.setCountstatus(InventoryService.CountStatus.COUNTED);
 					// set userid for book
 					if (saveinstack) {
-						countedbook.setUserid(userid);	
+						countedbook.setUserid(userid);
 					}
 					countedbook.setCounteddate(new Date());
 					// save book
@@ -416,7 +445,7 @@ public class InventoryServiceImpl implements InventoryService {
 							.getFoundInInventory(inv, countedbook);
 					// if doesn't exist in invhist, create a record there
 					if (wasfound == null || wasfound.size() == 0) {
-						
+
 						// if lost book, save as InvHistory object
 						InventoryHistoryDao hist = new InventoryHistoryDao();
 						hist.setInventory(inv);
@@ -430,7 +459,7 @@ public class InventoryServiceImpl implements InventoryService {
 					// now, count the book
 					// set userid for book
 					if (saveinstack) {
-						countedbook.setUserid(userid);	
+						countedbook.setUserid(userid);
 					}
 					// set counteddate and countstatus
 					countedbook.setStatus(newstatus);

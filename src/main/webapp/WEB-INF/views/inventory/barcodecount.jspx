@@ -29,32 +29,14 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 
 	});
 </script>
-<style>
-#progress {
- width: 98%;   
- border: 1px solid black;
- background-color:white;
- position: relative;
- padding: 0px;
-}
 
-#bar {
- height: 20px;
- background-color:  #2E537D;
- width: 50%; 
- min-height:20px;
-}
-
-</style>
-    <h1>{!Count Books!}</h1>
+    <h1 >{!Count Books!}</h1>
     
       
  <spring:url value="/inventory" var="currentinvurl"/>
 <div >
-    <div style="border: 2px #2E537D dotted;
-    padding: 5px;color:#1B3F68;
-    background-color: #7390B1;font-weight: bolder;"><a href="${currentinvurl}"     style="text-decoration: none;">
-<div style="color:#1B3F68;">Inventory ${countModel.inventoryStatus.percentcompleted}% complete</div> 
+    <div class="reportboxlook"><a href="${currentinvurl}"     style="text-decoration: none;">
+<div>Inventory ${countModel.inventoryStatus.percentcompleted}% complete</div> 
 <span style="float:right"> {!Begun!}:<fmt:formatDate type="date" 
             value="${countModel.inventoryStatus.startdate}" />   </span> ${countModel.inventoryStatus.countedbooks - countModel.inventoryStatus.refoundbooks} of  ${countModel.inventoryStatus.totaltocount} books counted
 <div id="progress">
@@ -64,12 +46,18 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 </a>
 </div>
 </div>
+<a class="linkbutton" style="margin-top:10px;float:right" href="${currentinvurl}"    >{!Inventory Overview!}</a>
 <spring:url value="/inventory/count" var="actionurl"/>
 <form:form action="${actionurl}" id="countbook" method="POST" modelAttribute="countModel">
 
-<h2>Count Stack</h2>
-<span class="linkbuttonquiet" id="clearstack" style="float: right;
-    margin-bottom: 15px;" >{!Clear Stack!}js help</span>
+<div style="    clear: both;
+    vertical-align: bottom;
+    margin-top: 50px;">
+<span class="inlineh2">{!Count Stack!}</span>
+<form:errors id="inventory_errors" class="errors" style="margin-left:0px" />
+<span class="selectspanactive" id="clearstack" style="float: right;
+    margin-bottom: 15px;" >{!Clear Stack!}</span>
+    </div>
 <table>
 <THEAD>
 <tr>
@@ -102,7 +90,7 @@ ${shelfcode.textdisplay}
 </c:choose>
 </c:if></td>
 <td>${bookinstack.clientshelfclass}</td>
-<td><spring:url value="/books/update/${bookinstack.bookid}" var="editbook"/>
+<td><spring:url value="/books/update/${bookinstack.bookid}?from=inv" var="editbook"/>
 <a href="${editbook}" class="linkbutton">{!Edit Book!}</a></td>
 </tr>
 </c:forEach>

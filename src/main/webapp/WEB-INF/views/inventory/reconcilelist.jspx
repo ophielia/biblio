@@ -9,30 +9,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
  
- <style>
-#progress {
- width: 98%;   
- border: 1px solid black;
- background-color:white;
- position: relative;
- padding: 0px;
-}
 
-#percent {
- position: absolute;   
- color:#1B3F68;
- left:50%;
- min-height:20px;
-}
-
-#bar {
- height: 20px;
- background-color:  #2E537D;
- width: 50%; 
- min-height:20px;
-}
-
-</style>
     
  <spring:url value="/inventory/complete" var="completeurl"/>
  <script type="text/javascript">
@@ -77,10 +54,9 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <spring:url value="/inventory/reconcile" var="actionurl"/>
 <form:form action="${actionurl}" id="reconcilebooks" method="POST" modelAttribute="reconcileModel">
       
+       <spring:url value="/inventory" var="currentinvurl"/>
 <div >
-    <div style="border: 2px #2E537D dotted;
-    padding: 5px;color:#1B3F68;
-    background-color: #7390B1;font-weight: bolder;">
+    <div class="reportboxlook"><a href="${currentinvurl}"    >
 <div style="color:#1B3F68;">Inventory ${reconcileModel.inventoryStatus.percentcompleted}% complete</div> 
 <span style="float:right"> {!Begun!}:<fmt:formatDate type="date" 
             value="${reconcileModel.inventoryStatus.startdate}" />   </span> ${reconcileModel.inventoryStatus.countedbooks - reconcileModel.inventoryStatus.refoundbooks} of  ${reconcileModel.inventoryStatus.totaltocount} books counted
@@ -88,12 +64,13 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
     <!-- <span id="percent"></span>-->
     <div id="bar" style="width:${reconcileModel.inventoryStatus.percentcompleted}%"></div>
 </div>
+</a>
 </div>
 </div>
+<a class="linkbutton" style="margin-top:10px;float:right" href="${currentinvurl}"    >{!Inventory Overview!}</a>
 
-
-
-<h2>{!Uncounted Books!}</h2>
+<div style="clear:both;margin-top:55px"></div>
+<span class="inlineh2">{!Uncounted Books!}</span>
 
 
 

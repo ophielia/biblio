@@ -1,6 +1,7 @@
 package meg.biblio.inventory.web;
 
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -260,10 +261,11 @@ public class InventoryController {
 			if (book != null) {
 				// count book
 				invService.countBook(book, userid, client, true);
-
-
+			} else {
+				// Add error for unfound book
+				bindingResult.reject("error_booknotfound", "Book Not Found");
 			}
-		}
+		} 
 		// get stack for user
 		List<InvStackDisplay> stack = invService.getStackForUser(
 				userid, client);
@@ -390,9 +392,26 @@ return showReconcileList(client, recModel, uiModel, principal, locale, httpServl
 
 	private String showNonCurrentInventoryList(ClientDao client, Model uiModel) {
 		// get previous inventories
-		List<InventoryDao> previous = invService.getPreviousInventories(client);
+		List<InventoryDao> inventories = invService.getPreviousInventories(client);
+		
+		// pull out last completed
+		InventoryStatus lastcompleted = null;
+		for (InventoryDao inv:inventories) {
+			if (inv.getCompleted()!=null && inv.getCompleted()==true) {
+				lastcompleted=invService.getInventoryStatus(inv, client);
+				break;
+			}
+		}
+		
+		// is inventory in progress?
+		InventoryDao current = invService.getCurrentInventory(client);
+		boolean inprogress = current!=null;
+		
 		// set in model
-		uiModel.addAttribute("previous", previous);
+		uiModel.addAttribute("previous", inventories);
+		uiModel.addAttribute("lastcompleted", lastcompleted);
+		uiModel.addAttribute("invinprogress",inprogress);
+		
 		return "inventory/list";
 	}
 
@@ -402,8 +421,10 @@ return showReconcileList(client, recModel, uiModel, principal, locale, httpServl
 		uiModel.addAttribute("currentinv", inv);
 		// get inventorystatus
 		InventoryStatus status = invService.getInventoryStatus(inv, client);
+		boolean isComplete = invService.getInventoryIsComplete(client);
 		// put inventorystatus in model
 		uiModel.addAttribute("status", status);
+		uiModel.addAttribute("complete", isComplete);
 		return "inventory/current";
 	}
 

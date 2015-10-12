@@ -3,31 +3,27 @@ Branch - inventory
 	rework lending - lending search
 
 INVENTORY !! (finally)
-labels throughout
-clean up widget for inventory in progress
-	style in style
-	
-link back to inventoryinprogress under widget throughout
-invinprogress page - complete inventory only shown when available - dead link otherwise
-inventory detail - show found separate from reconciled
 
-noted during rough draft.... 
-showNonCurrentInventoryList - pull out most recent completed to be shown separately
-	also show status for most recently completed
-countBook - add error for book not found - and also, show stack anyway...
-countBook - edit link - add back hint to inventory count books
-does current widget need to be added anywhere else?
+labels throughout
+
+inventory detail not showing correctly after complete inventory
+
+repeating background !?!?!?
+
+aspect - add for added book - to CatalogService
+
+
 	
-for tying into Checkout/Return
-	need aspect on ENTRY to checkout - if inventory in progress, "lost" , mark in inventory history
-	need aspect on EXIT from return - if inventory in progress, mark as counted
 	
 improvement - checkout page - name more evident....
+menu - advanced search under catalog
+daily summary to weekly summary....
 bugfix - error deleting class
 bugfix / improvement - default name splitting put extra names in last name.		
 bugfix / improvement - new student - shouldn't have heading "Students".		
 bugfix / improvement - add existing student - shouldn't have heading "Students".		
 bugfix / improvement - increment grade shows success page.... otherwise no sign it was done.			
+
 print out names for kids??  (future)
 future feature - no internet entry for books....
 future feature - backwards checkout for no internet.
@@ -36,13 +32,21 @@ db testing - problem with views.  LendingSearchService fails.  check this link -
 	http://dbunit.sourceforge.net/intro.html
 
 ---- begin commit changes ----
-done - inventories in list sorted by id desc
-done - inventorystatus return a default percent of 0
-	done - cancel button on invinprogress - leads to confirmation page, and cancel
-	done - something wrong with page after complete.  Reconciled books not shown.		
-done - invinprogress page - add cancel inventory
-done - invinprogress page - add show previous inventories
-done - inventorystatus - subtract found from total counted
+
+done - lookandfeel - new gumball colors, repeat background, and good overlap
+done - new widget - inventory summary
+done - style in style
+done - widget - whole div clickable - see here http://jsfiddle.net/mrivasa/TK69d/
+done - invinprogress page - complete inventory only shown when available - dead link otherwise
+done - showNonCurrentInventoryList - pull out most recent completed to be shown separately
+done - 	also show status for most recently completed
+done - get style out of other pages
+done - clean up widget for inventory in progress
+done - link back to inventoryinprogress under widget throughout
+done - countBook - add error for book not found - 
+done - countBook - edit link - add back hint to inventory count books
+done - invlist doesn't show begin when one is in progress
+
 ---- end commit changes ----
 
 
@@ -171,6 +175,19 @@ done - change update box to label, select, button (Status, select, Update Select
 done - countBook - add color lookup
 done - 	"widget" for inventory in progress....
 done - in reconcile book, lost book, check for duplicates in invhistory
+done - inventories in list sorted by id desc
+done - inventorystatus return a default percent of 0
+done - cancel button on invinprogress - leads to confirmation page, and cancel
+done - something wrong with page after complete.  Reconciled books not shown.		
+done - invinprogress page - add cancel inventory
+done - invinprogress page - add show previous inventories
+done - inventorystatus - subtract found from total counted
+done - for tying into Checkout/Return
+nevermind - need aspect on ENTRY to checkout - if inventory in progress, "lost" , mark in inventory history
+done - need aspect on EXIT from return - if inventory in progress, mark as counted
+done - inventory detail - show found separate from reconciled
+done - countBook show stack anyway...
+done - does current widget need to be added anywhere else?
 
 ---- end branch changes ----
 

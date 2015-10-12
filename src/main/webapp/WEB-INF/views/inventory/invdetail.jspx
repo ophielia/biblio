@@ -12,8 +12,31 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
     
     <h1>{!Inventory Information!}</h1>
 
-Started	Ended	<br />
-Counted	Reconciled Found	
+<div style="border: 2px #2E537D dotted;
+    padding: 5px;color:#1B3F68;
+    background-color: #7390B1;font-weight: bolder;">
+    <div style="    margin-bottom: 15px;">
+<span><!-- {!Inventory Run  from !}${status.startdate } {!through!} ${status.enddate},
+ -->
+<c:set var="msgcomplete" value="incomplete" />
+<c:if test = "${status.inventoryMarkedComplete == true}" >
+<c:set var="msgcomplete" value="complete" />
+</c:if>
+Inventory ${msgcomplete }, <fmt:formatDate type="date" 
+            value="${status.startdate }" /> - <fmt:formatDate type="date" 
+            value="${status.enddate }" /><br />
+</span>
+</div> 		
+<div style="width:100%;text-align:center">
+<span class="selectspanactive" style="width: 150px;">{!To Count!}<br />${status.totaltocount}</span>
+<span class="selectspanactive" style="width: 150px;">{!Counted!}<br />${status.countedbooks}</span>
+<span class="selectspanactive" style="width: 150px;">{!Reconciled!}<br />${status.reconciledbooks}</span>
+<span class="selectspanactive" style="width: 150px;">{!Found/Added!}<br />${status.refoundbooks}</span>
+</div>
+</div> 		
+
+<spring:url value="/inventory/list" var="overviewurl"/>
+<a id="cancelpass"  href="${overviewurl}" class="linkbutton" style="float:right;margin-top:10px">{!All Inventories!}</a>	
 
 <h2>{!Reconciled Books!}</h2>
 <table>
@@ -80,8 +103,7 @@ Counted	Reconciled Found
 
 </tbody>
 </table>
-<spring:url value="/inventory/list" var="overviewurl"/>
-<a id="cancelpass"  href="${overviewurl}" class="linkbutton">{!All Inventories!}</a>
+
 
 
 

@@ -75,6 +75,19 @@ public class InventoryStatus {
 		return null;
 	}
 	
+	public Date getEnddate() {
+		if (this.inventory!=null) {
+			return this.inventory.getEnddate();
+		}
+		return null;
+	}
+	
+	public Boolean getInventoryMarkedComplete() {
+		if (this.inventory!=null) {
+			return this.inventory.getCompleted();
+		}
+		return null;
+	}
 	
 
 }

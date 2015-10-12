@@ -9,38 +9,17 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
  
-<style>
-#progress {
- width: 98%;   
- border: 1px solid black;
- background-color:white;
- position: relative;
- padding: 0px;
-}
 
-#percent {
- position: absolute;   
- color:#1B3F68;
- left:50%;
- min-height:20px;
-}
-
-#bar {
- height: 20px;
- background-color:  #2E537D;
- width: 50%; 
- min-height:20px;
-}
-
-</style>
     
     <h1>{!Inventory in Progress!}</h1>
+
+ <spring:url value="/inventory/complete" var="actionurl"/>
+<form:form action="${actionurl}" method="POST">
+
  <spring:url value="/inventory" var="currentinvurl"/>
 <div >
-    <div style="border: 2px #2E537D dotted;
-    padding: 5px;color:#1B3F68;
-    background-color: #7390B1;font-weight: bolder;"><a href="${currentinvurl}">
-<div style="color:#1B3F68;">Inventory ${status.percentcompleted}% complete</div> 
+    <div class="reportboxlook"><a href="${currentinvurl}">
+<div>Inventory ${status.percentcompleted}% complete</div> 
 <span style="float:right"> {!Begun!}:<fmt:formatDate type="date" 
             value="${status.startdate}" />   </span> ${status.countedbooks - status.refoundbooks} of  ${status.totaltocount} books counted
 <div id="progress">
@@ -57,15 +36,26 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <div>
 <div style="width: 100%;
     text-align: center;">
- <spring:url value="/inventory/complete" var="actionurl"/>
-<form:form action="${actionurl}" method="POST">
+
 <spring:url value="/inventory/count" var="counturl"/>
 <a href="${counturl}"  class="linkbutton">{!Count Books!}</a>
+
+
 <spring:url value="/inventory/reconcile" var="reconcileurl"/>
 <a id="reconcile" href="${reconcileurl}"  class="linkbutton">{!Reconcile!}</a>
-<spring:message code="button_search" htmlEscape="false" var="search_button"/>
+
+<c:choose>
+<c:when test="${complete == true }">
+<spring:url value="/inventory/complete" var="actionurl"/>
+<span>
 <input id="newinventory" class="linkbutton" type="submit" value="{!Complete Inventory!}"/>
-</form:form>
+</span>
+</c:when>
+<c:otherwise>
+<a  href="#"  class="linkbuttonquiet">{!Complete Inventory!}</a>
+</c:otherwise>
+</c:choose>
+
 </div>
 <div style="width: 100%;
     text-align: center;    margin-top: 10px;">
@@ -76,5 +66,5 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 </div>
 </div>
 
-
+</form:form>
 </div>

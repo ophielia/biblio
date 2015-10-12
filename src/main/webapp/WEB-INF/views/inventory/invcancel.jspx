@@ -10,30 +10,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
     <jsp:output omit-xml-declaration="yes"/>
 
 <spring:url value="/inventory/clearstack" var="clearurl"/>
-<style>
-#progress {
- width: 98%;   
- border: 1px solid black;
- background-color:white;
- position: relative;
- padding: 0px;
-}
 
-#percent {
- position: absolute;   
- color:#1B3F68;
- left:50%;
- min-height:20px;
-}
-
-#bar {
- height: 20px;
- background-color:  #2E537D;
- width: 50%; 
- min-height:20px;
-}
-
-</style>
 
 
     
@@ -45,29 +22,34 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <form:form action="${actionurl}" id="countbook" method="POST" modelAttribute="countModel">
 <c:choose>
 <c:when test="${showmessage == true }">
+
+
+<spring:url value="/inventory" var="currentinvurl"/>
 <div >
-    <div style="border: 2px #2E537D dotted;
-    padding: 5px;color:#1B3F68;
-    background-color: #7390B1;font-weight: bolder;">
-<div style="color:#1B3F68;">Inventory ${status.percentcompleted}% complete</div> 
+    <div class="reportboxlook" style="margin-bottom: 10px;"><a href="${currentinvurl}">
+<div>Inventory ${status.percentcompleted}% complete</div> 
 <span style="float:right"> {!Begun!}:<fmt:formatDate type="date" 
-            value="${status.startdate}" />   </span> ${status.countedbooks} of  ${status.totaltocount} books counted
+            value="${status.startdate}" />   </span> ${status.countedbooks - status.refoundbooks} of  ${status.totaltocount} books counted
 <div id="progress">
     <!-- <span id="percent"></span>-->
     <div id="bar" style="width:${status.percentcompleted}%"></div>
 </div>
+</a>
 </div>
 </div>
 
-{!do you really want to cancel?!}
-<input id="newinventory" class="linkbutton" type="submit" value="{!Cancel Inventory!}"/>
+
+<span style="margin-top:10px">{!do you really want to cancel?!}</span>
+<div style="margin-top:25px;text-align:center"><input id="newinventory" class="linkbutton" type="submit" value="{!Cancel Inventory!}"/>
 <spring:url value="/inventory" var="counturl"/>
-<a href="${counturl}"  class="linkbutton">{!Return to Inventory!}</a>
+<a href="${counturl}"  class="linkbutton">{!Return to Inventory!}</a></div>
 </c:when>
 <c:otherwise>
+<br />
+<br />
 {!inventory cancelled...!}
-<spring:url value="/inventory" var="counturl"/>
-<a href="${counturl}"  class="linkbutton">{!Inventory List!}</a>
+<div style="margin-top:25px;text-align:center"><spring:url value="/inventory" var="counturl"/>
+<a href="${counturl}"  class="linkbutton">{!Inventory List!}</a></div>
 </c:otherwise>
 </c:choose>
 </form:form>

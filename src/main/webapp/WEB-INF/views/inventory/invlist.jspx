@@ -11,11 +11,41 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
     
     <h1>{!Inventory List!}</h1>
 <br />
+
+<c:if test="${lastcompleted !=null }">
+<div class="reportboxlook">
+    <div style="    margin-bottom: 15px;">
+<span>
+{!Inventory Last Completed!}, <fmt:formatDate type="date" 
+            value="${lastcompleted.startdate }" /> - <fmt:formatDate type="date" 
+            value="${lastcompleted.enddate }" /><br />
+</span>
+</div> 		
+<div style="width:100%;text-align:center">
+<span class="selectspanactive" style="width: 150px;">{!To Count!}<br />${lastcompleted.totaltocount}</span>
+<span class="selectspanactive" style="width: 150px;">{!Counted!}<br />${lastcompleted.countedbooks}</span>
+<span class="selectspanactive" style="width: 150px;">{!Reconciled!}<br />${lastcompleted.reconciledbooks}</span>
+<span class="selectspanactive" style="width: 150px;">{!Found/Added!}<br />${lastcompleted.refoundbooks}</span>
+</div>
+</div> 	
+</c:if>
+
+<c:choose>
+<c:when test="${invinprogress == true }">
+ <spring:url value="/inventory" var="currentinvurl"/>
+ <a class="linkbutton" style="margin-top:10px;float:right" href="${currentinvurl}"    >{!Inventory Overview!}</a>
+</c:when>
+<c:otherwise>
  <spring:url value="/inventory/create" var="actionurl"/>
 <form:form action="${actionurl}" method="POST">
 <spring:message code="button_search" htmlEscape="false" var="search_button"/>
-<input id="newinventory" class="linkbutton" type="submit" value="{!Begin New Inventory!}"/>
+<input style="float:right;margin-top:10px" id="newinventory" class="linkbutton" type="submit" value="{!Begin New Inventory!}"/>
 </form:form>
+</c:otherwise>
+</c:choose>
+
+
+
   
 
 <h2>{!Previous Inventories!}</h2>

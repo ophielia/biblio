@@ -2,6 +2,7 @@ package meg.biblio.inventory;
 
 import meg.biblio.catalog.db.BookRepository;
 import meg.biblio.catalog.db.dao.BookDao;
+import meg.biblio.catalog.web.model.BookModel;
 import meg.biblio.common.ClientService;
 import meg.biblio.common.db.dao.ClientDao;
 import meg.biblio.inventory.db.dao.InventoryDao;
@@ -11,7 +12,7 @@ import meg.biblio.lending.db.dao.LoanRecordDao;
 import org.aspectj.lang.annotation.Before;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public aspect InventoryCrosscuts {
+privileged aspect InventoryCrosscuts {
 
 	@Autowired
 	ClientService clientService;
@@ -64,4 +65,5 @@ public aspect InventoryCrosscuts {
     //@AfterReturning(
     //pointcut="com.xyz.myapp.SystemArchitecture.dataAccessOperation()",
     //returning="retVal")
+    // private BookDao createBookFromBookModel(Long clientkey, BookModel model) 
 }
