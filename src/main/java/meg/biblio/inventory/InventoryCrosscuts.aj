@@ -9,6 +9,7 @@ import meg.biblio.inventory.db.dao.InventoryDao;
 import meg.biblio.lending.db.LoanRecordRepository;
 import meg.biblio.lending.db.dao.LoanRecordDao;
 
+import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Before;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -45,7 +46,8 @@ privileged aspect InventoryCrosscuts {
     	}
     }
     
-    @Before("execution(* meg.biblio.lending.LendingService.returnBookByBookid(..)) && args(bookid,clientid)")
+    @Before("execution(* meg.biblio.lending.LendingService.returnBookByBookid(..)) "
+    		+ "&& args(bookid,clientid)")
     public void beforeReturnByBookId(Long bookid,Long clientid) {
     	// get client
     	ClientDao client = clientService.getClientForKey(clientid);
@@ -62,8 +64,5 @@ privileged aspect InventoryCrosscuts {
     	}
     }    
     
-    //@AfterReturning(
-    //pointcut="com.xyz.myapp.SystemArchitecture.dataAccessOperation()",
-    //returning="retVal")
-    // private BookDao createBookFromBookModel(Long clientkey, BookModel model) 
+
 }

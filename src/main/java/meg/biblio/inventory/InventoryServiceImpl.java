@@ -166,6 +166,8 @@ public class InventoryServiceImpl implements InventoryService {
 		// if no inventory is current, return null
 		if (current != null) {
 			if (getInventoryIsComplete(client)) {
+				addFoundBooksToInventory(client,current);
+				
 				// get InventoryStatus for inventory
 				InventoryStatus status = getInventoryStatus(current, client);
 				// fill in status info in InventoryDao
@@ -188,6 +190,46 @@ public class InventoryServiceImpl implements InventoryService {
 			}
 		}
 		return null;
+	}
+
+	private void addFoundBooksToInventory(ClientDao client, InventoryDao current) {
+		// find and deal with any books added to the catalog, or "found" during
+		// the inventory process
+		List<Long> excludedstatus = new ArrayList<Long>();
+		excludedstatus.add(CatalogService.Status.INVNOTFOUND);
+		excludedstatus.add(CatalogService.Status.LOSTBYBORROWER);
+		excludedstatus.add(CatalogService.Status.REMOVEDFROMCIRC);
+		BookSearchCriteria searchcriteria = new BookSearchCriteria();
+		searchcriteria.setStatuslist(excludedstatus);
+		searchcriteria.setInstatuslist(false);
+		searchcriteria.setMarkedToCount(false);
+		
+		// get books which have non-lost status, and tocount is not true
+		List<BookDao> addedlist = catalogSearch.findBooksForCriteria(searchcriteria, null, client.getId());
+		
+		// get books already marked as refound - put in hashtable
+		List<InventoryHistoryDao> marked = invHistRepo.getRefoundBooksForInventory(current);
+		List<Long> markedids = new ArrayList<Long>();
+		for (InventoryHistoryDao hist:marked) {
+			markedids.add(hist.getBook().getId());
+		}
+		
+		// go through books, adding invhistory objects for any books found, which don't already have a record
+		for (BookDao added:addedlist) {
+			Long addedid = added.getId();
+			if (markedids.contains(addedid)) {continue;}
+			// add added to InventoryHistory
+			InventoryHistoryDao hist = new InventoryHistoryDao();
+			hist.setInventory(current);
+			hist.setOriginalstatus(added.getStatus());
+			hist.setNewstatus(added.getStatus());
+			hist.setFoundbook(true);
+			hist.setBook(added);
+			hist = invHistRepo.save(hist);
+		}
+		
+		entityManager.flush();
+		
 	}
 
 	/**

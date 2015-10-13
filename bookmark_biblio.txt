@@ -5,12 +5,14 @@ Branch - inventory
 INVENTORY !! (finally)
 
 labels throughout
-
-inventory detail not showing correctly after complete inventory
+	still open - invlist, invdetail.  
+	correct inventory in prgess - x of y counted....
+	correct inventory in prgess - % complete
+	correct label reconcile  x of y shown
+	label reconcile detail - inventory complete / incomplete
 
 repeating background !?!?!?
 
-aspect - add for added book - to CatalogService
 
 
 	
@@ -46,6 +48,8 @@ done - link back to inventoryinprogress under widget throughout
 done - countBook - add error for book not found - 
 done - countBook - edit link - add back hint to inventory count books
 done - invlist doesn't show begin when one is in progress
+done - inventory detail not showing correctly after complete inventory
+done - solved in different way....aspect - add for added book - to CatalogService
 
 ---- end commit changes ----
 

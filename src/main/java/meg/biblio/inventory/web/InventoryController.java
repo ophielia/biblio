@@ -142,6 +142,7 @@ public class InventoryController {
 			Long invid = current.getId();
 			invService.finishInventory(client);
 
+			current = invService.getInventoryById(invid);
 			return showInventoryDetail(current, client,uiModel,httpServletRequest,principal,locale);
 		} else {
 			// if not complete, add error (inv detail page)

@@ -9,6 +9,22 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
  
+<spring:message code="label_inv_startdate" htmlEscape="false" var="lstartdate"/>
+<spring:message code="label_inv_completeinv" htmlEscape="false" var="lcompleteinv"/>
+<spring:message code="label_inv_overview" htmlEscape="false" var="loverview"/>
+<spring:message code="label_clientnumber" arguments="${clientname}" htmlEscape="false" var="lbooknr"/>
+<spring:message code="msg_inv_nouncounted" htmlEscape="false" var="lnouncounted"/>
+<spring:message code="label_inv_reconcilebookpl" htmlEscape="false" var="lreconcilebookpl"/>
+<spring:message code="label_inv_reconcilestatus" htmlEscape="false" var="lreconcilestatus"/>
+<spring:message code="label_inv_reconcile" htmlEscape="false" var="lreconcile"/>
+<spring:message code="label_inv_uncounted" htmlEscape="false" var="luncounted"/>
+<spring:message code="button_updateselected" htmlEscape="false" var="lupdatesel"/>
+<spring:message code="label_book_clientclass" arguments="${clientname}" htmlEscape="false" var="lclientclass"/>
+<spring:message code="label_book_classification" htmlEscape="false" var="lshelfclass"/>
+<spring:message code="msg_inv_partialdisplay" htmlEscape="false" var="lpartialdisplay"/>
+<spring:message code="label_book_note" htmlEscape="false" var="lnote"/>
+<spring:message code="label_book_status" htmlEscape="false" var="lstatus"/>
+<spring:message code="label_book_title" htmlEscape="false" var="ltitle"/>
 
     
  <spring:url value="/inventory/complete" var="completeurl"/>
@@ -49,7 +65,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 		});
 	</script>
 
-    <h1>{!Reconcile Books!}</h1>
+    <h1>${lreconcilebookpl}</h1>
     
 <spring:url value="/inventory/reconcile" var="actionurl"/>
 <form:form action="${actionurl}" id="reconcilebooks" method="POST" modelAttribute="reconcileModel">
@@ -58,7 +74,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <div >
     <div class="reportboxlook"><a href="${currentinvurl}"    >
 <div style="color:#1B3F68;">Inventory ${reconcileModel.inventoryStatus.percentcompleted}% complete</div> 
-<span style="float:right"> {!Begun!}:<fmt:formatDate type="date" 
+<span style="float:right"> ${lstartdate}:<fmt:formatDate type="date" 
             value="${reconcileModel.inventoryStatus.startdate}" />   </span> ${reconcileModel.inventoryStatus.countedbooks - reconcileModel.inventoryStatus.refoundbooks} of  ${reconcileModel.inventoryStatus.totaltocount} books counted
 <div id="progress">
     <!-- <span id="percent"></span>-->
@@ -67,41 +83,41 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 </a>
 </div>
 </div>
-<a class="linkbutton" style="margin-top:10px;float:right" href="${currentinvurl}"    >{!Inventory Overview!}</a>
+<a class="linkbutton" style="margin-top:10px;float:right" href="${currentinvurl}"    >${loverview}</a>
 
 <div style="clear:both;margin-top:55px"></div>
-<span class="inlineh2">{!Uncounted Books!}</span>
+<span class="inlineh2">${luncounted}</span>
 
 
 
 <c:choose>
 <c:when test="${reconcileModel.complete}">
-{!No uncounted books!}
+${lnouncounted}
 		<span class="selectspanactive" id="completeinv" style="float: right;
-		    margin-bottom: 15px;" >{!Complete Inventory!}js help</span>
+		    margin-bottom: 15px;" >${lcompleteinv}</span>
 </c:when>
 <c:otherwise>
 
-<c:if test="${reconcileModel.maxUncounted != null }"><span>{!message only some shown!}${reconcileModel.maxUncounted}-${reconcileModel.totalUncounted}</span></c:if>
+<c:if test="${reconcileModel.maxUncounted != null }"><span>${msg_inv_partialdisplay}${reconcileModel.maxUncounted}-${reconcileModel.totalUncounted}</span></c:if>
 <span style="float:right"> 
-<span class="stress">{!Reconcile Status!}</span>
+<span class="stress">${lreconcilestatus}</span>
 	<form:select path="updateStatus" id="updateStatus">
 			<c:forEach items="${recStatusLkup}" var="tmp" >
 						<form:option value="${tmp.key}"  label="${tmp.value}"/>
 		</c:forEach>
 	</form:select>
-<input class="linkbutton" id="updateStatus" type="submit" name="updatestatus" value="{!Update Selected!}"/>   
+<input class="linkbutton" id="updateStatus" type="submit" name="updatestatus" value="${lupdatesel}"/>   
 </span>
 
 <table>
 <THEAD>
 <tr>
 <th><input id="mastercheck" name="mastercheck" value="false" type="checkbox" /></th>
-<th>{!nr!}</th>
-<th>{!title!}</th>
-<th>{!clientshelfcode!}</th>
-<th>{!status!}</th>
-<th>{!note!}</th>
+<th>${lbooknr}</th>
+<th>${ltitle}</th>
+<th>${lclientclass}</th>
+<th>${lstatus}</th>
+<th>${lnote}</th>
 <th></th>
 </tr>
 </THEAD>
@@ -133,7 +149,7 @@ ${shelfcode.textdisplay}
 <td>${statusLkup[uncounted.status]}</td>
 <td>${uncounted.note}</td>
 <td><spring:url value="/inventory/reconcile/${uncounted.bookid}" var="reconcilesingle"/>
-<a href="${reconcilesingle}" class="linkbutton">{!Reconcile!}</a></td>
+<a href="${reconcilesingle}" class="linkbutton">${lreconcile}</a></td>
 </tr>
 </c:forEach>
 

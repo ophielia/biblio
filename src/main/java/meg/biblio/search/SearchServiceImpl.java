@@ -814,6 +814,19 @@ public class SearchServiceImpl implements SearchService {
 			whereclause.add(cb.equal(cexp, param));
 
 		}
+		
+		// markedtocount
+		if (criteria.getMarkedToCount()!=null) {
+			if (criteria.getMarkedToCount()) {
+				whereclause.add(cb.equal(bookroot.<Boolean> get("tocount"), true));
+			} else {
+				  Predicate p1 =cb.isNull(bookroot.<Boolean> get("tocount"));
+				  Predicate p2 = cb.not(cb.equal(bookroot.<Boolean> get("tocount"), true));
+				  Predicate p3 = cb.or(p1, p2);
+				
+				whereclause.add(p3);
+			}
+		}
 
 		// detail status
 		if (criteria.hasDetailstatus()) {

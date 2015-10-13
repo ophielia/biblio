@@ -22,6 +22,7 @@ public class BookSearchCriteria {
 	private String isbn13;
 	private long orderby;
 	private long orderbydir;
+	private Boolean markedtocount;
 
 	public static final class OrderBy {
 		public static final long PERTINENCE = 1;
@@ -261,6 +262,14 @@ public class BookSearchCriteria {
 	public boolean hasClientbookid() {
 		// TODO Auto-generated method stub
 		return clientbookid!=null && clientbookid.trim().length()>0;
+	}
+
+	public void setMarkedToCount(Boolean markedtocount) {
+		this.markedtocount = markedtocount;
+	}
+
+	public Boolean getMarkedToCount() {
+		return markedtocount;
 	}
 	
 	

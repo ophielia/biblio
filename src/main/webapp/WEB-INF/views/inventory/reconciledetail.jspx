@@ -19,8 +19,15 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <spring:message code="label_book_published" htmlEscape="false" var="lpublished"/>
 <spring:message code="label_book_publisher" htmlEscape="false" var="lpublisher"/>
 <spring:message code="label_book_title" htmlEscape="false" var="ltitle"/>    
+<spring:message code="button_cancel" htmlEscape="false" var="bcancel"/>
+<spring:message code="label_inv_currentstatus" htmlEscape="false" var="lcurrentstatus"/>
+<spring:message code="label_book_note" htmlEscape="false" var="lnote"/>
+<spring:message code="label_inv_reconcilebook" htmlEscape="false" var="lreconcilebook"/>
+<spring:message code="label_inv_reconcilestatus" htmlEscape="false" var="lreconcilestatus"/>
+
+
     
-    <h1>{!Reconcile Book!}</h1>
+    <h1>${lreconcilebook}</h1>
 <spring:url value="/inventory/reconcile/${reconcileModel.reconcileBook.id}" var="actionurl"/>
 <form:form action="${actionurl}" id="countbook" method="POST" modelAttribute="reconcileModel">
 
@@ -32,14 +39,14 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 	</div>
 <div>
 
-	<span class="stress">{!Current Status!}: </span>${statusLkup[bookModel.status]}
+	<span class="stress">${lcurrentstatus}: </span>${statusLkup[reconcileModel.reconcileBook.status]}
 	</div>
 	
 				<div>
-					<span class="stress" style="vertical-align: top;">{!Note!}:</span><form:textarea path="note" cols="30" row="15" style="height: 100px;"></form:textarea>
+					<span class="stress" style="vertical-align: top;">${lnote}:</span><form:textarea path="note" cols="30" row="15" style="height: 100px;"></form:textarea>
 				</div>
 								<div>
-					<span class="stress">{!Reconcile Status!}:</span>
+					<span class="stress">${lreconcilestatus}:</span>
 						<form:select path="updateStatus" id="updateStatus">
 			<c:forEach items="${recStatusLkup}" var="tmp" >
 						<form:option value="${tmp.key}"  label="${tmp.value}"/>
@@ -49,9 +56,9 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 
 </div>	
 			<div>
-	<input id="reconcile" class="linkbutton" type="submit" value="{!Reconcile Book!}"/>
+	<input id="reconcile" class="linkbutton" type="submit" value="${lreconcilebook}"/>
 				<spring:url value="/inventory/reconcile" var="reconcilelist" />
-				<a href="${reconcilelist}" class="linkbutton" id="showaddl">{!Cancel!}</a>
+				<a href="${reconcilelist}" class="linkbutton" id="showaddl">${bcancel}</a>
 				
 			</div>
 </div>

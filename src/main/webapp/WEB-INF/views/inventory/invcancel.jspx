@@ -10,11 +10,17 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
     <jsp:output omit-xml-declaration="yes"/>
 
 <spring:url value="/inventory/clearstack" var="clearurl"/>
+<spring:message code="label_inv_startdate" htmlEscape="false" var="lstartdate"/>
+<spring:message code="label_inv_cancelinv" htmlEscape="false" var="lcancelinv"/>
+<spring:message code="label_inv_list" htmlEscape="false" var="llist"/>
+<spring:message code="label_inv_returnto" htmlEscape="false" var="lreturnto"/>
+<spring:message code="msg_inv_confirmcancel" htmlEscape="false" var="lconfirmcancel"/>
+<spring:message code="msg_inv_cancelled" htmlEscape="false" var="lcancelled"/>
 
 
 
     
-    <h1>{!Cancel Inventory!}</h1>
+    <h1>${lcancelinv}</h1>
     
 
 
@@ -28,7 +34,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <div >
     <div class="reportboxlook" style="margin-bottom: 10px;"><a href="${currentinvurl}">
 <div>Inventory ${status.percentcompleted}% complete</div> 
-<span style="float:right"> {!Begun!}:<fmt:formatDate type="date" 
+<span style="float:right"> ${lstartdate}:<fmt:formatDate type="date" 
             value="${status.startdate}" />   </span> ${status.countedbooks - status.refoundbooks} of  ${status.totaltocount} books counted
 <div id="progress">
     <!-- <span id="percent"></span>-->
@@ -39,17 +45,17 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 </div>
 
 
-<span style="margin-top:10px">{!do you really want to cancel?!}</span>
-<div style="margin-top:25px;text-align:center"><input id="newinventory" class="linkbutton" type="submit" value="{!Cancel Inventory!}"/>
+<span style="margin-top:10px">${lconfirmcancel}</span>
+<div style="margin-top:25px;text-align:center"><input id="newinventory" class="linkbutton" type="submit" value="${lcancelinv}"/>
 <spring:url value="/inventory" var="counturl"/>
-<a href="${counturl}"  class="linkbutton">{!Return to Inventory!}</a></div>
+<a href="${counturl}"  class="linkbutton">${lreturnto}</a></div>
 </c:when>
 <c:otherwise>
 <br />
 <br />
-{!inventory cancelled...!}
+${lcancelled}
 <div style="margin-top:25px;text-align:center"><spring:url value="/inventory" var="counturl"/>
-<a href="${counturl}"  class="linkbutton">{!Inventory List!}</a></div>
+<a href="${counturl}"  class="linkbutton">${llist}</a></div>
 </c:otherwise>
 </c:choose>
 </form:form>
