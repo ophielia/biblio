@@ -9,44 +9,66 @@ xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
+ 
+<spring:message code="label_inv_showall" htmlEscape="false" var="lshowall"/> 
+<spring:message code="label_book_note" htmlEscape="false" var="lnote"/> 
+<spring:message code="label_book_title" htmlEscape="false" var="ltitle"/> 
+<spring:message code="label_clientnumber" arguments="clientname" htmlEscape="false" var="lbooknr"/> 
+<spring:message code="label_inv_counted" htmlEscape="false" var="lcounted"/> 
+<spring:message code="label_inv_foundadded" htmlEscape="false" var="lfoundadded"/> 
+<spring:message code="label_inv_foundaddedlong" htmlEscape="false" var="lfoundaddedlong"/> 
+<spring:message code="label_inv_fromdate" htmlEscape="false" var="lfromdate"/> 
+<spring:message code="label_inv_info" htmlEscape="false" var="linfo"/> 
+<spring:message code="label_inv_origstatus" htmlEscape="false" var="lorigstatus"/> 
+<spring:message code="label_inv_reconcilebookpast" htmlEscape="false" var="lreconcilebookpast"/> 
+<spring:message code="label_inv_reconcilepast" htmlEscape="false" var="lreconcilepast"/> 
+<spring:message code="label_inv_recstatus" htmlEscape="false" var="lrecstatus"/> 
+<spring:message code="label_inv_through" htmlEscape="false" var="lthrough"/> 
+<spring:message code="label_inv_tocount" htmlEscape="false" var="ltocount"/> 
+<spring:message code="msg_inv_noneadded" htmlEscape="false" var="lnoneadded"/> 
+<spring:message code="msg_inv_nonereconciled" htmlEscape="false" var="lnonereconciled"/> 
+<spring:message code="label_inv_invincomplete" htmlEscape="false" var="invincomplete"/> 
+<spring:message code="label_inv_invcomplete" htmlEscape="false" var="invcomplete"/> 
+
+ 
     
-    <h1>{!Inventory Information!}</h1>
+    <h1>${linfo}</h1>
 
 <div style="border: 2px #2E537D dotted;
     padding: 5px;color:#1B3F68;
     background-color: #7390B1;font-weight: bolder;">
     <div style="    margin-bottom: 15px;">
-<span><!-- {!Inventory Run  from !}${status.startdate } {!through!} ${status.enddate},
+<span><!-- ${lfromdate}${status.startdate } ${lthrough} ${status.enddate},
  -->
-<c:set var="msgcomplete" value="incomplete" />
+<c:set var="msgcomplete" value="${invincomplete}" />
 <c:if test = "${status.inventoryMarkedComplete == true}" >
-<c:set var="msgcomplete" value="complete" />
+<c:set var="msgcomplete" value="${invcomplete}" />
 </c:if>
-Inventory ${msgcomplete }, <fmt:formatDate type="date" 
+${msgcomplete}, <fmt:formatDate type="date" 
             value="${status.startdate }" /> - <fmt:formatDate type="date" 
             value="${status.enddate }" /><br />
 </span>
 </div> 		
 <div style="width:100%;text-align:center">
-<span class="selectspanactive" style="width: 150px;">{!To Count!}<br />${status.totaltocount}</span>
-<span class="selectspanactive" style="width: 150px;">{!Counted!}<br />${status.countedbooks}</span>
-<span class="selectspanactive" style="width: 150px;">{!Reconciled!}<br />${status.reconciledbooks}</span>
-<span class="selectspanactive" style="width: 150px;">{!Found/Added!}<br />${status.refoundbooks}</span>
+<span class="selectspanactive" style="width: 150px;">${ltocount}<br />${status.totaltocount}</span>
+<span class="selectspanactive" style="width: 150px;">${lcounted}<br />${status.countedbooks}</span>
+<span class="selectspanactive" style="width: 150px;">${lreconcilepast}<br />${status.reconciledbooks}</span>
+<span class="selectspanactive" style="width: 150px;">${lfoundadded}<br />${status.refoundbooks}</span>
 </div>
 </div> 		
 
 <spring:url value="/inventory/list" var="overviewurl"/>
-<a id="cancelpass"  href="${overviewurl}" class="linkbutton" style="float:right;margin-top:10px">{!All Inventories!}</a>	
+<a id="cancelpass"  href="${overviewurl}" class="linkbutton" style="float:right;margin-top:10px">${lshowall}</a>	
 
-<h2>{!Reconciled Books!}</h2>
+<h2>${lreconcilebookpast}</h2>
 <table>
 <THEAD>
 <tr>
-<th>{!clientnr!}</th>
-<th>{!title!}</th>
-<th>{!origstatus!}</th>
-<th>{!reconcilestatus!}</th>
-<th>{!note!}</th>
+<th>${lbooknr}</th>
+<th>${ltitle}</th>
+<th>${lorigstatus}</th>
+<th>${lrecstatus}</th>
+<th>${lnote}</th>
 </tr>
 </THEAD>
 <tbody>
@@ -71,15 +93,15 @@ Inventory ${msgcomplete }, <fmt:formatDate type="date"
 </tbody>
 </table>
 
-<h2>{!Refound / Added Books!}</h2>
+<h2>${lfoundaddedlong}</h2>
 <table>
 <THEAD>
 <tr>
-<th>{!clientnr!}</th>
-<th>{!title!}</th>
-<th>{!origstatus!}</th>
-<th>{!reconcilestatus!}</th>
-<th>{!note!}</th>
+<th>${lbooknr}</th>
+<th>${ltitle}</th>
+<th>${lorigstatus}</th>
+<th>${lrecstatus}</th>
+<th>${lnote}</th>
 </tr>
 </THEAD>
 <tbody>
@@ -97,7 +119,7 @@ Inventory ${msgcomplete }, <fmt:formatDate type="date"
 </c:forEach>
 </c:when>
 
-<c:otherwise><tr><td colspan="5">{!no books added or found in this inventory!}</td></tr></c:otherwise>
+<c:otherwise><tr><td colspan="5">${lnoneadded}</td></tr></c:otherwise>
 </c:choose>
 
 

@@ -25,7 +25,9 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <spring:message code="label_book_note" htmlEscape="false" var="lnote"/>
 <spring:message code="label_book_status" htmlEscape="false" var="lstatus"/>
 <spring:message code="label_book_title" htmlEscape="false" var="ltitle"/>
-
+<spring:message code="label_inv_percentcomplete" arguments="${reconcileModel.inventoryStatus.percentcompleted}" htmlEscape="false" var="lpercentcomplete"/>
+<spring:message code="label_inv_numbercounted" arguments="${reconcileModel.inventoryStatus.countedbooks - reconcileModel.inventoryStatus.refoundbooks},${reconcileModel.inventoryStatus.totaltocount}" htmlEscape="false" var="lxofycounted"/>
+<spring:message code="label_inv_reconcileshown" arguments="${reconcileModel.maxUncounted},${reconcileModel.totalUncounted}" htmlEscape="false" var="lfirstofmany"/>
     
  <spring:url value="/inventory/complete" var="completeurl"/>
  <script type="text/javascript">
@@ -73,9 +75,9 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
        <spring:url value="/inventory" var="currentinvurl"/>
 <div >
     <div class="reportboxlook"><a href="${currentinvurl}"    >
-<div style="color:#1B3F68;">Inventory ${reconcileModel.inventoryStatus.percentcompleted}% complete</div> 
+<div>${lpercentcomplete}</div> 
 <span style="float:right"> ${lstartdate}:<fmt:formatDate type="date" 
-            value="${reconcileModel.inventoryStatus.startdate}" />   </span> ${reconcileModel.inventoryStatus.countedbooks - reconcileModel.inventoryStatus.refoundbooks} of  ${reconcileModel.inventoryStatus.totaltocount} books counted
+            value="${reconcileModel.inventoryStatus.startdate}" />   </span> ${lxofycounted}
 <div id="progress">
     <!-- <span id="percent"></span>-->
     <div id="bar" style="width:${reconcileModel.inventoryStatus.percentcompleted}%"></div>
@@ -98,7 +100,10 @@ ${lnouncounted}
 </c:when>
 <c:otherwise>
 
-<c:if test="${reconcileModel.maxUncounted != null }"><span>${msg_inv_partialdisplay}${reconcileModel.maxUncounted}-${reconcileModel.totalUncounted}</span></c:if>
+<c:if test="${reconcileModel.maxUncounted != null }">
+
+<span style="margin-left:10px">(${lfirstofmany})</span></c:if>
+
 <span style="float:right"> 
 <span class="stress">${lreconcilestatus}</span>
 	<form:select path="updateStatus" id="updateStatus">

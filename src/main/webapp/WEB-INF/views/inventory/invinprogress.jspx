@@ -16,6 +16,8 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <spring:message code="label_inv_inprogress" htmlEscape="false" var="linprogress"/>
 <spring:message code="label_inv_previous" htmlEscape="false" var="lprevious"/>
 <spring:message code="label_inv_reconcile" htmlEscape="false" var="lreconcile"/>
+<spring:message code="label_inv_percentcomplete" arguments="${status.percentcompleted}" htmlEscape="false" var="lpercentcomplete"/>
+<spring:message code="label_inv_numbercounted" arguments="${status.countedbooks - status.refoundbooks},${status.totaltocount}" htmlEscape="false" var="lxofycounted"/>
 
     
     <h1>${linprogress}</h1>
@@ -26,9 +28,9 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
  <spring:url value="/inventory" var="currentinvurl"/>
 <div >
     <div class="reportboxlook"><a href="${currentinvurl}">
-<div>Inventory ${status.percentcompleted}% complete</div> 
+<div>${lpercentcomplete}</div> 
 <span style="float:right"> ${lstartdate}:<fmt:formatDate type="date" 
-            value="${status.startdate}" />   </span> ${status.countedbooks - status.refoundbooks} of  ${status.totaltocount} books counted
+            value="${status.startdate}" />   </span> ${lxofycounted}
 <div id="progress">
     <!-- <span id="percent"></span>-->
     <div id="bar" style="width:${status.percentcompleted}%"></div>

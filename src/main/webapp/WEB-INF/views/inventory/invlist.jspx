@@ -8,24 +8,43 @@ xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
 xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
+
+<spring:message code="button_view" htmlEscape="false" var=""/> 
+<spring:message code="label_inv_beginnew" htmlEscape="false" var="lbeginnew"/> 
+<spring:message code="label_inv_counted" htmlEscape="false" var="lcounted"/> 
+<spring:message code="label_inv_enddate" htmlEscape="false" var="lenddate"/> 
+<spring:message code="label_inv_foundadded" htmlEscape="false" var="lfoundadded"/> 
+<spring:message code="label_inv_lastcompleted" htmlEscape="false" var="llastcompleted"/> 
+<spring:message code="label_inv_list" htmlEscape="false" var="llist"/> 
+<spring:message code="label_inv_overview" htmlEscape="false" var="loverview"/> 
+<spring:message code="button_view" htmlEscape="false" var="lview"/> 
+<spring:message code="label_inv_previous" htmlEscape="false" var="lprevious"/> 
+<spring:message code="label_inv_reconcilepast" htmlEscape="false" var="lreconcilepast"/> 
+<spring:message code="label_inv_beginnew" htmlEscape="false" var="lbeginnew"/>
+<spring:message code="label_inv_startdate" htmlEscape="false" var="lstartdate"/> 
+<spring:message code="label_inv_tocount" htmlEscape="false" var="ltocount"/> 
+<spring:message code="label_inv_incomplete" htmlEscape="false" var="lincomplete"/> 
+
+
+
     
-    <h1>{!Inventory List!}</h1>
+    <h1>${llist}</h1>
 <br />
 
 <c:if test="${lastcompleted !=null }">
 <div class="reportboxlook">
     <div style="    margin-bottom: 15px;">
 <span>
-{!Inventory Last Completed!}, <fmt:formatDate type="date" 
+${llastcompleted}, <fmt:formatDate type="date" 
             value="${lastcompleted.startdate }" /> - <fmt:formatDate type="date" 
             value="${lastcompleted.enddate }" /><br />
 </span>
 </div> 		
 <div style="width:100%;text-align:center">
-<span class="selectspanactive" style="width: 150px;">{!To Count!}<br />${lastcompleted.totaltocount}</span>
-<span class="selectspanactive" style="width: 150px;">{!Counted!}<br />${lastcompleted.countedbooks}</span>
-<span class="selectspanactive" style="width: 150px;">{!Reconciled!}<br />${lastcompleted.reconciledbooks}</span>
-<span class="selectspanactive" style="width: 150px;">{!Found/Added!}<br />${lastcompleted.refoundbooks}</span>
+<span class="selectspanactive" style="width: 150px;">${ltocount}<br />${lastcompleted.totaltocount}</span>
+<span class="selectspanactive" style="width: 150px;">${lcounted}<br />${lastcompleted.countedbooks}</span>
+<span class="selectspanactive" style="width: 150px;">${lreconcilepast}<br />${lastcompleted.reconciledbooks}</span>
+<span class="selectspanactive" style="width: 150px;">${lfoundadded}<br />${lastcompleted.refoundbooks}</span>
 </div>
 </div> 	
 </c:if>
@@ -33,13 +52,13 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <c:choose>
 <c:when test="${invinprogress == true }">
  <spring:url value="/inventory" var="currentinvurl"/>
- <a class="linkbutton" style="margin-top:10px;float:right" href="${currentinvurl}"    >{!Inventory Overview!}</a>
+ <a class="linkbutton" style="margin-top:10px;float:right" href="${currentinvurl}"    >${loverview}</a>
 </c:when>
 <c:otherwise>
  <spring:url value="/inventory/create" var="actionurl"/>
 <form:form action="${actionurl}" method="POST">
 <spring:message code="button_search" htmlEscape="false" var="search_button"/>
-<input style="float:right;margin-top:10px" id="newinventory" class="linkbutton" type="submit" value="{!Begin New Inventory!}"/>
+<input style="float:right;margin-top:10px" id="newinventory" class="linkbutton" type="submit" value="${lbeginnew}"/>
 </form:form>
 </c:otherwise>
 </c:choose>
@@ -48,16 +67,16 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 
   
 
-<h2>{!Previous Inventories!}</h2>
+<h2>${lprevious}</h2>
 <table>
 <THEAD>
 <tr>
-<th>{!started!}</th>
-<th>{!ended!}</th>
-<th>{!tocount!}</th>
-<th>{!counted!}</th>
-<th>{!reconciled!}</th>
-<th>{!found!}</th>
+<th>${lstartdate}</th>
+<th>${lenddate}</th>
+<th>${ltocount}</th>
+<th>${lcounted}</th>
+<th>${lreconcilepast}</th>
+<th>${lfoundadded}</th>
 <th></th>
 <th></th>
 </tr>
@@ -74,9 +93,9 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <td>${previnv.totalcounted}</td>
 <td>${previnv.reconciled}</td>
 <td>${previnv.addedtocount}</td>
-<td><c:if test = "${!previnv.completed}" >incomplete</c:if></td>
+<td><c:if test = "${!previnv.completed}" >${lincomplete}</c:if></td>
 <td><spring:url value="/inventory/detail/${previnv.id}" var="actionurl"/>
-<a href="${actionurl}" class="linkbutton">{!View!}</a></td>
+<a href="${actionurl}" class="linkbutton">${lview}</a></td>
 </tr>
 </c:forEach>
 

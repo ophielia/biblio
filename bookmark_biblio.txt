@@ -4,16 +4,6 @@ Branch - inventory
 
 INVENTORY !! (finally)
 
-labels throughout
-	still open - invlist, invdetail.  
-	correct inventory in prgess - x of y counted....
-	correct inventory in prgess - % complete
-	correct label reconcile  x of y shown
-	label reconcile detail - inventory complete / incomplete
-
-repeating background !?!?!?
-
-
 
 	
 	
@@ -34,22 +24,17 @@ db testing - problem with views.  LendingSearchService fails.  check this link -
 	http://dbunit.sourceforge.net/intro.html
 
 ---- begin commit changes ----
+done - labels throughout
+done - label reconcile detail - inventory complete / incomplete
+done - reconcilelist - Update Selected not in french
+done - label invlist - incomplete - bilingual
+done - 	still open - invlist, invdetail.  
+done - repeating background !?!?!?
+done - menu!
+done - correct inventory in prgess - % complete
+done - correct inventory in prgess - x of y counted....
+done - correct label reconcile  x of y shown
 
-done - lookandfeel - new gumball colors, repeat background, and good overlap
-done - new widget - inventory summary
-done - style in style
-done - widget - whole div clickable - see here http://jsfiddle.net/mrivasa/TK69d/
-done - invinprogress page - complete inventory only shown when available - dead link otherwise
-done - showNonCurrentInventoryList - pull out most recent completed to be shown separately
-done - 	also show status for most recently completed
-done - get style out of other pages
-done - clean up widget for inventory in progress
-done - link back to inventoryinprogress under widget throughout
-done - countBook - add error for book not found - 
-done - countBook - edit link - add back hint to inventory count books
-done - invlist doesn't show begin when one is in progress
-done - inventory detail not showing correctly after complete inventory
-done - solved in different way....aspect - add for added book - to CatalogService
 
 ---- end commit changes ----
 
@@ -192,6 +177,21 @@ done - need aspect on EXIT from return - if inventory in progress, mark as count
 done - inventory detail - show found separate from reconciled
 done - countBook show stack anyway...
 done - does current widget need to be added anywhere else?
+done - lookandfeel - new gumball colors, repeat background, and good overlap
+done - new widget - inventory summary
+done - style in style
+done - widget - whole div clickable - see here http://jsfiddle.net/mrivasa/TK69d/
+done - invinprogress page - complete inventory only shown when available - dead link otherwise
+done - showNonCurrentInventoryList - pull out most recent completed to be shown separately
+done - 	also show status for most recently completed
+done - get style out of other pages
+done - clean up widget for inventory in progress
+done - link back to inventoryinprogress under widget throughout
+done - countBook - add error for book not found - 
+done - countBook - edit link - add back hint to inventory count books
+done - invlist doesn't show begin when one is in progress
+done - inventory detail not showing correctly after complete inventory
+done - solved in different way....aspect - add for added book - to CatalogService
 
 ---- end branch changes ----
 

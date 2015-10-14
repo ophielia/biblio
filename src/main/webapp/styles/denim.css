@@ -7,7 +7,7 @@ body,div,td {
 
 body {
 	background-color: #f4f4f4;
-	background-image: url("../images/gumballs2.gif");
+	background-image: url("../images/sr_denim_02.gif");
 	text-align: center;
 	margin-top: 0px;
 	margin-right: 0px;
@@ -31,9 +31,9 @@ body {
 }
 
 #bottomzone {
-	background-color: #f4f4f4;
+	/*background-color: #f4f4f4;*/
 	width: auto;
-	height: 750px;
+	/*height: 750px;*/
 }
 
 #hwrapper {

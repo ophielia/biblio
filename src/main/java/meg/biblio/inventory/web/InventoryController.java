@@ -202,6 +202,7 @@ public class InventoryController {
 			// clear entry fields
 			model.setBarcodeentry(null);
 			model.setManualentry(null);
+			uiModel.addAttribute("countModel",model);
 		}
 
 		// fill Lookups
@@ -279,7 +280,7 @@ public class InventoryController {
 		// reset entries
 		countModel.setBarcodeentry(null);
 		countModel.setManualentry(null);
-		
+		uiModel.addAttribute("countModel",countModel);
 		// fill Lookups
 		fillLookups(uiModel, httpServletRequest, principal, locale);
 
@@ -459,6 +460,8 @@ return showReconcileList(client, recModel, uiModel, principal, locale, httpServl
 		reconcileModel.setInventoryStatus(status);
 		reconcileModel.setUncountedBooks(uncountedlist);
 		reconcileModel.setInventoryComplete(isComplete);
+		uiModel.addAttribute("reconcileModel",reconcileModel);
+		
 		// fill Lookups
 		fillLookups(uiModel, httpServletRequest, principal, locale);
 		return "inventory/reconcilelist";

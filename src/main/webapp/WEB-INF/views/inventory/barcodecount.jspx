@@ -22,6 +22,8 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <spring:message code="label_book_clientclass" arguments="${clientname}" htmlEscape="false" var="lclientclass"/>
 <spring:message code="label_book_classification" htmlEscape="false" var="lshelfclass"/>
 <spring:message code="label_book_title" htmlEscape="false" var="ltitle"/>
+<spring:message code="label_inv_percentcomplete" arguments="${countModel.inventoryStatus.percentcompleted}" htmlEscape="false" var="lpercentcomplete"/>
+<spring:message code="label_inv_numbercounted" arguments="${countModel.inventoryStatus.countedbooks - countModel.inventoryStatus.refoundbooks},${countModel.inventoryStatus.totaltocount}" htmlEscape="false" var="lxofycounted"/>
 
 <spring:url value="/inventory/clearstack" var="clearurl"/>
 <script type="text/javascript">
@@ -49,9 +51,9 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
  <spring:url value="/inventory" var="currentinvurl"/>
 <div >
     <div class="reportboxlook"><a href="${currentinvurl}"    >
-<div>Inventory ${countModel.inventoryStatus.percentcompleted}% complete</div> 
+<div>${lpercentcomplete}</div> 
 <span style="float:right"> ${lstartdate}:<fmt:formatDate type="date" 
-            value="${countModel.inventoryStatus.startdate}" />   </span> ${countModel.inventoryStatus.countedbooks - countModel.inventoryStatus.refoundbooks} of  ${countModel.inventoryStatus.totaltocount} books counted
+            value="${countModel.inventoryStatus.startdate}" />   </span> ${lxofycounted }
 <div id="progress">
     <!-- <span id="percent"></span>-->
     <div id="bar" style="width:${countModel.inventoryStatus.percentcompleted}%"></div>
