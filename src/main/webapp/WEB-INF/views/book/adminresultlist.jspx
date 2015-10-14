@@ -41,7 +41,6 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
           'dojo/dom',"dojo/on","dijit/TooltipDialog", "dijit/popup",
           'dojo/domReady!'
       ], function (dom,on,TooltipDialog,popup) {
-	 var masterstatus = false;
 	 
 	function getIndex(prefix, text) {
 			// gets a substring of the text, starting at the char after the length of the prefix
@@ -87,22 +86,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 	   	   }
 	   	});
 		
-		// wire up mastercheck
-		on(dojo.byId("mastercheck"), 'click', function(event) {
-			var master = dojo.byId('mastercheck');
-			masterstatus = master.checked;
-			dojo.query("input[name^='checked']").forEach(function(node) {
-				var id = node.id;
-				var box = dojo.byId(id);
-				
-				if (masterstatus) {
-						box.checked = true;
-					} else {
-						box.checked =false;
-					}
-				});
-
-			});
+		
 		
 	});
  
@@ -182,7 +166,23 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <hr />
 <br />
 <form:errors cssClass="errors" path="statusUpdate" />
-	<div    style="float: right;margin-top: 10px;background-color: #BBBBBB;clear: both;">
+	<form:select path="statusUpdate">
+		<form:option value="" label="${lemptyoption}" />
+		<c:forEach items="${statusLkup}" var="tmp" >
+						<form:option value="${tmp.key}"  label="${tmp.value}"/>
+		</c:forEach>
+	</form:select>	 
+<input class="linkbutton" id="updateStatus" type="submit" name="updatestatus" value="${lupdstatus}"/>
+<span style="float:right"> 
+	<form:select path="shelfclassUpdate" id="shelfclassentry">
+	<option id="" label="- - Select - - " />
+	<c:forEach var="tmp" items="${classHash}">
+	<form:option value="${tmp.key}" label="${tmp.value.description}" />
+	</c:forEach>
+	</form:select>
+	<input class="linkbutton" id="shelfclassUpdate" name="updateshelfclass" type="submit" value="${lscupdate}"/>   
+</span>
+<div    style="float: right;margin-top: 10px;background-color: #BBBBBB;clear: both;">
 <c:choose>
 		<c:when test="${bookListModel.hasPrevious}">
 		<input id="nextbutton" name="first" class="linkbutton" type="submit" value="|&lt;"/>
@@ -208,30 +208,12 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
         <form:input type="hidden" path="resultsperpage" />
         <form:input type="hidden" path="currentpage" />
 </div>
-<div>
-	<form:select path="statusUpdate">
-		<form:option value="" label="${lemptyoption}" />
-		<c:forEach items="${statusLkup}" var="tmp" >
-						<form:option value="${tmp.key}"  label="${tmp.value}"/>
-		</c:forEach>
-	</form:select>	 
-<input class="linkbutton" id="updateStatus" type="submit" name="updatestatus" value="${lupdstatus}"/>
-<span style="float:right"> 
-	<form:select path="shelfclassUpdate" id="shelfclassentry">
-	<option id="" label="- - Select - - " />
-	<c:forEach var="tmp" items="${classHash}">
-	<form:option value="${tmp.key}" label="${tmp.value.description}" />
-	</c:forEach>
-	</form:select>
-	<input class="linkbutton" id="shelfclassUpdate" name="updateshelfclass" type="submit" value="${lscupdate}"/>   
-</span>
-</div>
 		<TABLE>
 		<thead>		
 		
 		
 				<tr >
-			<th><input id="mastercheck" name="mastercheck" value="false" type="checkbox" /></th>
+			<th></th>
 			<th id="aSort6">${lclientbookid}</th>
 			<th id="aSort3">${ltitle}</th>
 			<th id="aSort4">${lauthor} / <br />${lillustrator} </th>

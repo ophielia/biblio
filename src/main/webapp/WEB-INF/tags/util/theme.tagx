@@ -8,6 +8,33 @@
       <c:out value=" | " />
       <spring:message code="global_theme" />
       <c:out value=": " />
+      <spring:url var="url_theme1" value="">
+        <spring:param name="theme" value="standard" />
+        <c:if test="${not empty param.page}">
+          <spring:param name="page" value="${param.page}" />
+        </c:if>
+        <c:if test="${not empty param.size}">
+          <spring:param name="size" value="${param.size}" />
+        </c:if>
+      </spring:url>
+      <spring:url var="url_theme2" value="">
+        <spring:param name="theme" value="jacks" />
+        <c:if test="${not empty param.page}">
+          <spring:param name="page" value="${param.page}" />
+        </c:if>
+        <c:if test="${not empty param.size}">
+          <spring:param name="size" value="${param.size}" />
+        </c:if>
+      </spring:url>
+      <spring:url var="url_theme3" value="">
+        <spring:param name="theme" value="bubbles" />
+        <c:if test="${not empty param.page}">
+          <spring:param name="page" value="${param.page}" />
+        </c:if>
+        <c:if test="${not empty param.size}">
+          <spring:param name="size" value="${param.size}" />
+        </c:if>
+      </spring:url>  
       <spring:url var="url_theme4" value="">
         <spring:param name="theme" value="denim" />
         <c:if test="${not empty param.page}">
@@ -16,9 +43,16 @@
         <c:if test="${not empty param.size}">
           <spring:param name="size" value="${param.size}" />
         </c:if>
-      </spring:url>
-  
-  
+      </spring:url>   
+      <spring:url var="url_theme5" value="">
+        <spring:param name="theme" value="callisons" />
+        <c:if test="${not empty param.page}">
+          <spring:param name="page" value="${param.page}" />
+        </c:if>
+        <c:if test="${not empty param.size}">
+          <spring:param name="size" value="${param.size}" />
+        </c:if>
+      </spring:url>     
       <spring:url var="url_theme6" value="">
         <spring:param name="theme" value="gumballs" />
         <c:if test="${not empty param.page}">
@@ -27,8 +61,14 @@
           <spring:param name="size" value="${param.size}" />
         </c:if>
       </spring:url>                   
+      <spring:message code="global_theme_jacks" var="theme_alt" htmlEscape="false" />
+      <a href="${url_theme2}" title="${fn:escapeXml(theme_alt)}">${fn:escapeXml(theme_alt)}</a> | 
+      <spring:message code="global_theme_bubbles" var="theme_alt1" htmlEscape="false" />
+      <a href="${url_theme3}" title="${fn:escapeXml(theme_alt1)}">${fn:escapeXml(theme_alt1)}</a> | 
       <spring:message code="global_theme_denim" var="theme_alt2" htmlEscape="false" />
       <a href="${url_theme4}" title="${fn:escapeXml(theme_alt2)}">${fn:escapeXml(theme_alt2)}</a> | 
+      <spring:message code="global_theme_callisons" var="theme_alt3" htmlEscape="false" />
+      <a href="${url_theme5}" title="${fn:escapeXml(theme_alt3)}">${fn:escapeXml(theme_alt3)}</a> | 
       <spring:message code="global_theme_gumballs" var="theme_alt4" htmlEscape="false" />
       <a href="${url_theme6}" title="${fn:escapeXml(theme_alt4)}">${fn:escapeXml(theme_alt4)}</a> | 
     </span>

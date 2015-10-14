@@ -388,7 +388,7 @@ public class CatalogServiceImpl implements CatalogService {
 
 		// add default entries for status, detail status, type
 		if (book.getStatus()==null) {
-			book.setStatus(Status.SHELVED);
+			book.setStatus(Status.PROCESSING);
 		}
 		book.setCreatedon(new Date());
 		if (bookdetail.getDetailstatus() == null) {
@@ -515,14 +515,6 @@ public class CatalogServiceImpl implements CatalogService {
 
 		BookModel toreturn = loadBookModel(book.getId());
 		return toreturn;
-	}
-
-	@Override
-	public BookDao findBookById(Long bookid) {
-		if (bookid != null) {
-			return bookRepo.findOne(bookid);
-		}
-		return null;
 	}
 
 	@Override

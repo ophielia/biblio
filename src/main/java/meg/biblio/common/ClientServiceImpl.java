@@ -84,8 +84,8 @@ public class ClientServiceImpl implements ClientService {
 
 	@Override
 	public Long getTestClientId() {
-		Long testclient = settingService.getSettingAsLong("biblio.testclient");
-		return testclient;
+		// make strong for live....
+		return 1L;
 	}
 
 	@Override

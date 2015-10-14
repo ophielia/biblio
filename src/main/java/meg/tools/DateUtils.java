@@ -95,21 +95,6 @@ public class DateUtils {
 		// return date
 		return cal.getTime();
 	}
-
-	public static boolean isToday(Date checkdate) {
-		// create calendar for today
-		Calendar todaycal = new GregorianCalendar();
-		// create calendar for checkdate
-		Calendar checkcal = new GregorianCalendar();
-		checkcal.setTime(checkdate);
-		// check year
-		if (todaycal.get(Calendar.YEAR)!=checkcal.get(Calendar.YEAR)) return false;
-		// check day
-		if (todaycal.get(Calendar.DAY_OF_MONTH)!=checkcal.get(Calendar.DAY_OF_MONTH)) return false;
-		// check month
-		if (todaycal.get(Calendar.MONTH)!=checkcal.get(Calendar.MONTH)) return false;
-		return true;
-	}
 	
 	
 	

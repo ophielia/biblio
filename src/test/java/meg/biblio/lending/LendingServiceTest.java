@@ -14,11 +14,11 @@ import meg.biblio.common.db.ClientRepository;
 import meg.biblio.common.db.dao.ClientDao;
 import meg.biblio.lending.db.LoanRecordRepository;
 import meg.biblio.lending.db.dao.LoanRecordDao;
-import meg.biblio.lending.db.dao.LoanRecordDisplay;
 import meg.biblio.lending.db.dao.SchoolGroupDao;
 import meg.biblio.lending.db.dao.StudentDao;
 import meg.biblio.lending.db.dao.TeacherDao;
 import meg.biblio.lending.web.model.ClassModel;
+import meg.biblio.lending.web.model.LoanRecordDisplay;
 import meg.biblio.search.BookSearchCriteria;
 import meg.biblio.search.SearchService;
 
