@@ -7,11 +7,11 @@ import meg.biblio.catalog.db.BookRepository;
 import meg.biblio.catalog.db.dao.BookDao;
 import meg.biblio.common.db.dao.ClientDao;
 import meg.biblio.lending.LendingService;
+import meg.biblio.lending.db.dao.LoanRecordDisplay;
 import meg.biblio.lending.db.dao.PersonDao;
 import meg.biblio.lending.web.model.AssignCodeModel;
 import meg.biblio.lending.web.model.ClassModel;
 import meg.biblio.lending.web.model.LendingModel;
-import meg.biblio.lending.web.model.LoanRecordDisplay;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

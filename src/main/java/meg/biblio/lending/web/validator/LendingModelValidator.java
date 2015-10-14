@@ -4,9 +4,9 @@ import java.util.List;
 
 import meg.biblio.catalog.CatalogService;
 import meg.biblio.lending.LendingService;
+import meg.biblio.lending.db.dao.LoanRecordDisplay;
 import meg.biblio.lending.web.model.ClassModel;
 import meg.biblio.lending.web.model.LendingModel;
-import meg.biblio.lending.web.model.LoanRecordDisplay;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

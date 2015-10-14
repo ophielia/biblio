@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import meg.biblio.catalog.db.dao.BookDao;
+import meg.biblio.lending.db.dao.LoanRecordDisplay;
 import meg.biblio.lending.db.dao.StudentDao;
 
 public class LendingModel {

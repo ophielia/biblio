@@ -18,11 +18,11 @@ import meg.biblio.lending.db.SchoolGroupRepository;
 import meg.biblio.lending.db.StudentRepository;
 import meg.biblio.lending.db.TeacherRepository;
 import meg.biblio.lending.db.dao.LoanRecordDao;
+import meg.biblio.lending.db.dao.LoanRecordDisplay;
 import meg.biblio.lending.db.dao.SchoolGroupDao;
 import meg.biblio.lending.db.dao.StudentDao;
 import meg.biblio.lending.db.dao.TeacherDao;
 import meg.biblio.lending.web.model.ClassModel;
-import meg.biblio.lending.web.model.LoanRecordDisplay;
 import meg.biblio.search.BookSearchCriteria;
 import meg.biblio.search.SearchService;
 
@@ -264,7 +264,7 @@ public class TestDataServiceImpl implements TestDataService {
 		Date lastweekdue = null;
 		// get books to checkout
 BookSearchCriteria criteria = new BookSearchCriteria();
-criteria.setStatus(CatalogService.Status.SHELVED);
+criteria.setSingleStatus(CatalogService.Status.SHELVED);
 		List<BookDao> books = searchService.findBooksForCriteria(criteria, null, clientid);
 		int bookcount=0;
 		int booklength=books.size();

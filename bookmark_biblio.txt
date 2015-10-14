@@ -2,17 +2,20 @@ Branch - inventory
 	inventory
 	rework lending - lending search
 
-new features
+INVENTORY !! (finally)
 
-bug - error deleting class
-bug - error displaying student which is no longer in a class
-done - redo callisons header and footer color, accentboxlook		
-		
+
 	
+	
+improvement - checkout page - name more evident....
+menu - advanced search under catalog
+daily summary to weekly summary....
+bugfix - error deleting class
 bugfix / improvement - default name splitting put extra names in last name.		
 bugfix / improvement - new student - shouldn't have heading "Students".		
 bugfix / improvement - add existing student - shouldn't have heading "Students".		
 bugfix / improvement - increment grade shows success page.... otherwise no sign it was done.			
+
 print out names for kids??  (future)
 future feature - no internet entry for books....
 future feature - backwards checkout for no internet.
@@ -21,8 +24,18 @@ db testing - problem with views.  LendingSearchService fails.  check this link -
 	http://dbunit.sourceforge.net/intro.html
 
 ---- begin commit changes ----
+done - labels throughout
+done - label reconcile detail - inventory complete / incomplete
+done - reconcilelist - Update Selected not in french
+done - label invlist - incomplete - bilingual
+done - 	still open - invlist, invdetail.  
+done - repeating background !?!?!?
+done - menu!
+done - correct inventory in prgess - % complete
+done - correct inventory in prgess - x of y counted....
+done - correct label reconcile  x of y shown
 
-	
+
 ---- end commit changes ----
 
 
@@ -102,6 +115,83 @@ done - try different background, color combinations
 done - 	implement gumball colors
 done - 	implement jacks colors
 done - fix menu jacks
+done - error displaying student which is no longer in a class
+done - redo callisons header and footer color, accentboxlook		
+done - skeleton of DAOs and Service made
+done -  fill in Service with pseudo code and documentation
+done - continuing beginInventory - 
+done - 	update BookDao - add inventoryid and tocount = true
+done - add fields to BookDao - note, provenance, tocount, counted, counteddate, counterid, reconciledid
+done - finished cancel inventory	
+done - need InventoryStatus - pjo with fields for tocount, counted, reconciled and added
+done - 	to do this, counted needs to be changed to a status with either counted (1) or reconciled (2)
+done - 	InventoryStatus will be filled with 2 queries - one breakout by countstatus, and one to inventoryhistory, to find added books
+done - 	method signature public InventoryStatus getInventoryStatus(InventoryDao inv, ClientDao client) 
+done - countBook
+done - test for countBook.
+done - implement countBook
+done - test green for countBook.
+done - tailor retrieveInvStackDisplays for different types
+done - implement getUncountedBooks
+done - getStackForUser
+done - implement internal retrieveInvStackDisplays
+done - test for getStackForUser.
+done - implement getStackForUser
+done - test green for getStackForUser.
+done - reconcileBook 
+done - test for reconcileBook.
+done - implement reconcileBook
+done - test green for reconcileBook.
+done - test for reconcileBooks....
+done - fill in counted books in cancelInventory.
+done -  finishInventory, test and implement
+done - backend implementation of Inventory
+done - approach - jpa... bookdao using ids, not objects.  InvStackDisplay built upon query (hopefully not view).
+done - InvHistoryDao can hold InventoryDao object.
+done - continue with InventoryController countBook
+done - in BookDao - remove reconciled field
+done - countBook - add shelfclass to InvStackDisplay
+done - begin skeleton of controller
+done - begin filling in controller
+done - reconcile detail  - complete jsp
+done - complete controller method
+done - add clientname to fillLookups
+done - change status to selectbox with reconciled statuses
+done - wire up links
+done - 	reconcile list - post (add update, checkboxes, etc.)
+done - limit to reconciles shown - with message
+done - change update box to label, select, button (Status, select, Update Selected)
+done - countBook - add color lookup
+done - 	"widget" for inventory in progress....
+done - in reconcile book, lost book, check for duplicates in invhistory
+done - inventories in list sorted by id desc
+done - inventorystatus return a default percent of 0
+done - cancel button on invinprogress - leads to confirmation page, and cancel
+done - something wrong with page after complete.  Reconciled books not shown.		
+done - invinprogress page - add cancel inventory
+done - invinprogress page - add show previous inventories
+done - inventorystatus - subtract found from total counted
+done - for tying into Checkout/Return
+nevermind - need aspect on ENTRY to checkout - if inventory in progress, "lost" , mark in inventory history
+done - need aspect on EXIT from return - if inventory in progress, mark as counted
+done - inventory detail - show found separate from reconciled
+done - countBook show stack anyway...
+done - does current widget need to be added anywhere else?
+done - lookandfeel - new gumball colors, repeat background, and good overlap
+done - new widget - inventory summary
+done - style in style
+done - widget - whole div clickable - see here http://jsfiddle.net/mrivasa/TK69d/
+done - invinprogress page - complete inventory only shown when available - dead link otherwise
+done - showNonCurrentInventoryList - pull out most recent completed to be shown separately
+done - 	also show status for most recently completed
+done - get style out of other pages
+done - clean up widget for inventory in progress
+done - link back to inventoryinprogress under widget throughout
+done - countBook - add error for book not found - 
+done - countBook - edit link - add back hint to inventory count books
+done - invlist doesn't show begin when one is in progress
+done - inventory detail not showing correctly after complete inventory
+done - solved in different way....aspect - add for added book - to CatalogService
 
 ---- end branch changes ----
 
