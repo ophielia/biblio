@@ -1,0 +1,5 @@
+
+
+repository jpa --interface ~.common.db.ClientRepository --entity ~.common.db.dao.ClientDao
+repository jpa --interface ~.common.db.SelectKeyRepository --entity ~.common.db.dao.SelectKeyDao
+repository jpa --interface ~.common.db.SelectValueRepository --entity ~.common.db.dao.SelectValueDao
