@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 2.1//EN" "http://tiles.apache.org/dtds/tiles-config_2_1.dtd">
+<tiles-definitions>
+	<definition extends="default" name="inventory/list">
+		<put-attribute name="body"
+			value="/WEB-INF/views/inventory/invlist.jspx" />
+	</definition>
+
+	<definition extends="default" name="inventory/detail">
+		<put-attribute name="body"
+			value="/WEB-INF/views/inventory/invdetail.jspx" />
+	</definition>
+
+	<definition extends="default" name="inventory/current">
+		<put-attribute name="body"
+			value="/WEB-INF/views/inventory/invinprogress.jspx" />
+	</definition>
+
+	<definition extends="default" name="inventory/barcodecount">
+		<put-attribute name="body"
+			value="/WEB-INF/views/inventory/barcodecount.jspx" />
+	</definition>
+	
+	<definition extends="default" name="inventory/manualcount">
+		<put-attribute name="body"
+			value="/WEB-INF/views/inventory/manualcount.jspx" />
+	</definition>
+
+	<definition extends="default" name="inventory/reconcilelist">
+		<put-attribute name="body"
+			value="/WEB-INF/views/inventory/reconcilelist.jspx" />
+	</definition>
+
+	<definition extends="default" name="inventory/reconciledetail">
+		<put-attribute name="body"
+			value="/WEB-INF/views/inventory/reconciledetail.jspx" />
+	</definition>
+
+	<definition extends="default" name="inventory/cancel">
+		<put-attribute name="body"
+			value="/WEB-INF/views/inventory/invcancel.jspx" />
+	</definition>
+
+</tiles-definitions>

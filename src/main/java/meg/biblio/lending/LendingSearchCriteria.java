@@ -166,7 +166,6 @@ public class LendingSearchCriteria {
 	public void setTimeselect(Long timeselect) {
 		if (timeselect!=null) {
 			Date startdate = null;
-			Date enddate = null;
 			if (timeselect.longValue()==TimePeriodType.THISWEEK) {
 				// get previous Sunday through present
 				startdate = DateUtils.getCurrentWeekSunday(new Date());
@@ -186,7 +185,7 @@ public class LendingSearchCriteria {
 				cal.set(Calendar.MONTH, Calendar.SEPTEMBER);
 				cal.set(Calendar.DAY_OF_MONTH,1);
 				startdate = DateUtils.getFirstDayOfSchoolYear(cal.getTime());
-				enddate = DateUtils.getLastDayOfSchoolYear(startdate);
+				Date enddate = DateUtils.getLastDayOfSchoolYear(startdate);
 				setCheckedoutbefore(enddate);
 			}
 			setCheckedoutafter(startdate);

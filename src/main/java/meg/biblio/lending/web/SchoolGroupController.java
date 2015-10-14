@@ -13,10 +13,10 @@ import meg.biblio.common.SelectKeyService;
 import meg.biblio.common.db.dao.ClientDao;
 import meg.biblio.lending.ClassManagementService;
 import meg.biblio.lending.LendingService;
+import meg.biblio.lending.db.dao.LoanRecordDisplay;
 import meg.biblio.lending.db.dao.SchoolGroupDao;
 import meg.biblio.lending.db.dao.StudentDao;
 import meg.biblio.lending.web.model.ClassModel;
-import meg.biblio.lending.web.model.LoanRecordDisplay;
 import meg.biblio.lending.web.validator.ClassModelValidator;
 
 import org.springframework.beans.factory.annotation.Autowired;

@@ -42,6 +42,8 @@ public class SearchServiceImpl implements SearchService {
 
 	@Autowired
 	private CatalogService catalogService;
+	
+
 
 	@Autowired
 	BookMemberService bMemberService;
@@ -315,12 +317,14 @@ public class SearchServiceImpl implements SearchService {
 	}
 
 	@Override
-	public HashMap<Long, Long> breakoutByBookField(long bookkey, Long clientid) {
+	public HashMap<Long, Long> breakoutByBookField(long breakoutkey, Long clientid) {
 
 		// determine field string
 		String fieldstring = "status";
-		if (bookkey == SearchService.Breakoutfield.DETAILSTATUS) {
+		if (breakoutkey == SearchService.Breakoutfield.DETAILSTATUS) {
 			fieldstring = "detailstatus";
+		} else if (breakoutkey == SearchService.Breakoutfield.COUNTSTATUS) {
+			fieldstring = "countstatus";
 		}
 		// put together query
 		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
@@ -679,8 +683,8 @@ public class SearchServiceImpl implements SearchService {
 			q.setParameter("shelfcode", criteria.getShelfclasskey());
 		}
 		// status
-		if (criteria.hasStatus()) {
-			q.setParameter("status", criteria.getStatus());
+		if (criteria.hasSingleStatus()) {
+			q.setParameter("status", criteria.getSingleStatus());
 		}
 		// status
 		if (criteria.hasBooktype()) {
@@ -783,12 +787,22 @@ public class SearchServiceImpl implements SearchService {
 		}
 
 		// status
-		if (criteria.hasStatus()) {
+		if (criteria.hasSingleStatus()) {
 			ParameterExpression<Long> param = cb
 					.parameter(Long.class, "status");
 			whereclause.add(cb.equal(bookroot.<Long> get("status"), param));
 
 		}
+		
+		// statuslist
+		if (criteria.hasStatusList()) {
+			if (criteria.getInstatuslist()!=null && criteria.getInstatuslist().booleanValue()) {
+				whereclause.add(bookroot.<Long> get("status").in(criteria.getStatuslist()));	
+			} else {
+				whereclause.add(cb.not(bookroot.<Long> get("status").in(criteria.getStatuslist())));
+			}
+			
+		}		
 
 		// type
 		if (criteria.hasBooktype()) {
@@ -799,6 +813,19 @@ public class SearchServiceImpl implements SearchService {
 			ParameterExpression<Long> param = cb.parameter(Long.class, "type");
 			whereclause.add(cb.equal(cexp, param));
 
+		}
+		
+		// markedtocount
+		if (criteria.getMarkedToCount()!=null) {
+			if (criteria.getMarkedToCount()) {
+				whereclause.add(cb.equal(bookroot.<Boolean> get("tocount"), true));
+			} else {
+				  Predicate p1 =cb.isNull(bookroot.<Boolean> get("tocount"));
+				  Predicate p2 = cb.not(cb.equal(bookroot.<Boolean> get("tocount"), true));
+				  Predicate p3 = cb.or(p1, p2);
+				
+				whereclause.add(p3);
+			}
 		}
 
 		// detail status

@@ -25,7 +25,7 @@ import meg.biblio.common.ClientService;
 import meg.biblio.common.SelectKeyService;
 import meg.biblio.common.db.dao.ClientDao;
 import meg.biblio.lending.LendingService;
-import meg.biblio.lending.web.model.LoanRecordDisplay;
+import meg.biblio.lending.db.dao.LoanRecordDisplay;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -375,7 +375,7 @@ FoundDetailsDao fd = fdetails.get(detailidx.intValue());
 
 	@RequestMapping(value = "/update/{id}", produces = "text/html")
 	public String editBook(@PathVariable("id") Long id, Model uiModel,
-			HttpServletRequest httpServletRequest, Principal principal,
+			HttpServletRequest httpServletRequest,@RequestParam(value = "from", required = false) String frommarker, Principal principal,
 			Locale locale) {
 		ClientDao client = clientService.getCurrentClient(principal);
 
@@ -393,13 +393,15 @@ FoundDetailsDao fd = fdetails.get(detailidx.intValue());
 		}
 		bookModel.setTrackchange(true);
 		uiModel.addAttribute("bookModel", bookModel);
-
+		if (frommarker!=null) {
+			uiModel.addAttribute("from",frommarker);
+		}
 		return "book/editbook";
 	}
 
 	@RequestMapping(value = "/update/{id}", method = RequestMethod.POST, produces = "text/html")
 	public String updateBook(@PathVariable("id") Long id, BookModel bookModel,
-			BindingResult bindingResult, Model uiModel,
+			BindingResult bindingResult, Model uiModel,@RequestParam(value = "from", required = false) String frommarker,
 			HttpServletRequest httpServletRequest, Principal principal,
 			Locale locale) {
 		ClientDao client = clientService.getCurrentClient(principal);
@@ -446,6 +448,11 @@ FoundDetailsDao fd = fdetails.get(detailidx.intValue());
 		// return view - returns either to display book, or to assign code
 		uiModel.addAttribute("bookModel", bookModel);
 
+		if (frommarker!=null && frommarker.equals("inv") ) {
+			 uiModel.asMap().clear();
+			 return "redirect:/inventory/count";
+		}
+		
 		// return target
 		return "redirect:/books/display/" + bookModel.getBookid().toString();
 

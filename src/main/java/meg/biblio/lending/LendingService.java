@@ -7,7 +7,7 @@ import meg.biblio.common.report.ClassSummaryReport;
 import meg.biblio.common.report.DailySummaryReport;
 import meg.biblio.common.report.OverdueBookReport;
 import meg.biblio.lending.db.dao.LoanRecordDao;
-import meg.biblio.lending.web.model.LoanRecordDisplay;
+import meg.biblio.lending.db.dao.LoanRecordDisplay;
 
 public interface LendingService {
 

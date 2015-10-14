@@ -1,5 +1,7 @@
 package meg.biblio.search;
 
+import java.util.List;
+
 public class BookSearchCriteria {
 
 	private Long clientid;
@@ -11,6 +13,8 @@ public class BookSearchCriteria {
 	private Long shelfclasskey;
 	private String publisher;
 	private Long status;
+	private List<Long> statuslist;
+	private Boolean instatuslist;
 	private Long detailstatus;
 	private Long booktype;
 	private Boolean clientspecific;
@@ -18,6 +22,7 @@ public class BookSearchCriteria {
 	private String isbn13;
 	private long orderby;
 	private long orderbydir;
+	private Boolean markedtocount;
 
 	public static final class OrderBy {
 		public static final long PERTINENCE = 1;
@@ -120,15 +125,37 @@ public class BookSearchCriteria {
 		this.shelfclasskey = shelfclasskey;
 	}
 
-	public boolean hasStatus() {
+	public boolean hasStatusList() {
+		return this.statuslist != null && this.statuslist.size() > 0;
+	}
+	
+	
+	public List<Long> getStatuslist() {
+		return statuslist;
+	}
+
+	public void setStatuslist(List<Long> statuslist) {
+		this.statuslist = statuslist;
+	}
+
+	
+	public Boolean getInstatuslist() {
+		return instatuslist;
+	}
+
+	public void setInstatuslist(Boolean inlist) {
+		this.instatuslist = inlist;
+	}
+
+	public boolean hasSingleStatus() {
 		return this.status != null && this.status.longValue() > 0;
 	}
 
-	public Long getStatus() {
+	public Long getSingleStatus() {
 		return this.status;
 	}
 
-	public void setStatus(Long status) {
+	public void setSingleStatus(Long status) {
 		this.status = status;
 	}
 
@@ -235,6 +262,14 @@ public class BookSearchCriteria {
 	public boolean hasClientbookid() {
 		// TODO Auto-generated method stub
 		return clientbookid!=null && clientbookid.trim().length()>0;
+	}
+
+	public void setMarkedToCount(Boolean markedtocount) {
+		this.markedtocount = markedtocount;
+	}
+
+	public Boolean getMarkedToCount() {
+		return markedtocount;
 	}
 	
 	

@@ -18,11 +18,11 @@ import meg.biblio.common.report.OverdueBookReport;
 import meg.biblio.lending.db.LoanRecordRepository;
 import meg.biblio.lending.db.PersonRepository;
 import meg.biblio.lending.db.dao.LoanRecordDao;
+import meg.biblio.lending.db.dao.LoanRecordDisplay;
 import meg.biblio.lending.db.dao.PersonDao;
 import meg.biblio.lending.db.dao.SchoolGroupDao;
 import meg.biblio.lending.db.dao.StudentDao;
 import meg.biblio.lending.db.dao.TeacherDao;
-import meg.biblio.lending.web.model.LoanRecordDisplay;
 import meg.tools.DateUtils;
 
 import org.springframework.beans.factory.annotation.Autowired;

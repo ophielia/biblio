@@ -5,7 +5,7 @@ import java.util.List;
 
 import meg.biblio.common.ClientService;
 import meg.biblio.lending.db.LoanRecordRepository;
-import meg.biblio.lending.web.model.LoanRecordDisplay;
+import meg.biblio.lending.db.dao.LoanRecordDisplay;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

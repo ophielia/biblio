@@ -218,11 +218,11 @@ public class BookListModel implements Serializable {
 	}
 
 	public Long getStatus() {
-		return criteria.getStatus();
+		return criteria.getSingleStatus();
 	}
 
 	public void setStatus(Long status) {
-		criteria.setStatus(status);
+		criteria.setSingleStatus(status);
 	}
 
 	public Long getDetailstatus() {

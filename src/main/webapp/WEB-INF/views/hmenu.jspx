@@ -9,68 +9,72 @@
 
 	<ul id="nav">
 
-				<sec:authorize access="isAuthenticated()">
-							<li><moo:menulink label="menu_catalog" url="/search" />
-			<ul>
-				<li><moo:menulink label="menu_createbook" url="/books?form" /></li>
-				<li><moo:menulink label="menu_search" url="/search" /></li>
-				
-			</ul></li>
-		<li><moo:menulink label="menu_lending" url="/lending/checkout" />
-			<ul>
-				<li><moo:menulink label="menu_lending_checkoutbyclass"
-						url="/lending/checkout" /></li>
-				<li><moo:menulink label="menu_lending_returnbyclass"
-						url="/lending/return" /></li>
-				<li><moo:menulink label="menu_lendinghistory"
-						url="/lendinghistory" />
+		<sec:authorize access="isAuthenticated()">
+			<li><moo:menulink label="menu_catalog" url="/search" />
+				<ul>
+					<li><moo:menulink label="menu_createbook" url="/books?form" /></li>
+					<li><moo:menulink label="menu_search" url="/search" /></li>
+
+				</ul></li>
+			<li><moo:menulink label="menu_lending" url="/lending/checkout" />
+				<ul>
+					<li><moo:menulink label="menu_lending_checkoutbyclass"
+							url="/lending/checkout" /></li>
+					<li><moo:menulink label="menu_lending_returnbyclass"
+							url="/lending/return" /></li>
+					<li><moo:menulink label="menu_lendinghistory"
+							url="/lendinghistory" />
 						<ul>
-						<li><moo:menulink label="menu_lending_summaryforclasses"
-								url="/lending/summary/all"  /></li>
-						<li><moo:menulink label="menu_lendinghistory"
-								url="/lendinghistory" /></li>
-					</ul></li>
-				<li><moo:menulink label="menu_lending_alloverdue"
-						url="/lending/overdue/all" /></li>
-				<li><moo:menulink label="menu_lending_allcheckedout"
-						url="/lending/checkout/all" /></li>
-			</ul></li>
-		<li><moo:menulink label="menu_bclending" url="/barcode/checkout" /></li>
+							<li><moo:menulink label="menu_lending_summaryforclasses"
+									url="/lending/summary/all" /></li>
+							<li><moo:menulink label="menu_lendinghistory"
+									url="/lendinghistory" /></li>
+						</ul></li>
+					<li><moo:menulink label="menu_lending_alloverdue"
+							url="/lending/overdue/all" /></li>
+					<li><moo:menulink label="menu_lending_allcheckedout"
+							url="/lending/checkout/all" /></li>
+				</ul></li>
+			<li><moo:menulink label="menu_bclending" url="/barcode/checkout" /></li>
 
-		<li><moo:menulink label="menu_admin" url="#" />
-			<ul>
-				<!-- <li><moo:menulink label="menu_import" url="/import?form" /></li> -->
-				<li><moo:menulink label="menu_dashboard" url="/dashboard" /></li>
+			<li><moo:menulink label="menu_admin" url="#" />
+				<ul>
 
-				<li><moo:menulink label="menu_adminsearch" url="/admin/search" /></li>
-				
-				<li><moo:menulink label="menu_classlist" url="/classes" /></li>
-								<li><moo:menulink label="menu_classmanage" url="/classes/manage" /></li>
-				<li><moo:menulink label="menu_barcodes_generate"
-						url="/generatebarcode/books" />
-					<ul>
-						<li><moo:menulink label="menu_barcodes_generateclass"
-								url="/generatebarcode/class" /></li>
-						<li><moo:menulink label="menu_barcodes_generatebook"
-								url="/generatebarcode/books" /></li>
-					</ul></li>
+					<!-- <li><moo:menulink label="menu_import" url="/import?form" /></li> -->
+					<li><moo:menulink label="menu_dashboard" url="/dashboard" /></li>
 
+					<li><moo:menulink label="menu_adminsearch" url="/admin/search" /></li>
 
-				<li><moo:menulink label="menu_barcodes_verifybarcode" url="/barcode/checkout/verify" /></li>
+					<li><moo:menulink label="menu_classlist" url="/classes" /></li>
+					<li><moo:menulink label="menu_classmanage"
+							url="/classes/manage" /></li>
+					<li><moo:menulink label="menu_barcodes_generate"
+							url="/generatebarcode/books" />
+						<ul>
+							<li><moo:menulink label="menu_barcodes_generateclass"
+									url="/generatebarcode/class" /></li>
+							<li><moo:menulink label="menu_barcodes_generatebook"
+									url="/generatebarcode/books" /></li>
+						</ul></li>
 
+					<li><moo:menulink label="menu_barcodes_verifybarcode"
+							url="/barcode/checkout/verify" /></li>
 
-				<sec:authorize ifAnyGranted='ROLE_ADMIN,ROLE_SUPERADMIN'>
-				<li><moo:menulink label="menu_loginlist" url="/userlogins" /></li>
-<li><moo:menulink label="menu_classmanage"
-						url="/classes/manage" /></li>
-</sec:authorize>
+					<li><moo:menulink label="menu_inventory" url="/inventory" /></li>
 
-			</ul></li>
+					<sec:authorize ifAnyGranted='ROLE_ADMIN,ROLE_SUPERADMIN'>
+						<li><moo:menulink label="menu_loginlist" url="/userlogins" /></li>
+						<li><moo:menulink label="menu_classmanage"
+								url="/classes/manage" /></li>
+					</sec:authorize>
 
-				</sec:authorize>
-				<sec:authorize access="isAnonymous()">
-						<li style="margin-left: 750px;"><moo:menulink label="menu_login" url="/login" /></li>
-				</sec:authorize>
+				</ul></li>
+
+		</sec:authorize>
+		<sec:authorize access="isAnonymous()">
+			<li style="margin-left: 750px;"><moo:menulink label="menu_login"
+					url="/login" /></li>
+		</sec:authorize>
 
 
 

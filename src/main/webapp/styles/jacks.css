@@ -603,6 +603,7 @@ input.linkbutton {
 	color: #e7e5e5;
 	margin-left: 20px;
 	margin-right: 20px;
+	    text-align: center;
 	background-color:rgba(101, 82, 96, 0.73);
 }
 
@@ -613,6 +614,7 @@ input.linkbutton {
 	color: #e7e5e5;
 	margin-left: 20px;
 	margin-right: 20px;
+	    text-align: center;
 	background-color: #655260;
 }
 

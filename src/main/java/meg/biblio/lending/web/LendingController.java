@@ -21,9 +21,9 @@ import meg.biblio.common.report.ClassSummaryReport;
 import meg.biblio.common.report.DailySummaryReport;
 import meg.biblio.lending.ClassManagementService;
 import meg.biblio.lending.LendingService;
+import meg.biblio.lending.db.dao.LoanRecordDisplay;
 import meg.biblio.lending.db.dao.StudentDao;
 import meg.biblio.lending.web.model.LendingModel;
-import meg.biblio.lending.web.model.LoanRecordDisplay;
 import meg.biblio.lending.web.model.TeacherInfo;
 import meg.biblio.lending.web.validator.LendingModelValidator;
 

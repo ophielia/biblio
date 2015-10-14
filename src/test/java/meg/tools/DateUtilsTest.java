@@ -168,4 +168,21 @@ public class DateUtilsTest {
 
 	}	
 	
+	@Test
+	public void testIsToday() {
+		// Calendar for tests
+		Calendar cal = Calendar.getInstance();
+		
+		// test for today  - should be true
+		Date today = cal.getTime();
+		// call
+		boolean test = DateUtils.isToday(today);
+		Assert.assertTrue(test);
+
+		// test for a year ago
+		cal.add(Calendar.YEAR, -1);
+		test = DateUtils.isToday(cal.getTime());
+		Assert.assertTrue(!test);
+	}		
+	
 }

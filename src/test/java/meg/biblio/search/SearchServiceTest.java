@@ -290,4 +290,25 @@ public class SearchServiceTest {
 		Assert.assertEquals(bookdetail.getId(),result.getId());
 	}
 	
+	@Test
+	public void testFindBooksWithStatusList() throws GeneralSecurityException, IOException {
+		Long clientid = clientService.getTestClientId();
+		BookSearchCriteria criteria = new BookSearchCriteria();
+		criteria.setClientid(clientid);
+		// create list of stati...
+		List<Long> stati = new ArrayList<Long>();
+		stati.add(CatalogService.Status.SHELVED);
+		stati.add(CatalogService.Status.CHECKEDOUT);
+		stati.add(CatalogService.Status.LOSTBYBORROWER);
+		
+		// service call
+		Long count = searchService.getBookCountForCriteria(criteria, clientid);
+		
+		// assert that something was found
+		Assert.assertNotNull(count);
+		Assert.assertTrue(count>0);
+
+	}
+	
+	
 	}
