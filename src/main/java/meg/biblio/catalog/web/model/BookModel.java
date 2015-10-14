@@ -12,7 +12,7 @@ import meg.biblio.catalog.db.dao.BookDetailDao;
 import meg.biblio.catalog.db.dao.FoundDetailsDao;
 import meg.biblio.catalog.db.dao.PublisherDao;
 import meg.biblio.catalog.db.dao.SubjectDao;
-import meg.biblio.lending.db.dao.LoanRecordDisplay;
+import meg.biblio.lending.web.model.LoanRecordDisplay;
 
 public class BookModel  implements Serializable {
 
