@@ -311,10 +311,13 @@ public class ClassManagementServiceImpl implements ClassManagementService {
 				// set client to null
 				sgroup.setClient(null);
 				// delete teacher - set null in class
-				TeacherDao teacher = sgroup.getTeacher();
-				teacher.setClient(null);
-				teacher.setActive(false);
-				sgroup.setTeacher(null);
+				List<TeacherDao> teachers = sgroup.getTeacherlist();
+				for (TeacherDao teacher:teachers) {
+					teacher.setClient(null);
+					teacher.setActive(false);
+					teacher.setSchoolgroup(null);
+					teacherRepo.save(teacher);
+				}
 
 				// unassign students - set null in class
 				List<StudentDao> students = sgroup.getStudents();
@@ -325,7 +328,6 @@ public class ClassManagementServiceImpl implements ClassManagementService {
 
 				// save class and students
 				sgroupRepo.save(sgroup);
-				teacherRepo.save(teacher);
 				for (StudentDao student : students) {
 					studentRepo.saveAndFlush(student);
 				}

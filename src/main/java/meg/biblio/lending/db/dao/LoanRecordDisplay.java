@@ -25,6 +25,7 @@ import javax.xml.bind.annotation.XmlTransient;
 		@FieldResult(name = "borrowerid", column = "borrowerid"),
 		@FieldResult(name = "borrowerfn", column = "borrowerfn"),
 		@FieldResult(name = "borrowerln", column = "borrowerln"),
+		@FieldResult(name = "borrowersection", column = "borrowersection"),
 		@FieldResult(name = "booktitle", column = "booktitle"),
 		@FieldResult(name = "bookclientid", column = "bookclientid"),
 		@FieldResult(name = "bookclientidsort", column = "bookclientidsort"),
@@ -51,6 +52,7 @@ public class LoanRecordDisplay {
 	private Long clientid;
 	private String borrowerfn;
 	private String borrowerln;
+	private Long borrowersection;
 	private String booktitle;
 	private String bookclientid;
 	private Long bookclientidsort;
@@ -206,6 +208,14 @@ public class LoanRecordDisplay {
 
 	public Long getBookclientidsort() {
 		return bookclientidsort;
+	}
+
+	public Long getBorrowersection() {
+		return borrowersection;
+	}
+
+	public void setBorrowersection(Long borrowersection) {
+		this.borrowersection = borrowersection;
 	}
 
 	

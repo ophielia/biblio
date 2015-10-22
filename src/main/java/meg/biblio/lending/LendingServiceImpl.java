@@ -263,7 +263,7 @@ public class LendingServiceImpl implements LendingService {
 		// checkedout on date
 		LendingSearchCriteria criteria = new LendingSearchCriteria();
 		criteria.setSchoolgroup(classid);
-		criteria.setCheckedoutafter(date);
+		criteria.setTimeselect(LendingSearchCriteria.TimePeriodType.THISWEEK);
 		criteria.setCheckedoutOnly(true);
 		List<LoanRecordDisplay> checkedout = lendingSearch
 				.findLoanRecordsByCriteria(criteria, clientid);

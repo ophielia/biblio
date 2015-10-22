@@ -60,16 +60,16 @@ public class PersonDao {
 				// break name into list
 				String[] tokens = text.trim().split(" ");
 				List<String> tknlist = arrayToList(tokens);
-				// last member of list is last name
-				String lastname = tknlist.remove(tknlist.size() - 1);
-				this.lastname = lastname;
-				// if members remaining, first member is firstname
+				// first member of list is first name
+				String firstname = tknlist.remove(0);
+				this.firstname = firstname;
+				// if members remaining, go into lastname
 				if (tknlist.size() > 0) {
-					StringBuffer firstname = new StringBuffer();
+					StringBuffer lastname = new StringBuffer();
 					for (String namepart:tknlist) {
-						firstname.append(namepart).append(" ");
+						lastname.append(namepart).append(" ");
 					}
-					this.firstname = firstname.toString().trim();
+					this.lastname = lastname.toString().trim();
 				}
 			}
 

@@ -8,13 +8,7 @@ INVENTORY !! (finally)
 	
 	
 improvement - checkout page - name more evident....
-book lendinghistory  - remove name and title of book in list.
 menu - advanced search under catalog
-daily summary to weekly summary....
-bugfix - error deleting class
-bugfix / improvement - default name splitting put extra names in last name.		
-bugfix / improvement - new student - shouldn't have heading "Students".		
-bugfix / improvement - add existing student - shouldn't have heading "Students".		
 bugfix / improvement - increment grade shows success page.... otherwise no sign it was done.			
 
 print out names for kids??  (future)
@@ -25,17 +19,14 @@ db testing - problem with views.  LendingSearchService fails.  check this link -
 	http://dbunit.sourceforge.net/intro.html
 
 ---- begin commit changes ----
-done - labels throughout
-done - label reconcile detail - inventory complete / incomplete
-done - reconcilelist - Update Selected not in french
-done - label invlist - incomplete - bilingual
-done - 	still open - invlist, invdetail.  
-done - repeating background !?!?!?
-done - menu!
-done - correct inventory in prgess - % complete
-done - correct inventory in prgess - x of y counted....
-done - correct label reconcile  x of y shown
 
+done - book lendinghistory  - remove name and title of book in list.
+done - backend - daily summary to weekly summary....
+done - frontend - daily summary to weekly summary.... labels
+done - bugfix - error deleting class
+done - bugfix / improvement - default name splitting put extra names in last name.		
+done - bugfix / improvement - new student - shouldn't have heading "Students".		
+done - bugfix / improvement - add existing student - shouldn't have heading "Students".		
 
 ---- end commit changes ----
 
@@ -193,6 +184,17 @@ done - countBook - edit link - add back hint to inventory count books
 done - invlist doesn't show begin when one is in progress
 done - inventory detail not showing correctly after complete inventory
 done - solved in different way....aspect - add for added book - to CatalogService
+done - labels throughout
+done - label reconcile detail - inventory complete / incomplete
+done - reconcilelist - Update Selected not in french
+done - label invlist - incomplete - bilingual
+done - 	still open - invlist, invdetail.  
+done - repeating background !?!?!?
+done - menu!
+done - correct inventory in prgess - % complete
+done - correct inventory in prgess - x of y counted....
+done - correct label reconcile  x of y shown
+
 
 ---- end branch changes ----
 

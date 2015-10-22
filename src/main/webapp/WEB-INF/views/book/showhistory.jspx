@@ -53,8 +53,8 @@
 		var="lcheckedout" />
 	<spring:message code="label_lending_duedate" htmlEscape="false"
 		var="lduedate" />
-	<spring:message code="label_lendingreturned" htmlEscape="false"
-		var="lreturned" />
+	<spring:message code="label_lendingreturned" htmlEscape="false" var="lreturned" />
+	<spring:message code="label_class_section" htmlEscape="false" var="lsection" />
 
 
 	<spring:message code="button_back" htmlEscape="false" var="bback" />
@@ -114,7 +114,7 @@
 				<tr>
 					<th id="aSort2">${lstudent}</th>
 					<th id="aSort1">${lclass}</th>
-					<th id="aSort5">${ltitle}/ ${lauthor}</th>
+					<th id="aSort5">${lsection}</th>
 					<th id="aSort4">${lcheckedout}<br /> ${lduedate}
 					</th>
 					<th id="aSort6">${lreturned}</th>
@@ -127,8 +127,8 @@
 					<tr>
 
 						<td>${histRec.borrowerfn}    ${histRec.borrowerln }</td>
-						<td>${histRec.teacherfirstname }</td>
-						<td>${histRec.booktitle }<br></br>${histRec.author }</td>
+						<td>${histRec.teacherfirstname } ${histRec.teacherfirstname }</td>
+						<td>${sectionsel[histRec.borrowersection]}</td>
 						<td><fmt:formatDate type="date" value="${histRec.checkedout}" /><br />
 						<fmt:formatDate type="date" value="${histRec.duedate }" /></td>
 						<td><fmt:formatDate type="date" value="${histRec.returned  }" /></td>

@@ -24,6 +24,7 @@ import meg.biblio.common.AppSettingService;
 import meg.biblio.common.ClientService;
 import meg.biblio.common.SelectKeyService;
 import meg.biblio.common.db.dao.ClientDao;
+import meg.biblio.lending.ClassManagementService;
 import meg.biblio.lending.LendingService;
 import meg.biblio.lending.db.dao.LoanRecordDisplay;
 
@@ -490,7 +491,10 @@ FoundDetailsDao fd = fdetails.get(detailidx.intValue());
 		List<LoanRecordDisplay> history = lendingService.getLendingHistoryForBook(id, client.getId());
 		// set checkout history in model
 		bmodel.setLendingHistory(history);
-		
+		// get section lookup for display
+		HashMap<Long,String> sectionsel = getSectionSelect( httpServletRequest, locale);
+		uiModel.addAttribute("sectionsel", sectionsel);
+
 		uiModel.addAttribute("bookModel", bmodel);
 		return "book/showhistory";
 	}	
@@ -569,6 +573,15 @@ FoundDetailsDao fd = fdetails.get(detailidx.intValue());
 				.getSettingAsString("biblio.imagebase");
 		uiModel.addAttribute("imagebasedir", imagebasedir);
 	}
+	
+    private HashMap<Long,String> getSectionSelect(HttpServletRequest httpServletRequest,Locale locale) {
+    	String lang = locale.getLanguage();
+
+    	HashMap<Long, String> booktypedisps = keyService
+    			.getDisplayHashForKey(ClassManagementService.sectionSelect, lang);
+    	return booktypedisps;
+    }
+
 
 
 }
