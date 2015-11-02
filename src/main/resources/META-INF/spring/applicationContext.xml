@@ -49,10 +49,7 @@ xmlns:p="http://www.springframework.org/schema/p" xmlns:aop="http://www.springfr
         <context:exclude-filter expression="org.springframework.stereotype.Controller" type="annotation"/>
     </context:component-scan>
     <bean class="java.net.URI" id="dbUrl">
-        <!-- <constructor-arg value="#{systemEnvironment[${OPENSHIFT_POSTGRESQL_DB_URL}/${OPENSHIFT_APP_NAME}]}"/>
-        <constructor-arg value="#{systemEnvironment['OPENSHIFT_POSTGRESQL_DB_URL']/systemEnvironment['OPENSHIFT_APP_NAME']}"/>-->
-        <constructor-arg value=" ${OPENSHIFT_POSTGRESQL_DB_URL}/${OPENSHIFT_APP_NAME}"/>
-        
+        <constructor-arg value="#{systemEnvironment['OPENSHIFT_POSTGRESQL_DB_URL']/systemEnvironment['OPENSHIFT_APP_NAME']}"/>
 </bean>
 <bean id="appMessageSource"  class="org.springframework.context.support.ReloadableResourceBundleMessageSource" p:basenames="WEB-INF/i18n/pdf" p:fallbackToSystemLocale="false"/>
     <bean class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close" id="dataSource">
