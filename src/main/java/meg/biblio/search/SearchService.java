@@ -17,6 +17,7 @@ public interface SearchService {
 		public static final long STATUS=1;
 		public static final long DETAILSTATUS=2;
 		public static final long COUNTSTATUS=3;
+		public static final long CLIENTCATEGORY=4;
 	}
 	
 	public ArtistDao findArtistMatchingName(ArtistDao tomatch);

@@ -1,14 +1,26 @@
-Branch - inventory
-	inventory
-	rework lending - lending search
+Branch - master
 
-INVENTORY !! (finally)
+done - dashboard
+report-lending
+labels 
+	free start, 
+	free entry
+classification side by side
+overdue text
 
 
+
+
+
+-----> ISSUE!! category breakout showing 1620 italian books ?????
 	
-	
-improvement - checkout page - name more evident....
+put advanced search under catalog
+
+
+minor - show "nothing" message for checkout and overdue lists	
 menu - advanced search under catalog
+
+
 bugfix / improvement - increment grade shows success page.... otherwise no sign it was done.			
 
 print out names for kids??  (future)
@@ -20,13 +32,37 @@ db testing - problem with views.  LendingSearchService fails.  check this link -
 
 ---- begin commit changes ----
 
-done - book lendinghistory  - remove name and title of book in list.
-done - backend - daily summary to weekly summary....
-done - frontend - daily summary to weekly summary.... labels
-done - bugfix - error deleting class
-done - bugfix / improvement - default name splitting put extra names in last name.		
-done - bugfix / improvement - new student - shouldn't have heading "Students".		
-done - bugfix / improvement - add existing student - shouldn't have heading "Students".		
+done - working on checkout page
+
+	
+done - breakouts link to full
+done - format breakouts 
+done - daily summary - no overdue notices
+done - checkout self - layout refining	
+done - finish services text
+done - parameterize text services.
+done - parameterize all text for bilingual
+done - remove theme select for non-authenticated
+nevermind - put services link in footer for authenticated (put on index instead)
+done - dashboard - cleanup
+done - inventory stat
+done - MostPopular breakouts,
+done -  front end for dashboard
+done	replace {0}
+done	replace current year
+done	replace msg_stats_invnotrun
+done	check checkedout categories stat - not working, mareschale
+done	breakouts only to 10 - 
+done - index page - double check text
+done - 	parameterize
+done -	in french
+done - need services page
+done - need demo page
+done - menu - add services, demo 
+done - summary report doesn't fail on empty
+done - change overdue report to not show print link when empty
+done - improvement - checkout page - name more evident....
+
 
 ---- end commit changes ----
 
@@ -34,166 +70,6 @@ done - bugfix / improvement - add existing student - shouldn't have heading "Stu
 
 ----- begin branch changes ----
 
-done - author/subject/illustrator error with 9782215067207 - the forest.  check parsing upon add book
-done - check for "if duplicate" after search - and copy shelf info.
-done - begin last development / testing with new client 
-done - images to checkout / return!
-done - barcodelendingcontroller - return book which is not checked out....
-done ... make LoanRecordDisplay into a view - so we don't have to insert teacher info
-done -  need view version of overdue which covers 2 cases - overdue when returned, overdue today
-done -  need to add Teacher / Student to LoanRecordDisplay view
-done - format dates in lendinghistory
-done - bookid in lending history
-done - sorting ability to lendingsearch
-done - sort only in one direction
-done - 	add sort for book sort (sorting bookid alphabetically....)
-done - 	DateUtils - make method for first date in current school year
-	done - finish LendingSearchModel - add sort info
-	done - finish LendingSearchCriteria - processing inputs from model (select boxes to concrete dates, query parameters)
-	done - insert LSM into LoanHistoryController
-done - hard coded to labels  - finish select boxes, title of page
-done - show student page - including all books checked out
-done - 	add edit link to student page
-done - 	add back link for lendinghistory page
-done - link show student page to lending history	
-done - link show student page to class list
-done - fix menu - lending history as main link, under links lending history and daily summary
-done - time select - add year selects
-done - fix in checkout book - use DateUtils.
-done - lending history by person - Soren - descending order default
-done - in process - pages for showing book lending history
-done - booklent count - select count(id) from loanrecord where book = 22728
-done - fill in show lending history by book page (showhistory)
-done  - show history page - title and back button
-done - datedisplay - make display methods (getters)
-done - manual checkout page datedisplay - make display methods (getters)
-done - stop, revisit, reprioritize	
-done - get online up and going
-done - new statuses - in repair
-done - assign detail results in detail found
-done - remove "view book" link
-done - norwegian classification
-done - housekeeping non-fiction
-done - checkout record for book
-
-merged with master - put online
-
-done - base through controller
-done - test - base through controller blow up test
-done - results in getting list (setting the offset, and limit)
-done - showing the pagination in the front end
-fine tuning and expansion
-done - hasNext and hasPrev to disable pagination buttons
-done - front end - disable buttons <a id="checkoutcnt" class="linkbutton" href="#">Not yet checked out</a>
-done - take to admin search	
-
-online september 25, 2015
-done - backend work
-done - new l&f in alt
-done - grid	styling
-	done - menu sizing needs some help
-	done - don't like the gray in the menu....		
-	done - input.linkbutton - grey text	    
-done - take grid to admin search - nevermind - need details there
-done - finish admin search
-done - pagination
-done - grid
-done - new look and feel
-done - bug on lending history for teacher - don't show teacher link (for now....)
-done - new look and feel
-done - fix footer.
-done - check all pages for headers / tables	  
-done - try different background, color combinations
-done - 	implement gumball colors
-done - 	implement jacks colors
-done - fix menu jacks
-done - error displaying student which is no longer in a class
-done - redo callisons header and footer color, accentboxlook		
-done - skeleton of DAOs and Service made
-done -  fill in Service with pseudo code and documentation
-done - continuing beginInventory - 
-done - 	update BookDao - add inventoryid and tocount = true
-done - add fields to BookDao - note, provenance, tocount, counted, counteddate, counterid, reconciledid
-done - finished cancel inventory	
-done - need InventoryStatus - pjo with fields for tocount, counted, reconciled and added
-done - 	to do this, counted needs to be changed to a status with either counted (1) or reconciled (2)
-done - 	InventoryStatus will be filled with 2 queries - one breakout by countstatus, and one to inventoryhistory, to find added books
-done - 	method signature public InventoryStatus getInventoryStatus(InventoryDao inv, ClientDao client) 
-done - countBook
-done - test for countBook.
-done - implement countBook
-done - test green for countBook.
-done - tailor retrieveInvStackDisplays for different types
-done - implement getUncountedBooks
-done - getStackForUser
-done - implement internal retrieveInvStackDisplays
-done - test for getStackForUser.
-done - implement getStackForUser
-done - test green for getStackForUser.
-done - reconcileBook 
-done - test for reconcileBook.
-done - implement reconcileBook
-done - test green for reconcileBook.
-done - test for reconcileBooks....
-done - fill in counted books in cancelInventory.
-done -  finishInventory, test and implement
-done - backend implementation of Inventory
-done - approach - jpa... bookdao using ids, not objects.  InvStackDisplay built upon query (hopefully not view).
-done - InvHistoryDao can hold InventoryDao object.
-done - continue with InventoryController countBook
-done - in BookDao - remove reconciled field
-done - countBook - add shelfclass to InvStackDisplay
-done - begin skeleton of controller
-done - begin filling in controller
-done - reconcile detail  - complete jsp
-done - complete controller method
-done - add clientname to fillLookups
-done - change status to selectbox with reconciled statuses
-done - wire up links
-done - 	reconcile list - post (add update, checkboxes, etc.)
-done - limit to reconciles shown - with message
-done - change update box to label, select, button (Status, select, Update Selected)
-done - countBook - add color lookup
-done - 	"widget" for inventory in progress....
-done - in reconcile book, lost book, check for duplicates in invhistory
-done - inventories in list sorted by id desc
-done - inventorystatus return a default percent of 0
-done - cancel button on invinprogress - leads to confirmation page, and cancel
-done - something wrong with page after complete.  Reconciled books not shown.		
-done - invinprogress page - add cancel inventory
-done - invinprogress page - add show previous inventories
-done - inventorystatus - subtract found from total counted
-done - for tying into Checkout/Return
-nevermind - need aspect on ENTRY to checkout - if inventory in progress, "lost" , mark in inventory history
-done - need aspect on EXIT from return - if inventory in progress, mark as counted
-done - inventory detail - show found separate from reconciled
-done - countBook show stack anyway...
-done - does current widget need to be added anywhere else?
-done - lookandfeel - new gumball colors, repeat background, and good overlap
-done - new widget - inventory summary
-done - style in style
-done - widget - whole div clickable - see here http://jsfiddle.net/mrivasa/TK69d/
-done - invinprogress page - complete inventory only shown when available - dead link otherwise
-done - showNonCurrentInventoryList - pull out most recent completed to be shown separately
-done - 	also show status for most recently completed
-done - get style out of other pages
-done - clean up widget for inventory in progress
-done - link back to inventoryinprogress under widget throughout
-done - countBook - add error for book not found - 
-done - countBook - edit link - add back hint to inventory count books
-done - invlist doesn't show begin when one is in progress
-done - inventory detail not showing correctly after complete inventory
-done - solved in different way....aspect - add for added book - to CatalogService
-done - labels throughout
-done - label reconcile detail - inventory complete / incomplete
-done - reconcilelist - Update Selected not in french
-done - label invlist - incomplete - bilingual
-done - 	still open - invlist, invdetail.  
-done - repeating background !?!?!?
-done - menu!
-done - correct inventory in prgess - % complete
-done - correct inventory in prgess - x of y counted....
-done - correct label reconcile  x of y shown
 
 
 ---- end branch changes ----
@@ -810,7 +686,175 @@ done - 	 build structure to pass client into search (in findobj)
 done - fill in search methods in InternalDetailFinder
 done - google - strip html from description
 	
+*** INVENTORY Branch - merged into master 10-2015 ****
 
+done - author/subject/illustrator error with 9782215067207 - the forest.  check parsing upon add book
+done - check for "if duplicate" after search - and copy shelf info.
+done - begin last development / testing with new client 
+done - images to checkout / return!
+done - barcodelendingcontroller - return book which is not checked out....
+done ... make LoanRecordDisplay into a view - so we don't have to insert teacher info
+done -  need view version of overdue which covers 2 cases - overdue when returned, overdue today
+done -  need to add Teacher / Student to LoanRecordDisplay view
+done - format dates in lendinghistory
+done - bookid in lending history
+done - sorting ability to lendingsearch
+done - sort only in one direction
+done - 	add sort for book sort (sorting bookid alphabetically....)
+done - 	DateUtils - make method for first date in current school year
+	done - finish LendingSearchModel - add sort info
+	done - finish LendingSearchCriteria - processing inputs from model (select boxes to concrete dates, query parameters)
+	done - insert LSM into LoanHistoryController
+done - hard coded to labels  - finish select boxes, title of page
+done - show student page - including all books checked out
+done - 	add edit link to student page
+done - 	add back link for lendinghistory page
+done - link show student page to lending history	
+done - link show student page to class list
+done - fix menu - lending history as main link, under links lending history and daily summary
+done - time select - add year selects
+done - fix in checkout book - use DateUtils.
+done - lending history by person - Soren - descending order default
+done - in process - pages for showing book lending history
+done - booklent count - select count(id) from loanrecord where book = 22728
+done - fill in show lending history by book page (showhistory)
+done  - show history page - title and back button
+done - datedisplay - make display methods (getters)
+done - manual checkout page datedisplay - make display methods (getters)
+done - stop, revisit, reprioritize	
+done - get online up and going
+done - new statuses - in repair
+done - assign detail results in detail found
+done - remove "view book" link
+done - norwegian classification
+done - housekeeping non-fiction
+done - checkout record for book
+
+merged with master - put online
+
+done - base through controller
+done - test - base through controller blow up test
+done - results in getting list (setting the offset, and limit)
+done - showing the pagination in the front end
+fine tuning and expansion
+done - hasNext and hasPrev to disable pagination buttons
+done - front end - disable buttons <a id="checkoutcnt" class="linkbutton" href="#">Not yet checked out</a>
+done - take to admin search	
+
+online september 25, 2015
+done - backend work
+done - new l&f in alt
+done - grid	styling
+	done - menu sizing needs some help
+	done - don't like the gray in the menu....		
+	done - input.linkbutton - grey text	    
+done - take grid to admin search - nevermind - need details there
+done - finish admin search
+done - pagination
+done - grid
+done - new look and feel
+done - bug on lending history for teacher - don't show teacher link (for now....)
+done - new look and feel
+done - fix footer.
+done - check all pages for headers / tables	  
+done - try different background, color combinations
+done - 	implement gumball colors
+done - 	implement jacks colors
+done - fix menu jacks
+done - error displaying student which is no longer in a class
+done - redo callisons header and footer color, accentboxlook		
+done - skeleton of DAOs and Service made
+done -  fill in Service with pseudo code and documentation
+done - continuing beginInventory - 
+done - 	update BookDao - add inventoryid and tocount = true
+done - add fields to BookDao - note, provenance, tocount, counted, counteddate, counterid, reconciledid
+done - finished cancel inventory	
+done - need InventoryStatus - pjo with fields for tocount, counted, reconciled and added
+done - 	to do this, counted needs to be changed to a status with either counted (1) or reconciled (2)
+done - 	InventoryStatus will be filled with 2 queries - one breakout by countstatus, and one to inventoryhistory, to find added books
+done - 	method signature public InventoryStatus getInventoryStatus(InventoryDao inv, ClientDao client) 
+done - countBook
+done - test for countBook.
+done - implement countBook
+done - test green for countBook.
+done - tailor retrieveInvStackDisplays for different types
+done - implement getUncountedBooks
+done - getStackForUser
+done - implement internal retrieveInvStackDisplays
+done - test for getStackForUser.
+done - implement getStackForUser
+done - test green for getStackForUser.
+done - reconcileBook 
+done - test for reconcileBook.
+done - implement reconcileBook
+done - test green for reconcileBook.
+done - test for reconcileBooks....
+done - fill in counted books in cancelInventory.
+done -  finishInventory, test and implement
+done - backend implementation of Inventory
+done - approach - jpa... bookdao using ids, not objects.  InvStackDisplay built upon query (hopefully not view).
+done - InvHistoryDao can hold InventoryDao object.
+done - continue with InventoryController countBook
+done - in BookDao - remove reconciled field
+done - countBook - add shelfclass to InvStackDisplay
+done - begin skeleton of controller
+done - begin filling in controller
+done - reconcile detail  - complete jsp
+done - complete controller method
+done - add clientname to fillLookups
+done - change status to selectbox with reconciled statuses
+done - wire up links
+done - 	reconcile list - post (add update, checkboxes, etc.)
+done - limit to reconciles shown - with message
+done - change update box to label, select, button (Status, select, Update Selected)
+done - countBook - add color lookup
+done - 	"widget" for inventory in progress....
+done - in reconcile book, lost book, check for duplicates in invhistory
+done - inventories in list sorted by id desc
+done - inventorystatus return a default percent of 0
+done - cancel button on invinprogress - leads to confirmation page, and cancel
+done - something wrong with page after complete.  Reconciled books not shown.		
+done - invinprogress page - add cancel inventory
+done - invinprogress page - add show previous inventories
+done - inventorystatus - subtract found from total counted
+done - for tying into Checkout/Return
+nevermind - need aspect on ENTRY to checkout - if inventory in progress, "lost" , mark in inventory history
+done - need aspect on EXIT from return - if inventory in progress, mark as counted
+done - inventory detail - show found separate from reconciled
+done - countBook show stack anyway...
+done - does current widget need to be added anywhere else?
+done - lookandfeel - new gumball colors, repeat background, and good overlap
+done - new widget - inventory summary
+done - style in style
+done - widget - whole div clickable - see here http://jsfiddle.net/mrivasa/TK69d/
+done - invinprogress page - complete inventory only shown when available - dead link otherwise
+done - showNonCurrentInventoryList - pull out most recent completed to be shown separately
+done - 	also show status for most recently completed
+done - get style out of other pages
+done - clean up widget for inventory in progress
+done - link back to inventoryinprogress under widget throughout
+done - countBook - add error for book not found - 
+done - countBook - edit link - add back hint to inventory count books
+done - invlist doesn't show begin when one is in progress
+done - inventory detail not showing correctly after complete inventory
+done - solved in different way....aspect - add for added book - to CatalogService
+done - labels throughout
+done - label reconcile detail - inventory complete / incomplete
+done - reconcilelist - Update Selected not in french
+done - label invlist - incomplete - bilingual
+done - 	still open - invlist, invdetail.  
+done - repeating background !?!?!?
+done - menu!
+done - correct inventory in prgess - % complete
+done - correct inventory in prgess - x of y counted....
+done - correct label reconcile  x of y shown
+done - book lendinghistory  - remove name and title of book in list.
+done - backend - daily summary to weekly summary....
+done - frontend - daily summary to weekly summary.... labels
+done - bugfix - error deleting class
+done - bugfix / improvement - default name splitting put extra names in last name.		
+done - bugfix / improvement - new student - shouldn't have heading "Students".		
+done - bugfix / improvement - add existing student - shouldn't have heading "Students".		
 
 
 ----- end complete history ----

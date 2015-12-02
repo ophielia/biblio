@@ -30,7 +30,18 @@ public class DailySummaryReport {
 		this.classsummarylist = classsummarylist;
 	}
 
-
+	public boolean isPrintable() {
+		boolean printable=false;
+		if (classsummarylist!=null) {
+			for (ClassSummaryReport csr:classsummarylist) {
+				if ( !csr.isEmpty()) {
+					printable=true;
+					break;
+				}
+			}
+		}
+		return printable;
+	}
 
 
 }

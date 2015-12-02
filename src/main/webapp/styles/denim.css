@@ -634,8 +634,9 @@ a.linkbuttonquiet {
 }
 
 .bigandbold {
-	font-size: 18px;
+	font-size: 24px;
 	font-weight: bold;
+	text-align: center;
 }
 
 input.linkbutton {
@@ -687,6 +688,34 @@ table.clear td,table.clear th {
 	border: 0px solid #CCCCCC;
 	    background-color: white;
 }
+
+  .columnbox{
+    
+    float:left;
+    margin:10px;
+    
+    
+}
+
+.cbthree {
+	width:30%;
+}
+.cbtwo {
+	width:45%;
+}
+
+.columnboxheader{
+    padding: 10px;
+    background-color: #2E537D;
+    border-radius:5px;
+    color:white;
+    font-weight:bold;
+    text-align:center;
+        margin-bottom: 10px;
+        text-transform: uppercase;
+}
+
+
 
 /** input form styling **/
 div.elementcontainer {

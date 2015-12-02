@@ -56,5 +56,7 @@ public interface InventoryService {
 
 	List<InventoryHistoryDao> getDetailForInventory(InventoryDao inventory, long detailtype);
 
+	InventoryStatus getLastCompleted(ClientDao client);
+
 	
 }

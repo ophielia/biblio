@@ -311,14 +311,8 @@ public class LendingController {
 		List<LoanRecordDisplay> overdue = lendingService.getOverdueBooksForClient(client.getId());
 		// put list directly in uiModel
 		uiModel.addAttribute("overduebooks",overdue);
-		// get classinfo from model
-		HashMap<Long,TeacherInfo> classinfo = model.getClassinfo();
-		if (classinfo == null) {
-			classinfo = getClassInfo(client.getId());
-			model.setClassInfo(classinfo);
-		}
-		
-		uiModel.addAttribute("classInfo",model.getClassinfo());
+		boolean printable = overdue!=null && overdue.size()>0;
+		uiModel.addAttribute("printable",printable);
 		
 		// to all overdue out for client page
 		return "lending/overduesummary";
@@ -335,6 +329,8 @@ public class LendingController {
 				.assembleDailySummaryReport( new Date(), clientkey, true);
 
 		uiModel.addAttribute("dailySummaryReport",csr);
+		uiModel.addAttribute("printable",csr.isPrintable());
+		
 		// return checkout report 
 		return "lending/checkoutreport";
 		}

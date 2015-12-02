@@ -2,6 +2,7 @@ package meg.biblio.search;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -325,6 +326,8 @@ public class SearchServiceImpl implements SearchService {
 			fieldstring = "detailstatus";
 		} else if (breakoutkey == SearchService.Breakoutfield.COUNTSTATUS) {
 			fieldstring = "countstatus";
+		}else if (breakoutkey == SearchService.Breakoutfield.CLIENTCATEGORY) {
+			fieldstring = "clientshelfcode";
 		}
 		// put together query
 		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
@@ -344,7 +347,7 @@ public class SearchServiceImpl implements SearchService {
 
 		// adding the whereclause
 		c.where(cb.and(whereclause.toArray(new Predicate[whereclause.size()])));
-
+c.orderBy(cb.desc(cb.count(exp.<Number> get("id"))));
 		// creating the query
 		TypedQuery<Tuple> q = entityManager.createQuery(c);
 
@@ -353,7 +356,7 @@ public class SearchServiceImpl implements SearchService {
 		q.setParameter("clientid", clientid);
 
 		List<Tuple> results = q.getResultList();
-		HashMap<Long, Long> toreturn = new HashMap<Long, Long>();
+		LinkedHashMap<Long, Long> toreturn = new LinkedHashMap<Long, Long>();
 
 		for (Tuple t : results) {
 			Long key = (Long) t.get(0);

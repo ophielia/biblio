@@ -248,6 +248,24 @@ public class InventoryServiceImpl implements InventoryService {
 				.getId());
 		return current;
 	}
+	
+	@Override
+	public InventoryStatus getLastCompleted(ClientDao client) {
+		
+		// get previous inventories
+		List<InventoryDao> inventories = getPreviousInventories(client);
+		
+		// pull out last completed
+		InventoryStatus lastcompleted = null;
+		for (InventoryDao inv:inventories) {
+			if (inv.getCompleted()!=null && inv.getCompleted()==true) {
+				lastcompleted=getInventoryStatus(inv, client);
+				break;
+			}
+		}
+		
+		return lastcompleted;
+	}
 
 	@Override
 	public InventoryDao getInventoryById(Long invid) {

@@ -179,6 +179,27 @@ div.reportboxlook a {
 	text-decoration: none;
 }
 
+ul.breakoutlist {    list-style-type: none;
+    -webkit-margin-before: 1em;
+    -webkit-margin-after: 1em;
+    -webkit-margin-start: 0px;
+    -webkit-margin-end: 0px;
+    -webkit-padding-start: 5px;
+    }
+    
+li.breakoutlist {
+      padding-left: 5px;
+    padding-right: 5px;
+    }    
+.breakoutleft {
+font-weight: bolder;
+    text-transform: capitalize;
+}
+.breakoutright {
+    float: right;
+}
+
+
 label {
 	width: 100px;
 	float: left;
@@ -633,9 +654,13 @@ a.linkbuttonquiet {
 	color:blue;
 }
 
+.bold {
+	font-weight: bolder;
+}
 .bigandbold {
-	font-size: 18px;
+	font-size: 24px;
 	font-weight: bold;
+	text-align:center;
 }
 
 input.linkbutton {
@@ -688,6 +713,34 @@ table.clear td,table.clear th {
 	    background-color: white;
 }
 
+  .columnbox{
+    
+    float:left;
+    margin:10px;
+    
+    
+}
+
+.cbthree {
+	width:30%;
+}
+.cbtwo {
+	width:45%;
+}
+
+.columnboxheader{
+    padding: 10px;
+    background-color: #2E537D;
+    border-radius:5px;
+    color:white;
+    font-weight:bold;
+    text-align:center;
+        margin-bottom: 10px;
+        text-transform: uppercase;
+}
+
+
+
 /** input form styling **/
 div.elementcontainer {
 	text-align: left;
@@ -732,6 +785,9 @@ div.elementcontainer div {
     height: 375px;
     background-position: center;
 }
+
+
+
 
 /** table grid results and members**/
 

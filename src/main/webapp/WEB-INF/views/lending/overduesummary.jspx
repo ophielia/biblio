@@ -44,7 +44,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <td>${checkedout.booktitle} </td>
 <td>${checkedout.author} </td>
 <td><fmt:formatDate type="date" value="${checkedout.checkedout}" /> </td>
-<td><fmt:formatDate type="date" value="${checkedout.checkedout}" /> </td>
+<td><fmt:formatDate type="date" value="${checkedout.duedate}" /> </td>
 
 </tr>
 </c:forEach>
@@ -53,10 +53,12 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 </tbody>
 
 </table>
+<c:if test="${printable}">
 <spring:url value="/pdfwrangler/overduenotices" var="actionurl" />
 <form:form action="${actionurl}" id="classlist" method="POST" modelAttribute="lendingModel" target="_blank">
 <input type="submit" value="${bprint}" class="linkbutton" name="print"></input>
 </form:form>
+</c:if>
 
 </div>
 

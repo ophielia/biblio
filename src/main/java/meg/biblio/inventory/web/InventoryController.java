@@ -397,14 +397,8 @@ return showReconcileList(client, recModel, uiModel, principal, locale, httpServl
 		List<InventoryDao> inventories = invService.getPreviousInventories(client);
 		
 		// pull out last completed
-		InventoryStatus lastcompleted = null;
-		for (InventoryDao inv:inventories) {
-			if (inv.getCompleted()!=null && inv.getCompleted()==true) {
-				lastcompleted=invService.getInventoryStatus(inv, client);
-				break;
-			}
-		}
-		
+		InventoryStatus lastcompleted = invService.getLastCompleted(client);
+
 		// is inventory in progress?
 		InventoryDao current = invService.getCurrentInventory(client);
 		boolean inprogress = current!=null;

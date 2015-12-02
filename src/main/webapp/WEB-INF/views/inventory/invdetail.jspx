@@ -86,7 +86,7 @@ ${msgcomplete}, <fmt:formatDate type="date"
 </c:forEach>
 </c:when>
 
-<c:otherwise><tr><td colspan="5">{!no books reconciled in this inventory!}</td></tr></c:otherwise>
+<c:otherwise><tr><td colspan="5">${lnonereconciled}</td></tr></c:otherwise>
 </c:choose>
 
 

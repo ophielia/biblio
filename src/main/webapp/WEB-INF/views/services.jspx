@@ -1,0 +1,31 @@
+<div xmlns:spring="http://www.springframework.org/tags" xmlns:util="urn:jsptagdir:/WEB-INF/tags/util" xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0">
+  <jsp:directive.page contentType="text/html;charset=UTF-8" />
+  <jsp:output omit-xml-declaration="yes" />
+  <spring:message var="app_name" code="application_name" htmlEscape="false" />
+  <spring:message var="title" code="welcome_titlepane" arguments="${app_name}" htmlEscape="false" />
+  <style>
+
+.header{
+    padding: 10px;
+    background-color: #2E537D;
+    border-radius:5px;
+    color:white;
+    font-weight:bold;
+    text-align:center;
+        margin-bottom: 10px;
+}
+  </style>
+  
+    <h1>
+     <spring:message code="services_title" />
+    </h1>
+<P><spring:message code="msg_services_intro"/></P>
+    <div class="columnbox cbtwo"><div class="columnboxheader"><spring:message code="msg_services_digitalize_hdr"/></div>
+<spring:message code="msg_services_digitalize"/></div>
+    <div class="columnbox cbtwo"><div class="columnboxheader"><spring:message code="msg_services_scratch_hdr"/></div>
+<spring:message code="msg_services_scratch"/></div>
+
+    
+    <p style="clear:both; padding-top:30px">
+    <spring:message code="msg_services_followout"/></p>   
+</div>

@@ -10,7 +10,8 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
     <jsp:output omit-xml-declaration="yes"/>
 
 <spring:message code="label_barcode_checkout" htmlEscape="false" var="pagetitle"/>
-<spring:message code="msg_barcode_checkoutgreeting" arguments="${barcodeLendModel.person.firstname},${barcodeLendModel.person.lastname}" htmlEscape="false" var="msg"/>
+<spring:message code="msg_barcode_checkouthello" htmlEscape="false" var="greet"/>
+<spring:message code="msg_barcode_checkoutmessage"  htmlEscape="false" var="msg"/>
 <spring:message code="button_generate" htmlEscape="false" var="bgen"/>
 <spring:message code="button_cancel" htmlEscape="false" var="bcancel"/>
 
@@ -37,6 +38,8 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 
 
 <h1>${pagetitle}</h1>
+<br />
+<p class="bigandbold">${greet} <span>${barcodeLendModel.person.firstname}</span>!</p>
 <p class="bigandbold">${msg }</p>
 <form:form action="${actionurl}" id="generatebookcodes" method="POST" modelAttribute="barcodeLendModel">
 <form:errors id="errors" class="errors" path="*" />

@@ -41,7 +41,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <td>${checkedout.booktitle} </td>
 <td>${checkedout.author} </td>
 <td nowrap="true"><fmt:formatDate type="date" value="${checkedout.checkedout}" /></td>
-<td  nowrap="true"><fmt:formatDate type="date" value="${checkedout.checkedout}" /></td>
+<td  nowrap="true"><fmt:formatDate type="date" value="${checkedout.duedate}" /></td>
 
 </tr>
 </c:forEach>

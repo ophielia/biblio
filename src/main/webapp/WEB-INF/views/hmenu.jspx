@@ -2,7 +2,8 @@
 <div xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:menu="urn:jsptagdir:/WEB-INF/tags/menu"
 	xmlns:moo="urn:jsptagdir:/WEB-INF/tags/moo"
-	xmlns:sec="http://www.springframework.org/security/tags" id="hmenu"
+	xmlns:sec="http://www.springframework.org/security/tags" 
+	id="hmenu"
 	version="2.0">
 	<jsp:directive.page contentType="text/html;charset=UTF-8" />
 	<jsp:output omit-xml-declaration="yes" />
@@ -72,7 +73,11 @@
 
 		</sec:authorize>
 		<sec:authorize access="isAnonymous()">
-			<li style="margin-left: 750px;"><moo:menulink label="menu_login"
+			<li style=""><moo:menulink label="menu_demo"
+					url="/demologin" /></li>
+			<li style=""><moo:menulink label="menu_services"
+					url="/services" /></li>					
+			<li style="float:right;"><moo:menulink label="menu_login"
 					url="/login" /></li>
 		</sec:authorize>
 

@@ -21,4 +21,12 @@
 <definition extends="public" name="login">
         <put-attribute name="body" value="/WEB-INF/views/login.jspx"/>
     </definition>
+    
+<definition extends="public" name="demologin">
+        <put-attribute name="body" value="/WEB-INF/views/demologin.jspx"/>
+    </definition>    
+
+<definition extends="public" name="services">
+        <put-attribute name="body" value="/WEB-INF/views/services.jspx"/>
+    </definition>       
 </tiles-definitions>

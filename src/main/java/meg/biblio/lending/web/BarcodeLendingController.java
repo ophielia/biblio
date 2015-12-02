@@ -76,6 +76,77 @@ public class BarcodeLendingController {
 		return "barcode/maincheckout";
 	}
 
+	@RequestMapping(method = RequestMethod.GET,value="/test/showperson", produces = "text/html")
+	public String testShowPerson(BarcodeLendModel barcodeLendModel,
+			Model uiModel, HttpServletRequest httpServletRequest,
+			Principal principal) {
+		PersonDao person = personRepo.findPersonByBarcode("A000000000001");
+		
+		// put person in model
+		barcodeLendModel.setPerson(person);
+		barcodeLendModel.setCode(null);
+		uiModel.addAttribute("barcodeLendModel", barcodeLendModel);
+		// return person page
+		return "barcode/personcheckout";
+	}
+	
+	@RequestMapping(method = RequestMethod.GET,value="/test/cosuccess", produces = "text/html")
+	public String testCheckoutSuccess(BarcodeLendModel barcodeLendModel,
+			Model uiModel, HttpServletRequest httpServletRequest,
+			Principal principal) {
+		BookDao book = catalogService.findBookByBarcode("B1000000001233");
+		BookDetailDao bookdetail = book.getBookdetail();
+		
+		String firstname = barcodeLendModel.getPerson() != null ? barcodeLendModel.getPerson().getFirstname() : "";
+		String booktitle = bookdetail.getTitle();
+		String bookauthor = bookdetail.getAuthorsAsString();
+		String bookimg = bookdetail.getImagelink();
+
+
+		// ---- put name, book title in uiModel
+		uiModel.addAttribute("personname", firstname);
+		uiModel.addAttribute("booktitle", booktitle);
+		uiModel.addAttribute("bookauthor", bookauthor);
+		uiModel.addAttribute("bookimagelink", bookimg);
+		// delete from LendingModel
+		barcodeLendModel.setCode(null);
+
+		clearUser(barcodeLendModel, uiModel);
+		// return success
+		return "barcode/checkoutsuccess";
+
+	}	
+	
+	@RequestMapping(method = RequestMethod.GET,value="/test/returnsuccess", produces = "text/html")
+	public String testReturnSuccess(BarcodeLendModel barcodeLendModel,
+			Model uiModel, HttpServletRequest httpServletRequest,
+			Principal principal) {
+		BookDao book = catalogService.findBookByBarcode("B1000000001233");
+		BookDetailDao bookdetail = book.getBookdetail();
+		PersonDao person = personRepo.findPersonByBarcode("A000000000001");
+		
+		// put person in model
+		barcodeLendModel.setPerson(person);	
+		String firstname = barcodeLendModel.getPerson() != null ? barcodeLendModel.getPerson().getFirstname() : "";
+		String booktitle = bookdetail.getTitle();
+		String bookauthor = bookdetail.getAuthorsAsString();
+		String bookimg = bookdetail.getImagelink();
+
+
+		// ---- put name, book title in uiModel
+		uiModel.addAttribute("personname", firstname);
+		uiModel.addAttribute("booktitle", booktitle);
+		uiModel.addAttribute("bookauthor", bookauthor);
+		uiModel.addAttribute("bookimagelink", bookimg);
+		// delete from LendingModel
+		barcodeLendModel.setCode(null);
+
+		clearUser(barcodeLendModel, uiModel);
+		// return success
+		return "barcode/returnsuccess";
+
+	}		
+	
 	@RequestMapping(method = RequestMethod.POST, produces = "text/html")
 	public String processBarcode(BarcodeLendModel barcodeLendModel,
 			Model uiModel, BindingResult bindingErrors,
@@ -140,7 +211,7 @@ public class BarcodeLendingController {
 			// if checkout - checkout book for user, and return checkout success
 			// page
 			String firstname = barcodeLendModel.getPerson() != null ? barcodeLendModel
-					.getPerson().getFulldisplayname() : "";
+					.getPerson().getFirstname() : "";
 			String booktitle = bookdetail.getTitle();
 			String bookauthor = bookdetail.getAuthorsAsString();
 			String bookimg = bookdetail.getImagelink();
@@ -281,7 +352,7 @@ public class BarcodeLendingController {
 					PersonDao person = personRepo.findPersonByBarcode(code);
 					// put person firstname, lastname, section and/or teacher in model
 					if (person!=null) {
-						String name = person.getFulldisplayname();
+						String name = person.getFirstname();
 						Boolean isteacher = (person instanceof TeacherDao);
 						String sectiondisp = "";
 						if (!isteacher) {

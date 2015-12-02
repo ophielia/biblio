@@ -5,5 +5,13 @@
     <definition extends="default" name="dashboard/show">
         <put-attribute name="body" value="/WEB-INF/views/dashboard/show.jspx"/>
     </definition>
+  
+      <definition extends="default" name="dashboard/stats">
+        <put-attribute name="body" value="/WEB-INF/views/dashboard/stats.jspx"/>
+    </definition>  
     
+  
+      <definition extends="default" name="dashboard/breakout">
+        <put-attribute name="body" value="/WEB-INF/views/dashboard/breakout.jspx"/>
+    </definition>      
 </tiles-definitions>

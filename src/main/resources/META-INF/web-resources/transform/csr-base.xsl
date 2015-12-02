@@ -85,18 +85,7 @@
 		    <fo:block font-size="9pt" page-break-after="always"><xsl:apply-templates select="returnedlist"/></fo:block>
 
 		<!-- overdue books -->
-		<xsl:if test="overduecount > 0">
-		<fo:block page-break-before="always">
-		<fo:block text-align="center" font-weight="bold" space-after="15mm">Overdue Notices</fo:block>
-		<!-- apply templates here for overdue books -->
-		<xsl:call-template name="overduesummary">
-		</xsl:call-template>
-		</fo:block>
-		<!-- now, the notices themselves -->
-		<fo:block page-break-after="always">
-		<xsl:apply-templates select="overduelist"/>
-		</fo:block>
-		</xsl:if>
+<!-- removing ...  -->
 		
             
     </xsl:template>
