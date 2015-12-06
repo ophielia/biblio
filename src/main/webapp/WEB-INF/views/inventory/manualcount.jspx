@@ -69,10 +69,13 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 
 <h2>${lcountstack}</h2>
 <form:errors id="inventory_errors" class="errors" style="margin-left:0px" />
-${lbooknr} <form:input  type="text" path="manualentry"></form:input> <input class="linkbutton" id="countbook" name="countbook"
+<div>${lbooknr} <form:input  type="text" path="manualentry"></form:input> <input class="linkbutton" id="countbook" name="countbook"
 					type="submit" value="${lcountbook}" /> 
 <span class="selectspanactive" id="clearstack" style="float: right;
     margin-bottom: 15px;" >${lclearstack}</span>
+    <span style="float:right;margin-top:12px">
+    <spring:message code="label_inv_stackcount" arguments="${countModel.stackCount}" htmlEscape="false"/>
+</span></div>
 <table>
 <THEAD>
 <tr>

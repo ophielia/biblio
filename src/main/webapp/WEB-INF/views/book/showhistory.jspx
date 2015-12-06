@@ -127,7 +127,7 @@
 					<tr>
 
 						<td>${histRec.borrowerfn}    ${histRec.borrowerln }</td>
-						<td>${histRec.teacherfirstname } ${histRec.teacherfirstname }</td>
+						<td>${histRec.teacherfirstname } ${histRec.teacherlastname }</td>
 						<td>${sectionsel[histRec.borrowersection]}</td>
 						<td><fmt:formatDate type="date" value="${histRec.checkedout}" /><br />
 						<fmt:formatDate type="date" value="${histRec.duedate }" /></td>

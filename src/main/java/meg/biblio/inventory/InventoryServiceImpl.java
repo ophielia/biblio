@@ -488,6 +488,7 @@ public class InventoryServiceImpl implements InventoryService {
 					// set userid for book
 					if (saveinstack) {
 						countedbook.setUserid(userid);
+						countedbook.setCounteddate(new Date());
 					}
 					countedbook.setCounteddate(new Date());
 					// save book
@@ -688,6 +689,11 @@ public class InventoryServiceImpl implements InventoryService {
 		}
 		c.where(cb.and(whereclause.toArray(new Predicate[whereclause.size()])));
 
+		// add order by for stack
+		if (searchtype == StackSearchType.STACK) {
+			c.orderBy(cb.asc(bookroot.get("counteddate")));
+		}
+		
 		TypedQuery<InvStackDisplay> q = entityManager.createQuery(c);
 		return q.getResultList();
 	}

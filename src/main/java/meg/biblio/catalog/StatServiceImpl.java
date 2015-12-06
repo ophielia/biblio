@@ -516,6 +516,7 @@ public class StatServiceImpl implements StatService {
 					.getShelfClassHash(client.getId(), lang);
 			Set<Long> keys = statusbkout.keySet();
 			for (Long key : keys) {
+				
 				// make BasicStat to hold label and value
 				BasicStat bs = new BasicStat();
 				ClassificationDao classdao = disps.get(key);
@@ -524,6 +525,8 @@ public class StatServiceImpl implements StatService {
 					String addldisp = classdao.getImagedisplay();
 					bs.setDisplay(display);
 					bs.setImagepath(base + addldisp);
+				} else {
+					bs.setDisplay(" - - - ");
 				}
 				String value = String.valueOf(statusbkout.get(key));
 				bs.setValue(value);

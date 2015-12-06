@@ -62,10 +62,10 @@ ${lclassof} ${report.teacherfn}
 <c:forEach items="${report.checkedoutlist}" var="checkedout">
 <tr>
 <td>${checkedout.borrowerfn} ${checkedout.borrowerln} </td>
-<td>${checkedout.booktitle} </td>
+<td>(${checkedout.bookclientid}) ${checkedout.booktitle} </td>
 <td>${checkedout.author} </td>
-<td>${checkedout.checkedout} </td>
-<td>${checkedout.duedate} </td>
+<td><fmt:formatDate type="date" value="${checkedout.checkedout}" /></td>
+<td><fmt:formatDate type="date" value="${checkedout.duedate}" /></td>
 </tr>
 </c:forEach>
 </tbody>
@@ -90,10 +90,10 @@ ${lclassof} ${report.teacherfn}
 <c:forEach items="${report.returnedlist}" var="checkedout">
 <tr>
 <td>${checkedout.borrowerfn} ${checkedout.borrowerln} </td>
-<td>${checkedout.booktitle} </td>
+<td>(${checkedout.bookclientid}) ${checkedout.booktitle} </td>
 <td>${checkedout.author} </td>
-<td>${checkedout.duedate} </td>
-<td>${checkedout.returned} </td>
+<td><fmt:formatDate type="date" value="${checkedout.duedate}" /></td>
+<td><fmt:formatDate type="date" value="${checkedout.returned}" /></td>
 </tr>
 </c:forEach>
 </tbody>
@@ -121,10 +121,10 @@ ${lclassof} ${report.teacherfn}
 <c:forEach items="${report.overduelist}" var="checkedout">
 <tr>
 <td>${checkedout.borrowerfn} ${checkedout.borrowerln} </td>
-<td>${checkedout.booktitle} </td>
+<td>(${checkedout.bookclientid}) ${checkedout.booktitle} </td>
 <td>${checkedout.author} </td>
-<td>${checkedout.checkedout} </td>
-<td>${checkedout.duedate} </td>
+<td><fmt:formatDate type="date" value="${checkedout.checkedout}" /></td>
+<td><fmt:formatDate type="date" value="${checkedout.duedate}" /></td>
 </tr>
 </c:forEach>
 </tbody>

@@ -394,9 +394,7 @@ FoundDetailsDao fd = fdetails.get(detailidx.intValue());
 		}
 		bookModel.setTrackchange(true);
 		uiModel.addAttribute("bookModel", bookModel);
-		if (frommarker!=null) {
-			uiModel.addAttribute("from",frommarker);
-		}
+		uiModel.addAttribute("from",frommarker);
 		return "book/editbook";
 	}
 

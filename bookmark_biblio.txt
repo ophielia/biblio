@@ -10,18 +10,9 @@ overdue text
 
 
 
-
-
------> ISSUE!! category breakout showing 1620 italian books ?????
-	
-put advanced search under catalog
-
-
 minor - show "nothing" message for checkout and overdue lists	
-menu - advanced search under catalog
-
-
 bugfix / improvement - increment grade shows success page.... otherwise no sign it was done.			
+teeny feature - link to lending summary for book from lending list
 
 print out names for kids??  (future)
 future feature - no internet entry for books....
@@ -31,10 +22,20 @@ db testing - problem with views.  LendingSearchService fails.  check this link -
 	http://dbunit.sourceforge.net/intro.html
 
 ---- begin commit changes ----
+done -  ISSUE!! category breakout showing 1620 italian books ?????
+done - bugfix - dates - weekly summary
+done - weekly summary, returned for whole week
+done - menu - advanced search under catalog
+
+
+
+---- end commit changes ----
+
+
+
+----- begin branch changes ----
 
 done - working on checkout page
-
-	
 done - breakouts link to full
 done - format breakouts 
 done - daily summary - no overdue notices
@@ -62,14 +63,6 @@ done - menu - add services, demo
 done - summary report doesn't fail on empty
 done - change overdue report to not show print link when empty
 done - improvement - checkout page - name more evident....
-
-
----- end commit changes ----
-
-
-
------ begin branch changes ----
-
 
 
 ---- end branch changes ----
@@ -145,6 +138,11 @@ eventually - check scheduledFillInDetails... DetailSearch
 eventually oh - big idea (next update) - assign code (old random code version - with barcode!!)
 
 
+----- December 2015 - Big Picture ----
+printing
+client interface
+images to db
+z59
 
 
 

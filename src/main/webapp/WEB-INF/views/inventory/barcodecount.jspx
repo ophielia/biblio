@@ -66,16 +66,20 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 
 <spring:url value="/inventory/count" var="actionurl"/>
 <form:form action="${actionurl}" id="countbook" method="POST" modelAttribute="countModel">
+<h2>${lcountstack}</h2>
 
-<div style="    clear: both;
-    vertical-align: bottom;
-    margin-top: 50px;">
-<span class="inlineh2">${lcountstack}</span>
+
 <form:errors id="inventory_errors" class="errors" style="margin-left:0px" />
 
+
+
+
+<div>
 <span class="selectspanactive" id="clearstack" style="float: right;
     margin-bottom: 15px;" >${lclearstack}</span>
-    </div>
+    <span style="float:right;margin-top:12px">
+    <spring:message code="label_inv_stackcount" arguments="${countModel.stackCount}" htmlEscape="false"/>
+</span></div>
 <table>
 <THEAD>
 <tr>

@@ -33,11 +33,9 @@ private BookDetailDao bookdetail;
 private Long clientbooktype;
 private String note;
 private Boolean tocount;
-
-private Long countstatus;
-@Temporal(TemporalType.DATE)
-@DateTimeFormat(style = "M-")
 private Date counteddate;
+private Long countstatus;
+
 private Long userid;
 
 	public void setClientbookid(String clientbookid) {

@@ -282,7 +282,7 @@ public class LendingServiceImpl implements LendingService {
 		criteria.reset();
 		criteria.setOverdueOnly(null);
 		criteria.setSchoolgroup(classid);
-		criteria.setReturnedon(date);
+		criteria.setTimeselect(LendingSearchCriteria.TimePeriodType.THISWEEK);
 		List<LoanRecordDisplay> returned = lendingSearch
 				.findLoanRecordsByCriteria(criteria, clientid);
 		summaryreport.setReturnedlist(returned);

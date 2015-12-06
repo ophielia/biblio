@@ -29,6 +29,14 @@ public class CountModel {
 		this.stack = stack;
 		
 	}
+	
+	public int getStackCount() {
+		if (this.stack!=null) {
+			return this.stack.size();
+		} else {
+			return 0;
+		}
+	}
 
 	public List<InvStackDisplay> getUserStack() {
 		return stack;
