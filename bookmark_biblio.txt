@@ -22,6 +22,7 @@ db testing - problem with views.  LendingSearchService fails.  check this link -
 	http://dbunit.sourceforge.net/intro.html
 
 ---- begin commit changes ----
+
 done -  ISSUE!! category breakout showing 1620 italian books ?????
 done - bugfix - dates - weekly summary
 done - weekly summary, returned for whole week
@@ -90,16 +91,16 @@ DEMO 1.0
 Back-End Fine Points:
 	createCatalogEntryFromBookModel - graceful handling of exception calling google books api
 	assignBookDetails - graceful handling of exception
-	save book AFTER detail search (in case bad isbn was entered.....)
+	done - save book AFTER detail search (in case bad isbn was entered.....)
 
 Front-End:
 	focus on username on login
 	autocomplete off everywhere
 	verify book code - nice and thick!
-	checkout person page with code - nice and thick!
-	check-all in admin search
+	done - checkout person page with code - nice and thick!
+	done - check-all in admin search
 	default language french
-	take away themes
+	done - take away themes
 	Better navigation - menu "down to bottom" and icons in pages with main functions.
 
 
