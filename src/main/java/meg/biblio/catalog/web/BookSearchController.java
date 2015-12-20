@@ -1,6 +1,7 @@
 package meg.biblio.catalog.web;
 
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -238,6 +239,13 @@ public class BookSearchController {
 	private BookSearchCriteria getDefaultCriteria(Long clientkey) {
 		BookSearchCriteria criteria = new BookSearchCriteria();
 		criteria.setClientid(clientkey);
+		List<Long> statuslist = new ArrayList<Long>();
+		statuslist.add(CatalogService.Status.INREPAIR);
+		statuslist.add(CatalogService.Status.INVNOTFOUND);
+		statuslist.add(CatalogService.Status.LOSTBYBORROWER);
+		statuslist.add(CatalogService.Status.REMOVEDFROMCIRC);
+		criteria.setStatuslist(statuslist);
+		criteria.setInstatuslist(false);
 		return criteria;
 	}
 

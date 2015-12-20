@@ -1,25 +1,16 @@
-Branch - master
+Branch - printing
 
-done - dashboard
 report-lending
 labels 
 	free start, 
 	free entry
-classification side by side
 overdue text
-
-
-
+only show non-lost books in basic search
 minor - show "nothing" message for checkout and overdue lists	
 bugfix / improvement - increment grade shows success page.... otherwise no sign it was done.			
 teeny feature - link to lending summary for book from lending list
 
-print out names for kids??  (future)
-future feature - no internet entry for books....
-future feature - backwards checkout for no internet.
-theory / strategy / new learning
-db testing - problem with views.  LendingSearchService fails.  check this link - 
-	http://dbunit.sourceforge.net/intro.html
+
 
 ---- begin commit changes ----
 
@@ -137,6 +128,10 @@ later - note on display page - barcode assigned.
 eventually - will need to program for isbn codes - translate codes to hyphens.
 eventually - check scheduledFillInDetails... DetailSearch	
 eventually oh - big idea (next update) - assign code (old random code version - with barcode!!)
+future feature - backwards checkout for no internet.
+theory / strategy / new learning
+db testing - problem with views.  LendingSearchService fails.  check this link - 
+	http://dbunit.sourceforge.net/intro.html
 
 
 ----- December 2015 - Big Picture ----
