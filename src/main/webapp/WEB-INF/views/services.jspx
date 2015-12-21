@@ -27,5 +27,5 @@
 
     
     <p style="clear:both; padding-top:30px">
-    <spring:message code="msg_services_followout"/></p>   
+    <spring:message htmlEscape="false"  code="msg_services_followout"/></p>   
 </div>
