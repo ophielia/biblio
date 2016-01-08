@@ -35,6 +35,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 </c:if>
 <div class="inputspace">${lfrom}: <input name="from" value=""></input>	</div>
 <div class="inputspace">${lto}: <input name="to" value=""></input></div>
+<div class="inputspace">offset: <input name="offset" value="0"></input></div>
 
 
 		

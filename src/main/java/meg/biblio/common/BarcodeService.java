@@ -20,7 +20,7 @@ public interface BarcodeService {
 	BarcodeSheet assembleBarcodeSheetForClass(Long classId, Long clientid, Locale locale);
 	
 	BarcodeSheet assembleBarcodeSheetForBooks(int count, int startcode,
-			Long clientkey, Locale locale);
+			int offset, Long clientkey, Locale locale);
 	
 	String getBookBarcodeForClientid(ClientDao client, String clientbookid);
 

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page" 
+xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" 
+xmlns:c="http://java.sun.com/jsp/jstl/core" 
+xmlns:spring="http://www.springframework.org/tags" 
+xmlns:form="http://www.springframework.org/tags/form" 
+xmlns:fmt="http://java.sun.com/jsp/jstl/fmt" 
+xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+<script type="text/javascript">
+ require([
+          'dojo/dom',"dojo/dom-style","dijit/focus","dojo/on", 
+          'dojo/domReady!'
+      ], function (dom,style,focusUtil,on) {
+
+	 focusUtil.focus(dom.byId("newid"));
+	 
+	 	
+	});
+ </script>
+
+<spring:message code="button_generate" htmlEscape="false" var="bgen"/>
+<spring:message code="button_cancel" htmlEscape="false" var="bcancel"/>
+<spring:message code="label_generate_books" htmlEscape="false" var="pagetitle"/>
+<spring:message code="label_generate_codecount" htmlEscape="false" var="codecount"/>
+<spring:message code="label_generate_codefrom" htmlEscape="false" var="lfrom"/>
+<spring:message code="label_generate_codeto" htmlEscape="false" var="lto"/>
+<spring:message code="label_generate_codeto" htmlEscape="false" var="lto"/>
+<spring:message code="label_generate_codeto" htmlEscape="false" var="lto"/>
+<spring:message code="error_enter_range" htmlEscape="false" var="msgerrorenterrange"/>
+<spring:message code="error_enter_rangeinvalid" htmlEscape="false" var="msgerrorrangeinvalid"/>
+
+
+
+<h1>{customlisttitle}</h1>
+
+
+<spring:url value="/generatebarcode/books/custom" var="actionurl"/>
+<div class="columnbox" style="border-right-style: dotted;padding-right: 5px;  ">
+<form:form action="${actionurl}" id="generatebookcodes" method="POST">
+<div>
+			{addcodeid}<input id="newid" name="newid" type="text"
+				value="" />
+				<input value="{addid}" type="submit" name="toadd"
+				id="addnewid" class="linkbutton" style="width: 125px;" />
+				
+
+		</div>
+		<table>
+			<THEAD>
+				<tr>
+					<th>{bookid}</th>
+				</tr>
+			</THEAD>
+			<tbody>
+<c:forEach var="value" items="${customvals}">			
+			<tr><td>${value}</td></tr>
+			</c:forEach>
+			</tbody>
+		</table>
+
+<input value="{clearlist}" type="submit" name="toremove"
+				id="toremove" class="linkbutton" style="float: right;" />
+				
+	</form:form>
+</div>
+
+<div style="       padding-left: 10px;" class="columnbox cbthree">
+		<div>info one</div>
+		<div>info two</div>
+		<div>info three</div>
+		<span style="float: right; margin-bottom: 15px;"
+			class="linkbuttonquiet"><a class="linkbutton"
+			href="/biblio/inventory/count?changepref=2">{print}</a></span>
+		<input id="countTypePref" name="countTypePref" type="hidden" value="1" />
+</div>
+
+
+
+</div>

@@ -231,7 +231,7 @@ public class PDFController {
 
 			int codecount = codeCount.intValue();
 			BarcodeSheet sheet = barcodeService.assembleBarcodeSheetForBooks(
-					codecount,0, clientkey,locale);
+					codecount,0, 0,clientkey, locale);
 
 			ByteArrayOutputStream out = new ByteArrayOutputStream();
 			try {
@@ -268,7 +268,7 @@ public class PDFController {
 	
 	@RequestMapping(params = "range",value = "/bookbarcodes", method = RequestMethod.GET, produces = "text/html")
 	public void generateBookBarcodeSheetRange(
-			@RequestParam("from") Integer startcode,@RequestParam("to") Integer endcode, Model uiModel,
+			@RequestParam("from") Integer startcode,@RequestParam("to") Integer endcode, @RequestParam("offset") Integer offset,Model uiModel,
 			HttpServletRequest request, HttpServletRequest httpServletRequest,
 			HttpServletResponse response, Principal principal, Locale locale)
 			throws FOPException, JAXBException, TransformerException,
@@ -284,8 +284,9 @@ public class PDFController {
 			int start = startcode.intValue();
 			int end = endcode.intValue();
 			int count = end-start;
+			int offsetint = offset!=null?offset.intValue():0;
 			BarcodeSheet sheet = barcodeService.assembleBarcodeSheetForBooks(
-					count, start,clientkey,locale);
+					count, start,offsetint,clientkey, locale);
 
 			ByteArrayOutputStream out = new ByteArrayOutputStream();
 			try {

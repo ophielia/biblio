@@ -3,6 +3,7 @@ package meg.biblio.lending.web;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 
 import javax.servlet.ServletException;
@@ -12,6 +13,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.transform.TransformerException;
 
 import meg.biblio.common.BarcodeService;
+import meg.biblio.common.CacheService;
 import meg.biblio.common.ClientService;
 import meg.biblio.common.SelectKeyService;
 import meg.biblio.common.db.dao.ClientDao;
@@ -36,6 +38,10 @@ public class GenerateBarcodeController {
 
 	@Autowired
 	ClientService clientService;
+	
+
+	@Autowired
+	CacheService cacheService;	
 	
 	@Autowired
 	ClassManagementService classService;
@@ -76,9 +82,72 @@ public class GenerateBarcodeController {
 
 	}
 
+	@RequestMapping(value="/books/custom",method = RequestMethod.GET, produces = "text/html")
+	public String showGenerateBarcodesCustomValues( Model uiModel,
+			HttpServletRequest httpServletRequest, Principal principal,Locale locale) {
+		String lang = locale.getLanguage();
+		ClientDao client = clientService.getCurrentClient(principal);
+		String username = principal.getName();
+		
+		// get list of cache values
+				List<String> cacheValues = cacheService.getValidCacheAsList(username, CacheService.CodeTag.CustomBarcodes);
+				
+				// pop them into the model
+				uiModel.addAttribute("customvals",cacheValues);		
+
+				// return the custom book values page
+				return "barcode/generatebookscustom";
+
+	}
+	
+	@RequestMapping(value="/books/custom",params = "toadd",method = RequestMethod.POST, produces = "text/html")
+	public String addCustomValues( @RequestParam("newid") String newid,Model uiModel,
+			HttpServletRequest httpServletRequest, Principal principal,Locale locale) {
+		String lang = locale.getLanguage();
+		ClientDao client = clientService.getCurrentClient(principal);
+		String username = principal.getName();
+		
+		// Validate newid
+		// MM TODO
+		
+		// add new id to cache
+		cacheService.saveValueInCache(username, CacheService.CodeTag.CustomBarcodes, "", newid, 360L);
+		
+		// get list of cache values
+		List<String> cacheValues = cacheService.getValidCacheAsList(username, CacheService.CodeTag.CustomBarcodes);
+		
+		// pop them into the model
+		uiModel.addAttribute("customvals",cacheValues);		
+
+		// return the custom book values page
+		return "barcode/generatebookscustom";
+
+	}
+	
+	@RequestMapping(value="/books/custom", params = "toremove", method = RequestMethod.POST, produces = "text/html")
+	public String clearCustomList( Model uiModel,
+			HttpServletRequest httpServletRequest, Principal principal,Locale locale) {
+		String username = principal.getName();
+
+		// clear cache
+		cacheService.clearUserCacheForTag(username, CacheService.CodeTag.CustomBarcodes);
+		
+		// get list of cache values
+		List<String> cacheValues = cacheService.getValidCacheAsList(username, CacheService.CodeTag.CustomBarcodes);
+		
+		// pop them into the model
+		uiModel.addAttribute("customvals",cacheValues);		
+
+		// return the custom book values page
+		return "barcode/generatebookscustom";	
+	}
+	
+	
+	
 	@RequestMapping(params = "range",value = "/books", method = RequestMethod.POST, produces = "text/html")
 	public String generateBookBarcodeSheetRange(
-			@RequestParam("from") Integer startcode,@RequestParam("to") Integer endcode, Model uiModel,
+			@RequestParam("from") Integer startcode,@RequestParam("to") Integer endcode, 
+			@RequestParam("offset") Integer offset,Model uiModel,
 			HttpServletRequest request, HttpServletRequest httpServletRequest,
 			HttpServletResponse response, Principal principal, Locale locale)
 			throws FOPException, JAXBException, TransformerException,
@@ -91,7 +160,11 @@ public class GenerateBarcodeController {
 			uiModel.addAttribute("errorrangeinvalid",true);
 			return "barcode/generatebooksrange";
 		}
-		return "redirect:/pdfwrangler/bookbarcodes?range=true&from=" + startcode.intValue() + "&to=" + endcode.intValue();
+		if (offset==null) {
+			offset = 0;
+		}
+		
+		return "redirect:/pdfwrangler/bookbarcodes?range=true&from=" + startcode.intValue() + "&to=" + endcode.intValue() + "&offset=" + offset.intValue();
 	}
 			
 

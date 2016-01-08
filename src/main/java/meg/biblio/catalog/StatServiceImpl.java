@@ -27,7 +27,6 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Transactional
-@EnableScheduling
 public class StatServiceImpl implements StatService {
 
 	@Autowired

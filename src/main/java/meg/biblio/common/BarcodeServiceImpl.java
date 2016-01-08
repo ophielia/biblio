@@ -52,7 +52,7 @@ public class BarcodeServiceImpl implements BarcodeService {
 
 	@Override
 	public BarcodeSheet assembleBarcodeSheetForBooks(int barcodecnt,int startcode,
-			Long clientid, Locale locale) {
+			int offset, Long clientid, Locale locale) {
 		
 		// get client
 		ClientDao client = clientService.getClientForKey(clientid);
@@ -75,7 +75,7 @@ public class BarcodeServiceImpl implements BarcodeService {
 		} catch (Exception e) {
 			title = "barcodes";
 		}
-		BarcodeSheet sheet = new BarcodeSheet(codes, title);
+		BarcodeSheet sheet = new BarcodeSheet(codes, title, offset);
 		// return BookBarcodeSheet
 		return sheet;
 	}
@@ -147,7 +147,7 @@ public class BarcodeServiceImpl implements BarcodeService {
 			classcodes.add(bc);
 		}
 		// construct BarcodeSheet
-		BarcodeSheet bcs = new BarcodeSheet(classcodes, title);
+		BarcodeSheet bcs = new BarcodeSheet(classcodes, title, 0);
 		// return BarcodeSheet
 		return bcs;
 

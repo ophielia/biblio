@@ -1,5 +1,6 @@
 package meg.biblio.common.report;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlElement;
@@ -12,10 +13,10 @@ public class BarcodeSheet {
 	String title;
 	int columncount;
 
-	public BarcodeSheet(List<Barcode> codes, String title) {
+	public BarcodeSheet(List<Barcode> codes, String title, int offset) {
 		this.codes = codes;
 		this.title = title;
-		numberCodes(codes);
+		numberCodes(codes,offset);
 	}
 
 	public BarcodeSheet() {
@@ -32,16 +33,23 @@ public class BarcodeSheet {
 		return codes;
 	}
 
-	public void setCodes(List<Barcode> codes) {
-		this.codes = codes;
-	}
 
-	private void numberCodes(List<Barcode> codes2) {
+	private void numberCodes(List<Barcode> codes2,int offset) {
+		List<Barcode> paddedlist = new ArrayList<Barcode>();
 		int i=1;
-		for (Barcode code:codes2) {
-			code.setPosition(i);
+		for (int j=0;j<offset;j++) {
+			Barcode dummy = new Barcode();
+			dummy.setCode("dummy");
+			dummy.setPosition(i);
+			paddedlist.add(dummy);
 			i++;
 		}
+		for (Barcode code:codes2) {
+			code.setPosition(i);
+			paddedlist.add(code);
+			i++;
+		}
+		this.codes = paddedlist;
 	}
 
 }

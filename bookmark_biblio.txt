@@ -1,23 +1,33 @@
 Branch - printing
 
-report-lending
+report-lending printout
 labels 
 	free start, 
 	free entry
 overdue text
-only show non-lost books in basic search
 minor - show "nothing" message for checkout and overdue lists	
 bugfix / improvement - increment grade shows success page.... otherwise no sign it was done.			
 teeny feature - link to lending summary for book from lending list
 
 
+labels - 
+	free position start - backend
+		offset to startposition....
+		move nudge into xml / backend
+		add border to xml / backend
+		
+	nudge - backend
+	scheduling - for deleting cache - DetailSearchServiceImpl Scheduling	
+	
+---->front end - custom list
+	fill out controller - 
+		done - showing items in list
+		deleting items in list
+		done - clearing all   
+
 
 ---- begin commit changes ----
 
-done -  ISSUE!! category breakout showing 1620 italian books ?????
-done - bugfix - dates - weekly summary
-done - weekly summary, returned for whole week
-done - menu - advanced search under catalog
 
 
 
@@ -27,34 +37,6 @@ done - menu - advanced search under catalog
 
 ----- begin branch changes ----
 
-done - working on checkout page
-done - breakouts link to full
-done - format breakouts 
-done - daily summary - no overdue notices
-done - checkout self - layout refining	
-done - finish services text
-done - parameterize text services.
-done - parameterize all text for bilingual
-done - remove theme select for non-authenticated
-nevermind - put services link in footer for authenticated (put on index instead)
-done - dashboard - cleanup
-done - inventory stat
-done - MostPopular breakouts,
-done -  front end for dashboard
-done	replace {0}
-done	replace current year
-done	replace msg_stats_invnotrun
-done	check checkedout categories stat - not working, mareschale
-done	breakouts only to 10 - 
-done - index page - double check text
-done - 	parameterize
-done -	in french
-done - need services page
-done - need demo page
-done - menu - add services, demo 
-done - summary report doesn't fail on empty
-done - change overdue report to not show print link when empty
-done - improvement - checkout page - name more evident....
 
 
 ---- end branch changes ----
@@ -850,6 +832,40 @@ done - bugfix / improvement - default name splitting put extra names in last nam
 done - bugfix / improvement - new student - shouldn't have heading "Students".		
 done - bugfix / improvement - add existing student - shouldn't have heading "Students".		
 
+********* MASTER bugfixes and new look *****************
+
+done - working on checkout page
+done - breakouts link to full
+done - format breakouts 
+done - daily summary - no overdue notices
+done - checkout self - layout refining	
+done - finish services text
+done - parameterize text services.
+done - parameterize all text for bilingual
+done - remove theme select for non-authenticated
+nevermind - put services link in footer for authenticated (put on index instead)
+done - dashboard - cleanup
+done - inventory stat
+done - MostPopular breakouts,
+done -  front end for dashboard
+done	replace {0}
+done	replace current year
+done	replace msg_stats_invnotrun
+done	check checkedout categories stat - not working, mareschale
+done	breakouts only to 10 - 
+done - index page - double check text
+done - 	parameterize
+done -	in french
+done - need services page
+done - need demo page
+done - menu - add services, demo 
+done - summary report doesn't fail on empty
+done - change overdue report to not show print link when empty
+done - improvement - checkout page - name more evident....
+done -  ISSUE!! category breakout showing 1620 italian books ?????
+done - bugfix - dates - weekly summary
+done - weekly summary, returned for whole week
+done - menu - advanced search under catalog
 
 ----- end complete history ----
 

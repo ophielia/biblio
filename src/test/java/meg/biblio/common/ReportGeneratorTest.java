@@ -74,17 +74,16 @@ public class ReportGeneratorTest {
 	@Test
 	public void testMakeABarcodeXML() throws JAXBException {
 		Long clientid = clientService.getTestClientId();
-		ClientDao client = clientService.getClientForKey(clientid);
 		Locale locale = Locale.FRANCE;
 
 		BarcodeSheet sheet = barcodeService.assembleBarcodeSheetForBooks(65,0,
-				clientid, locale);
+				0, 68L, locale);
 
 		JAXBContext context = JAXBContext.newInstance(BarcodeSheet.class);
 		Marshaller m = context.createMarshaller();
 		m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 
-		m.marshal(sheet, new File("C:/Temp/bcs.xml"));
+		m.marshal(sheet, new File("C:/Temp/bcsmareschale.xml"));
 	}
 	
 	@Test
@@ -101,14 +100,14 @@ public class ReportGeneratorTest {
 			Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, out);
 
 			//Setup Transformer
-			Source xsltSrc = new StreamSource(new File("C:/Temp/bcs-2.xsl"));
+			Source xsltSrc = new StreamSource(new File("C:/Temp/bcsnew.xsl"));
 			Transformer transformer = tFactory.newTransformer(xsltSrc);
 
 			//Make sure the XSL transformation's result is piped through to FOP
 			Result res = new SAXResult(fop.getDefaultHandler());
 
 			//Setup input
-			Source src = new StreamSource(new File("C:/Temp/bcs.xml"));
+			Source src = new StreamSource(new File("C:/Temp/mymareschale.xml"));
 
 
 			//Start the transformation and rendering process
