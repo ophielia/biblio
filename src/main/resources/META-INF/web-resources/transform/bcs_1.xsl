@@ -9,11 +9,46 @@
                 </code128>
               </barcode>
             </xsl:variable>
-            
+        
+
+           <xsl:variable name="ndge" select="barcodes/nudge"/>
+ <xsl:variable name="tmar"> 
+<xsl:choose>
+     <xsl:when test="$ndge='-2'">
+        <xsl:text>4.5</xsl:text>
+     </xsl:when>
+     <xsl:when test="$ndge='-1'">
+        <xsl:text>5.5</xsl:text>
+     </xsl:when>   
+          <xsl:when test="$ndge='0'">
+             <xsl:text>6.5</xsl:text>
+     </xsl:when>   
+          <xsl:when test="$ndge='1'">
+             <xsl:text>7.5</xsl:text>
+     </xsl:when>   
+          <xsl:when test="$ndge='2'">
+             <xsl:text>8.5</xsl:text>
+     </xsl:when>   
+     <xsl:otherwise>
+        <xsl:text>6.5</xsl:text>
+    </xsl:otherwise></xsl:choose>
+</xsl:variable> 
+
+           <xsl:variable name="brdr" select="barcodes/border"/>
+ <xsl:variable name="border"> 
+<xsl:choose>
+     <xsl:when test="$brdr='1'">
+        <xsl:text>black</xsl:text>
+     </xsl:when>
+     <xsl:otherwise>
+        <xsl:text>white</xsl:text>
+    </xsl:otherwise></xsl:choose>
+</xsl:variable> 
+
 <xsl:template match="/">
     <fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format">
         <fo:layout-master-set>
-            <fo:simple-page-master margin-top="6.0mm" margin-left="8mm" margin-bottom=".5mm"
+            <fo:simple-page-master margin-top="{$tmar}mm" margin-left="8mm" margin-bottom=".5mm"
                 margin-right="0mm" page-width="210mm" page-height="297mm" master-name="first">
                 <fo:region-body margin-top="0cm"/>
             </fo:simple-page-master>
@@ -41,7 +76,7 @@
 
     <xsl:template match="codes">
         <xsl:variable name="posi" select="pos"/>
-        <fo:table-cell border-width="0.1mm" border-style="solid" height="21.6mm" border-color="black" >
+        <fo:table-cell border-width="0.1mm" border-style="solid" height="21.6mm" border-color="{$border}" >
             <xsl:if test="not($posi mod 5)">
                 <xsl:attribute name="ends-row">true</xsl:attribute>
             </xsl:if>
@@ -52,7 +87,7 @@
 	    	    	<xsl:value-of select="description"/>
 	                </fo:block>
 	    <fo:block>
-	    beep
+
 	    </fo:block>
             </fo:block>
             </xsl:when>

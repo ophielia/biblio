@@ -8,6 +8,10 @@ overdue text
 minor - show "nothing" message for checkout and overdue lists	
 bugfix / improvement - increment grade shows success page.... otherwise no sign it was done.			
 teeny feature - link to lending summary for book from lending list
+bugfix - weekly summary incorrect - showing same books in checkedout and returned
+bugfix - list of overdue doesn't show teachers
+bugfix / feature - book display - move checked out to accent box
+bugfix / feature - statistic/dashboard - 50 most checked out books....
 
 
 labels - 
@@ -16,27 +20,42 @@ labels -
 		move nudge into xml / backend
 		add border to xml / backend
 		
-	nudge - backend
-	scheduling - for deleting cache - DetailSearchServiceImpl Scheduling	
+	done - nudge - backend
+	done - scheduling - for deleting cache - DetailSearchServiceImpl Scheduling	
 	
----->front end - custom list
-	fill out controller - 
-		done - showing items in list
-		deleting items in list
-		done - clearing all   
+---->front end - custom class labels
 
+	put together submit for print
+---->	front end cleanup print for class
+		bug - select position not shown in order - backend as list??
+		last label - print - continue labels
+		javascript toggle print options
 
+	put together submit print for custom
+	add front end changes
+	put together submit print for range
+	add front end changes
+		
 ---- begin commit changes ----
 
-
+done - PDFController - generateClassBarcodeSheet - add nudge and border flags
+done - wire parameters together for redirect from GenerateBarcodeController to PDFController
+done - 	bug - not saving class selects correctly (or, at all)		
+done - javascript - (new page)
+done -continue select keys for print - next, nudge select, finish border (to frontend)
 
 
 ---- end commit changes ----
 
+done - deleting items in list
+done - pages to / for controller - put it all together.
+done - start at entry point method....
 
 
 ----- begin branch changes ----
 
+done - showing items in list
+done - clearing all   
 
 
 ---- end branch changes ----

@@ -322,24 +322,37 @@ public class PDFController {
 
 	}
 	
-	
-	@RequestMapping(value = "/classbarcodes", method = RequestMethod.POST, produces = "text/html")
+	@RequestMapping(value = "/classbarcodes", method = RequestMethod.GET, produces = "text/html")
 	public void generateClassBarcodeSheet(
-			@RequestParam("classId") Long classId, Model uiModel,
+			@RequestParam("classId") Long classId,
+			@RequestParam("startpos") Integer startpos,
+			@RequestParam("nudge") Integer nudge,
+			@RequestParam("border") Integer border,Model uiModel,
 			HttpServletRequest request, HttpServletRequest httpServletRequest,
-			HttpServletResponse response, Principal principal,Locale locale)
+			HttpServletResponse response, Principal principal, Locale locale)
 			throws FOPException, JAXBException, TransformerException,
-			IOException, ServletException {
+			IOException, ServletException {	
+
 		ClientDao client = clientService.getCurrentClient(principal);
 		Long clientkey = client.getId();
-
+		String username = principal.getName();
+		
 		String cxslname = "META-INF/web-resources/transform/"
 				+ client.getBarcodesheetxsl() + ".xsl";
 
 		if (classId != null) {
-
-			BarcodeSheet sheet = barcodeService.assembleBarcodeSheetForClass(classId, clientkey, locale);
-
+			int offset = 0;
+			if (startpos !=null && startpos>=1) {
+				offset = startpos - 1;
+			}
+			
+			BarcodeSheet sheet = barcodeService.assembleBarcodeSheetForClassFromCache(classId, username,clientkey,offset
+					,locale);
+			
+			// add nudge, and borders to sheet
+			sheet.setBorder(border);
+			sheet.setNudge(nudge);
+			
 			ByteArrayOutputStream out = new ByteArrayOutputStream();
 			try {
 

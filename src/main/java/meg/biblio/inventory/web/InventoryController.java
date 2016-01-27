@@ -364,7 +364,7 @@ public class InventoryController {
 		}
 
 		// show Reconcile list
-return showReconcileList(client, recModel, uiModel, principal, locale, httpServletRequest);
+		return showReconcileList(client, recModel, uiModel, principal, locale, httpServletRequest);
 
 	}
 

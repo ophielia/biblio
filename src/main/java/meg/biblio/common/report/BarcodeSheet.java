@@ -12,6 +12,11 @@ public class BarcodeSheet {
 	List<Barcode> codes;
 	String title;
 	int columncount;
+	int border=0;
+	int nudge=0;
+	
+
+
 
 	public BarcodeSheet(List<Barcode> codes, String title, int offset) {
 		this.codes = codes;
@@ -50,6 +55,24 @@ public class BarcodeSheet {
 			i++;
 		}
 		this.codes = paddedlist;
+	}
+	
+	@XmlElement
+	public int getBorder() {
+		return border;
+	}
+
+	public void setBorder(int border) {
+		this.border = border;
+	}
+
+	@XmlElement
+	public int getNudge() {
+		return nudge;
+	}
+
+	public void setNudge(int nudge) {
+		this.nudge = nudge;
 	}
 
 }

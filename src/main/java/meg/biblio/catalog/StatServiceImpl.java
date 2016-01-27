@@ -119,7 +119,7 @@ public class StatServiceImpl implements StatService {
 			return runPopularBkout(client, false);
 		} else if (stattype.longValue() == StatService.StatType.POPULARBKOUT_YR) {
 			return runPopularBkout(client, true);
-		}
+		} 
 		return null;
 	}
 

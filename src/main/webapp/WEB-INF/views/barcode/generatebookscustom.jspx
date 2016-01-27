@@ -50,17 +50,24 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 		<table>
 			<THEAD>
 				<tr>
-					<th>{bookid}</th>
+					<th style="border-right-width: 0px;">{bookid}</th>
+					<th style="border-left-width: 0px;"></th>
 				</tr>
 			</THEAD>
 			<tbody>
+			<spring:url value="/generatebarcode/books/custom/delete?value=" var="deleteurl"/>
 <c:forEach var="value" items="${customvals}">			
-			<tr><td>${value}</td></tr>
+			<tr>
+			<td style="border-right-width: 0px;">${value}</td>
+			<td style="border-left-width: 0px;text-align:right">
+			<a href="${deleteurl}${value}">X</a> 
+			</td>
+			</tr>
 			</c:forEach>
 			</tbody>
 		</table>
 
-<input value="{clearlist}" type="submit" name="toremove"
+<input value="{clearlist}" type="submit" name="clearall"
 				id="toremove" class="linkbutton" style="float: right;" />
 				
 	</form:form>

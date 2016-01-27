@@ -5,6 +5,7 @@ import java.util.List;
 
 import meg.biblio.lending.db.dao.SchoolGroupDao;
 import meg.biblio.lending.db.dao.StudentDao;
+import meg.biblio.lending.db.dao.TeacherDao;
 import meg.biblio.lending.web.model.ClassModel;
 import meg.biblio.lending.web.model.TeacherInfo;
 
@@ -61,6 +62,12 @@ public interface ClassManagementService {
 
 
 	StudentDao getStudentById(Long studentid, Long clientid);
+
+
+	SchoolGroupDao getClassByTeacher(Long teacherid, Long clientid);
+
+
+	TeacherDao getTeacherForClass(Long clientid, Long classid);
 
 
 }

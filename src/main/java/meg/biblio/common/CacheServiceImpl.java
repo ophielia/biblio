@@ -56,6 +56,65 @@ public class CacheServiceImpl implements CacheService {
 	}
 
 	@Override
+	public List<String> getValidCacheAsList(String username, String cachetag, String name) {
+		// get userlogin for name
+		UserLoginDao userlogin = loginService.getUserLoginDaoByName(username);
+
+		// get current date
+		Date expiry = new Date();
+
+		if (userlogin != null) {
+			// retrieve cache for tag
+			List<UserCacheDao> usrcache = userCacheRepository
+					.getValidCacheForUser(userlogin, cachetag,name,expiry, new Sort(
+							"expiration"));
+
+			// put values in list
+			if (usrcache != null) {
+				List<String> cachevals = new ArrayList<String>();
+				for (UserCacheDao cachedao : usrcache) {
+					if (cachedao != null && cachedao.getValue() != null) {
+						cachevals.add(cachedao.getValue());
+					}
+				}
+				// return list
+				return cachevals;
+			}
+		}
+		return null;
+	}	
+	
+	public List<Long> getValidCacheAsListofLongs(String username, String cachetag, String name) {
+		// get userlogin for name
+		UserLoginDao userlogin = loginService.getUserLoginDaoByName(username);
+
+		// get current date
+		Date expiry = new Date();
+
+		if (userlogin != null) {
+			// retrieve cache for tag
+			List<UserCacheDao> usrcache = userCacheRepository
+					.getValidCacheForUser(userlogin, cachetag,name,expiry, new Sort(
+							"expiration"));
+
+			// put values in list
+			if (usrcache != null) {
+				List<Long> cachevals = new ArrayList<Long>();
+				for (UserCacheDao cachedao : usrcache) {
+					if (cachedao != null && cachedao.getValue() != null) {
+						Long addval = Long.valueOf(cachedao.getValue());
+						cachevals.add(addval);
+					}
+				}
+				// return list
+				return cachevals;
+			}
+		}
+		return null;	
+	}
+	
+	
+	@Override
 	@Scheduled(fixedRate = 600000)
 	public void clearExpiredCache() {
 		// get expired cache
@@ -150,6 +209,43 @@ public class CacheServiceImpl implements CacheService {
 		}
 		userCacheRepository.flush();
 	}
-		
+
+	@Override
+	public void replaceValuesInCache(String username, String cachetag,
+			String name, List<String> values, Long minutesvalid) {
+		// get userlogin for name
+		UserLoginDao userlogin = loginService.getUserLoginDaoByName(username);
+
+		// get current date
+		Date expiry = new Date();
+
+		// retrieve cachevalues for user, cachetag, name
+		List<UserCacheDao> todeletecache = userCacheRepository
+				.getValidCacheForUser(userlogin, cachetag, name, expiry,  new Sort(
+						"expiration"));
+		// delete them all
+		userCacheRepository.delete(todeletecache);
+		// create new cachevalues from passed list
+		if (values!=null) {
+			List<UserCacheDao> newcache=new ArrayList<UserCacheDao>();
+			// determine expiration date
+			Calendar exp = Calendar.getInstance();
+			exp.setTime(new Date());
+			exp.add(Calendar.MINUTE, minutesvalid.intValue());
+			Date newexpiration = exp.getTime();
+			// create list of values
+			for (String value:values) {
+				UserCacheDao uc = new UserCacheDao();
+				uc.setCacheuser(userlogin);
+				uc.setCachetag(cachetag);
+				uc.setName(name);
+				uc.setExpiration(newexpiration);
+				uc.setValue(value);
+				newcache.add(uc);
+			}
+			userCacheRepository.save(newcache);
+		}
+		userCacheRepository.flush();
+	}
 
 }

@@ -203,7 +203,7 @@ public class ClassModel {
 		List<Long> checkedids = new ArrayList<Long>();
 			// go through checked list
 			for (int i=0;i<checked.size();i++) {
-				// if checked is true, add expenseDao at same slot to checkedlist
+				// if checked is true, add id at same slot to checkedlist
 				Boolean test = checked.get(i);
 				if (test!=null && test) {
 					checkedids.add(idref.get(i));

@@ -21,6 +21,11 @@
 		<put-attribute name="body"
 			value="/WEB-INF/views/barcode/generateclass.jspx" />
 	</definition>
+	
+	<definition extends="default" name="barcode/generateclasscustom">
+		<put-attribute name="body"
+			value="/WEB-INF/views/barcode/generateclasscustom.jspx" />
+	</definition>	
 
 	<definition extends="default" name="barcode/maincheckout">
 		<put-attribute name="body"

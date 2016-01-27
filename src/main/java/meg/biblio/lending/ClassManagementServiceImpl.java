@@ -278,6 +278,23 @@ public class ClassManagementServiceImpl implements ClassManagementService {
 	}
 
 	@Override
+	public SchoolGroupDao getClassByTeacher(Long teacherid, Long clientid) {
+		ClientDao client = clientService.getClientForKey(clientid);
+		// get teacher
+		TeacherDao teacher = teacherRepo.findOne(teacherid);
+		if (teacher!=null) {
+			SchoolGroupDao schoolgroup = teacher.getSchoolgroup();
+			List<TeacherDao> teachers = teacherRepo
+					.findActiveTeachersForClientAndClass(client, schoolgroup);
+			schoolgroup.setTeacherlist(teachers);
+			List<StudentDao> students = getStudentsForClass(schoolgroup, client);
+			schoolgroup.setStudents(students);
+			return schoolgroup;
+		}
+		return null;
+	}
+
+	@Override
 	public List<StudentDao> getUnassignedStudents(Long clientid) {
 		ClientDao client = clientService.getClientForKey(clientid);
 
@@ -452,6 +469,26 @@ public class ClassManagementServiceImpl implements ClassManagementService {
 		}
 		return info;
 	}
+	
+	@Override
+	public TeacherDao getTeacherForClass(Long clientid, Long classid) {
+		// get Client
+		ClientDao client = clientService.getClientForKey(clientid);
+		
+		// get schoolgroup
+		SchoolGroupDao schoolgroup = sgroupRepo.findOne(classid);
+		
+		// get active teachers
+		List<TeacherDao> teachers = teacherRepo
+				.findActiveTeachersForClientAndClass(client, schoolgroup);
+		
+		// return first teacher
+		if (teachers!=null && teachers.size()>0) {
+			return teachers.get(0);
+		}
+		
+		return null;
+	}	
 	
 	@Override
 	public TeacherInfo getTeacherByTeacherid( Long teacherid) {

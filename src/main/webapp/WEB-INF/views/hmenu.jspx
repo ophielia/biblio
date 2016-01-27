@@ -13,10 +13,9 @@
 		<sec:authorize access="isAuthenticated()">
 			<li><moo:menulink label="menu_catalog" url="/search" />
 				<ul>
-					<li><moo:menulink label="menu_createbook" url="/books?form" /></li>
 					<li><moo:menulink label="menu_search" url="/search" /></li>
 					<li><moo:menulink label="menu_adminsearch" url="/admin/search" /></li>
-
+					<li><moo:menulink label="menu_createbook" url="/books?form" /></li>
 				</ul></li>
 			<li><moo:menulink label="menu_lending" url="/lending/checkout" />
 				<ul>
@@ -54,7 +53,7 @@
 							url="/generatebarcode/books" />
 						<ul>
 							<li><moo:menulink label="menu_barcodes_generateclass"
-									url="/generatebarcode/class" /></li>
+									url="/generatebarcode/class/custom" /></li>
 							<li><moo:menulink label="menu_barcodes_generatebook"
 									url="/generatebarcode/books" /></li>
 						</ul></li>

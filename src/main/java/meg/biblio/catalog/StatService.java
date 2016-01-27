@@ -23,6 +23,7 @@ public interface StatService {
 		public static final Long COCATEGORYBKOUT_GL = 109L;
 		public static final Long POPULARBKOUT_GL = 110L;
 		public static final Long POPULARBKOUT_YR = 111L;
+
 		
 	}
 
