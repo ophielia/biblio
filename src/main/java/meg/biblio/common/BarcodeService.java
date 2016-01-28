@@ -22,6 +22,9 @@ public interface BarcodeService {
 	BarcodeSheet assembleBarcodeSheetForBooks(int count, int startcode,
 			int offset, Long clientkey, Locale locale);
 	
+	BarcodeSheet assembleBarcodeSheetForBooksFromCache(String username,
+			int offset, Long clientkey, Locale locale);	
+	
 	String getBookBarcodeForClientid(ClientDao client, String clientbookid);
 
 

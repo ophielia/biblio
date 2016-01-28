@@ -105,7 +105,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 			<span class="stress">${lclassification} :</span>
 					${bookModel.shelfclass}
 				</div>
-	<span class="stress">${lstatus}: </span>${statusLkup[bookModel.status]}
+	
 	</div>
 	<div>
 	<span class="stress">${lsubject}: </span>${bookModel.allSubjectsDisplay}
@@ -132,6 +132,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 						<img src="${bookModel.book.bookdetail.imagelink}" />
 					</div>
 				</c:if>
+				<div><span class="stress">${lstatus}: </span>${statusLkup[bookModel.status]}</div>
 				<div><span class="stress">${ldetailstatus}:</span>
 					${detailstatusLkup[bookModel.detailstatus]}</div>
 				<div><span class="stress">${lisbn10}:</span>

@@ -178,7 +178,9 @@ public class LendingSearchServiceImpl implements LendingSearchService {
 
 			Expression countExpression = cb.count(loanrec
 					.<Number> get("loanrecordid"));
-			c.multiselect(loanrec.get("booktitle"), countExpression).groupBy(
+			Expression havingExpression = cb.greaterThanOrEqualTo(
+					countExpression, 2);
+			c.multiselect(loanrec.get("booktitle"), countExpression).having(havingExpression).groupBy(
 					loanrec.get("booktitle"));
 
 			List<Predicate> whereclause = new ArrayList<Predicate>();

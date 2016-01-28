@@ -195,7 +195,7 @@ public class StatServiceImpl implements StatService {
 		List<Long> zone3 = new ArrayList<Long>();
 		zone3.add(StatService.StatType.CATEGORYBKOUT);
 		zone3.add(StatService.StatType.STATUSBKOUT);
-		zone3.add(StatService.StatType.COCATEGORYBKOUT_YR);
+		zone3.add(StatService.StatType.POPULARBKOUT_YR);
 
 		// put together config
 		StatsConfig config = new StatsConfig();
@@ -433,6 +433,8 @@ public class StatServiceImpl implements StatService {
 
 		return stat;
 	}
+
+	
 
 	private StatBreakout runStatCOCatYearBkout(ClientDao client, String lang) {
 		// initialize StatBreakout - labels, messages, and so on

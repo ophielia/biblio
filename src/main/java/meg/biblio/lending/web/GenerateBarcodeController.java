@@ -21,7 +21,6 @@ import meg.biblio.common.db.dao.ClientDao;
 import meg.biblio.common.db.dao.SelectValueDao;
 import meg.biblio.common.web.model.PrintClassModel;
 import meg.biblio.lending.ClassManagementService;
-import meg.biblio.lending.LendingSearchCriteria;
 import meg.biblio.lending.db.dao.SchoolGroupDao;
 import meg.biblio.lending.db.dao.TeacherDao;
 import meg.biblio.lending.web.model.TeacherInfo;
@@ -106,13 +105,20 @@ public class GenerateBarcodeController {
 		// pop them into the model
 		uiModel.addAttribute("customvals", cacheValues);
 
+		// add print model
+		PrintClassModel pcModel = new PrintClassModel();
+		pcModel.setNudge(getDefaultNudge());
+		pcModel.setStartPos(getDefaultStartPos());
+		pcModel.setShowBorder(getDefaultShowBorder());
+		uiModel.addAttribute("printClassModel",pcModel);
+		
 		// return the custom book values page
 		return "barcode/generatebookscustom";
 
 	}
 
 	@RequestMapping(value = "/books/custom", params = "toadd", method = RequestMethod.POST, produces = "text/html")
-	public String addCustomValues(@RequestParam("newid") String newid,
+	public String addCustomValues(@RequestParam("newid") String newid,PrintClassModel pcModel,
 			Model uiModel, HttpServletRequest httpServletRequest,
 			Principal principal, Locale locale) {
 		String username = principal.getName();
@@ -130,6 +136,7 @@ public class GenerateBarcodeController {
 
 		// pop them into the model
 		uiModel.addAttribute("customvals", cacheValues);
+		uiModel.addAttribute("printClassModel", pcModel);
 
 		// return the custom book values page
 		return "barcode/generatebookscustom";
@@ -177,7 +184,7 @@ public class GenerateBarcodeController {
 	}
 
 	@RequestMapping(params = "range", value = "/books", method = RequestMethod.POST, produces = "text/html")
-	public String generateBookBarcodeSheetRange(
+	public String printBookBarcodeSheetRange(
 			@RequestParam("from") Integer startcode,
 			@RequestParam("to") Integer endcode,
 			@RequestParam("offset") Integer offset, Model uiModel,
@@ -202,23 +209,28 @@ public class GenerateBarcodeController {
 				+ "&offset=" + offset.intValue();
 	}
 
-	@RequestMapping(value = "/class", method = RequestMethod.GET, produces = "text/html")
-	public String showGenerateBarcodesForClassOld(Model uiModel,
-			HttpServletRequest httpServletRequest, Principal principal) {
-		ClientDao client = clientService.getCurrentClient(principal);
-		Long clientid = client.getId();
+	@RequestMapping( value = "/books/custom", params = "print",method = RequestMethod.POST, produces = "text/html")
+	public String printBookBarcodeSheetCustom(
+			PrintClassModel pcModel, Model uiModel,
+			HttpServletRequest request, HttpServletRequest httpServletRequest,
+			HttpServletResponse response, Principal principal, Locale locale)
+			throws FOPException, JAXBException, TransformerException,
+			IOException, ServletException {
 
-		// fill in class info
-		HashMap<Long, TeacherInfo> classinfo = classService
-				.getTeacherByClassForClient(clientid);
-		// put classinfo in model
-		uiModel.addAttribute("classinfo", classinfo);
+		Long startpos = pcModel.getStartPos();
+		Long nudge = pcModel.getNudge();
+		Long border = pcModel.getShowBorder();
 
-		return "barcode/generateclass";
+		// start the class barcode print
+		return "redirect:/pdfwrangler/bookbarcodes?startpos="
+		+startpos+  "&border=" + border + "&nudge=" + nudge;
+
+		
 	}
-
-	//@RequestMapping(value = "/class/custom", method = RequestMethod.GET, produces = "text/html")
-	public String showGenerateBarcodesForClass(Model uiModel,
+	
+	
+	//@RequestMapping(value = "/class", method = RequestMethod.GET, produces = "text/html")
+	public String showGenerateBarcodesForClassOld(Model uiModel,
 			HttpServletRequest httpServletRequest, Principal principal) {
 		ClientDao client = clientService.getCurrentClient(principal);
 		Long clientid = client.getId();

@@ -266,6 +266,68 @@ public class PDFController {
 		}
 	}
 	
+	@RequestMapping(value = "/bookbarcodes", method = RequestMethod.GET, produces = "text/html")
+	public void generateBookBarcodeSheetCustom(
+			@RequestParam("startpos") Integer startpos,
+			@RequestParam("nudge") Integer nudge,
+			@RequestParam("border") Integer border,Model uiModel,
+			HttpServletRequest request, HttpServletRequest httpServletRequest,
+			HttpServletResponse response, Principal principal, Locale locale)
+			throws FOPException, JAXBException, TransformerException,
+			IOException, ServletException {	
+	
+		ClientDao client = clientService.getCurrentClient(principal);
+		Long clientkey = client.getId();
+		String username = principal.getName();
+		
+		String cxslname = "META-INF/web-resources/transform/"
+				+ client.getBarcodesheetxsl() + ".xsl";
+	
+		if (username != null) {
+			int offset = 0;
+			if (startpos !=null && startpos>=1) {
+				offset = startpos - 1;
+			}
+			
+			BarcodeSheet sheet = barcodeService.assembleBarcodeSheetForBooksFromCache(username, offset, clientkey, locale);
+			
+			// add nudge, and borders to sheet
+			sheet.setBorder(border);
+			sheet.setNudge(nudge);
+			
+			ByteArrayOutputStream out = new ByteArrayOutputStream();
+			try {
+	
+				Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, out);
+				JAXBContext context = JAXBContext
+						.newInstance(BarcodeSheet.class);
+				JAXBSource source = new JAXBSource(context, sheet);
+	
+				// Setup Transformer
+				Resource resource = new ClassPathResource(cxslname);
+				Source xsltSrc = new StreamSource(resource.getFile());
+				Transformer transformer = tFactory.newTransformer(xsltSrc);
+	
+				// Make sure the XSL transformation's result is piped through to
+				// FOPx
+				Result res = new SAXResult(fop.getDefaultHandler());
+	
+				// Start the transformation and rendering process
+				transformer.transform(source, res);
+	
+				// prepare response
+				response.setContentType("application/pdf");
+				response.setContentLength(out.size());
+	
+				// send content to browser
+				response.getOutputStream().write(out.toByteArray());
+				response.getOutputStream().flush();
+			} finally {
+				out.close();
+			}
+		}
+	}
+
 	@RequestMapping(params = "range",value = "/bookbarcodes", method = RequestMethod.GET, produces = "text/html")
 	public void generateBookBarcodeSheetRange(
 			@RequestParam("from") Integer startcode,@RequestParam("to") Integer endcode, @RequestParam("offset") Integer offset,Model uiModel,

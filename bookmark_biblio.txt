@@ -10,52 +10,54 @@ bugfix / improvement - increment grade shows success page.... otherwise no sign 
 teeny feature - link to lending summary for book from lending list
 bugfix - weekly summary incorrect - showing same books in checkedout and returned
 bugfix - list of overdue doesn't show teachers
-bugfix / feature - book display - move checked out to accent box
-bugfix / feature - statistic/dashboard - 50 most checked out books....
 
+future - check addbook - how does it get the new code?
 
 labels - 
-	free position start - backend
-		offset to startposition....
-		move nudge into xml / backend
-		add border to xml / backend
-		
-	done - nudge - backend
-	done - scheduling - for deleting cache - DetailSearchServiceImpl Scheduling	
-	
----->front end - custom class labels
-
-	put together submit for print
----->	front end cleanup print for class
-		bug - select position not shown in order - backend as list??
-		last label - print - continue labels
-		javascript toggle print options
-
-	put together submit print for custom
-	add front end changes
+--->	bugfix custom books - clearlist (add PrintModel to request)
+	look and feel to range
+	wire up range
+	switch between range and custom
 	put together submit print for range
 	add front end changes
+clean up unused in GenerateBarcodeController
 		
 ---- begin commit changes ----
-
-done - PDFController - generateClassBarcodeSheet - add nudge and border flags
-done - wire parameters together for redirect from GenerateBarcodeController to PDFController
-done - 	bug - not saving class selects correctly (or, at all)		
-done - javascript - (new page)
-done -continue select keys for print - next, nudge select, finish border (to frontend)
-
+done - free position start - backend
+done - 	offset to startposition....
+done - 	move nudge into xml / backend
+done - add border to xml / backend
+done - wire up printing, custom book page
+done - custom book - labels
+done - put together submit print for custom
+done - add front end changes
+done - bugfix / feature - book display - move checked out to accent box
+done - bugfix / feature - statistic/dashboard - 50 most checked out books....
 
 ---- end commit changes ----
-
-done - deleting items in list
-done - pages to / for controller - put it all together.
-done - start at entry point method....
 
 
 ----- begin branch changes ----
 
 done - showing items in list
 done - clearing all   
+done - PDFController - generateClassBarcodeSheet - add nudge and border flags
+done - wire parameters together for redirect from GenerateBarcodeController to PDFController
+done - 	bug - not saving class selects correctly (or, at all)		
+done - javascript - (new page)
+done -continue select keys for print - next, nudge select, finish border (to frontend)
+done - deleting items in list
+done - pages to / for controller - put it all together.
+done - start at entry point method....
+done - front end cleanup print for class
+done - bug - select position not shown in order - backend as list??
+done - last label - print - continue labels
+done - javascript toggle print options
+done - nudge - backend
+done - scheduling - for deleting cache - DetailSearchServiceImpl Scheduling	
+done - front end - custom class labels
+done - 	put together submit for print
+
 
 
 ---- end branch changes ----

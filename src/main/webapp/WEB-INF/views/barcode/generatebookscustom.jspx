@@ -10,39 +10,73 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
     <jsp:output omit-xml-declaration="yes"/>
 <script type="text/javascript">
  require([
-          'dojo/dom',"dojo/dom-style","dijit/focus","dojo/on", 
+          'dojo/dom','dojo/query',"dojo/dom-style","dijit/focus","dojo/on", 
           'dojo/domReady!'
-      ], function (dom,style,focusUtil,on) {
+      ], function (dom,query,style,focusUtil,on) {
 
 	 focusUtil.focus(dom.byId("newid"));
-	 
+	 var showoptions = false;
+	
+	 toggleOptionDisplay(showoptions);
 	 	
+		// print pdf opens in new window
+	   	form = dojo.byId("generatebookcodes");
+	   	on(form, "input[id^='print']:click", function(event){
+   	  //alert('yippee');
+		  form.target="_blank";
+		  form.submit();
+	   	});
+	 
+	 dojo.query("a[id^='potoggle']").forEach(function(node) {
+			var id = node.id;
+
+			on(dojo.byId(id), 'click', function(event) {
+				showoptions=!showoptions;	
+				// toggle display of print options
+				toggleOptionDisplay(showoptions);
+			});
+		});
+
+	   	function toggleOptionDisplay(showoptions) {
+	   		optionsdiv = dojo.byId("printoptions");
+	   		showdiv=dojo.byId("showprintoptions");
+	   		if (showoptions) {
+	   			dojo.style(optionsdiv, "display", "block");
+	   			dojo.style(showdiv, "display", "none");
+	   		} else {
+	   			dojo.style(optionsdiv, "display", "none");
+	   			dojo.style(showdiv, "display", "block");
+	   		}
+	   		
+	   	}
 	});
  </script>
 
-<spring:message code="button_generate" htmlEscape="false" var="bgen"/>
-<spring:message code="button_cancel" htmlEscape="false" var="bcancel"/>
-<spring:message code="label_generate_books" htmlEscape="false" var="pagetitle"/>
-<spring:message code="label_generate_codecount" htmlEscape="false" var="codecount"/>
-<spring:message code="label_generate_codefrom" htmlEscape="false" var="lfrom"/>
-<spring:message code="label_generate_codeto" htmlEscape="false" var="lto"/>
-<spring:message code="label_generate_codeto" htmlEscape="false" var="lto"/>
-<spring:message code="label_generate_codeto" htmlEscape="false" var="lto"/>
-<spring:message code="error_enter_range" htmlEscape="false" var="msgerrorenterrange"/>
-<spring:message code="error_enter_rangeinvalid" htmlEscape="false" var="msgerrorrangeinvalid"/>
+<spring:message code="label_generate_newcode" htmlEscape="false" var="addcodeid"/>
+<spring:message code="label_generate_add" htmlEscape="false" var="addid"/>
+<spring:message code="label_lending_bookid" htmlEscape="false" var="bookid"/>
+<spring:message code="label_generate_clearlist" htmlEscape="false" var="clearlist"/>
+<spring:message code="label_generate_individualbooks" htmlEscape="false" var="customlisttitle"/>
+<spring:message code="label_generate_showoptions" htmlEscape="false" var="showprint"/>
+<spring:message code="label_generate_hideoptions" htmlEscape="false" var="hideprint"/>
+<spring:message code="label_print_startpos" htmlEscape="false" var="firstpos"/>
+<spring:message code="label_print_border" htmlEscape="false" var="lborder"/>
+<spring:message code="label_print_printnudge" htmlEscape="false" var="lnudge"/>
+<spring:message code="label_print_print" htmlEscape="false" var="lprint"/>
 
 
-
-<h1>{customlisttitle}</h1>
+<h1>${customlisttitle}</h1>
 
 
 <spring:url value="/generatebarcode/books/custom" var="actionurl"/>
+<form:form action="${actionurl}" id="generatebookcodes" method="POST" modelAttribute="printClassModel" >	
+
 <div class="columnbox" style="border-right-style: dotted;padding-right: 5px;  ">
-<form:form action="${actionurl}" id="generatebookcodes" method="POST">
+
 <div>
-			{addcodeid}<input id="newid" name="newid" type="text"
+			${addcodeid}<input id="newid" name="newid" type="text"
 				value="" />
-				<input value="{addid}" type="submit" name="toadd"
+				<input value="${addid}" type="submit" name="toadd"
 				id="addnewid" class="linkbutton" style="width: 125px;" />
 				
 
@@ -50,7 +84,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 		<table>
 			<THEAD>
 				<tr>
-					<th style="border-right-width: 0px;">{bookid}</th>
+					<th style="border-right-width: 0px;">${bookid}</th>
 					<th style="border-left-width: 0px;"></th>
 				</tr>
 			</THEAD>
@@ -67,22 +101,47 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 			</tbody>
 		</table>
 
-<input value="{clearlist}" type="submit" name="clearall"
+<input value="${clearlist}" type="submit" name="clearall"
 				id="toremove" class="linkbutton" style="float: right;" />
 				
+
+</div>
+
+	<div style="padding-top: 60px; padding-left: 10px;"
+		class="columnbox cbtwo">
+
+		<div id="printoptions" style="display: none;">
+			<div style="text-align: right">${firstpos}
+				<form:select   path="startPos">
+		<form:options items="${positionselect}" itemValue="value" itemLabel="display"/>
+		 </form:select> 
+			</div>
+			<div style="text-align: right">${lborder}
+		<form:select   path="showBorder">
+		<form:options items="${yesno}" itemValue="value" itemLabel="display"/>
+		 </form:select>
+			</div>
+			<div style="text-align: right">${lnudge}
+				<form:select   path="nudge">
+		<form:options items="${nudge}" itemValue="value" itemLabel="display"/>
+		 </form:select>
+			</div>
+			<a href="#" id="potoggle1">- ${hideprint}</a>
+		</div>
+		<div id="showprintoptions" style="display: block;">
+			<a href="#" id="potoggle2">+ ${showprint}</a>
+		</div>
+
+		<span
+			style="float: right; margin-right: 0px; margin-bottom: 15px; margin-top: 10px;"
+			class="linkbuttonquiet"> 
+			<input value="${lprint}" type="submit" name="print" id="print"
+				class="linkbutton" style="float: right;" />
+		</span>
+
+	</div>
+
+	<input id="countTypePref" name="countTypePref" type="hidden" value="1" />
+	
 	</form:form>
-</div>
-
-<div style="       padding-left: 10px;" class="columnbox cbthree">
-		<div>info one</div>
-		<div>info two</div>
-		<div>info three</div>
-		<span style="float: right; margin-bottom: 15px;"
-			class="linkbuttonquiet"><a class="linkbutton"
-			href="/biblio/inventory/count?changepref=2">{print}</a></span>
-		<input id="countTypePref" name="countTypePref" type="hidden" value="1" />
-</div>
-
-
-
 </div>

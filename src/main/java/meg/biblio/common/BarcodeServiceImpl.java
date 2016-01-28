@@ -213,7 +213,34 @@ public class BarcodeServiceImpl implements BarcodeService {
 		return barcode;
 	}
 
-
+	@Override
+	public BarcodeSheet assembleBarcodeSheetForBooksFromCache(String username,
+			int offset, Long clientkey, Locale locale) {
+		// get client
+		ClientDao client = clientService.getClientForKey(clientkey);
+		// message
+		String message = client.getName();
+		
+		// get values from cache
+		List<String> cachevals = cacheService.getValidCacheAsList(username,
+				CacheService.CodeTag.CustomBarcodes, "");		
+		
+		// put together list of barcodes
+		// add all to the list of codes, filling in the message
+		List<Barcode> bookcodes = new ArrayList<Barcode>();
+		for (String newcode : cachevals) {
+			String barcode = getBookBarcodeForClientid(client,newcode);
+			Barcode bc = new Barcode(barcode,
+					message);
+			bookcodes.add(bc);
+		}
+		
+		// construct BarcodeSheet with codes and offset
+		BarcodeSheet bcs = new BarcodeSheet(bookcodes, "", offset);
+		
+		// return BarcodeSheet
+		return bcs;	
+	}	
 
 
 
