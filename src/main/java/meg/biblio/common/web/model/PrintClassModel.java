@@ -22,6 +22,9 @@ public class PrintClassModel {
 	private Long nudge;
 	private Long startPos;
 	
+	private Integer rangeFrom;
+	private Integer rangeTo;
+	
 	public static final String startPosLkup="startpos65";
 	public static final String nudgeLkup="printnudge";
 	
@@ -164,6 +167,22 @@ public class PrintClassModel {
 
 	public void setStartPos(Long startPos) {
 		this.startPos = startPos;
+	}
+
+	public Integer getRangeFrom() {
+		return rangeFrom;
+	}
+
+	public void setRangeFrom(Integer rangeFrom) {
+		this.rangeFrom = rangeFrom;
+	}
+
+	public Integer getRangeTo() {
+		return rangeTo;
+	}
+
+	public void setRangeTo(Integer rangeTo) {
+		this.rangeTo = rangeTo;
 	}
 
 

@@ -9,23 +9,67 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
 
+<script type="text/javascript">
+ require([
+          'dojo/dom','dojo/query',"dojo/dom-style","dijit/focus","dojo/on", 
+          'dojo/domReady!'
+      ], function (dom,query,style,focusUtil,on) {
 
-<spring:message code="button_generate" htmlEscape="false" var="bgen"/>
-<spring:message code="button_cancel" htmlEscape="false" var="bcancel"/>
+
+	 var showoptions = false;
+	
+	 toggleOptionDisplay(showoptions);
+	 	
+		// print pdf opens in new window
+	   	form = dojo.byId("generatebookcodes");
+	   	on(form, "input[id^='print']:click", function(event){
+   	  //alert('yippee');
+		  form.target="_blank";
+		  form.submit();
+	   	});
+	 
+	 dojo.query("a[id^='potoggle']").forEach(function(node) {
+			var id = node.id;
+
+			on(dojo.byId(id), 'click', function(event) {
+				showoptions=!showoptions;	
+				// toggle display of print options
+				toggleOptionDisplay(showoptions);
+			});
+		});
+
+	   	function toggleOptionDisplay(showoptions) {
+	   		optionsdiv = dojo.byId("printoptions");
+	   		showdiv=dojo.byId("showprintoptions");
+	   		if (showoptions) {
+	   			dojo.style(optionsdiv, "display", "block");
+	   			dojo.style(showdiv, "display", "none");
+	   		} else {
+	   			dojo.style(optionsdiv, "display", "none");
+	   			dojo.style(showdiv, "display", "block");
+	   		}
+	   		
+	   	}
+	});
+ </script>
+ 
 <spring:message code="label_generate_books" htmlEscape="false" var="pagetitle"/>
-<spring:message code="label_generate_codecount" htmlEscape="false" var="codecount"/>
 <spring:message code="label_generate_codefrom" htmlEscape="false" var="lfrom"/>
-<spring:message code="label_generate_codeto" htmlEscape="false" var="lto"/>
-<spring:message code="label_generate_codeto" htmlEscape="false" var="lto"/>
 <spring:message code="label_generate_codeto" htmlEscape="false" var="lto"/>
 <spring:message code="error_enter_range" htmlEscape="false" var="msgerrorenterrange"/>
 <spring:message code="error_enter_rangeinvalid" htmlEscape="false" var="msgerrorrangeinvalid"/>
+<spring:message code="label_print_print" htmlEscape="false" var="lprint"/>
+<spring:message code="label_generate_showoptions" htmlEscape="false" var="showprint"/>
+<spring:message code="label_generate_hideoptions" htmlEscape="false" var="hideprint"/>
+<spring:message code="label_print_startpos" htmlEscape="false" var="firstpos"/>
+<spring:message code="label_print_border" htmlEscape="false" var="lborder"/>
+<spring:message code="label_print_printnudge" htmlEscape="false" var="lnudge"/>
 
-<spring:url value="/generatebarcode/books?range" var="actionurl"/>
 
 <h1>${pagetitle}</h1>
 
-<form:form action="${actionurl}" id="generatebookcodes" method="POST"  target="_blank">
+<spring:url value="/generatebarcode/books/range" var="actionurl"/>
+<form:form action="${actionurl}" id="generatebookcodes" method="POST" modelAttribute="printClassModel" >	
 
 <c:if test="${errorenterrange}">
 <div class="errors">${msgerrorenterrange}</div>
@@ -33,17 +77,49 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <c:if test="${errorrangeinvalid}">
 <div class="errors">${msgerrorrangeinvalid}</div>
 </c:if>
-<div class="inputspace">${lfrom}: <input name="from" value=""></input>	</div>
-<div class="inputspace">${lto}: <input name="to" value=""></input></div>
-<div class="inputspace">offset: <input name="offset" value="0"></input></div>
 
+<div class="columnbox" style="border-right-style: dotted;padding-right: 5px;  ">
 
-		
+<div class="inputspace">${lfrom}: <form:input path="rangeFrom" ></form:input>	</div>
+<div class="inputspace">${lto}: <form:input path="rangeTo" ></form:input></div>
+
+</div>
+
+	<div style="padding-top: 60px; padding-left: 10px;"
+		class="columnbox cbtwo">
+
+		<div id="printoptions" style="display: none;">
+			<div style="text-align: right">${firstpos}
+				<form:select   path="startPos">
+		<form:options items="${positionselect}" itemValue="value" itemLabel="display"/>
+		 </form:select> 
+			</div>
+			<div style="text-align: right">${lborder}
+		<form:select   path="showBorder">
+		<form:options items="${yesno}" itemValue="value" itemLabel="display"/>
+		 </form:select>
+			</div>
+			<div style="text-align: right">${lnudge}
+				<form:select   path="nudge">
+		<form:options items="${nudge}" itemValue="value" itemLabel="display"/>
+		 </form:select>
+			</div>
+			<a href="#" id="potoggle1">- ${hideprint}</a>
+		</div>
+		<div id="showprintoptions" style="display: block;">
+			<a href="#" id="potoggle2">+ ${showprint}</a>
+		</div>
+
+		<span
+			style="float: right; margin-right: 0px; margin-bottom: 15px; margin-top: 10px;"
+			class="linkbuttonquiet"> 
+			<input value="${lprint}" type="submit" name="print" id="print"
+				class="linkbutton" style="float: right;" />
+		</span>
+
+	</div>
+
+	<input id="countTypePref" name="countTypePref" type="hidden" value="1" />
 	
-	
-	
-	<input id="submit" class="linkbutton" name="submit" type="submit" value="${bgen}"></input>
-
-
-</form:form>
+	</form:form>
 </div>

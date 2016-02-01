@@ -15,24 +15,15 @@ future - check addbook - how does it get the new code?
 
 labels - 
 --->	bugfix custom books - clearlist (add PrintModel to request)
-	look and feel to range
-	wire up range
 	switch between range and custom
-	put together submit print for range
 	add front end changes
 clean up unused in GenerateBarcodeController
 		
 ---- begin commit changes ----
-done - free position start - backend
-done - 	offset to startposition....
-done - 	move nudge into xml / backend
-done - add border to xml / backend
-done - wire up printing, custom book page
-done - custom book - labels
-done - put together submit print for custom
-done - add front end changes
-done - bugfix / feature - book display - move checked out to accent box
-done - bugfix / feature - statistic/dashboard - 50 most checked out books....
+done - 	look and feel to range
+done - 	wire up range
+done - 	put together submit print for range
+
 
 ---- end commit changes ----
 
@@ -57,6 +48,16 @@ done - nudge - backend
 done - scheduling - for deleting cache - DetailSearchServiceImpl Scheduling	
 done - front end - custom class labels
 done - 	put together submit for print
+done - free position start - backend
+done - 	offset to startposition....
+done - 	move nudge into xml / backend
+done - add border to xml / backend
+done - wire up printing, custom book page
+done - custom book - labels
+done - put together submit print for custom
+done - add front end changes
+done - bugfix / feature - book display - move checked out to accent box
+done - bugfix / feature - statistic/dashboard - 50 most checked out books....
 
 
 

@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.xml.bind.JAXBException;
 import javax.xml.transform.TransformerException;
 
-import meg.biblio.common.BarcodeService;
 import meg.biblio.common.CacheService;
 import meg.biblio.common.ClientService;
 import meg.biblio.common.SelectKeyService;
@@ -61,39 +60,20 @@ public class GenerateBarcodeController {
 	public String showGenerateBarcodesForBooks(Model uiModel,
 			HttpServletRequest httpServletRequest, Principal principal,
 			Locale locale) {
-		String lang = locale.getLanguage();
-		ClientDao client = clientService.getCurrentClient(principal);
-		Boolean usesclientidforbarcode = client.getIdForBarcode();
 
-		if (usesclientidforbarcode == null)
-			usesclientidforbarcode = true;
-
-		if (usesclientidforbarcode) {
-			// this client uses the client assigned book id for the barcode
-			// that means that the user will be interested in controlling which
-			// barcodes
-			// are printed out - a range.
+			// add print model
+			PrintClassModel pcModel = new PrintClassModel();
+			pcModel.setNudge(getDefaultNudge());
+			pcModel.setStartPos(getDefaultStartPos());
+			pcModel.setShowBorder(getDefaultShowBorder());
+			uiModel.addAttribute("printClassModel",pcModel);
 			return "barcode/generatebooksrange";
-		} else {
-			// this client doesn't uses the client bookid for the barcode -
-			// instead,
-			// this client assigns a random barcode to each book. The barcodes
-			// are
-			// printed out by count, and a counter is incremented to make sure
-			// that each code is only
-			// printed out once. - in other words - by count.
-			// fill in select - 50, 100, 150, etc....
-			HashMap<Long, String> countselect = keyService
-					.getDisplayHashForKey(BarcodeService.codecountlkup, lang);
-			// put select in model
-			uiModel.addAttribute("codeselect", countselect);
-			return "barcode/generatebookscount";
-		}
+
 
 	}
 
 	@RequestMapping(value = "/books/custom", method = RequestMethod.GET, produces = "text/html")
-	public String showGenerateBarcodesCustomValues(Model uiModel,
+	public String showGenerateBarcodesCustomValues(PrintClassModel pcModel,Model uiModel,
 			HttpServletRequest httpServletRequest, Principal principal,
 			Locale locale) {
 		String username = principal.getName();
@@ -106,7 +86,7 @@ public class GenerateBarcodeController {
 		uiModel.addAttribute("customvals", cacheValues);
 
 		// add print model
-		PrintClassModel pcModel = new PrintClassModel();
+		pcModel = new PrintClassModel();
 		pcModel.setNudge(getDefaultNudge());
 		pcModel.setStartPos(getDefaultStartPos());
 		pcModel.setShowBorder(getDefaultShowBorder());
@@ -115,6 +95,77 @@ public class GenerateBarcodeController {
 		// return the custom book values page
 		return "barcode/generatebookscustom";
 
+	}
+
+	//@RequestMapping(value = "/class", method = RequestMethod.GET, produces = "text/html")
+	public String showGenerateBarcodesForClassOld(Model uiModel,
+			HttpServletRequest httpServletRequest, Principal principal) {
+		ClientDao client = clientService.getCurrentClient(principal);
+		Long clientid = client.getId();
+	
+		// fill in class info
+		HashMap<Long, TeacherInfo> classinfo = classService
+				.getTeacherByClassForClient(clientid);
+		// put classinfo in model
+		uiModel.addAttribute("classinfo", classinfo);
+	
+		return "barcode/generateclass";
+	}
+
+	// Entry point class page
+	@RequestMapping(value = "/class/custom",  method = RequestMethod.GET, produces = "text/html")
+	public String showPrintClassBarcodesPage(
+			Model uiModel, HttpServletRequest httpServletRequest,
+			Principal principal) {
+		ClientDao client = clientService.getCurrentClient(principal);
+		Long clientid = client.getId();
+		// select first teacher
+		HashMap<Long, TeacherInfo> classinfo = classService
+				.getTeacherByClassForClient(clientid);
+		Set<Long> classes = classinfo.keySet();
+		
+		Long teacherid = null;
+		SchoolGroupDao schoolgroup = null;
+		for (Long id : classes) {
+			TeacherInfo teacher = classinfo.get(id);
+			teacherid = teacher.getId();
+			schoolgroup = classService.getClassByTeacher(teacherid, clientid);
+			break;
+		}
+	
+		// create print class model
+		PrintClassModel pcModel = new PrintClassModel();
+		pcModel.setSchoolgroup(schoolgroup);
+		// set default printing options
+		pcModel.setNudge(getDefaultNudge());
+		pcModel.setStartPos(getDefaultStartPos());
+		pcModel.setShowBorder(getDefaultShowBorder());
+		
+		uiModel.addAttribute("printClassModel",pcModel);
+		
+		// show page for teacher
+		return displayPageForTeacher(teacherid, pcModel, uiModel,
+				httpServletRequest, principal);
+	}
+
+	// change teacher page - post submit value changeteacher
+	@RequestMapping(value = "/class/custom",  method = RequestMethod.POST, produces = "text/html")
+	public String showDifferentClassPage(PrintClassModel pcModel,
+			Model uiModel, HttpServletRequest httpServletRequest,
+			Principal principal) {
+		ClientDao client = clientService.getCurrentClient(principal);
+		Long clientid = client.getId();
+		
+		 Long classid = pcModel.getNewClassId();
+		 
+		// save changes from previous class
+		saveChangesToModel(pcModel, principal);
+	
+		// get teacherid for classid 
+		TeacherDao teacher = classService.getTeacherForClass(clientid, classid);
+		// show page for teacher
+		return displayPageForTeacher(teacher.getId(), pcModel, uiModel,
+				httpServletRequest, principal);
 	}
 
 	@RequestMapping(value = "/books/custom", params = "toadd", method = RequestMethod.POST, produces = "text/html")
@@ -183,16 +234,20 @@ public class GenerateBarcodeController {
 
 	}
 
-	@RequestMapping(params = "range", value = "/books", method = RequestMethod.POST, produces = "text/html")
-	public String printBookBarcodeSheetRange(
-			@RequestParam("from") Integer startcode,
-			@RequestParam("to") Integer endcode,
-			@RequestParam("offset") Integer offset, Model uiModel,
-			HttpServletRequest request, HttpServletRequest httpServletRequest,
+	@RequestMapping(value = "/books/range", method = RequestMethod.POST, produces = "text/html")
+	public String printBookBarcodeSheetRange(PrintClassModel pcModel,
+			Model uiModel, HttpServletRequest request,
+			HttpServletRequest httpServletRequest,
 			HttpServletResponse response, Principal principal, Locale locale)
 			throws FOPException, JAXBException, TransformerException,
 			IOException, ServletException {
+		Integer startcode = pcModel.getRangeFrom();
+		Integer endcode = pcModel.getRangeTo();
+		Long nudge = pcModel.getNudge();
+		Long border = pcModel.getShowBorder();
+		Long startpos = pcModel.getStartPos();
 
+		Long offset = pcModel.getStartPos();
 		if (startcode == null || endcode == null) {
 			uiModel.addAttribute("errorenterrange", true);
 			return "barcode/generatebooksrange";
@@ -201,12 +256,15 @@ public class GenerateBarcodeController {
 			return "barcode/generatebooksrange";
 		}
 		if (offset == null) {
-			offset = 0;
+			offset = 0L;
 		}
 
-		return "redirect:/pdfwrangler/bookbarcodes?range=true&from="
+		
+		return "redirect:/pdfwrangler/bookbarcodes/range?from="
 				+ startcode.intValue() + "&to=" + endcode.intValue()
-				+ "&offset=" + offset.intValue();
+				 + "&nudge=" + nudge.intValue()
+				 + "&startpos=" + startpos.intValue()
+				 + "&border=" + border.intValue() ;
 	}
 
 	@RequestMapping( value = "/books/custom", params = "print",method = RequestMethod.POST, produces = "text/html")
@@ -229,77 +287,6 @@ public class GenerateBarcodeController {
 	}
 	
 	
-	//@RequestMapping(value = "/class", method = RequestMethod.GET, produces = "text/html")
-	public String showGenerateBarcodesForClassOld(Model uiModel,
-			HttpServletRequest httpServletRequest, Principal principal) {
-		ClientDao client = clientService.getCurrentClient(principal);
-		Long clientid = client.getId();
-
-		// fill in class info
-		HashMap<Long, TeacherInfo> classinfo = classService
-				.getTeacherByClassForClient(clientid);
-		// put classinfo in model
-		uiModel.addAttribute("classinfo", classinfo);
-
-		return "barcode/generateclass";
-	}
-
-	// Entry point class page
-	@RequestMapping(value = "/class/custom",  method = RequestMethod.GET, produces = "text/html")
-	public String showPrintClassBarcodesPage(
-			Model uiModel, HttpServletRequest httpServletRequest,
-			Principal principal) {
-		ClientDao client = clientService.getCurrentClient(principal);
-		Long clientid = client.getId();
-		// select first teacher
-		HashMap<Long, TeacherInfo> classinfo = classService
-				.getTeacherByClassForClient(clientid);
-		Set<Long> classes = classinfo.keySet();
-		
-		Long teacherid = null;
-		SchoolGroupDao schoolgroup = null;
-		for (Long id : classes) {
-			TeacherInfo teacher = classinfo.get(id);
-			teacherid = teacher.getId();
-			schoolgroup = classService.getClassByTeacher(teacherid, clientid);
-			break;
-		}
-
-		// create print class model
-		PrintClassModel pcModel = new PrintClassModel();
-		pcModel.setSchoolgroup(schoolgroup);
-		// set default printing options
-		pcModel.setNudge(getDefaultNudge());
-		pcModel.setStartPos(getDefaultStartPos());
-		pcModel.setShowBorder(getDefaultShowBorder());
-		
-		uiModel.addAttribute("printClassModel",pcModel);
-		
-		// show page for teacher
-		return displayPageForTeacher(teacherid, pcModel, uiModel,
-				httpServletRequest, principal);
-	}
-
-	// change teacher page - post submit value changeteacher
-	@RequestMapping(value = "/class/custom",  method = RequestMethod.POST, produces = "text/html")
-	public String showDifferentClassPage(PrintClassModel pcModel,
-			Model uiModel, HttpServletRequest httpServletRequest,
-			Principal principal) {
-		ClientDao client = clientService.getCurrentClient(principal);
-		Long clientid = client.getId();
-		
-		 Long classid = pcModel.getNewClassId();
-		 
-		// save changes from previous class
-		saveChangesToModel(pcModel, principal);
-
-		// get teacherid for classid 
-		TeacherDao teacher = classService.getTeacherForClass(clientid, classid);
-		// show page for teacher
-		return displayPageForTeacher(teacher.getId(), pcModel, uiModel,
-				httpServletRequest, principal);
-	}
-
 	// post to class/custom, submit param, print (changed in html to be new page
 	// target
 	@RequestMapping(params = "print",value = "/class/custom",  method = RequestMethod.POST, produces = "text/html")
@@ -388,8 +375,6 @@ public class GenerateBarcodeController {
 	private List<SelectValueDao> getClassInfo(
 			HttpServletRequest httpServletRequest, Locale locale,
 			Principal principal) {
-		ClientDao client = clientService.getCurrentClient(principal);
-		Long clientid = client.getId();
 		String lang = locale.getLanguage();
 
 		// get display hash for key, language
@@ -403,7 +388,6 @@ public class GenerateBarcodeController {
 	private List<SelectValueDao> getYesNoSelectValues(
 			HttpServletRequest httpServletRequest, Locale locale,
 			Principal principal) {
-		ClientDao client = clientService.getCurrentClient(principal);
 		String lang = locale.getLanguage();
 
 		// get display hash for key, language
@@ -417,7 +401,6 @@ public class GenerateBarcodeController {
 	private List<SelectValueDao> getNudgeSelectValues(
 			HttpServletRequest httpServletRequest, Locale locale,
 			Principal principal) {
-		ClientDao client = clientService.getCurrentClient(principal);
 		String lang = locale.getLanguage();
 
 		// get display hash for key, language

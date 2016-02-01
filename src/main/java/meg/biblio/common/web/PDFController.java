@@ -65,8 +65,6 @@ public class PDFController {
 	private FopFactory fopFactory = FopFactory.newInstance();
 	private TransformerFactory tFactory = TransformerFactory.newInstance();
 
-	private String transformdir = "resources/transform/";
-	
 	protected URIResolver uriResolver;
 	
 	public URIResolver getResolver() throws ServletException {
@@ -328,9 +326,12 @@ public class PDFController {
 		}
 	}
 
-	@RequestMapping(params = "range",value = "/bookbarcodes", method = RequestMethod.GET, produces = "text/html")
+	@RequestMapping(value = "/bookbarcodes/range", method = RequestMethod.GET, produces = "text/html")
 	public void generateBookBarcodeSheetRange(
-			@RequestParam("from") Integer startcode,@RequestParam("to") Integer endcode, @RequestParam("offset") Integer offset,Model uiModel,
+			@RequestParam("from") Integer startcode,@RequestParam("to") Integer endcode, 
+			@RequestParam("startpos") Integer startpos,
+			@RequestParam("nudge") Integer nudge,
+			@RequestParam("border") Integer border,Model uiModel,
 			HttpServletRequest request, HttpServletRequest httpServletRequest,
 			HttpServletResponse response, Principal principal, Locale locale)
 			throws FOPException, JAXBException, TransformerException,
@@ -346,10 +347,17 @@ public class PDFController {
 			int start = startcode.intValue();
 			int end = endcode.intValue();
 			int count = end-start;
-			int offsetint = offset!=null?offset.intValue():0;
+			int offset = 0;
+			if (startpos !=null && startpos>=1) {
+				offset = startpos - 1;
+			}
+			
 			BarcodeSheet sheet = barcodeService.assembleBarcodeSheetForBooks(
-					count, start,offsetint,clientkey, locale);
+					count, start,offset,clientkey, locale);
 
+			sheet.setBorder(border);
+			sheet.setNudge(nudge);
+			
 			ByteArrayOutputStream out = new ByteArrayOutputStream();
 			try {
 

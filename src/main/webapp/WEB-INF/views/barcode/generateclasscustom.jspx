@@ -71,7 +71,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 
 <spring:message code="button_generate" htmlEscape="false" var="bgen"/>
 <spring:message code="button_cancel" htmlEscape="false" var="bcancel"/>
-<spring:message code="label_generate_books" htmlEscape="false" var="pagetitle"/>
+<spring:message code="label_generate_class" htmlEscape="false" var="pagetitle"/>
 <spring:message code="label_class" htmlEscape="false" var="lclass"/>
 <spring:message code="label_print_startpos" htmlEscape="false" var="firstpos"/>
 <spring:message code="label_print_border" htmlEscape="false" var="lborder"/>
