@@ -42,7 +42,7 @@ public class SchoolGroupController {
 
 	@Autowired
 	LendingService lendingService;
-	
+
 	@Autowired
 	SelectKeyService keyService;
 
@@ -180,20 +180,20 @@ public class SchoolGroupController {
     		uiModel.addAttribute("studentid",student.getId());
     		uiModel.addAttribute("hasclass",false);
     	}
-    	
+
     	// get lending history for student
     	List<LoanRecordDisplay> lendhistory = lendingService.getLendingHistoryByLender(studentid, client.getId());
-    	
+
     	// put classmodel in model
     	uiModel.addAttribute("lendinghistory",lendhistory);
     	if (lendinghistory !=null) {
     		uiModel.addAttribute("fromlending",true);
     	}
-    	
+
     	// return edit view
     	return "schoolgroups/showstudent";
     	}
-    
+
     @RequestMapping(value="/editstudent/{id}", params="cancel", method = RequestMethod.POST, produces = "text/html")
     public String cancelEditStudent(@ModelAttribute("classModel") ClassModel classModel,@PathVariable("id") Long studentid, Model uiModel, HttpServletRequest httpServletRequest, Principal principal) {
     	ClientDao client = clientService.getCurrentClient(principal);
@@ -354,14 +354,25 @@ public class SchoolGroupController {
     	return "schoolgroups/settings";
     	}
 
-    @RequestMapping(value="/manage", params="increment", method = RequestMethod.POST, produces = "text/html")
+    @RequestMapping(value="/manage/increment",  method = RequestMethod.GET, produces = "text/html")
+    public String showIncrementStudents( Model uiModel, HttpServletRequest httpServletRequest, Principal principal) {
+    	ClientDao client = clientService.getCurrentClient(principal);
+
+		uiModel.addAttribute("incrementsuccess",false);
+    	// return edit class view
+    	return "schoolgroups/increment";
+
+    	}
+
+    @RequestMapping(value="/manage/increment",  method = RequestMethod.POST, produces = "text/html")
     public String incrementStudents( Model uiModel, HttpServletRequest httpServletRequest, Principal principal) {
     	ClientDao client = clientService.getCurrentClient(principal);
 
     	classMgmtService.moveAllStudentsToNextSection(client.getId());
 
+		uiModel.addAttribute("incrementsuccess",true);
     	// return edit class view
-    	return "schoolgroups/settings";
+    	return "schoolgroups/increment";
 
     	}
 

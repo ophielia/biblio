@@ -122,8 +122,12 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 			</c:otherwise>
 			</c:choose>
 			</td>
-			<td>${histRec.bookclientid}</td>
-			<td>${histRec.booktitle }<br></br>${histRec.author }</td>
+						<td><spring:url value="/books/display/${histRec.bookid}"
+								var="bookurl" /> <a class="tableboldlink" href="${bookurl}">${histRec.bookclientid}</a>
+						</td>
+						<td>
+			<a class="tableboldlink" href="${bookurl}">${histRec.booktitle }</a><br></br>
+			<a class="tableboldlink" href="${bookurl}">${histRec.author }</a></td>
 			<td><fmt:formatDate type="date" 
             value="${histRec.checkedout}" /><br /><fmt:formatDate type="date" 
             value="${histRec.duedate }" /></td>

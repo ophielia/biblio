@@ -314,6 +314,8 @@ public class LendingController {
 		boolean printable = overdue!=null && overdue.size()>0;
 		uiModel.addAttribute("printable",printable);
 		
+		uiModel.addAttribute("classInfo",getClassInfo(client.getId()));
+		
 		// to all overdue out for client page
 		return "lending/overduesummary";
 		}

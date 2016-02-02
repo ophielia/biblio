@@ -17,6 +17,10 @@
         <put-attribute name="body" value="/WEB-INF/views/schoolgroups/settings.jspx"/>
     </definition>    
     
+    <definition extends="default" name="schoolgroups/increment">
+        <put-attribute name="body" value="/WEB-INF/views/schoolgroups/increment.jspx"/>
+    </definition>      
+    
     <definition extends="default" name="schoolgroups/remove">
         <put-attribute name="body" value="/WEB-INF/views/schoolgroups/remove.jspx"/>
     </definition>    

@@ -64,6 +64,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <spring:message code="label_print_startpos" htmlEscape="false" var="firstpos"/>
 <spring:message code="label_print_border" htmlEscape="false" var="lborder"/>
 <spring:message code="label_print_printnudge" htmlEscape="false" var="lnudge"/>
+<spring:message code="label_generate_bookscustom" htmlEscape="false" var="individual"/>
 
 
 <h1>${pagetitle}</h1>
@@ -78,11 +79,10 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <div class="errors">${msgerrorrangeinvalid}</div>
 </c:if>
 
-<div class="columnbox" style="border-right-style: dotted;padding-right: 5px;  ">
+<div class="columnbox cbtwo" style="border-right-style: dotted;padding-right: 5px;  ">
 
 <div class="inputspace">${lfrom}: <form:input path="rangeFrom" ></form:input>	</div>
 <div class="inputspace">${lto}: <form:input path="rangeTo" ></form:input></div>
-
 </div>
 
 	<div style="padding-top: 60px; padding-left: 10px;"
@@ -104,9 +104,11 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 		<form:options items="${nudge}" itemValue="value" itemLabel="display"/>
 		 </form:select>
 			</div>
+			<div style="display:block; padding-top:10px;   text-align: right;">
 			<a href="#" id="potoggle1">- ${hideprint}</a>
+			</div>
 		</div>
-		<div id="showprintoptions" style="display: block;">
+		<div id="showprintoptions" style="display: block;text-align:right">
 			<a href="#" id="potoggle2">+ ${showprint}</a>
 		</div>
 
@@ -116,6 +118,9 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 			<input value="${lprint}" type="submit" name="print" id="print"
 				class="linkbutton" style="float: right;" />
 		</span>
+<div style="clear:both"><span class="linkbutton" style="float:right;margin-top:10px">
+<spring:url value="/generatebarcode/books/custom" var="customurl"/>
+<a href="${customurl}" style="margin-right:0px">${individual}</a></span></div>
 
 	</div>
 

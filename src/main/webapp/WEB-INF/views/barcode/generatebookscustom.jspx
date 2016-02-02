@@ -63,6 +63,8 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <spring:message code="label_print_border" htmlEscape="false" var="lborder"/>
 <spring:message code="label_print_printnudge" htmlEscape="false" var="lnudge"/>
 <spring:message code="label_print_print" htmlEscape="false" var="lprint"/>
+<spring:message code="label_generate_booksrange" htmlEscape="false" var="series"/>
+<spring:message code="label_print_print" htmlEscape="false" var="lprint"/>
 
 
 <h1>${customlisttitle}</h1>
@@ -126,9 +128,11 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 		<form:options items="${nudge}" itemValue="value" itemLabel="display"/>
 		 </form:select>
 			</div>
+			<div style="display:block; padding-top:10px;   text-align: right;">
 			<a href="#" id="potoggle1">- ${hideprint}</a>
+			</div>
 		</div>
-		<div id="showprintoptions" style="display: block;">
+		<div id="showprintoptions" style="display: block;text-align:right">
 			<a href="#" id="potoggle2">+ ${showprint}</a>
 		</div>
 
@@ -138,6 +142,9 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 			<input value="${lprint}" type="submit" name="print" id="print"
 				class="linkbutton" style="float: right;" />
 		</span>
+<div style="clear:both"><span class="linkbutton" style="float:right;margin-top:10px">
+<spring:url value="/generatebarcode/books" var="seriesurl"/>
+<a href="${seriesurl}" style="margin-right:0px">${series}</a></span></div>
 
 	</div>
 

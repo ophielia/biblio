@@ -25,7 +25,10 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <form:form action="${actionurl}" id="editclass" method="POST" >
 
 <div >
-<div style="float:left"><input class="linkbutton" id="save" name="increment" type="submit" value="${aincrement}"/> </div>
+<div style="float:left">
+<spring:url value="/classes/manage/increment" var="incrementurl"/>
+<a href="${incrementurl}" class="linkbutton">${aincrement}</a><br /> 
+</div>
 <div> ${mincrement}</div>
 </div>
 <hr />

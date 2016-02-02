@@ -1,6 +1,7 @@
 .settings
 .classpath
 .project
+.openshift
 log.roo
 target
 bin

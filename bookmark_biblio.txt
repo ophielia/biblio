@@ -6,23 +6,28 @@ labels
 	free entry
 overdue text
 minor - show "nothing" message for checkout and overdue lists	
-bugfix / improvement - increment grade shows success page.... otherwise no sign it was done.			
-teeny feature - link to lending summary for book from lending list
 bugfix - weekly summary incorrect - showing same books in checkedout and returned
-bugfix - list of overdue doesn't show teachers
+done - bugfix / improvement - increment grade shows success page.... otherwise no sign it was done.
+done - bugfix - list of overdue doesn't show teachers
+done - bugfix custom books - clearlist (add PrintModel to request)
+
 
 future - check addbook - how does it get the new code?
 
 labels - 
---->	bugfix custom books - clearlist (add PrintModel to request)
-	switch between range and custom
-	add front end changes
-clean up unused in GenerateBarcodeController
+error checking - custom - shorter than 11 chars, not empty, range, less than 250 in range
+
+report-lending printout
+
 		
 ---- begin commit changes ----
-done - 	look and feel to range
-done - 	wire up range
-done - 	put together submit print for range
+done - clean up unused in GenerateBarcodeController
+done - teeny feature - link to lending summary for book from lending list
+done - 	add front end changes
+done - 	switch between range and custom 
+done - bugfix / improvement - increment grade shows success page.... otherwise no sign it was done.
+done - bugfix - list of overdue doesn't show teachers
+done - bugfix custom books - clearlist (add PrintModel to request)
 
 
 ---- end commit changes ----
@@ -58,6 +63,9 @@ done - put together submit print for custom
 done - add front end changes
 done - bugfix / feature - book display - move checked out to accent box
 done - bugfix / feature - statistic/dashboard - 50 most checked out books....
+done - 	look and feel to range
+done - 	wire up range
+done - 	put together submit print for range
 
 
 

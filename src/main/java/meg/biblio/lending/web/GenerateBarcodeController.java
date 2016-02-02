@@ -97,20 +97,6 @@ public class GenerateBarcodeController {
 
 	}
 
-	//@RequestMapping(value = "/class", method = RequestMethod.GET, produces = "text/html")
-	public String showGenerateBarcodesForClassOld(Model uiModel,
-			HttpServletRequest httpServletRequest, Principal principal) {
-		ClientDao client = clientService.getCurrentClient(principal);
-		Long clientid = client.getId();
-	
-		// fill in class info
-		HashMap<Long, TeacherInfo> classinfo = classService
-				.getTeacherByClassForClient(clientid);
-		// put classinfo in model
-		uiModel.addAttribute("classinfo", classinfo);
-	
-		return "barcode/generateclass";
-	}
 
 	// Entry point class page
 	@RequestMapping(value = "/class/custom",  method = RequestMethod.GET, produces = "text/html")
@@ -195,7 +181,7 @@ public class GenerateBarcodeController {
 	}
 
 	@RequestMapping(value = "/books/custom", params = "clearall", method = RequestMethod.POST, produces = "text/html")
-	public String clearCustomList(Model uiModel,
+	public String clearCustomList(PrintClassModel pcModel,Model uiModel,
 			HttpServletRequest httpServletRequest, Principal principal,
 			Locale locale) {
 		String username = principal.getName();
@@ -210,6 +196,7 @@ public class GenerateBarcodeController {
 
 		// pop them into the model
 		uiModel.addAttribute("customvals", cacheValues);
+		uiModel.addAttribute("printClassModel", pcModel);
 
 		// return the custom book values page
 		return "barcode/generatebookscustom";

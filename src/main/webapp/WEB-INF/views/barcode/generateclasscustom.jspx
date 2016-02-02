@@ -78,6 +78,8 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <spring:message code="label_print_printnudge" htmlEscape="false" var="lnudge"/>
 <spring:message code="label_print_print" htmlEscape="false" var="lprint"/>
 <spring:message code="label_class_studentname" htmlEscape="false" var="lname"/>
+<spring:message code="label_generate_showoptions" htmlEscape="false" var="showprint"/>
+<spring:message code="label_generate_hideoptions" htmlEscape="false" var="hideprint"/>
 
 <h1>${pagetitle}</h1>
 
@@ -140,10 +142,12 @@ ${lclass}:
 		<form:options items="${nudge}" itemValue="value" itemLabel="display"/>
 		 </form:select>
 		</div>
-		<a href="#" id="potoggle1">- {Hide Print Options}</a>
+<div style="display:block; padding-top:10px;   text-align: right;">
+		<a href="#" id="potoggle1">- ${hideprint}</a>
+		</div>
 	</div>
-<div id="showprintoptions" style="display:block;">
-		<a href="#" id="potoggle2">+ {Show Print Options}</a>
+<div id="showprintoptions" style="display:block;    text-align: right;">
+		<a href="#" id="potoggle2">+ ${showprint}</a>
 	</div>	
 	
 		<span style="float: right;margin-right: 0px;margin-bottom: 15px;margin-top: 10px;"
