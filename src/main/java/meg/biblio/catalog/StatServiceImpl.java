@@ -31,9 +31,9 @@ public class StatServiceImpl implements StatService {
 
 	@Autowired
 	SearchService searchService;
-	
+
 	@Autowired
-	AppSettingService setService;	
+	AppSettingService setService;
 
 	@Autowired
 	SelectKeyService keyService;
@@ -43,7 +43,7 @@ public class StatServiceImpl implements StatService {
 
 	@Autowired
 	LendingSearchService lendingSearchService;
-	
+
 	@Autowired
 	InventoryService inventoryService;
 
@@ -119,7 +119,7 @@ public class StatServiceImpl implements StatService {
 			return runPopularBkout(client, false);
 		} else if (stattype.longValue() == StatService.StatType.POPULARBKOUT_YR) {
 			return runPopularBkout(client, true);
-		} 
+		}
 		return null;
 	}
 
@@ -161,13 +161,12 @@ public class StatServiceImpl implements StatService {
 			return runBasicGlobalPopular(client, lang);// LendingSearchService
 		} else if (stattype.longValue() == StatService.StatType.INVENTORY) {
 			return runBasicInventoryInfo(client, loc);// InventoryService
-		}else if (stattype.longValue() == StatService.StatType.OVERDUECOUNT) {
+		} else if (stattype.longValue() == StatService.StatType.OVERDUECOUNT) {
 			return runBasicOverdueCount(client, lang);// InventoryService
-		}else if (stattype.longValue() == StatService.StatType.CHECKEDOUTTOTAL) {
+		} else if (stattype.longValue() == StatService.StatType.CHECKEDOUTTOTAL) {
 			return runBasicCheckoutTotalCount(client, lang);// InventoryService
 		}
-		
-		
+
 		return null;
 	}
 
@@ -195,7 +194,7 @@ public class StatServiceImpl implements StatService {
 		List<Long> zone3 = new ArrayList<Long>();
 		zone3.add(StatService.StatType.CATEGORYBKOUT);
 		zone3.add(StatService.StatType.STATUSBKOUT);
-		zone3.add(StatService.StatType.POPULARBKOUT_YR);
+		zone3.add(StatService.StatType.POPULARBKOUT_GL);
 
 		// put together config
 		StatsConfig config = new StatsConfig();
@@ -210,29 +209,30 @@ public class StatServiceImpl implements StatService {
 		// initialize StatBreakout - labels, messages, and so on
 		BasicStat stat = new BasicStat();
 		stat.setStattype(StatService.StatType.INVENTORY);
-		
 
 		// run stat
 		InventoryDao current = inventoryService.getCurrentInventory(client);
-		if (current!=null) {
+		if (current != null) {
 			stat.setLabel("msg_stats_inventorycurrent");
-			DateFormat df = DateFormat.getDateInstance(DateFormat.MEDIUM,loc);
+			DateFormat df = DateFormat.getDateInstance(DateFormat.MEDIUM, loc);
 			String startdate = df.format(current.getStartdate());
 			stat.setValue(startdate);
 		} else {
 			// no current inventory
-			InventoryStatus lastcompleted = inventoryService.getLastCompleted(client);
-			if (lastcompleted!=null) {
+			InventoryStatus lastcompleted = inventoryService
+					.getLastCompleted(client);
+			if (lastcompleted != null) {
 				stat.setLabel("msg_stats_inventorylast");
-				DateFormat df = DateFormat.getDateInstance(DateFormat.MEDIUM,loc);
+				DateFormat df = DateFormat.getDateInstance(DateFormat.MEDIUM,
+						loc);
 				String enddate = df.format(lastcompleted.getEnddate());
-				stat.setValue(enddate);				
+				stat.setValue(enddate);
 			} else {
 				stat.setLabel("msg_stats_inventorylast");
 				stat.setValue("msg_stats_invnotrun");
 			}
 		}
-		
+
 		return stat;
 	}
 
@@ -318,7 +318,7 @@ public class StatServiceImpl implements StatService {
 
 		return stat;
 	}
-	
+
 	private BasicStat runBasicOverdueCount(ClientDao client, String lang) {
 		// initialize StatBreakout - labels, messages, and so on
 		BasicStat stat = new BasicStat();
@@ -328,14 +328,14 @@ public class StatServiceImpl implements StatService {
 		// run stat
 		LendingSearchCriteria criteria = new LendingSearchCriteria();
 		criteria.setOverdueOnly(true);
-		
+
 		Long checkoutcount = lendingSearchService.findCountByCriteria(criteria,
 				client.getId());
 		String value = String.valueOf(checkoutcount);
 		stat.setValue(value);
 
 		return stat;
-	}	
+	}
 
 	private BasicStat runBasicCheckoutTotalCount(ClientDao client, String lang) {
 		// initialize StatBreakout - labels, messages, and so on
@@ -347,7 +347,7 @@ public class StatServiceImpl implements StatService {
 		// run stat
 		LendingSearchCriteria criteria = new LendingSearchCriteria();
 		criteria.setTimeselect(LendingSearchCriteria.TimePeriodType.CURRENTSCHOOLYEAR);
-		
+
 		Long checkoutcount = lendingSearchService.findCountByCriteria(criteria,
 				client.getId());
 		String value = String.valueOf(checkoutcount);
@@ -434,8 +434,6 @@ public class StatServiceImpl implements StatService {
 		return stat;
 	}
 
-	
-
 	private StatBreakout runStatCOCatYearBkout(ClientDao client, String lang) {
 		// initialize StatBreakout - labels, messages, and so on
 		StatBreakout stat = new StatBreakout(
@@ -477,9 +475,21 @@ public class StatServiceImpl implements StatService {
 	private StatBreakout runPopularBkout(ClientDao client,
 			boolean currentYearOnly) {
 		// initialize StatBreakout - labels, messages, and so on
-		StatBreakout stat = new StatBreakout(
-				StatService.StatType.MOSTPOPULAR_GL);
-		stat.setLabel("msg_stats_popularglobal");
+		Long stattype = StatService.StatType.POPULARBKOUT_GL;
+		String stattitle = "msg_stats_popularglobal";
+		String addllabel = null;
+
+		if (currentYearOnly) {
+			stattype = StatService.StatType.POPULARBKOUT_YR;
+			stattitle = "msg_stats_popularyearly";
+			addllabel = "cy";
+		}
+
+		StatBreakout stat = new StatBreakout(stattype);
+		stat.setLabel(stattitle);
+		if (addllabel != null) {
+			stat.setAddlLabel("cy");
+		}
 
 		// run stat
 		HashMap<String, Long> statusbkout = lendingSearchService
@@ -517,7 +527,7 @@ public class StatServiceImpl implements StatService {
 					.getShelfClassHash(client.getId(), lang);
 			Set<Long> keys = statusbkout.keySet();
 			for (Long key : keys) {
-				
+
 				// make BasicStat to hold label and value
 				BasicStat bs = new BasicStat();
 				ClassificationDao classdao = disps.get(key);

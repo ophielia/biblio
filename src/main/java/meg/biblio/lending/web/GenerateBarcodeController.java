@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.xml.bind.JAXBException;
 import javax.xml.transform.TransformerException;
 
+import meg.biblio.common.AppSettingService;
 import meg.biblio.common.CacheService;
 import meg.biblio.common.ClientService;
 import meg.biblio.common.SelectKeyService;
@@ -41,6 +42,9 @@ public class GenerateBarcodeController {
 	@Autowired
 	MessageSource appMessageSource;
 
+	@Autowired
+	AppSettingService appSetting;
+	
 	@Autowired
 	ClientService clientService;
 
@@ -79,11 +83,10 @@ public class GenerateBarcodeController {
 		String username = principal.getName();
 
 		// get list of cache values
-		List<String> cacheValues = cacheService.getValidCacheAsList(username,
-				CacheService.CodeTag.CustomBarcodes);
+		putCacheValuesInModel(username, uiModel);
+
 
 		// pop them into the model
-		uiModel.addAttribute("customvals", cacheValues);
 
 		// add print model
 		pcModel = new PrintClassModel();
@@ -95,6 +98,19 @@ public class GenerateBarcodeController {
 		// return the custom book values page
 		return "barcode/generatebookscustom";
 
+	}
+	
+	private void putCacheValuesInModel(String username,Model uiModel) {
+		// get list of cache values
+		List<String> cacheValues = cacheService.getValidCacheAsList(username,
+				CacheService.CodeTag.CustomBarcodes);
+		Integer maxcodes = appSetting.getSettingAsInteger("biblio.maxcodes");
+		
+		if (cacheValues.size()>maxcodes.intValue()) {
+			uiModel.addAttribute("toomanycodes",true);
+		}
+		// pop them into the model
+		uiModel.addAttribute("customvals", cacheValues);
 	}
 
 
@@ -160,19 +176,22 @@ public class GenerateBarcodeController {
 			Principal principal, Locale locale) {
 		String username = principal.getName();
 
-		// Validate newid
-		// MM TODO
+		if (newid!=null) {
 
-		// add new id to cache
-		cacheService.saveValueInCache(username,
-				CacheService.CodeTag.CustomBarcodes, "", newid, 360L);
+			// Validate newid
+			if (newid.length()>11) {
+				uiModel.addAttribute("errorcodelength", true);
+			} else {
+				// add new id to cache
+				cacheService.saveValueInCache(username,
+						CacheService.CodeTag.CustomBarcodes, "", newid, 360L);
+			}
+		}
 
 		// get list of cache values
-		List<String> cacheValues = cacheService.getValidCacheAsList(username,
-				CacheService.CodeTag.CustomBarcodes);
+		putCacheValuesInModel(username, uiModel);
 
 		// pop them into the model
-		uiModel.addAttribute("customvals", cacheValues);
 		uiModel.addAttribute("printClassModel", pcModel);
 
 		// return the custom book values page
@@ -191,11 +210,10 @@ public class GenerateBarcodeController {
 				CacheService.CodeTag.CustomBarcodes);
 
 		// get list of cache values
-		List<String> cacheValues = cacheService.getValidCacheAsList(username,
-				CacheService.CodeTag.CustomBarcodes);
+		putCacheValuesInModel(username, uiModel);
+
 
 		// pop them into the model
-		uiModel.addAttribute("customvals", cacheValues);
 		uiModel.addAttribute("printClassModel", pcModel);
 
 		// return the custom book values page
@@ -235,11 +253,15 @@ public class GenerateBarcodeController {
 		Long startpos = pcModel.getStartPos();
 
 		Long offset = pcModel.getStartPos();
+		Integer maxcodes = appSetting.getSettingAsInteger("biblio.maxcodes");
 		if (startcode == null || endcode == null) {
 			uiModel.addAttribute("errorenterrange", true);
 			return "barcode/generatebooksrange";
 		} else if (endcode.intValue() < startcode.intValue()) {
 			uiModel.addAttribute("errorrangeinvalid", true);
+			return "barcode/generatebooksrange";
+		} else if ((endcode.intValue() - startcode.intValue())>maxcodes) {
+			uiModel.addAttribute("errortoomanycodes", true);
 			return "barcode/generatebooksrange";
 		}
 		if (offset == null) {

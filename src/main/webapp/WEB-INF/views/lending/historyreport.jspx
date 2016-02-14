@@ -90,7 +90,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 			</tbody>
 		</table>
 		
-        
+        <input class="linkbutton" id="print" name="print" type="submit" value="print"></input>
 <hr />
 <br />
 

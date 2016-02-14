@@ -1,10 +1,12 @@
 package meg.biblio.lending;
 
 import java.math.BigInteger;
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import meg.biblio.catalog.CatalogService;
 import meg.biblio.catalog.db.BookRepository;
@@ -15,6 +17,7 @@ import meg.biblio.common.db.dao.ClientDao;
 import meg.biblio.common.report.ClassSummaryReport;
 import meg.biblio.common.report.DailySummaryReport;
 import meg.biblio.common.report.OverdueBookReport;
+import meg.biblio.common.report.TableReport;
 import meg.biblio.lending.db.LoanRecordRepository;
 import meg.biblio.lending.db.PersonRepository;
 import meg.biblio.lending.db.dao.LoanRecordDao;
@@ -27,6 +30,7 @@ import meg.tools.DateUtils;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,6 +41,9 @@ public class LendingServiceImpl implements LendingService {
 	@Autowired
 	ClientService clientService;
 
+	
+
+	
 	@Autowired
 	ScalarFunction<Integer> scalarDb;
 	
@@ -373,5 +380,65 @@ public class LendingServiceImpl implements LendingService {
 		BigInteger checkoutcnt = scalarCountDb.singleResult(sql);
 		
 		return checkoutcnt.intValue();
-	}	
+	}
+
+	@Override
+	public TableReport getLendingHistoryReport(LendingSearchCriteria criteria,
+			Long clientid, Locale locale, MessageSource messageSource) {
+		if (criteria!=null) {
+			if (locale==null) {
+				locale = Locale.US;
+			}
+			
+			List<LoanRecordDisplay> checkedout = lendingSearch
+					.findLoanRecordsByCriteria(criteria, clientid);
+			
+			// create TableReport
+			String title = messageSource.getMessage("menu_lendinghistory",
+					null, locale);
+			// add title
+			TableReport tr = new TableReport(title);
+			
+			// add column headers
+			String lclass = messageSource.getMessage("label_class",null, locale);
+			String lstudent = messageSource.getMessage("label_class_student",null, locale);
+			String lbookid = messageSource.getMessage("label_book_clientbookid",null, locale);
+			String ltitle = messageSource.getMessage("label_book_title",null, locale) + " / " + 
+					messageSource.getMessage("label_book_author",null, locale);
+			String lcheckedout = messageSource.getMessage("label_lending_checkedout",null, locale) + " / " + 
+					messageSource.getMessage("label_lending_duedate",null, locale);
+			String lreturned = messageSource.getMessage("label_lendingreturned",null, locale);
+			
+			tr.addColHeader(lclass);
+			tr.addColHeader(lstudent);
+			tr.addColHeader(lbookid);
+			tr.addColHeader(ltitle);
+			tr.addColHeader(lcheckedout);
+			tr.addColHeader(lreturned);
+			
+			// add values
+			DateFormat df = DateFormat.getDateInstance(DateFormat.DEFAULT, locale);
+			for (LoanRecordDisplay record:checkedout) {
+				
+				tr.addValue(record.getTeacherfirstname());
+				tr.addValue(record.getBorrowerfn() + " " + record.getBorrowerln());
+				tr.addValue(record.getBookclientid());
+				String titleval = record.getBooktitle() + " / " + record.getAuthor();
+				tr.addValue(titleval);
+				String checkedoutval = df.format(record.getCheckedout()) + " / " + df.format(record.getDuedate());
+				tr.addValue(checkedoutval);
+				String returnedval = record.getReturned()!=null?df.format(record.getReturned()):" ";
+				tr.addValue(returnedval);
+			}
+			
+			// return TableReport
+			return tr;
+			
+		}
+		return null;
+	}
+
+
+
+	
 }

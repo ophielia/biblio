@@ -2,10 +2,14 @@ package meg.biblio.lending;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+
+import org.springframework.context.MessageSource;
 
 import meg.biblio.common.report.ClassSummaryReport;
 import meg.biblio.common.report.DailySummaryReport;
 import meg.biblio.common.report.OverdueBookReport;
+import meg.biblio.common.report.TableReport;
 import meg.biblio.lending.db.dao.LoanRecordDao;
 import meg.biblio.lending.db.dao.LoanRecordDisplay;
 
@@ -46,6 +50,9 @@ public interface LendingService {
 	Integer getCheckoutCountForBook(Long bookid, Long clientid);
 
 	List<LoanRecordDisplay> getLendingHistoryForBook(Long bookid, Long clientid);
+
+	TableReport getLendingHistoryReport(LendingSearchCriteria criteria,
+			Long clientid, Locale locale, MessageSource messageSource);
 
 	
 }

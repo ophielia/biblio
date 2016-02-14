@@ -2,6 +2,10 @@
 ALTER TABLE book DROP COLUMN counteddate;
 ALTER TABLE book ADD COLUMN counteddate timestamp without time zone;
 
+/** new appsetting **/
+INSERT INTO appsetting(id, key, value, version) VALUES (nextval('hibernate_sequence'), 'biblio.maxcodes', '200', 0);
+INSERT INTO appsetting(id, key, value, version) VALUES (nextval('hibernate_sequence'), 'biblio.report.tablereportxsl', 'trf.xsl', 0);
+
 /*** NEW SELECT KEYS - print options ****/
 /* yes no */
 insert into select_key (id, lookup,version) values (nextval('hibernate_sequence'),'yesno',0);

@@ -65,7 +65,8 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <spring:message code="label_print_print" htmlEscape="false" var="lprint"/>
 <spring:message code="label_generate_booksrange" htmlEscape="false" var="series"/>
 <spring:message code="label_print_print" htmlEscape="false" var="lprint"/>
-
+<spring:message code="error_enter_indcodelength" htmlEscape="false" var="msgerrorcodelength"/>
+<spring:message code="error_enter_toomanycodes" htmlEscape="false" var="msgtoomany"/>
 
 <h1>${customlisttitle}</h1>
 
@@ -73,14 +74,20 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <spring:url value="/generatebarcode/books/custom" var="actionurl"/>
 <form:form action="${actionurl}" id="generatebookcodes" method="POST" modelAttribute="printClassModel" >	
 
-<div class="columnbox" style="border-right-style: dotted;padding-right: 5px;  ">
+<div class="columnbox" style="border-right-style: dotted;padding-right: 5px;min-width:400px  ">
 
 <div>
+<c:if test="${errorcodelength}">
+<div class="errors">${msgerrorcodelength}</div>
+</c:if>
+
+<c:if test="${!toomanycodes}">
+
 			${addcodeid}<input id="newid" name="newid" type="text"
 				value="" />
 				<input value="${addid}" type="submit" name="toadd"
 				id="addnewid" class="linkbutton" style="width: 125px;" />
-				
+			</c:if>	
 
 		</div>
 		<table>

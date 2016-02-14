@@ -1,5 +1,6 @@
 package meg.biblio.lending.web;
 
+import java.io.IOException;
 import java.security.Principal;
 import java.util.Date;
 import java.util.HashMap;
@@ -7,26 +8,34 @@ import java.util.List;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.xml.bind.JAXBException;
+import javax.xml.transform.TransformerException;
 
 import meg.biblio.common.ClientService;
 import meg.biblio.common.SelectKeyService;
 import meg.biblio.common.db.dao.ClientDao;
+import meg.biblio.common.report.ReportService;
+import meg.biblio.common.report.TableReport;
 import meg.biblio.lending.ClassManagementService;
 import meg.biblio.lending.LendingSearchCriteria;
 import meg.biblio.lending.LendingService;
 import meg.biblio.lending.db.dao.LoanRecordDisplay;
-import meg.biblio.lending.db.dao.TeacherDao;
 import meg.biblio.lending.web.model.LendingSearchModel;
 import meg.biblio.lending.web.model.TeacherInfo;
 import meg.tools.DateUtils;
 
+import org.apache.fop.apps.FOPException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.servlet.support.RequestContextUtils;
 
 @RequestMapping("/lendinghistory")
 @Controller
@@ -34,6 +43,9 @@ public class LendingHistoryController {
 
 	@Autowired
 	ClassManagementService classService;
+	
+	@Autowired
+	ReportService reportService;	
 
 	@Autowired
 	ClientService clientService;
@@ -82,9 +94,36 @@ public class LendingHistoryController {
 		return "lending/history";
 	}
 
+	@RequestMapping(method = RequestMethod.POST, params = "print",produces = "text/html")
+	public void printHistoryPage(@ModelAttribute("lendingSearchModel") LendingSearchModel lendingSearchModel,
+			Model uiModel, HttpServletRequest httpServletRequest,HttpServletResponse response, Locale locale,
+			Principal principal) throws IOException, FOPException, TransformerException, JAXBException {
+		ClientDao client = clientService.getCurrentClient(principal);
 
+		LendingSearchCriteria criteria = lendingSearchModel.getCriteria();
 
+		WebApplicationContext webAppContext = RequestContextUtils.getWebApplicationContext(httpServletRequest);
+		MessageSource messageSource = (MessageSource) webAppContext.getBean("messageSource");
+		
+		TableReport report = lendingService.getLendingHistoryReport(criteria, client.getId(),locale,messageSource);
+		
 
+		
+		// put results in model
+		//uiModel.addAttribute("lendingSearchModel",lendingSearchModel);
+
+		byte[] pdf = reportService.produceTableReport(report);
+		
+		// prepare response
+		response.setContentType("application/pdf");
+		response.setContentLength(pdf.length);
+
+		// send content to browser
+		response.getOutputStream().write(pdf);
+		response.getOutputStream().flush();
+		
+
+	}
 
 	@RequestMapping(value = "/sortby/{sortby}", method = RequestMethod.POST, produces = "text/html")
 	public String sortHistoryPage(@PathVariable("sortby") Long sortkey,

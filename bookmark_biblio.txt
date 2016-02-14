@@ -10,17 +10,24 @@ bugfix - weekly summary incorrect - showing same books in checkedout and returne
 done - bugfix / improvement - increment grade shows success page.... otherwise no sign it was done.
 done - bugfix - list of overdue doesn't show teachers
 done - bugfix custom books - clearlist (add PrintModel to request)
-
-
 future - check addbook - how does it get the new code?
 
 labels - 
-error checking - custom - shorter than 11 chars, not empty, range, less than 250 in range
 
-report-lending printout
+link to print position page, sample nudge page
 
+
+-----> report-lending printout
+perfecting pdf - add first column width (as parameter....)
+sort - not considered in pdf print....
 		
 ---- begin commit changes ----
+done - error checking - 
+done - 	test - custom - shorter than 11 chars, not empty, range, less than 250 in range
+done - also - print position page, and sample nudge page
+
+
+
 done - clean up unused in GenerateBarcodeController
 done - teeny feature - link to lending summary for book from lending list
 done - 	add front end changes

@@ -5,8 +5,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 
 import javax.xml.bind.JAXBContext;
@@ -21,17 +19,10 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.stream.StreamSource;
 
-import meg.biblio.common.db.dao.ClientDao;
-import meg.biblio.common.report.Barcode;
 import meg.biblio.common.report.BarcodeSheet;
-import meg.biblio.common.report.ClassSummaryReport;
-import meg.biblio.common.report.DailySummaryReport;
-import meg.biblio.common.report.OverdueBookReport;
+import meg.biblio.common.report.TableReport;
 import meg.biblio.lending.ClassManagementService;
 import meg.biblio.lending.LendingService;
-import meg.biblio.lending.db.dao.SchoolGroupDao;
-import meg.biblio.lending.db.dao.StudentDao;
-import meg.biblio.lending.web.model.ClassModel;
 
 import org.apache.fop.apps.FOPException;
 import org.apache.fop.apps.Fop;
@@ -87,6 +78,29 @@ public class ReportGeneratorTest {
 	}
 	
 	@Test
+	public void testMakeAReportXML() throws JAXBException {
+		Long clientid = clientService.getTestClientId();
+		Locale locale = Locale.FRANCE;
+
+		TableReport tr = new TableReport("title");
+		tr.addColHeader("header1");
+		tr.addColHeader("header2");
+		tr.addColHeader("header3");
+		tr.addValue("one");
+		tr.addValue("two");
+		tr.addValue("three");
+		tr.addValue("four");
+		tr.addValue("five");
+		tr.addValue("six");
+		
+		JAXBContext context = JAXBContext.newInstance(TableReport.class);
+		Marshaller m = context.createMarshaller();
+		m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+
+		m.marshal(tr, new File("C:/Temp/reportmareschale.xml"));
+	}	
+	
+	@Test
 	public void testHelloWorld() throws IOException, TransformerException {
 
 		// Step 2: Set up output stream.
@@ -100,14 +114,14 @@ public class ReportGeneratorTest {
 			Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, out);
 
 			//Setup Transformer
-			Source xsltSrc = new StreamSource(new File("C:/Temp/bcsnew.xsl"));
+			Source xsltSrc = new StreamSource(new File("C:/Temp/sample.xsl"));
 			Transformer transformer = tFactory.newTransformer(xsltSrc);
 
 			//Make sure the XSL transformation's result is piped through to FOP
 			Result res = new SAXResult(fop.getDefaultHandler());
 
 			//Setup input
-			Source src = new StreamSource(new File("C:/Temp/mymareschale.xml"));
+			Source src = new StreamSource(new File("C:/Temp/sample_en.xml"));
 
 
 			//Start the transformation and rendering process
@@ -128,6 +142,48 @@ public class ReportGeneratorTest {
 	
 }
 
+	
+	@Test
+	public void testReport() throws IOException, TransformerException {
+
+		// Step 2: Set up output stream.
+		// Note: Using BufferedOutputStream for performance reasons (helpful with FileOutputStreams).
+		OutputStream out = new BufferedOutputStream(new FileOutputStream(new File("C:/Temp/report.pdf")));
+
+		try {
+
+
+		  //Setup FOP
+			Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, out);
+
+			//Setup Transformer
+			Source xsltSrc = new StreamSource(new File("C:/Temp/tablereportformat.xsl"));
+			Transformer transformer = tFactory.newTransformer(xsltSrc);
+
+			//Make sure the XSL transformation's result is piped through to FOP
+			Result res = new SAXResult(fop.getDefaultHandler());
+
+			//Setup input
+			Source src = new StreamSource(new File("C:/Temp/reportmareschale.xml"));
+
+
+			//Start the transformation and rendering process
+			transformer.transform(src, res);
+
+		} catch (FOPException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (TransformerConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+		    //Clean-up
+		    out.close();
+		}
+
+
+	
+}	
 /*
  * 
  * 

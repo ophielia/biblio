@@ -57,7 +57,10 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <spring:message code="label_generate_codefrom" htmlEscape="false" var="lfrom"/>
 <spring:message code="label_generate_codeto" htmlEscape="false" var="lto"/>
 <spring:message code="error_enter_range" htmlEscape="false" var="msgerrorenterrange"/>
+<spring:message code="error_enter_range" htmlEscape="false" var="msgerrorenterrange"/>
+<spring:message code="error_enter_toomanycodes" htmlEscape="false" var="msgtoomany"/>
 <spring:message code="error_enter_rangeinvalid" htmlEscape="false" var="msgerrorrangeinvalid"/>
+<spring:message code="error_enter_indcodelength" htmlEscape="false" var="msgerrorcodelength"/>
 <spring:message code="label_print_print" htmlEscape="false" var="lprint"/>
 <spring:message code="label_generate_showoptions" htmlEscape="false" var="showprint"/>
 <spring:message code="label_generate_hideoptions" htmlEscape="false" var="hideprint"/>
@@ -77,6 +80,9 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 </c:if>
 <c:if test="${errorrangeinvalid}">
 <div class="errors">${msgerrorrangeinvalid}</div>
+</c:if>
+<c:if test="${errortoomanycodes}">
+<div class="errors">${msgtoomany}</div>
 </c:if>
 
 <div class="columnbox cbtwo" style="border-right-style: dotted;padding-right: 5px;  ">
