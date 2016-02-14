@@ -398,6 +398,7 @@ public class LendingServiceImpl implements LendingService {
 					null, locale);
 			// add title
 			TableReport tr = new TableReport(title);
+			tr.setFontsize("10pt");
 			
 			// add column headers
 			String lclass = messageSource.getMessage("label_class",null, locale);
@@ -409,12 +410,12 @@ public class LendingServiceImpl implements LendingService {
 					messageSource.getMessage("label_lending_duedate",null, locale);
 			String lreturned = messageSource.getMessage("label_lendingreturned",null, locale);
 			
-			tr.addColHeader(lclass);
+			tr.addColHeader(lclass,"1.5cm");
 			tr.addColHeader(lstudent);
-			tr.addColHeader(lbookid);
+			tr.addColHeader(lbookid,"1.5cm");
 			tr.addColHeader(ltitle);
-			tr.addColHeader(lcheckedout);
-			tr.addColHeader(lreturned);
+			tr.addColHeader(lcheckedout,"2.5cm");
+			tr.addColHeader(lreturned,"2.5cm");
 			
 			// add values
 			DateFormat df = DateFormat.getDateInstance(DateFormat.DEFAULT, locale);

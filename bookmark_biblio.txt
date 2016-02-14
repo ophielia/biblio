@@ -12,30 +12,16 @@ done - bugfix - list of overdue doesn't show teachers
 done - bugfix custom books - clearlist (add PrintModel to request)
 future - check addbook - how does it get the new code?
 
-labels - 
-
 link to print position page, sample nudge page
 
+weekly summary incorrect - showing same books in checkedout and returned
 
------> report-lending printout
-perfecting pdf - add first column width (as parameter....)
-sort - not considered in pdf print....
+
 		
 ---- begin commit changes ----
-done - error checking - 
-done - 	test - custom - shorter than 11 chars, not empty, range, less than 250 in range
-done - also - print position page, and sample nudge page
-
-
-
-done - clean up unused in GenerateBarcodeController
-done - teeny feature - link to lending summary for book from lending list
-done - 	add front end changes
-done - 	switch between range and custom 
-done - bugfix / improvement - increment grade shows success page.... otherwise no sign it was done.
-done - bugfix - list of overdue doesn't show teachers
-done - bugfix custom books - clearlist (add PrintModel to request)
-
+done - report-lending printout
+done - perfecting pdf - add first column width (as parameter....)
+done - sort - not considered in pdf print....
 
 ---- end commit changes ----
 
@@ -73,6 +59,17 @@ done - bugfix / feature - statistic/dashboard - 50 most checked out books....
 done - 	look and feel to range
 done - 	wire up range
 done - 	put together submit print for range
+done - clean up unused in GenerateBarcodeController
+done - teeny feature - link to lending summary for book from lending list
+done - 	add front end changes
+done - 	switch between range and custom 
+done - bugfix / improvement - increment grade shows success page.... otherwise no sign it was done.
+done - bugfix - list of overdue doesn't show teachers
+done - bugfix custom books - clearlist (add PrintModel to request)
+done - error checking - 
+done - 	test - custom - shorter than 11 chars, not empty, range, less than 250 in range
+done - also - print position page, and sample nudge page
+
 
 
 

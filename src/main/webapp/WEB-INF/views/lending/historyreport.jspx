@@ -15,6 +15,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
     <h1>${searchtitle}</h1>
 
 <spring:message code="label_class" htmlEscape="false" var="lclass"/>    
+<spring:message code="label_print_print" htmlEscape="false" var="lprint"/>    
 <spring:message code="label_class_student" htmlEscape="false" var="lstudent"/>    
 <spring:message code="label_book_clientbookid" htmlEscape="false" var="lbookid"/>    
 <spring:message code="label_book_title" htmlEscape="false" var="ltitle"/>    
@@ -54,6 +55,14 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 				form.submit();
 			});
 		});
+		
+		// print pdf opens in new window
+	   	form = dojo.byId("resultlist");
+	   	on(form, "input[id^='print']:click", function(event){
+   	  //alert('yippee');
+		  form.target="_blank";
+		  form.submit();
+	   	});
 
 	});
  
@@ -64,7 +73,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 
 		<table class="clear">
 			<tbody>
-				<tr>
+				<tr style="vertical-align: top;">
 					<td>${lcriteria}:</td>
 					<td>${lclass} - <form:select path="classselect">
 							<c:forEach items="${classselect}" var="tmp">
@@ -85,12 +94,14 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 						<form:input type="hidden" path="sortdir"></form:input>
 						</td>
 						<td><spring:message code="button_display" htmlEscape="false" var="search_button"/>
-						<input class="linkbutton" id="searchbutton" type="submit" value="${search_button}"/></td>
+						<input style="    margin-bottom: 5px;" class="linkbutton" id="searchbutton" type="submit" value="${search_button}"/>
+						<br />
+						<input class="linkbutton" id="print" name="print" type="submit" value="${lprint}"></input></td>
 				</tr>
 			</tbody>
 		</table>
 		
-        <input class="linkbutton" id="print" name="print" type="submit" value="print"></input>
+        
 <hr />
 <br />
 

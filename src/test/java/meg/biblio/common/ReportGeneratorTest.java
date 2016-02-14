@@ -17,11 +17,13 @@ import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.sax.SAXResult;
+import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
 import meg.biblio.common.report.BarcodeSheet;
 import meg.biblio.common.report.TableReport;
 import meg.biblio.lending.ClassManagementService;
+import meg.biblio.lending.LendingSearchCriteria;
 import meg.biblio.lending.LendingService;
 
 import org.apache.fop.apps.FOPException;
@@ -81,11 +83,35 @@ public class ReportGeneratorTest {
 	public void testMakeAReportXML() throws JAXBException {
 		Long clientid = clientService.getTestClientId();
 		Locale locale = Locale.FRANCE;
-
+		
 		TableReport tr = new TableReport("title");
-		tr.addColHeader("header1");
+		tr.addColHeader("header1","15%");
 		tr.addColHeader("header2");
 		tr.addColHeader("header3");
+		tr.addValue("one");
+		tr.addValue("two");
+		tr.addValue("three");
+		tr.addValue("four");
+		tr.addValue("five");
+		tr.addValue("six");
+		tr.addValue("one");
+		tr.addValue("two");
+		tr.addValue("three");
+		tr.addValue("four");
+		tr.addValue("five");
+		tr.addValue("six");
+		tr.addValue("one");
+		tr.addValue("two");
+		tr.addValue("three");
+		tr.addValue("four");
+		tr.addValue("five");
+		tr.addValue("six");
+		tr.addValue("one");
+		tr.addValue("two");
+		tr.addValue("three");
+		tr.addValue("four");
+		tr.addValue("five");
+		tr.addValue("six");
 		tr.addValue("one");
 		tr.addValue("two");
 		tr.addValue("three");
@@ -157,11 +183,12 @@ public class ReportGeneratorTest {
 			Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, out);
 
 			//Setup Transformer
-			Source xsltSrc = new StreamSource(new File("C:/Temp/tablereportformat.xsl"));
+			Source xsltSrc = new StreamSource(new File("C:/Temp/trf.xsl"));
 			Transformer transformer = tFactory.newTransformer(xsltSrc);
 
 			//Make sure the XSL transformation's result is piped through to FOP
 			Result res = new SAXResult(fop.getDefaultHandler());
+			//StreamResult res = new StreamResult(System.out);
 
 			//Setup input
 			Source src = new StreamSource(new File("C:/Temp/reportmareschale.xml"));

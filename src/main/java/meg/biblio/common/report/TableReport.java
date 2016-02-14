@@ -11,21 +11,30 @@ public class TableReport {
 
 	List<TableValue> reportvalues;
 	List<String> colheaders;
+	List<String> colsizes;
+	String fontsize;
 	String title;
 	Integer columncount;
 	int valcount;
 	
 	public TableReport(String title) {
 		this.title = title;
-		this.valcount=1;
-		this.reportvalues = new ArrayList<TableValue>();
-		this.colheaders = new ArrayList<String>();
+		setDefaults();
 	}
 
 	public TableReport() {
 		super();
+		setDefaults();
 	}
 
+	private void setDefaults() {
+		this.valcount=1;
+		this.reportvalues = new ArrayList<TableValue>();
+		this.colheaders = new ArrayList<String>();
+		this.colsizes = new ArrayList<String>();
+		this.fontsize="12pt";
+	}
+	
 	public void addValue(String value) {
 		// make ReportValue
 		TableValue rv = new TableValue();
@@ -39,11 +48,28 @@ public class TableReport {
 	
 	public void addColHeader(String header) {
 		colheaders.add(header);
+		colsizes.add("");
+	}
+	
+	public void addColHeader(String header, String size) {
+		colheaders.add(header);
+		colsizes.add(size);
 	}
 	
 	@XmlElement
 	public String getTitle() {
 		return this.title;
+	}
+	
+	@XmlElement(name="fontsize")
+	public String getFontsize() {
+		return this.fontsize;
+	}
+	
+	
+
+	public void setFontsize(String fontsize) {
+		this.fontsize = fontsize;
 	}
 
 	@XmlElement(name="tablevalue")
@@ -60,6 +86,11 @@ public class TableReport {
 	public List<String> getColheader() {
 		return colheaders;
 	}
+	
+	@XmlElement
+	public List<String> getColsizes() {
+		return colsizes;
+	}	
 
 
 	

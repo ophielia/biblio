@@ -34,7 +34,7 @@
 
 	<fo:block >
 	<fo:table  table-layout="auto" >
-	       <!-- column headers -->
+	     <xsl:apply-templates select="colsizes"/>
 	<fo:table-header>
 	  <fo:table-row>
 		<xsl:apply-templates select="colheader"/>	 
@@ -56,7 +56,7 @@
 	                <xsl:attribute name="ends-row">true</xsl:attribute>
 	            </xsl:if>
 	            <fo:block  text-align="left">
-	            <fo:block margin-top="1mm" margin-left="1mm"  wrap-option="wrap">
+	            <fo:block margin-top="1mm" margin-left="1mm" font-size="10pt" wrap-option="wrap">
 		    	<xsl:value-of select="value"/>
 	            </fo:block>
 	                        
@@ -67,8 +67,21 @@
 
 <xsl:template match="colheader">
     <fo:table-cell xsl:use-attribute-sets="myBorder" >
-      <fo:block font-weight="bold"  text-align="center"><xsl:value-of select="."/></fo:block>
+      <fo:block font-weight="bold" font-size="10pt" text-align="center"><xsl:value-of select="."/></fo:block>
     </fo:table-cell>
+</xsl:template>
+
+
+<xsl:template match="colsizes">
+<xsl:variable name="sze" select="."/>
+<xsl:choose>
+<xsl:when test="$sze=''">
+<fo:table-column  />
+</xsl:when>
+<xsl:otherwise>
+<fo:table-column column-width="{$sze}" />
+</xsl:otherwise>
+</xsl:choose>
 </xsl:template>
 
 

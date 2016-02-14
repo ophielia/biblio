@@ -60,6 +60,8 @@ public class LendingSearchModel {
 		}
 	}
 	public LendingSearchCriteria getCriteria() {
+		criteria.setSortKey(getSorttype());
+		criteria.setSortDir(getSortdir());
 		return criteria;
 	}
 	public void setCriteria(LendingSearchCriteria criteria) {
@@ -94,7 +96,7 @@ public class LendingSearchModel {
 
 
 	private long getDefaultSorttype() {
-		return LendingSearchCriteria.SortKey.CHECKEDOUT;
+		return LendingSearchCriteria.SortKey.CLASS;
 	}
 
 	private long getDefaultSortDir() {
