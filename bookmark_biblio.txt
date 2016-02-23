@@ -6,15 +6,15 @@ labels
 	free entry
 overdue text
 minor - show "nothing" message for checkout and overdue lists	
-bugfix - weekly summary incorrect - showing same books in checkedout and returned
+done - bugfix - weekly summary incorrect - showing same books in checkedout and returned
 done - bugfix / improvement - increment grade shows success page.... otherwise no sign it was done.
 done - bugfix - list of overdue doesn't show teachers
 done - bugfix custom books - clearlist (add PrintModel to request)
-future - check addbook - how does it get the new code?
 
-----> link to print position page, sample nudge page
-translate text
-add info boxes to custom book codes, book code range.
+
+future - check addbook - how does it get the new code?
+future - two stage for remove all students from class
+
 	
 
 
@@ -22,10 +22,10 @@ add info boxes to custom book codes, book code range.
 
 		
 ---- begin commit changes ----
-done - weekly summary incorrect - showing same books in checkedout and returned
-done - report-lending printout
-done - perfecting pdf - add first column width (as parameter....)
-done - sort - not considered in pdf print....
+done - link to print position page, sample nudge page
+done - translate text
+done - add info boxes to custom book codes, book code range.
+
 
 ---- end commit changes ----
 
@@ -73,6 +73,10 @@ done - bugfix custom books - clearlist (add PrintModel to request)
 done - error checking - 
 done - 	test - custom - shorter than 11 chars, not empty, range, less than 250 in range
 done - also - print position page, and sample nudge page
+done - weekly summary incorrect - showing same books in checkedout and returned
+done - report-lending printout
+done - perfecting pdf - add first column width (as parameter....)
+done - sort - not considered in pdf print....
 
 
 

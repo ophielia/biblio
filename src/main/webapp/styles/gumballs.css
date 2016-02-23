@@ -560,7 +560,23 @@ fieldset th {
     line-height: 20px;
     font-weight: bold;
 }
-    
+ 
+  
+
+a.infobutton {
+	display: inline-block;
+    border-radius: 75px;
+    overflow: hidden;
+    padding-left: 5px;
+    padding-right: 5px;
+    color: white;
+    margin-left: 10px;
+    margin-right: 10px;
+    background-color: #2e537d;
+    text-decoration: none;
+    font-size: small;
+    vertical-align: bottom;
+}
 .linkbutton a {
 	display: inline-block;
 	overflow: hidden;
@@ -571,6 +587,36 @@ fieldset th {
 	background-color: #2e537d;
 	text-decoration: none;
 	vertical-align: bottom;
+}
+
+a.infobutton:visited {
+	display: inline-block;
+    border-radius: 75px;
+    overflow: hidden;
+    padding-left: 5px;
+    padding-right: 5px;
+    color: white;
+    margin-left: 10px;
+    margin-right: 10px;
+    background-color: #2e537d;
+    text-decoration: none;
+    font-size: small;
+    vertical-align: bottom;
+}
+
+a.infobutton:hover {
+    display: inline-block;
+    border-radius: 75px;
+    overflow: hidden;
+    padding-left: 5px;
+    padding-right: 5px;
+    color: #bdbdbd;
+    margin-left: 10px;
+    margin-right: 10px;
+    background-color: #2e537d;
+    text-decoration: none;
+    font-size: small;
+    vertical-align: bottom;
 }
 
 a.linkbutton {

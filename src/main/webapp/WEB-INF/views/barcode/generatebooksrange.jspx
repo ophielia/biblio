@@ -11,13 +11,23 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 
 <script type="text/javascript">
  require([
-          'dojo/dom','dojo/query',"dojo/dom-style","dijit/focus","dojo/on", 
+          'dojo/dom','dijit/Dialog','dojo/query',"dojo/dom-style","dijit/focus","dojo/on", 
           'dojo/domReady!'
-      ], function (dom,query,style,focusUtil,on) {
+      ], function (dom,Dialog,query,style,focusUtil,on) {
 
 
 	 var showoptions = false;
 	
+		startposDialog = new Dialog({
+	        title: '<spring:message code="label_print_positionpopup"/>',
+	        href:'<spring:url value="/positionsinfo" />'	
+	    });
+	
+	  nudgeDialog= new Dialog({
+	        title: '<spring:message code="label_print_nudgepopup"/>',
+	        href:'<spring:url value="/nudgeinfo" />'	
+	    });
+	  
 	 toggleOptionDisplay(showoptions);
 	 	
 		// print pdf opens in new window
@@ -94,27 +104,34 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 	<div style="padding-top: 60px; padding-left: 10px;"
 		class="columnbox cbtwo">
 
-		<div id="printoptions" style="display: none;">
-			<div style="text-align: right">${firstpos}
-				<form:select   path="startPos">
-		<form:options items="${positionselect}" itemValue="value" itemLabel="display"/>
-		 </form:select> 
+			<div id="printoptions" style="display: none;">
+				<div style="text-align: right">${lborder}
+					<form:select path="showBorder">
+						<form:options items="${yesno}" itemValue="value"
+							itemLabel="display" />
+					</form:select>
+				</div>
+
+				<div style="text-align: right">${firstpos}
+					<form:select path="startPos">
+						<form:options items="${positionselect}" itemValue="value"
+							itemLabel="display" />
+					</form:select>
+					<a class="infobutton" onclick="startposDialog.show();">i</a>
+				</div>
+
+				<div style="text-align: right">${lnudge}
+					<form:select path="nudge">
+						<form:options items="${nudge}" itemValue="value"
+							itemLabel="display" />
+					</form:select>
+					<a class="infobutton" onclick="nudgeDialog.show();">i</a>
+				</div>
+				<div style="display: block; padding-top: 10px; text-align: right;">
+					<a href="#" id="potoggle1">- ${hideprint}</a>
+				</div>
 			</div>
-			<div style="text-align: right">${lborder}
-		<form:select   path="showBorder">
-		<form:options items="${yesno}" itemValue="value" itemLabel="display"/>
-		 </form:select>
-			</div>
-			<div style="text-align: right">${lnudge}
-				<form:select   path="nudge">
-		<form:options items="${nudge}" itemValue="value" itemLabel="display"/>
-		 </form:select>
-			</div>
-			<div style="display:block; padding-top:10px;   text-align: right;">
-			<a href="#" id="potoggle1">- ${hideprint}</a>
-			</div>
-		</div>
-		<div id="showprintoptions" style="display: block;text-align:right">
+			<div id="showprintoptions" style="display: block;text-align:right">
 			<a href="#" id="potoggle2">+ ${showprint}</a>
 		</div>
 

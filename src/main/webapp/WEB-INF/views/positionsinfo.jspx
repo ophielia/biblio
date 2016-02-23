@@ -12,7 +12,7 @@
 
 <p>
 <spring:url value="/resources/static/Positions.pdf" var="linktopage" />
-<a href="${linktopage}"><spring:message code="msg_positions_linktoguide" /></a></p>
+<a href="${linktopage}" target="_blank"><spring:message code="msg_positions_linktoguide" /></a></p>
 
 <p><spring:message code="msg_positions_note" /></p>
   

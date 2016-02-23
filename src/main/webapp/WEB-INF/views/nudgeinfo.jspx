@@ -12,7 +12,7 @@
 <p>
 <spring:message code="msg_nudge_samplepage" var="pagename"/>
 <spring:url value="/resources/static/${pagename}" var="linktopage" />
-<a href="${linktopage}"><spring:message code="msg_nudge_linktoguide" /></a></p>
+<a href="${linktopage}" target="_blank"><spring:message code="msg_nudge_linktoguide" /></a></p>
 
 </div>    
 </div>

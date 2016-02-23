@@ -170,13 +170,13 @@
 						<form:options items="${positionselect}" itemValue="value"
 							itemLabel="display" />
 					</form:select>
-						<a class="infobutton" onclick="startposDialog.show();">i</a>
+					<a class="infobutton" onclick="startposDialog.show();">i</a>
 				</div>
 				<div style="text-align: right">${lnudge}
 					<form:select path="nudge">
 						<form:options items="${nudge}" itemValue="value"
 							itemLabel="display" />
-							
+
 					</form:select>
 					<a class="infobutton" onclick="nudgeDialog.show();">i</a>
 				</div>
