@@ -1,20 +1,8 @@
-Branch - printing
-
-report-lending printout
-labels 
-	free start, 
-	free entry
-overdue text
-minor - show "nothing" message for checkout and overdue lists	
-done - bugfix - weekly summary incorrect - showing same books in checkedout and returned
-done - bugfix / improvement - increment grade shows success page.... otherwise no sign it was done.
-done - bugfix - list of overdue doesn't show teachers
-done - bugfix custom books - clearlist (add PrintModel to request)
-
+Branch 
 
 future - check addbook - how does it get the new code?
 future - two stage for remove all students from class
-
+small bug - after printout page class pdf, change of select leads to new page (target...)
 	
 
 
@@ -22,63 +10,12 @@ future - two stage for remove all students from class
 
 		
 ---- begin commit changes ----
-done - link to print position page, sample nudge page
-done - translate text
-done - add info boxes to custom book codes, book code range.
 
 
 ---- end commit changes ----
 
 
 ----- begin branch changes ----
-
-done - showing items in list
-done - clearing all   
-done - PDFController - generateClassBarcodeSheet - add nudge and border flags
-done - wire parameters together for redirect from GenerateBarcodeController to PDFController
-done - 	bug - not saving class selects correctly (or, at all)		
-done - javascript - (new page)
-done -continue select keys for print - next, nudge select, finish border (to frontend)
-done - deleting items in list
-done - pages to / for controller - put it all together.
-done - start at entry point method....
-done - front end cleanup print for class
-done - bug - select position not shown in order - backend as list??
-done - last label - print - continue labels
-done - javascript toggle print options
-done - nudge - backend
-done - scheduling - for deleting cache - DetailSearchServiceImpl Scheduling	
-done - front end - custom class labels
-done - 	put together submit for print
-done - free position start - backend
-done - 	offset to startposition....
-done - 	move nudge into xml / backend
-done - add border to xml / backend
-done - wire up printing, custom book page
-done - custom book - labels
-done - put together submit print for custom
-done - add front end changes
-done - bugfix / feature - book display - move checked out to accent box
-done - bugfix / feature - statistic/dashboard - 50 most checked out books....
-done - 	look and feel to range
-done - 	wire up range
-done - 	put together submit print for range
-done - clean up unused in GenerateBarcodeController
-done - teeny feature - link to lending summary for book from lending list
-done - 	add front end changes
-done - 	switch between range and custom 
-done - bugfix / improvement - increment grade shows success page.... otherwise no sign it was done.
-done - bugfix - list of overdue doesn't show teachers
-done - bugfix custom books - clearlist (add PrintModel to request)
-done - error checking - 
-done - 	test - custom - shorter than 11 chars, not empty, range, less than 250 in range
-done - also - print position page, and sample nudge page
-done - weekly summary incorrect - showing same books in checkedout and returned
-done - report-lending printout
-done - perfecting pdf - add first column width (as parameter....)
-done - sort - not considered in pdf print....
-
-
 
 
 ---- end branch changes ----
@@ -162,6 +99,12 @@ db testing - problem with views.  LendingSearchService fails.  check this link -
 printing
 client interface
 images to db
+z59
+
+----- February 2016 - Big Picture ----
+images to db
+better design statistics
+client interface
 z59
 
 
@@ -908,6 +851,77 @@ done -  ISSUE!! category breakout showing 1620 italian books ?????
 done - bugfix - dates - weekly summary
 done - weekly summary, returned for whole week
 done - menu - advanced search under catalog
+
+
+********* branch PRINTING and bugfixes v1_0_1 *****************
+
+Branch - printing
+
+report-lending printout
+labels 
+	free start, 
+	free entry
+overdue text
+minor - show "nothing" message for checkout and overdue lists	
+done - bugfix - weekly summary incorrect - showing same books in checkedout and returned
+done - bugfix / improvement - increment grade shows success page.... otherwise no sign it was done.
+done - bugfix - list of overdue doesn't show teachers
+done - bugfix custom books - clearlist (add PrintModel to request)
+
+
+
+done - showing items in list
+done - clearing all   
+done - PDFController - generateClassBarcodeSheet - add nudge and border flags
+done - wire parameters together for redirect from GenerateBarcodeController to PDFController
+done - 	bug - not saving class selects correctly (or, at all)		
+done - javascript - (new page)
+done -continue select keys for print - next, nudge select, finish border (to frontend)
+done - deleting items in list
+done - pages to / for controller - put it all together.
+done - start at entry point method....
+done - front end cleanup print for class
+done - bug - select position not shown in order - backend as list??
+done - last label - print - continue labels
+done - javascript toggle print options
+done - nudge - backend
+done - scheduling - for deleting cache - DetailSearchServiceImpl Scheduling	
+done - front end - custom class labels
+done - 	put together submit for print
+done - free position start - backend
+done - 	offset to startposition....
+done - 	move nudge into xml / backend
+done - add border to xml / backend
+done - wire up printing, custom book page
+done - custom book - labels
+done - put together submit print for custom
+done - add front end changes
+done - bugfix / feature - book display - move checked out to accent box
+done - bugfix / feature - statistic/dashboard - 50 most checked out books....
+done - 	look and feel to range
+done - 	wire up range
+done - 	put together submit print for range
+done - clean up unused in GenerateBarcodeController
+done - teeny feature - link to lending summary for book from lending list
+done - 	add front end changes
+done - 	switch between range and custom 
+done - bugfix / improvement - increment grade shows success page.... otherwise no sign it was done.
+done - bugfix - list of overdue doesn't show teachers
+done - bugfix custom books - clearlist (add PrintModel to request)
+done - error checking - 
+done - 	test - custom - shorter than 11 chars, not empty, range, less than 250 in range
+done - also - print position page, and sample nudge page
+done - weekly summary incorrect - showing same books in checkedout and returned
+done - report-lending printout
+done - perfecting pdf - add first column width (as parameter....)
+done - sort - not considered in pdf print....
+done - link to print position page, sample nudge page
+done - translate text
+done - add info boxes to custom book codes, book code range.
+
+
+
+
 
 ----- end complete history ----
 
