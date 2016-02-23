@@ -270,7 +270,7 @@ public class LendingServiceImpl implements LendingService {
 		// checkedout on date
 		LendingSearchCriteria criteria = new LendingSearchCriteria();
 		criteria.setSchoolgroup(classid);
-		criteria.setTimeselect(LendingSearchCriteria.TimePeriodType.THISWEEK);
+		criteria.setCheckoutTimeselect(LendingSearchCriteria.TimePeriodType.THISWEEK);
 		criteria.setCheckedoutOnly(true);
 		List<LoanRecordDisplay> checkedout = lendingSearch
 				.findLoanRecordsByCriteria(criteria, clientid);
@@ -289,7 +289,7 @@ public class LendingServiceImpl implements LendingService {
 		criteria.reset();
 		criteria.setOverdueOnly(null);
 		criteria.setSchoolgroup(classid);
-		criteria.setTimeselect(LendingSearchCriteria.TimePeriodType.THISWEEK);
+		criteria.setReturnTimeselect(LendingSearchCriteria.TimePeriodType.THISWEEK);
 		List<LoanRecordDisplay> returned = lendingSearch
 				.findLoanRecordsByCriteria(criteria, clientid);
 		summaryreport.setReturnedlist(returned);

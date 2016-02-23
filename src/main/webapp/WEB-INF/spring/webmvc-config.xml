@@ -29,6 +29,8 @@ xmlns:p="http://www.springframework.org/schema/p" xmlns:xsi="http://www.w3.org/2
     <!-- Selects a static view for rendering without the need for an explicit controller -->
     <mvc:view-controller path="/login"/>
     <mvc:view-controller path="/demologin"/>
+    <mvc:view-controller path="/positionsinfo"/>
+    <mvc:view-controller path="/nudgeinfo"/>
     <mvc:view-controller path="/services"/>
     <mvc:view-controller path="/" view-name="index"/>
     <mvc:view-controller path="/uncaughtException"/>

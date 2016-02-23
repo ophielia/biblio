@@ -55,7 +55,8 @@ public class LendingSearchCriteria {
 	
 	private Date checkedoutafter;
 	private Date checkedoutbefore;
-	private Date returnedon;
+	private Date returnedafter;
+	private Date returnedbefore;
 	private Long forschoolgroup;
 	private Long lentToType;
 	private Boolean overdueonly;
@@ -95,12 +96,20 @@ public class LendingSearchCriteria {
 		this.checkedout = checkedout;
 	}
 
-	public Date getReturnedon() {
-		return returnedon;
+	public Date getReturnedafter() {
+		return returnedafter;
 	}
 
-	public void setReturnedon(Date returnedon) {
-		this.returnedon = returnedon;
+	public void setReturnedafter(Date returnedon) {
+		this.returnedafter = returnedon;
+	}
+
+	public Date getReturnedbefore() {
+		return returnedbefore;
+	}
+
+	public void setReturnedbefore(Date returnedbefore) {
+		this.returnedbefore = returnedbefore;
 	}
 
 	public Long getBookid() {
@@ -163,9 +172,18 @@ public class LendingSearchCriteria {
 	}
 
 
-	public void setTimeselect(Long timeselect) {
+	public void setCheckoutTimeselect(Long timeselect) {
+		setTimeselect(timeselect,false);
+	}
+	
+	public void setReturnTimeselect(Long timeselect) {
+		setTimeselect(timeselect,true);
+	}
+
+	private void setTimeselect(Long timeselect, Boolean forreturn) {
 		if (timeselect!=null) {
 			Date startdate = null;
+			Date enddate = null;
 			if (timeselect.longValue()==TimePeriodType.THISWEEK) {
 				// get previous Sunday through present
 				startdate = DateUtils.getCurrentWeekSunday(new Date());
@@ -185,13 +203,21 @@ public class LendingSearchCriteria {
 				cal.set(Calendar.MONTH, Calendar.SEPTEMBER);
 				cal.set(Calendar.DAY_OF_MONTH,1);
 				startdate = DateUtils.getFirstDayOfSchoolYear(cal.getTime());
-				Date enddate = DateUtils.getLastDayOfSchoolYear(startdate);
-				setCheckedoutbefore(enddate);
+				enddate = DateUtils.getLastDayOfSchoolYear(startdate);
+				
 			}
-			setCheckedoutafter(startdate);
+			
+			if (forreturn) {
+				setReturnedafter(startdate);
+				setReturnedbefore(enddate);
+			} else {
+				setCheckedoutafter(startdate);	
+				setCheckedoutbefore(enddate);	
+			}
+			
 		}
 
-	}
+	}	
 
 
 	public void setLendtypeselect(Long lendtypeselect) {
@@ -212,7 +238,7 @@ public class LendingSearchCriteria {
 
 	public void reset() {
 		checkedoutafter = null;
-		returnedon = null;
+		returnedafter = null;
 		forschoolgroup = null;
 		lentToType = null;
 		overdueonly = null;

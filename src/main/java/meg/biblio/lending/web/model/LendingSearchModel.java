@@ -44,7 +44,7 @@ public class LendingSearchModel {
 			if (criteria==null) {
 				this.criteria = new LendingSearchCriteria();
 			}
-			this.criteria.setTimeselect(timeselect);
+			this.criteria.setCheckoutTimeselect(timeselect);
 		}
 	}
 	public Long getLendtypeselect() {

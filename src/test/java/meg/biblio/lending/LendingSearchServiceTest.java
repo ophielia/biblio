@@ -49,7 +49,7 @@ public class LendingSearchServiceTest {
 
 		// history only - returnedon, overdueonly
 		criteria = new LendingSearchCriteria();
-		criteria.setReturnedon(new Date());
+		criteria.setReturnedafter(new Date());
 		criteria.setOverdueOnly(true);
 	}
 }

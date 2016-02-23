@@ -25,6 +25,16 @@
 <definition extends="public" name="demologin">
         <put-attribute name="body" value="/WEB-INF/views/demologin.jspx"/>
     </definition>    
+    
+<definition extends="popup" name="positionsinfo">
+        <put-attribute name="body" value="/WEB-INF/views/positionsinfo.jspx"/>
+    </definition>        
+
+<definition extends="popup" name="nudgeinfo">
+        <put-attribute name="body" value="/WEB-INF/views/nudgeinfo.jspx"/>
+    </definition>        
+
+
 
 <definition extends="public" name="services">
         <put-attribute name="body" value="/WEB-INF/views/services.jspx"/>

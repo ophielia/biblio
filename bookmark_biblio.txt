@@ -12,13 +12,17 @@ done - bugfix - list of overdue doesn't show teachers
 done - bugfix custom books - clearlist (add PrintModel to request)
 future - check addbook - how does it get the new code?
 
-link to print position page, sample nudge page
+----> link to print position page, sample nudge page
+translate text
+add info boxes to custom book codes, book code range.
+	
 
-weekly summary incorrect - showing same books in checkedout and returned
+
 
 
 		
 ---- begin commit changes ----
+done - weekly summary incorrect - showing same books in checkedout and returned
 done - report-lending printout
 done - perfecting pdf - add first column width (as parameter....)
 done - sort - not considered in pdf print....

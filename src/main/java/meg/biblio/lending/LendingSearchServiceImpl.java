@@ -130,7 +130,7 @@ public class LendingSearchServiceImpl implements LendingSearchService {
 			whereclause.add(cb.equal(loanrec.<Long> get("clientid"),
 					clientparam));
 			if (currentYearOnly) {
-				criteria.setTimeselect(LendingSearchCriteria.TimePeriodType.CURRENTSCHOOLYEAR);
+				criteria.setCheckoutTimeselect(LendingSearchCriteria.TimePeriodType.CURRENTSCHOOLYEAR);
 				ParameterExpression<Date> param = cb.parameter(Date.class,
 						"checkoutdate");
 				whereclause.add(cb.greaterThanOrEqualTo(
@@ -192,7 +192,7 @@ public class LendingSearchServiceImpl implements LendingSearchService {
 			whereclause.add(cb.equal(loanrec.<Long> get("clientid"),
 					clientparam));
 			if (currentYearOnly) {
-				criteria.setTimeselect(LendingSearchCriteria.TimePeriodType.CURRENTSCHOOLYEAR);
+				criteria.setCheckoutTimeselect(LendingSearchCriteria.TimePeriodType.CURRENTSCHOOLYEAR);
 				ParameterExpression<Date> param = cb.parameter(Date.class,
 						"checkoutdate");
 				whereclause.add(cb.greaterThanOrEqualTo(
@@ -258,13 +258,20 @@ public class LendingSearchServiceImpl implements LendingSearchService {
 
 		}
 
-		// do returned on
-		if (criteria.getReturnedon() != null) {
+		// do returnedafter
+		if (criteria.getReturnedafter() != null) {
 			ParameterExpression<Date> param = cb.parameter(Date.class,
-					"returned");
+					"returnedafter");
 			whereclause.add(cb.greaterThanOrEqualTo(
 					loanrec.<Date> get("returned"), param));
-		}
+		}	
+		
+		if (criteria.getReturnedbefore() != null) {
+			ParameterExpression<Date> param = cb.parameter(Date.class,
+					"returnedbefore");
+			whereclause.add(cb.lessThanOrEqualTo(
+					loanrec.<Date> get("returned"), param));
+		}		
 
 		// do forschoolgroup
 		if (criteria.getSchoolgroup() != null) {
@@ -334,11 +341,15 @@ public class LendingSearchServiceImpl implements LendingSearchService {
 			q.setParameter("checkoutdatebefore", criteria.getCheckedoutbefore());
 		}
 
-		// do returned on
-		if (criteria.getReturnedon() != null) {
-			q.setParameter("returned", criteria.getReturnedon());
+		// do returned after
+		if (criteria.getReturnedafter() != null) {
+			q.setParameter("returnedafter", criteria.getReturnedafter());
 		}
 
+		if (criteria.getReturnedbefore() != null) {
+			q.setParameter("returnedbefore", criteria.getReturnedbefore());
+		}
+		
 		// do forschoolgroup
 		if (criteria.getSchoolgroup() != null) {
 			q.setParameter("schoolgroupid", criteria.getSchoolgroup());

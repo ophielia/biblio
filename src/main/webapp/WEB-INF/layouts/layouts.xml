@@ -10,6 +10,9 @@
     <put-attribute name="hmenu" value="/WEB-INF/views/hmenu.jspx" />
     <put-attribute name="footer" value="/WEB-INF/views/footer.jspx" />
   </definition>
+  
+  <definition name="popup" template="/WEB-INF/layouts/popup.jspx">
+  </definition>  
 
   <definition name="public" template="/WEB-INF/layouts/default.jspx">
     <put-attribute name="header" value="/WEB-INF/views/header.jspx" />

@@ -346,7 +346,7 @@ public class StatServiceImpl implements StatService {
 
 		// run stat
 		LendingSearchCriteria criteria = new LendingSearchCriteria();
-		criteria.setTimeselect(LendingSearchCriteria.TimePeriodType.CURRENTSCHOOLYEAR);
+		criteria.setCheckoutTimeselect(LendingSearchCriteria.TimePeriodType.CURRENTSCHOOLYEAR);
 
 		Long checkoutcount = lendingSearchService.findCountByCriteria(criteria,
 				client.getId());
