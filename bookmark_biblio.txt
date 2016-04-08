@@ -1,5 +1,41 @@
-Branch 
+Branch - usability
 
+check / fix generate new number (max + 1)
+make enter number the default
+
+confirm / validate "dangerous" clicks
+	clear class lists
+	delete class
+	
+class list page - remove edit - only display
+	name goes to display
+	
+class checkout - 
+	name goes directly to next page (checkout book)
+	
+class return - 
+	book title goes to book display
+	
+weekly summary, overdue books, checked out books
+	students names to display
+	book title to display
+	
+book display - 
+	show only first 10 checkouts - with link to complete history
+	
+spiff up class management tools page
+
+add teacher name edit to class overview
+
+add change book code to book display
+
+search box on top
+
+
+
+
+
+bugfix - sort in lending history by student name needs to do first name and last name
 future - check addbook - how does it get the new code?
 future - two stage for remove all students from class
 small bug - after printout page class pdf, change of select leads to new page (target...)
@@ -96,7 +132,7 @@ db testing - problem with views.  LendingSearchService fails.  check this link -
 
 
 ----- December 2015 - Big Picture ----
-printing
+printing - online v1_0_1 february 2016
 client interface
 images to db
 z59
