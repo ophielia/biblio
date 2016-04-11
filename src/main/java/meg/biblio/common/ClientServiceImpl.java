@@ -88,19 +88,7 @@ public class ClientServiceImpl implements ClientService {
 		return testclient;
 	}
 
-	@Override
-	public Long getAndIncrementLastBookNr(Long clientkey) {
-		// get client
-		ClientDao client = getClientForKey(clientkey);
-		// read lastbooknr
-		Long maxbook = client.getLastBookNr();
-		// update client
-		Query query = entityManager
-				.createQuery("Update ClientDao c set lastBookNr = lastBookNr + 1");
-		int deletedCount = query.executeUpdate();
 
-		return maxbook;
-	}
 
 	@Override
 	public List<ClientDao> getAllClients() {

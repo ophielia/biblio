@@ -78,7 +78,7 @@ public class BookController {
 			@RequestParam(value = "booktype", required = false) Long booktype,
 			@RequestParam(value = "createnewid", required = false) Boolean newid) {
 		if (newid==null) {
-			newid = new Boolean(true);
+			newid = new Boolean(false);
 		}
 		
 		BookModel bookModel = new BookModel();

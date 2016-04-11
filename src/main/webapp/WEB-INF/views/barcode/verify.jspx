@@ -17,19 +17,33 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <spring:url value="/barcode/checkout/verify" var="actionurl"/>
 
 <script type="text/javascript">
- require([
-          'dojo/dom',"dijit/focus","dojo/on","dijit/TooltipDialog", "dijit/popup",
-          'dojo/domReady!'
-      ], function (dom,focusUtil,on,TooltipDialog,popup) {
-	 
-	function getIndex(prefix, text) {
-			// gets a substring of the text, starting at the char after the length of the prefix
-			var stripped = text.substr(prefix.length);
-			return stripped;
-		}
-	focusUtil.focus(dom.byId("code"));
-	dojo.byId("code").value="";
-	});
+require(["dojo/dom", "dojo/dom-construct", "dojo/on", "dojo/keys", "dojo/NodeList-traverse", "dojo/domReady!"],
+		function(dom, domConstruct, on, keys) {
+
+		    on(document, "keydown", function(event) {
+		    	var node = dom.byId("code");
+		        //on listens for the keydown events inside of the div node, on all form elements
+		        switch(event.keyCode) {
+		            case keys.ENTER:
+		                    // submit the form
+		                    console.log("form submitted!");
+		                	var frm = dom.byId("generatebookcodes");
+		                	frm.submit();
+		                break;
+		            default:
+		            	key = event.keyCode;
+		            charcode = key;
+		                console.log("some other key: " + event.keyCode);
+		            test = String.fromCharCode(charcode);
+				node.value = (node.value + test).trim();
+		        }
+		    });
+		});
+
+
+
+
+
  
 
 </script>
@@ -37,12 +51,12 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 
 
 <h1>${pagetitle}</h1>
-<p>${msg }</p>
+<p id="output">${msg }</p>
 <form:form action="${actionurl}" id="generatebookcodes" method="POST" modelAttribute="barcodeLendModel">
 <form:errors id="errors" class="errors" path="*" />
 <div style="height:150px">
 <form:errors path="code"></form:errors>
- <form:input class="therebutnot" type="text" path="code"  autocomplete="off"></form:input><br/>
+ <form:input type="text" class="therebutnot" path="code"  value=""  autocomplete="off"></form:input><br/>
 <c:choose>
 <c:when test="${isbook}">
 <spring:message code="msg_barcode_verifybook" arguments="${title}" htmlEscape="false" var="msgverify"/>
@@ -55,7 +69,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 </c:when>
 </c:choose>
 <p class="bigandbold">${msgverify }</p>
-	
+
 
 </div>
 

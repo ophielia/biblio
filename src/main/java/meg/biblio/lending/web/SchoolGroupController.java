@@ -376,7 +376,16 @@ public class SchoolGroupController {
 
     	}
 
-    @RequestMapping(value="/manage", params="clearlists", method = RequestMethod.POST, produces = "text/html")
+    @RequestMapping(value="/manage/clearlists",  method = RequestMethod.GET, produces = "text/html")
+    public String showClearClassLists(Model uiModel, HttpServletRequest httpServletRequest, Principal principal) {
+    	ClientDao client = clientService.getCurrentClient(principal);
+
+		uiModel.addAttribute("clearsuccess",false);
+    	// return clear class lists view
+    	return "schoolgroups/clearclasslists";
+    	}
+    
+    @RequestMapping(value="/manage/clearlists",method = RequestMethod.POST, produces = "text/html")
     public String clearClassLists(Model uiModel, HttpServletRequest httpServletRequest, Principal principal) {
     	ClientDao client = clientService.getCurrentClient(principal);
 
@@ -386,7 +395,7 @@ public class SchoolGroupController {
     	// return edit class view
     	return "schoolgroups/settings";
 
-    	}
+    	}    
 
 
 	@RequestMapping(value = "/manage", params = "toremove", method = RequestMethod.POST, produces = "text/html")

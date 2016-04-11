@@ -1,6 +1,7 @@
 package meg.biblio.catalog;
 
 import java.io.IOException;
+import java.math.BigInteger;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -51,6 +52,9 @@ public class CatalogServiceImpl implements CatalogService {
 
 	@Autowired
 	ScalarFunction<Boolean> scalarDb;
+	
+	@Autowired
+	ScalarFunction<BigInteger> scalarLongDb;	
 
 
 	@Autowired
@@ -369,7 +373,8 @@ public class CatalogServiceImpl implements CatalogService {
 		// make new clientbookid if needed
 		if (createid) {
 			// get max bookid
-			Long maxbookid = clientService.getAndIncrementLastBookNr(clientkey);
+			Long maxbookid = getMaxLastBookNrForClient(clientkey);
+			maxbookid++;
 			// set max bookid in book
 			book.setClientbookid(maxbookid.toString());
 		}
@@ -465,7 +470,13 @@ public class CatalogServiceImpl implements CatalogService {
 
 	}
 
-
+	private Long getMaxLastBookNrForClient(Long clientkey) {
+		String sql = "select max(clientbookidsort) from book where clientid="
+				+ clientkey;
+		BigInteger maxbook = scalarLongDb.singleResult(sql);
+	
+		return maxbook!=null?maxbook.longValue():0L;
+	}
 
 	@Override
 	public void assignShelfClassToBooks(Long shelfclassUpdate,

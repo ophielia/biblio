@@ -43,7 +43,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <form:errors id="errors" class="errors" path="*" />
 <div style="height:150px">
 <form:errors path="code"></form:errors>
- <form:input class="therebutnot" type="text" path="code" autocomplete="off"></form:input><br/>
+ <form:input class="therebutnot" type="text" value="" path="code" autocomplete="off"></form:input><br/>
 
 
 	

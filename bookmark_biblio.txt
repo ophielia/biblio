@@ -1,10 +1,19 @@
 Branch - usability
 
-check / fix generate new number (max + 1)
-make enter number the default
-
+done - check / fix generate new number (max + 1)
+done - make enter number the default
+done -- clear class lists - safety confirm
+	
+proof of concept - ipad / mobile bluetooth scans
+	done - verify code
+	self checkout
+	inventory	
+	
+finish mobile update
+merge usability into master - update live
+	
+	
 confirm / validate "dangerous" clicks
-	clear class lists
 	delete class
 	
 class list page - remove edit - only display
@@ -27,10 +36,17 @@ spiff up class management tools page
 
 add teacher name edit to class overview
 
+class overview - count of students
+
 add change book code to book display
 
 search box on top
 
+student names - first word only to first name, rest to last name
+student names - flag for repeat in class
+				displayFirstName - which shows first name only unless repeat. 
+				      if repeat, show firstname, first initial last. 
+				      if first initial last repeat, show firstname lastname.
 
 
 
@@ -47,6 +63,10 @@ small bug - after printout page class pdf, change of select leads to new page (t
 		
 ---- begin commit changes ----
 
+done - check / fix generate new number (max + 1)
+done - make enter number the default
+done -- clear class lists
+done - labels for clear class lists
 
 ---- end commit changes ----
 

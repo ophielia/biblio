@@ -35,7 +35,7 @@ public class BarcodeLendModel {
 	}
 
 	public void setCode(String code) {
-		this.code = code;
+		this.code = code!=null?code.trim():"";
 	}
 
 	public void setCheckedoutForUser(List<LoanRecordDisplay> checkedoutforuser) {

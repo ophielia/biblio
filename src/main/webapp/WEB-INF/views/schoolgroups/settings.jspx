@@ -10,7 +10,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
 
-<spring:message code="label_class_management" htmlEscape="false" var="pagetitle"/>
+<spring:message code="menu_classmanage" htmlEscape="false" var="pagetitle"/>
 <spring:message code="action_class_increment" htmlEscape="false" var="aincrement"/>
 <spring:message code="action_class_clearlists" htmlEscape="false" var="aclearlists"/>
 <spring:message code="action_class_removestudents" htmlEscape="false" var="aremovestudents"/>
@@ -24,23 +24,22 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <spring:url value="/classes/manage" var="actionurl"/>
 <form:form action="${actionurl}" id="editclass" method="POST" >
 
-<div >
-<div style="float:left">
+<div style="padding-top:25px">
+<div>
 <spring:url value="/classes/manage/increment" var="incrementurl"/>
 <a href="${incrementurl}" class="linkbutton">${aincrement}</a><br /> 
 </div>
-<div> ${mincrement}</div>
+
 </div>
-<hr />
-<div style="clear:both">
-<div style="float:left"><input  class="linkbutton" id="save" name="clearlists" type="submit" value="${aclearlists}"/> </div>
-<div> ${mclearlists}</div>
+
+<div style="padding-top:25px">
+<spring:url value="/classes/manage/clearlists" var="clearurl"/>
+<a href="${clearurl}" class="linkbutton">${aclearlists}</a><br /> 
 </div>
-<hr />
-<div style="clear:both">
-<div style="float:left"><input  class="linkbutton" id="save" name="toremove" type="submit" value="${aremovestudents}"/> </div>
-<div> ${mremovestudents}</div>
-</div>
+
+
+<div  style="padding-top:25px" ><input  class="linkbutton" id="save" name="toremove" type="submit" value="${aremovestudents}"/> </div>
+
 </form:form>
 
 </div>

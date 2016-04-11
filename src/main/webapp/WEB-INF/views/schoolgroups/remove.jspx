@@ -12,7 +12,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 
 
 <spring:message code="label_class" htmlEscape="false" var="lclass"/>
-<spring:message code="entity_show" arguments="${lclass}" htmlEscape="false" var="pagetitle"/>
+<spring:message code="action_class_removestudents" var="pagetitle"/>
 <spring:message code="message_successcreated" htmlEscape="false" var="msgsuccess"/>
 <spring:message code="message_nostudents" htmlEscape="false" var="msgnostudents"/>
 
