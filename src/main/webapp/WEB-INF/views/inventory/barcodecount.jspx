@@ -27,9 +27,9 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 
 <spring:url value="/inventory/clearstack" var="clearurl"/>
 <script type="text/javascript">
- require(['dojo/dom',"dojo/on","dijit/focus",'dojo/domReady!'], 
-		 function (dom,on,focusUtil) {
-		focusUtil.focus(dom.byId("barcodeentry"));
+ require(['dojo/dom',"dojo/on", "dojo/keys",'dojo/domReady!'], 
+		 function (dom,on,keys) {
+		
 		dojo.byId("barcodeentry").value="";
 		// wire up clear stack button
 		dojo.query("span#clearstack").forEach(function(node) {
@@ -43,6 +43,23 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 			});
 		});
 
+		on(document, "keydown", function(event) {
+	    	var node = dom.byId("barcodeentry");
+	        //on listens for the keydown events inside of the div node, on all form elements
+	        switch(event.keyCode) {
+	            case keys.ENTER:
+	                    // submit the form
+	                	var frm = dom.byId("countbook");
+	                	frm.submit();
+	                break;
+	            default:
+	            	key = event.keyCode;
+	            charcode = key;
+	            test = String.fromCharCode(charcode);
+			node.value = (node.value + test).trim();
+	        }
+	    });
+		
 	});
 </script>
     

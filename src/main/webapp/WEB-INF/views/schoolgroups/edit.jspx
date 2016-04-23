@@ -172,11 +172,12 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <tbody>
 <c:choose><c:when test="${fn:length(classModel.students) gt 0}">
 <c:forEach items="${classModel.students}" var="tmp" >
+<spring:url value="/classes/showstudent/${tmp.id}" var="showurl"/>
 <tr>
-<td>${tmp.firstname} ${tmp.lastname}</td>
+<td> <a class="textlink" href="${showurl}">${tmp.firstname} ${tmp.lastname}</a></td>
 <td>${sectionLkup[tmp.sectionkey]}</td>
-<td><spring:url value="/classes/editstudent/${tmp.id}" var="editurl"/><a class="linkbutton" href="${editurl}">${ledit}</a>
- <spring:url value="/classes/showstudent/${tmp.id}" var="showurl"/><a class="linkbutton" href="${showurl}">${lshow}</a></td>
+<td><a class="linkbutton" href="${showurl}">${lshow}</a>
+</td>
 </tr>
 </c:forEach>
 </c:when>

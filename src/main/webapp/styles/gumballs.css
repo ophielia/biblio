@@ -422,6 +422,19 @@ table a.linkbutton:link {
 	text-decoration: none;
 }
 
+table a.textlink:link {
+    background-color: white;
+    color: #2e537d;
+    font-weight: bolder;	
+}
+
+table a.textlink:visited {
+    background-color: white;
+    color: #2e537d;
+    font-weight: bolder;	
+}
+
+
 .utilbox {
 	width: 18px;
 }

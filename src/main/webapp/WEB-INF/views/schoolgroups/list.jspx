@@ -36,7 +36,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <td>${sclass.teacher.firstname} ${sclass.teacher.lastname} </td>
 <td>${sclass.classcount}</td>
 <td>
-<spring:url value="/classes/delete/${sclass.id}?form" var="deleteurl"/>
+<spring:url value="/classes/delete/confirm/${sclass.id}?form" var="deleteurl"/>
 <spring:url value="/classes/display/${sclass.id}?form" var="editurl"/>
 <a href="${editurl}" class="linkbutton">${ledit}</a> <a href="${deleteurl}" class="linkbutton">${ldelete}</a>  
 </td>

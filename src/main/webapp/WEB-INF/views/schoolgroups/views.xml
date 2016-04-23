@@ -8,7 +8,9 @@
     <definition extends="default" name="schoolgroups/edit">
         <put-attribute name="body" value="/WEB-INF/views/schoolgroups/edit.jspx"/>
     </definition>
-        
+    <definition extends="default" name="schoolgroups/confirmdelete">
+        <put-attribute name="body" value="/WEB-INF/views/schoolgroups/confirmdeleteclass.jspx"/>
+    </definition>        
     <definition extends="default" name="schoolgroups/list">
         <put-attribute name="body" value="/WEB-INF/views/schoolgroups/list.jspx"/>
     </definition>

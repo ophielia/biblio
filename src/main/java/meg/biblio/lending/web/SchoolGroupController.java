@@ -337,7 +337,17 @@ public class SchoolGroupController {
     	return "schoolgroups/edit";
 	}
 
-    @RequestMapping(value="/delete/{id}", method = RequestMethod.GET, produces = "text/html")
+    @RequestMapping(value="/delete/confirm/{id}", method = RequestMethod.GET, produces = "text/html")
+    public String confirmDeleteClass(@PathVariable("id") Long id, Model uiModel, HttpServletRequest httpServletRequest, Principal principal) {
+    	ClientDao client = clientService.getCurrentClient(principal);
+
+    	uiModel.addAttribute("classid",id);
+
+    	// return class list view
+    	return "schoolgroups/confirmdelete";
+    	}
+
+    @RequestMapping(value="/delete/{id}", method = RequestMethod.POST, produces = "text/html")
     public String deleteClass(@PathVariable("id") Long id, Model uiModel, HttpServletRequest httpServletRequest, Principal principal) {
     	ClientDao client = clientService.getCurrentClient(principal);
 
@@ -346,7 +356,7 @@ public class SchoolGroupController {
     	// return class list view
     	return "redirect:/classes";
     	}
-
+    
     @RequestMapping(value="/manage",  method = RequestMethod.GET, produces = "text/html")
     public String showManagementPage(Model uiModel, HttpServletRequest httpServletRequest) {
 

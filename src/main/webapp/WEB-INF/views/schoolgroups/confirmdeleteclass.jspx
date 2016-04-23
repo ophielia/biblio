@@ -10,37 +10,25 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
 
-<spring:message code="action_class_clearlists" htmlEscape="false" var="pagetitle"/>
-<spring:message code="action_class_clearlistsshort" htmlEscape="false" var="aincrement"/>
-<spring:message code="message_class_clearlistslong" htmlEscape="false" var="mincrement"/>
+<spring:message code="action_class_deleteclass" htmlEscape="false" var="deleteclass"/>
+<spring:message code="message_class_deleteclass" htmlEscape="false" var="mdeleteclass"/>
 <spring:message code="button_cancel" htmlEscape="false" var="bcancel"/>
 <spring:message code="message_class_returnto" htmlEscape="false" var="returnto"/>
 <spring:message code="message_class_clearlistssuccess" htmlEscape="false" var="successmsg"/>
 
 
-<h1>${pagetitle}</h1>
+<h1>${deleteclass}</h1>
 
-<spring:url value="/classes/manage/clearlists" var="actionurl"/>
-<form:form action="${actionurl}" id="editclass" method="POST" >
+<spring:url value="/classes/delete/${classid}" var="actionurl"/>
+<form:form action="${actionurl}" id="deleteclass" method="POST" >
 
-<c:choose>
-<c:when test="${clearsuccess == true }">
-${successmsg}
+<div> ${mdeleteclass}</div>
 <div style="margin-top:25px;text-align:center">
-<spring:url value="/classes/manage" var="returntourl"/>
-<a href="${returntourl}"  class="linkbutton">${returnto}</a>
-</div>
-</c:when>
-<c:otherwise>
-<div> ${mincrement}</div>
-<div style="margin-top:25px;text-align:center">
-  <input class="linkbutton" id="save" name="increment" type="submit" value="${aincrement}"/>
+  <input class="linkbutton" id="save" name="increment" type="submit" value="${deleteclass}"/>
  
 <spring:url value="/classes/manage" var="cancelurl"/>
 <a href="${cancelurl}"  class="linkbutton">${bcancel}</a>
 </div>
-</c:otherwise>
-</c:choose>
 
 
 

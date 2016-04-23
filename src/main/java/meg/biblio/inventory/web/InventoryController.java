@@ -1,7 +1,6 @@
 package meg.biblio.inventory.web;
 
 import java.security.Principal;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -249,7 +248,7 @@ public class InventoryController {
 			if (countModel.getCountTypePref() == CountModel.CountType.BARCODE) {
 				String code = countModel.getBarcodeentry();
 				if (code != null) {
-					book = catalogService.findBookByBarcode(code);
+					book = catalogService.findBookByBarcode(code.trim());
 				}
 			} else {
 				String clientnr = countModel.getManualentry();

@@ -1,23 +1,5 @@
 Branch - usability
 
-done - check / fix generate new number (max + 1)
-done - make enter number the default
-done -- clear class lists - safety confirm
-	
-proof of concept - ipad / mobile bluetooth scans
-	done - verify code
-	self checkout
-	inventory	
-	
-finish mobile update
-merge usability into master - update live
-	
-	
-confirm / validate "dangerous" clicks
-	delete class
-	
-class list page - remove edit - only display
-	name goes to display
 	
 class checkout - 
 	name goes directly to next page (checkout book)
@@ -65,13 +47,28 @@ small bug - after printout page class pdf, change of select leads to new page (t
 
 done - check / fix generate new number (max + 1)
 done - make enter number the default
-done -- clear class lists
-done - labels for clear class lists
+done -- clear class lists - safety confirm
+done - proof of concept - ipad / mobile bluetooth scans
+done - verify code
+done - self checkout
+done - inventory	
+done - confirm / validate "dangerous" clicks
+done - 	delete class
+done - make labels for confirm delete class
+done - class list page - remove edit - only display
+done - name goes to display
 
 ---- end commit changes ----
 
 
 ----- begin branch changes ----
+
+
+done - check / fix generate new number (max + 1)
+done - make enter number the default
+done -- clear class lists
+done - labels for clear class lists
+
 
 
 ---- end branch changes ----
