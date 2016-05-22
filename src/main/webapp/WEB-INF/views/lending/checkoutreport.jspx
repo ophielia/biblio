@@ -61,8 +61,11 @@ ${lclassof} ${report.teacherfn}
 <tbody>
 <c:forEach items="${report.checkedoutlist}" var="checkedout">
 <tr>
-<td>${checkedout.borrowerfn} ${checkedout.borrowerln} </td>
-<td>(${checkedout.bookclientid}) ${checkedout.booktitle} </td>
+<td><spring:url value="/classes/showstudent/${checkedout.borrowerid}" var="showurl"/>
+<a href="${showurl}" class="textlink">${checkedout.borrowerfn} ${checkedout.borrowerln}</a> </td>
+<td>
+<spring:url value="/books/display/${checkedout.bookid}" var="bookurl"/>
+<a href="${bookurl}" class="textlink">(${checkedout.bookclientid}) ${checkedout.booktitle} </a> </td>
 <td>${checkedout.author} </td>
 <td><fmt:formatDate type="date" value="${checkedout.checkedout}" /></td>
 <td><fmt:formatDate type="date" value="${checkedout.duedate}" /></td>
@@ -89,8 +92,11 @@ ${lclassof} ${report.teacherfn}
 <tbody>
 <c:forEach items="${report.returnedlist}" var="checkedout">
 <tr>
-<td>${checkedout.borrowerfn} ${checkedout.borrowerln} </td>
-<td>(${checkedout.bookclientid}) ${checkedout.booktitle} </td>
+<td>
+<spring:url value="/classes/showstudent/${checkedout.borrowerid}" var="showurl"/>
+<a href="${showurl}" class="textlink">${checkedout.borrowerfn} ${checkedout.borrowerln}</a> </td>
+<td><spring:url value="/books/display/${checkedout.bookid}" var="bookurl"/>
+<a href="${bookurl}" class="textlink">(${checkedout.bookclientid}) ${checkedout.booktitle} </a> </td>
 <td>${checkedout.author} </td>
 <td><fmt:formatDate type="date" value="${checkedout.duedate}" /></td>
 <td><fmt:formatDate type="date" value="${checkedout.returned}" /></td>
@@ -120,8 +126,11 @@ ${lclassof} ${report.teacherfn}
 <tbody>
 <c:forEach items="${report.overduelist}" var="checkedout">
 <tr>
-<td>${checkedout.borrowerfn} ${checkedout.borrowerln} </td>
-<td>(${checkedout.bookclientid}) ${checkedout.booktitle} </td>
+<td>
+<spring:url value="/classes/showstudent/${checkedout.borrowerid}" var="showurl"/>
+<a href="${showurl}" class="textlink">${checkedout.borrowerfn} ${checkedout.borrowerln}</a> </td>
+<td><spring:url value="/books/display/${checkedout.bookid}" var="bookurl"/>
+<a href="${bookurl}" class="textlink">(${checkedout.bookclientid}) ${checkedout.booktitle} </a> </td>
 <td>${checkedout.author} </td>
 <td><fmt:formatDate type="date" value="${checkedout.checkedout}" /></td>
 <td><fmt:formatDate type="date" value="${checkedout.duedate}" /></td>

@@ -2,20 +2,34 @@ Branch - usability
 
 	
 class checkout - 
-	name goes directly to next page (checkout book)
+	done - name goes directly to next page (checkout book)
 	
 class return - 
-	book title goes to book display
+	done - book title goes to book display
 	
 weekly summary, overdue books, checked out books
-	students names to display
-	book title to display
+	done - students names to display
+	done - book title to display
+
+Check - no number entered on book info - should generate error.
+	
+checkout manual - make it look the same as with the barcode (checkoutsuccess.jspx)	
 	
 book display - 
 	show only first 10 checkouts - with link to complete history
-	
-spiff up class management tools page
-
+		(showhistory.jspx - come up with method. javascript? resubmit page?)
+		 <c:forEach items="${stat.bkoutValues}" var="bkout" varStatus="lncnt">
+				 <c:set var="showmore" value="false"></c:set>
+				 <c:choose>
+				 <c:when test="${lncnt.index>9}">
+				 <c:set var="showmore" value="true"></c:set>
+				 </c:when>
+				 <c:otherwise>
+				 </c:otherwise>
+				 </c:choose>
+				 </c:forEach>
+						 
+		
 add teacher name edit to class overview
 
 class overview - count of students
@@ -45,6 +59,7 @@ small bug - after printout page class pdf, change of select leads to new page (t
 		
 ---- begin commit changes ----
 
+done - spiff up class management tools page
 done - check / fix generate new number (max + 1)
 done - make enter number the default
 done -- clear class lists - safety confirm

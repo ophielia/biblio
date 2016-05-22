@@ -836,7 +836,7 @@ c.orderBy(cb.desc(cb.count(exp.<Number> get("id"))));
 			ParameterExpression<Long> param = cb.parameter(Long.class,
 					"detailstatus");
 			whereclause
-					.add(cb.equal(bookroot.<Long> get("detailstatus"), param));
+					.add(cb.equal(bookdetail.<Long> get("detailstatus"), param));
 
 		}
 

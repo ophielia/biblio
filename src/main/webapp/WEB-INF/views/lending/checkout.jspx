@@ -107,7 +107,6 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <thead>
 <tr>
 <th>${lfirstname}</th>
-<th>${llastname}</th>
 <th>${lsection }</th>
 
 <th></th>
@@ -121,8 +120,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 </tr>
 <c:forEach items="${lendingModel.studentList}" var="student">
 <tr>
-<td>${student.firstname} </td>
-<td>${student.lastname}</td>
+<td><input id="co${student.id}" class="fauxlink" type="submit" value="${student.firstname} ${student.lastname} " /></td>
 <td>${sectionLkup[student.sectionkey]}</td>
 
 <spring:url value="/classes/delete/${sclass.id}?form" var="deleteurl"/>

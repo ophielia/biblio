@@ -245,6 +245,20 @@ a.menu,a.menu:link,a.menu:visited {
 	height: 25px;
 }
 
+a.textlink:link {
+    background-color: white;
+    color: #2e537d;
+    font-weight: bolder;	
+        font-size: 14px;
+}
+
+a.textlink:visited {
+    background-color: white;
+    color: #2e537d;
+    font-weight: bolder;
+        font-size: 14px;	
+}
+
 /* progress bar elements */
 #progress {
  width: 98%;   
@@ -733,6 +747,14 @@ input.linkbutton {
 	outline: 0;
 	height: 31px;
 	border: 0px;
+}
+
+input.fauxlink {
+	    border-width: 0px;
+    background-color: white;
+    color: #2E537D;
+    font-weight: bolder;
+    font-size:12pt;
 }
 
 .selectspan {

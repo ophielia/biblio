@@ -36,9 +36,12 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <tbody>
 <c:forEach items="${checkedoutbooks}" var="checkedout">
 <tr>
-<td>${checkedout.borrowerfn} ${checkedout.borrowerln} </td>
+<td><spring:url value="/classes/showstudent/${checkedout.borrowerid}" var="showurl"/>
+<a href="${showurl}" class="textlink">${checkedout.borrowerfn} ${checkedout.borrowerln}</a> </td>
 <td>${classInfo[checkedout.classid].firstname}</td>
-<td>${checkedout.booktitle} </td>
+<td>
+<spring:url value="/books/display/${checkedout.bookid}" var="bookurl"/>
+<a href="${bookurl}" class="textlink">${checkedout.booktitle} </a> </td>
 <td>${checkedout.author} </td>
 <td nowrap="true"><fmt:formatDate type="date" value="${checkedout.checkedout}" /></td>
 <td  nowrap="true"><fmt:formatDate type="date" value="${checkedout.duedate}" /></td>

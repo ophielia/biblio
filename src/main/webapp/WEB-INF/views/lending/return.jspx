@@ -89,10 +89,11 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 </thead>
 <tbody>
 <c:forEach items="${lendingModel.checkedOutList}" var="checkedout">
+<spring:url value="/books/display/${checkedout.bookid}" var="bookdisp"/>
 <tr>
-<td>${checkedout.borrowerfn} ${checkedout.borrowerln} </td>
-<td>${checkedout.booktitle} </td>
-<td>${checkedout.author} </td>
+<td><input class="fauxlink" id="rtn${checkedout.loanrecordid}" type="submit" value="${checkedout.borrowerfn} ${checkedout.borrowerln} " /></td>
+<td><a href="${bookdisp}" class="textlink" >${checkedout.booktitle}</a> </td>
+<td><a href="${bookdisp}" class="textlink" >${checkedout.author}</a> </td>
 
 <td><input class="linkbutton" id="rtn${checkedout.loanrecordid}" type="submit" value="${breturn}" /></td>
 </tr>

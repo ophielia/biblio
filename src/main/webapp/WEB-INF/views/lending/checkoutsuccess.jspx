@@ -23,6 +23,30 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 
 <spring:url value="/lending/checkout" var="studentactionurl"/>
 
+
+<div style="height:150px">
+
+<div class="selfcheckoutcontainer">
+<div class="happyface">  .</div>
+<div class="selfcheckouttext">
+<p class="bigandbold" style="color:white">${msg }</p>
+<div>
+<img height="225px" style="  max-width: 290px;" src="${bookimagelink}"/>
+</div>
+</div>
+</div>
+
+<div style="clear:both"></div>
+
+
+	
+
+</div>
+
+
+
+
+<!-- 
 <h1>${ltitle}</h1>
 <br></br>
 
@@ -55,7 +79,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <c:if test="${!lendingModel.borrowerReachedLimit}" >
 <spring:url value="/lending/selectbook" var="morecheckouturl"/>
 <a href="${morecheckouturl }" class="linkbutton">${bmorebooks}</a>
-</c:if>
+</c:if> -->
 <spring:url value="/lending/checkout" var="continueurl"/>
 <a href="${continueurl}" class="linkbutton">${bcontinue}</a>
 
