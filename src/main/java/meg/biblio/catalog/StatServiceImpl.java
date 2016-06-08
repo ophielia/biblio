@@ -22,7 +22,6 @@ import meg.biblio.lending.LendingSearchService;
 import meg.biblio.search.SearchService;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -309,7 +308,7 @@ public class StatServiceImpl implements StatService {
 		stat.setLabel("msg_stats_checkoutcount");
 
 		// run stat
-		LendingSearchCriteria criteria = new LendingSearchCriteria();
+		LendingSearchCriteria criteria = new LendingSearchCriteria(LendingSearchCriteria.LendingType.CURRENT_CHECKEDOUT);
 		criteria.setCheckedoutOnly(true);
 		Long checkoutcount = lendingSearchService.findCountByCriteria(criteria,
 				client.getId());
@@ -326,8 +325,7 @@ public class StatServiceImpl implements StatService {
 		stat.setLabel("msg_stats_overduecount");
 
 		// run stat
-		LendingSearchCriteria criteria = new LendingSearchCriteria();
-		criteria.setOverdueOnly(true);
+		LendingSearchCriteria criteria = new LendingSearchCriteria(LendingSearchCriteria.LendingType.CURRENT_OVERDUE);
 
 		Long checkoutcount = lendingSearchService.findCountByCriteria(criteria,
 				client.getId());
@@ -345,8 +343,8 @@ public class StatServiceImpl implements StatService {
 		stat.setAddlLabel("cy");
 
 		// run stat
-		LendingSearchCriteria criteria = new LendingSearchCriteria();
-		criteria.setCheckoutTimeselect(LendingSearchCriteria.TimePeriodType.CURRENTSCHOOLYEAR);
+		LendingSearchCriteria criteria =new LendingSearchCriteria(LendingSearchCriteria.LendingType.CHECKEDOUT);
+		criteria.setTimeselect(LendingSearchCriteria.TimePeriodType.CURRENTSCHOOLYEAR);
 
 		Long checkoutcount = lendingSearchService.findCountByCriteria(criteria,
 				client.getId());

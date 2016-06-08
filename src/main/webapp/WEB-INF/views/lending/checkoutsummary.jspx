@@ -16,11 +16,12 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <spring:message code="label_lending_author" htmlEscape="false" var="lauthor"/>
 <spring:message code="label_lending_checkedout" htmlEscape="false" var="lcheckedout"/>
 <spring:message code="label_lending_duedate" htmlEscape="false" var="lduedate"/>
-
+<spring:message code="label_checkedoutcount"  arguments="${checkedoutcount}" htmlEscape="false" var="checkoutcount"/>
 
 
 <h1>${ltitle}</h1>
 <br></br>
+${checkoutcount} 
 <table>
 <thead>
 <tr>

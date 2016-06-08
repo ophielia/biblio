@@ -7,9 +7,11 @@ import java.util.List;
 
 import meg.biblio.common.ClientService;
 import meg.biblio.common.db.dao.ClientDao;
+import meg.biblio.lending.db.PersonRepository;
 import meg.biblio.lending.db.SchoolGroupRepository;
 import meg.biblio.lending.db.StudentRepository;
 import meg.biblio.lending.db.TeacherRepository;
+import meg.biblio.lending.db.dao.PersonDao;
 import meg.biblio.lending.db.dao.SchoolGroupDao;
 import meg.biblio.lending.db.dao.StudentDao;
 import meg.biblio.lending.db.dao.TeacherDao;
@@ -34,6 +36,9 @@ public class ClassManagementServiceImpl implements ClassManagementService {
 
 	@Autowired
 	TeacherRepository teacherRepo;
+	
+	@Autowired
+	PersonRepository personRepo;	
 
 	@Autowired
 	StudentRepository studentRepo;
@@ -449,6 +454,23 @@ public class ClassManagementServiceImpl implements ClassManagementService {
 		return null;
 	}	
 
+	@Override
+	public PersonDao getBorrowerById(Long borrowerid, Long clientid) {
+		// get client id
+		ClientDao client = clientService.getClientForKey(clientid);
+
+		// get student
+		PersonDao student = personRepo.findOne(borrowerid);
+
+		if (student.getClient().getId().longValue() == clientid.longValue()) {
+			return student;
+		}
+
+		// return students
+		return null;
+	}	
+	
+	
 	@Override
 	public HashMap<Long, TeacherInfo> getTeacherByClassForClient(Long clientid) {
 		// get Client

@@ -76,6 +76,8 @@ public class LendingSearchServiceImpl implements LendingSearchService {
 				key = "borrowerfn";
 			} else if (sortkey == LendingSearchCriteria.SortKey.TITLE) {
 				key = "booktitle";
+			}else if (sortkey == LendingSearchCriteria.SortKey.LATE) {
+				key = "late";
 			}
 			Expression sortexp = loanrec.get(key);
 			if (sortdir == LendingSearchCriteria.SortByDir.ASC) {
@@ -109,7 +111,8 @@ public class LendingSearchServiceImpl implements LendingSearchService {
 		}
 
 		if (fieldstring != null) {
-			LendingSearchCriteria criteria = new LendingSearchCriteria();
+			LendingSearchCriteria criteria = new LendingSearchCriteria(
+					LendingSearchCriteria.LendingType.CHECKEDOUT);
 
 			// put together query
 			CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -130,7 +133,7 @@ public class LendingSearchServiceImpl implements LendingSearchService {
 			whereclause.add(cb.equal(loanrec.<Long> get("clientid"),
 					clientparam));
 			if (currentYearOnly) {
-				criteria.setCheckoutTimeselect(LendingSearchCriteria.TimePeriodType.CURRENTSCHOOLYEAR);
+				criteria.setTimeselect(LendingSearchCriteria.TimePeriodType.CURRENTSCHOOLYEAR);
 				ParameterExpression<Date> param = cb.parameter(Date.class,
 						"checkoutdate");
 				whereclause.add(cb.greaterThanOrEqualTo(
@@ -149,7 +152,7 @@ public class LendingSearchServiceImpl implements LendingSearchService {
 			q.setParameter("clientid", clientid);
 			if (currentYearOnly) {
 				// do checkedouton
-				q.setParameter("checkoutdate", criteria.getCheckedoutafter());
+				q.setParameter("checkoutdate", criteria.getStartDate());
 			}
 
 			List<Tuple> results = q.getResultList();
@@ -164,70 +167,69 @@ public class LendingSearchServiceImpl implements LendingSearchService {
 			return toreturn;
 		}
 		return null;
-	}	
-	
-	
-@Override
-	public HashMap<String, Long> mostPopularBreakout(Long clientid, Boolean currentYearOnly) {
-			LendingSearchCriteria criteria = new LendingSearchCriteria();
+	}
 
-			// put together query
-			CriteriaBuilder cb = em.getCriteriaBuilder();
-			CriteriaQuery<Tuple> c = cb.createQuery(Tuple.class);
-			Root<LoanRecordDisplay> loanrec = c.from(LoanRecordDisplay.class);
+	@Override
+	public HashMap<String, Long> mostPopularBreakout(Long clientid,
+			Boolean currentYearOnly) {
+		LendingSearchCriteria criteria = new LendingSearchCriteria(
+				LendingSearchCriteria.LendingType.CHECKEDOUT);
 
-			Expression countExpression = cb.count(loanrec
-					.<Number> get("loanrecordid"));
-			Expression havingExpression = cb.greaterThanOrEqualTo(
-					countExpression, 2);
-			c.multiselect(loanrec.get("booktitle"), countExpression).having(havingExpression).groupBy(
-					loanrec.get("booktitle"));
+		// put together query
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Tuple> c = cb.createQuery(Tuple.class);
+		Root<LoanRecordDisplay> loanrec = c.from(LoanRecordDisplay.class);
 
-			List<Predicate> whereclause = new ArrayList<Predicate>();
+		Expression countExpression = cb.count(loanrec
+				.<Number> get("loanrecordid"));
+		Expression havingExpression = cb.greaterThanOrEqualTo(countExpression,
+				2);
+		c.multiselect(loanrec.get("booktitle"), countExpression)
+				.having(havingExpression).groupBy(loanrec.get("booktitle"));
 
-			// making space for parameters
-			// always add client id
-			ParameterExpression<Long> clientparam = cb.parameter(Long.class,
-					"clientid");
-			whereclause.add(cb.equal(loanrec.<Long> get("clientid"),
-					clientparam));
-			if (currentYearOnly) {
-				criteria.setCheckoutTimeselect(LendingSearchCriteria.TimePeriodType.CURRENTSCHOOLYEAR);
-				ParameterExpression<Date> param = cb.parameter(Date.class,
-						"checkoutdate");
-				whereclause.add(cb.greaterThanOrEqualTo(
-						loanrec.<Date> get("checkedout"), param));
-			}
+		List<Predicate> whereclause = new ArrayList<Predicate>();
 
-			// adding the whereclause
-			c.where(cb.and(whereclause.toArray(new Predicate[whereclause.size()])));
+		// making space for parameters
+		// always add client id
+		ParameterExpression<Long> clientparam = cb.parameter(Long.class,
+				"clientid");
+		whereclause.add(cb.equal(loanrec.<Long> get("clientid"), clientparam));
+		if (currentYearOnly) {
+			criteria.setTimeselect(LendingSearchCriteria.TimePeriodType.CURRENTSCHOOLYEAR);
+			ParameterExpression<Date> param = cb.parameter(Date.class,
+					"checkoutdate");
+			whereclause.add(cb.greaterThanOrEqualTo(
+					loanrec.<Date> get("checkedout"), param));
+		}
 
-			c.orderBy(cb.desc(cb.count(loanrec.<Number> get("loanrecordid"))));
-			// creating the query
-			TypedQuery<Tuple> q = em.createQuery(c);
+		// adding the whereclause
+		c.where(cb.and(whereclause.toArray(new Predicate[whereclause.size()])));
 
-			// setting the parameters
-			// always add clientid
-			q.setParameter("clientid", clientid);
-			if (currentYearOnly) {
-				// do checkedouton
-				q.setParameter("checkoutdate", criteria.getCheckedoutafter());
-			}
+		c.orderBy(cb.desc(cb.count(loanrec.<Number> get("loanrecordid"))));
+		// creating the query
+		TypedQuery<Tuple> q = em.createQuery(c);
 
-			List<Tuple> results = q.getResultList();
-			LinkedHashMap<String, Long> toreturn = new LinkedHashMap<String, Long>();
+		// setting the parameters
+		// always add clientid
+		q.setParameter("clientid", clientid);
+		if (currentYearOnly) {
+			// do checkedouton
+			q.setParameter("checkoutdate", criteria.getStartDate());
+		}
 
-			for (Tuple t : results) {
-				String key = (String) t.get(0);
-				Long value = (Long) t.get(1);
-				toreturn.put(key, value);
-			}
+		List<Tuple> results = q.getResultList();
+		LinkedHashMap<String, Long> toreturn = new LinkedHashMap<String, Long>();
 
-			return toreturn;
+		for (Tuple t : results) {
+			String key = (String) t.get(0);
+			Long value = (Long) t.get(1);
+			toreturn.put(key, value);
+		}
 
-	}	
-	
-	
+		return toreturn;
+
+	}
+
 	private List<Predicate> getPredicatesForCriteria(
 			LendingSearchCriteria criteria, CriteriaBuilder cb,
 			Root<LoanRecordDisplay> loanrec) {
@@ -239,39 +241,6 @@ public class LendingSearchServiceImpl implements LendingSearchService {
 		ParameterExpression<Long> clientparam = cb.parameter(Long.class,
 				"clientid");
 		whereclause.add(cb.equal(loanrec.<Long> get("clientid"), clientparam));
-
-		// do checkedoutonafter
-		if (criteria.getCheckedoutafter() != null) {
-			ParameterExpression<Date> param = cb.parameter(Date.class,
-					"checkoutdate");
-			whereclause.add(cb.greaterThanOrEqualTo(
-					loanrec.<Date> get("checkedout"), param));
-
-		}
-
-		// do checkedoutonafter
-		if (criteria.getCheckedoutbefore() != null) {
-			ParameterExpression<Date> param = cb.parameter(Date.class,
-					"checkoutdatebefore");
-			whereclause.add(cb.lessThanOrEqualTo(
-					loanrec.<Date> get("checkedout"), param));
-
-		}
-
-		// do returnedafter
-		if (criteria.getReturnedafter() != null) {
-			ParameterExpression<Date> param = cb.parameter(Date.class,
-					"returnedafter");
-			whereclause.add(cb.greaterThanOrEqualTo(
-					loanrec.<Date> get("returned"), param));
-		}	
-		
-		if (criteria.getReturnedbefore() != null) {
-			ParameterExpression<Date> param = cb.parameter(Date.class,
-					"returnedbefore");
-			whereclause.add(cb.lessThanOrEqualTo(
-					loanrec.<Date> get("returned"), param));
-		}		
 
 		// do forschoolgroup
 		if (criteria.getSchoolgroup() != null) {
@@ -305,25 +274,134 @@ public class LendingSearchServiceImpl implements LendingSearchService {
 					isteacher));
 		}
 
-		// to overdue only
-		if (criteria.getOverdueOnly() != null && criteria.getOverdueOnly()) {
-			Expression<java.lang.Boolean> truelit = cb
-					.literal(new Boolean(true));
-			whereclause.add(cb.equal(loanrec.<Boolean> get("currentlyoverdue"),
-					truelit));
+		/** Time and Mode - to be reworked **/
+		if (criteria.getLendingMode() == LendingSearchCriteria.LendingType.ALL) {
+			// if start and end filled out ....
+			if (criteria.isDateSearch()) {
+				// Checked Out - checkedout between start and end OR
+				ParameterExpression<Date> costart = cb.parameter(Date.class,
+						"costart");
+				ParameterExpression<Date> coend = cb.parameter(Date.class,
+						"coend");
 
-		}
+				Predicate cop1 = cb.lessThanOrEqualTo(
+						loanrec.<Date> get("checkedout"), coend);
+				Predicate cop2 = cb.greaterThanOrEqualTo(
+						loanrec.<Date> get("checkedout"), costart);
+				Predicate checkedout = cb.and(cop1, cop2);
+				
+				// Returned - returned between start and end OR
+				ParameterExpression<Date> retstart = cb.parameter(Date.class,
+						"retstart");
+				ParameterExpression<Date> retend = cb.parameter(Date.class,
+						"retend");
 
-		// to checkedout only
-		if (criteria.getCheckedoutOnly() != null
-				&& criteria.getCheckedoutOnly()) {
+				Predicate retp1 = cb.lessThanOrEqualTo(
+						loanrec.<Date> get("returned"), retend);
+				Predicate retp2 = cb.greaterThanOrEqualTo(
+						loanrec.<Date> get("returned"), retstart);
+				Predicate returned = cb.and(retp1, retp2);				
+				
+				// Overdue - duedate between start and end, and returnedlate or overdue
+				ParameterExpression<Date> ddstart = cb.parameter(Date.class,
+						"ddstart");
+				ParameterExpression<Date> ddend = cb.parameter(Date.class,
+						"ddend");
+
+				Predicate p1 = cb.lessThanOrEqualTo(
+						loanrec.<Date> get("duedate"), ddend);
+				Predicate p2 = cb.greaterThanOrEqualTo(
+						loanrec.<Date> get("duedate"), ddstart);
+				Predicate oddatepart = cb.and(p1, p2);
+
+				// make returned late or overdue expression
+				Predicate retlate = cb.isTrue(loanrec
+						.<Boolean> get("returnedlate"));
+				Predicate currentoverdue = cb.isTrue(loanrec
+						.<Boolean> get("currentlyoverdue"));
+				Predicate overduemark = cb.or(p1, p2);
+				Predicate overdue = cb.and(oddatepart,overduemark);
+				
+				// Overdue and Returned
+				Predicate firsttwo = cb.or(returned,checkedout);
+				Predicate all = cb.or(firsttwo,overdue);
+				
+				// add whereclause
+				whereclause.add(all);
+			}
+
+		} else if (criteria.getLendingMode() == LendingSearchCriteria.LendingType.CHECKEDOUT) {
+			if (criteria.isDateSearch()) {
+				// checkedout between start and end
+				ParameterExpression<Date> param = cb.parameter(Date.class,
+						"costart");
+				whereclause.add(cb.greaterThanOrEqualTo(
+						loanrec.<Date> get("checkedout"), param));
+
+				param = cb.parameter(Date.class, "coend");
+				whereclause.add(cb.lessThanOrEqualTo(
+						loanrec.<Date> get("checkedout"), param));
+			}
+		} else if (criteria.getLendingMode() == LendingSearchCriteria.LendingType.CURRENT_CHECKEDOUT) {
+			// ignore dates, just look for flag
 			Expression<java.lang.Boolean> truelit = cb
 					.literal(new Boolean(true));
 			whereclause.add(cb.equal(
 					loanrec.<Boolean> get("currentlycheckedout"), truelit));
+		} else if (criteria.getLendingMode() == LendingSearchCriteria.LendingType.CURRENT_OVERDUE) {
+			// ignore dates, just look for flag
+			Expression<java.lang.Boolean> truelit = cb
+					.literal(new Boolean(true));
+			whereclause.add(cb.equal(loanrec.<Boolean> get("currentlyoverdue"),
+					truelit));
+		} else if (criteria.getLendingMode() == LendingSearchCriteria.LendingType.OVERDUE) {
+			// duedate between start and end, and returnedlate or overdue
+			if (criteria.isDateSearch()) {
+				// make start end date expression
+				ParameterExpression<Date> ddstart = cb.parameter(Date.class,
+						"ddstart");
+				ParameterExpression<Date> ddend = cb.parameter(Date.class,
+						"ddend");
+
+				Predicate p1 = cb.lessThanOrEqualTo(
+						loanrec.<Date> get("duedate"), ddend);
+				Predicate p2 = cb.greaterThanOrEqualTo(
+						loanrec.<Date> get("duedate"), ddstart);
+				Predicate datepart = cb.and(p1, p2);
+
+				// make returned late or overdue expression
+				Predicate retlate = cb.isTrue(loanrec
+						.<Boolean> get("returnedlate"));
+				Predicate currentoverdue = cb.isTrue(loanrec
+						.<Boolean> get("currentlyoverdue"));
+				Predicate overdue = cb.or(currentoverdue);
+
+				// add datepart AND overdue
+				whereclause.add(cb.and(datepart, overdue));
+			}
+		} else if (criteria.getLendingMode() == LendingSearchCriteria.LendingType.RETURNED) {
+			// returned between start and end
+			if (criteria.isDateSearch()) {
+				ParameterExpression<Date> retstart = cb.parameter(Date.class,
+						"retstart");
+				ParameterExpression<Date> retend = cb.parameter(Date.class,
+						"retend");
+				Predicate p1 = cb.lessThanOrEqualTo(
+						loanrec.<Date> get("returned"), retend);
+				Predicate p2 = cb.greaterThanOrEqualTo(
+						loanrec.<Date> get("returned"), retstart);
+				Predicate datepart = cb.and(p1, p2);
+				whereclause.add(datepart);
+			}
 		}
+
 		return whereclause;
 
+	}
+
+	private void fillInEndDate(LendingSearchCriteria criteria) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	private void setParametersInQuery(LendingSearchCriteria criteria,
@@ -331,44 +409,58 @@ public class LendingSearchServiceImpl implements LendingSearchService {
 		// always add clientid
 		q.setParameter("clientid", clientid);
 
-		// do checkedouton
-		if (criteria.getCheckedoutafter() != null) {
-			q.setParameter("checkoutdate", criteria.getCheckedoutafter());
-		}
-
-		// do checkedouton
-		if (criteria.getCheckedoutbefore() != null) {
-			q.setParameter("checkoutdatebefore", criteria.getCheckedoutbefore());
-		}
-
-		// do returned after
-		if (criteria.getReturnedafter() != null) {
-			q.setParameter("returnedafter", criteria.getReturnedafter());
-		}
-
-		if (criteria.getReturnedbefore() != null) {
-			q.setParameter("returnedbefore", criteria.getReturnedbefore());
-		}
-		
 		// do forschoolgroup
 		if (criteria.getSchoolgroup() != null) {
 			q.setParameter("schoolgroupid", criteria.getSchoolgroup());
 		}
-
-		// do forschoolgroup
+		
+		// do borrowerid
 		if (criteria.getBorrowerid() != null) {
 			q.setParameter("borrowerid", criteria.getBorrowerid());
 		}
-
+		
 		// do bookid
 		if (criteria.getBookid() != null) {
 			q.setParameter("bookid", criteria.getBookid());
 		}
-
+		
 		// to lentto - no parameter
 
-		// to overdue only - no parameter
-
+		if (criteria.getLendingMode() == LendingSearchCriteria.LendingType.ALL) {
+			// if start and end filled out ....
+			if (criteria.isDateSearch()) {
+				// Checked Out - checkedout between start and end OR
+				q.setParameter("costart", criteria.getStartDate());
+				q.setParameter("coend", criteria.getEndDate());
+				
+				// Returned - returned between start and end OR
+				q.setParameter("retstart", criteria.getStartDate());
+				q.setParameter("retend", criteria.getEndDate());
+				
+				// Overdue - duedate between start and end, and returnedlate or overdue
+				q.setParameter("ddstart", criteria.getStartDate());
+				q.setParameter("ddend", criteria.getEndDate());
+			}  
+		} else if (criteria.getLendingMode() == LendingSearchCriteria.LendingType.CHECKEDOUT) {
+			if (criteria.isDateSearch()) {
+				// checkedout between start and end
+				q.setParameter("costart", criteria.getStartDate());
+				q.setParameter("coend", criteria.getEndDate());
+			}
+		} else if (criteria.getLendingMode() == LendingSearchCriteria.LendingType.OVERDUE) {
+			// duedate between start and end, and returnedlate or overdue
+			if (criteria.isDateSearch()) {
+				// make start end date expression
+				q.setParameter("ddstart", criteria.getStartDate());
+				q.setParameter("ddend", criteria.getEndDate());
+			}
+		} else if (criteria.getLendingMode() == LendingSearchCriteria.LendingType.RETURNED) {
+			// returned between start and end
+			if (criteria.isDateSearch()) {
+				q.setParameter("retstart", criteria.getStartDate());
+				q.setParameter("retend", criteria.getEndDate());
+			}
+		}
 	}
 
 	@Override
@@ -384,11 +476,11 @@ public class LendingSearchServiceImpl implements LendingSearchService {
 
 		// making space for parameters
 		// always add client id
-		ParameterExpression<ClientDao> clientparam = cb.parameter(ClientDao.class,
-				"client");
+		ParameterExpression<ClientDao> clientparam = cb.parameter(
+				ClientDao.class, "client");
 		whereclause.add(cb.equal(exp.<Long> get("client"), clientparam));
 		whereclause.add(cb.isTrue(exp.<Boolean> get("active")));
-		
+
 		// adding the whereclause
 		c.where(cb.and(whereclause.toArray(new Predicate[whereclause.size()])));
 
@@ -407,7 +499,8 @@ public class LendingSearchServiceImpl implements LendingSearchService {
 	}
 
 	@Override
-	public Long findCountByCriteria(LendingSearchCriteria criteria,Long clientid) {
+	public Long findCountByCriteria(LendingSearchCriteria criteria,
+			Long clientid) {
 		// set clientid in criteria
 		criteria.setClientid(clientid);
 
@@ -442,8 +535,6 @@ public class LendingSearchServiceImpl implements LendingSearchService {
 		}
 		return 0L;
 	}
-
-
 
 	/*
 	 * 

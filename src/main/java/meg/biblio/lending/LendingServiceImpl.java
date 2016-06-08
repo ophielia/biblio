@@ -40,9 +40,6 @@ public class LendingServiceImpl implements LendingService {
 
 	@Autowired
 	ClientService clientService;
-
-	
-
 	
 	@Autowired
 	ScalarFunction<Integer> scalarDb;
@@ -97,8 +94,6 @@ public class LendingServiceImpl implements LendingService {
 			}
 			studentsection = st.getSectionkey();
 		} else if (person instanceof TeacherDao) {
-			TeacherDao st = (TeacherDao) person;
-			SchoolGroupDao sg = st.getSchoolgroup();
 			teacherid = person.getId();
 		}
 
@@ -138,7 +133,6 @@ public class LendingServiceImpl implements LendingService {
 	public LoanRecordDao returnBook(Long loanrecordid, Long clientid) {
 		// get loanrecord, client
 		LoanRecordDao lrecord = lrRepo.findOne(loanrecordid);
-		ClientDao client = clientService.getClientForKey(clientid);
 
 		if (lrecord != null) {
 
@@ -163,7 +157,7 @@ public class LendingServiceImpl implements LendingService {
 	public List<LoanRecordDisplay> getCheckedOutBooksForClass(Long classid,
 			Long clientid) {
 		// build criteria
-		LendingSearchCriteria criteria = new LendingSearchCriteria();
+		LendingSearchCriteria criteria = new LendingSearchCriteria(LendingSearchCriteria.LendingType.CURRENT_CHECKEDOUT);
 		criteria.setSchoolgroup(classid);
 		criteria.setCheckedoutOnly(true);
 		// search for loan records
@@ -177,7 +171,7 @@ public class LendingServiceImpl implements LendingService {
 	public List<LoanRecordDisplay> getCheckedOutBooksForUser(Long borrowerId,
 			Long clientid) {
 		// build criteria
-		LendingSearchCriteria criteria = new LendingSearchCriteria();
+		LendingSearchCriteria criteria = new LendingSearchCriteria(LendingSearchCriteria.LendingType.CURRENT_CHECKEDOUT);
 		criteria.setBorrowerid(borrowerId);
 		criteria.setCheckedoutOnly(true);
 		// search for loan records
@@ -204,8 +198,7 @@ public class LendingServiceImpl implements LendingService {
 	@Override
 	public List<LoanRecordDisplay> getOverdueBooksForClient(Long clientid) {
 		// build criteria
-		LendingSearchCriteria criteria = new LendingSearchCriteria();
-		criteria.setOverdueOnly(true);
+		LendingSearchCriteria criteria = new LendingSearchCriteria(LendingSearchCriteria.LendingType.CURRENT_OVERDUE);
 		criteria.setCheckedoutOnly(true);
 		// search for loan records
 		List<LoanRecordDisplay> overdue = lendingSearch
@@ -217,7 +210,7 @@ public class LendingServiceImpl implements LendingService {
 	@Override
 	public List<LoanRecordDisplay> getCheckedOutBooksForClient(Long clientid) {
 		// build criteria
-		LendingSearchCriteria criteria = new LendingSearchCriteria();
+		LendingSearchCriteria criteria = new LendingSearchCriteria(LendingSearchCriteria.LendingType.CURRENT_CHECKEDOUT);
 		criteria.setCheckedoutOnly(true);
 		// search for loan records
 		List<LoanRecordDisplay> checkedout = lendingSearch
@@ -268,28 +261,26 @@ public class LendingServiceImpl implements LendingService {
 
 		// fill in lists...
 		// checkedout on date
-		LendingSearchCriteria criteria = new LendingSearchCriteria();
+		LendingSearchCriteria criteria = new LendingSearchCriteria(LendingSearchCriteria.LendingType.CHECKEDOUT);
 		criteria.setSchoolgroup(classid);
-		criteria.setCheckoutTimeselect(LendingSearchCriteria.TimePeriodType.THISWEEK);
+		criteria.setTimeselect(LendingSearchCriteria.TimePeriodType.THISWEEK);
 		criteria.setCheckedoutOnly(true);
 		List<LoanRecordDisplay> checkedout = lendingSearch
 				.findLoanRecordsByCriteria(criteria, clientid);
 		summaryreport.setCheckedoutlist(checkedout);
 
 		// overdue on date
-		criteria.reset();
+		criteria = new LendingSearchCriteria(LendingSearchCriteria.LendingType.CURRENT_OVERDUE);
 		criteria.setSchoolgroup(classid);
-		criteria.setOverdueOnly(true);
 		criteria.setCheckedoutOnly(true);
 		List<LoanRecordDisplay> overdue = lendingSearch
 				.findLoanRecordsByCriteria(criteria, clientid);
 		summaryreport.setOverduelist(overdue);
 
 		// returned on date
-		criteria.reset();
-		criteria.setOverdueOnly(null);
+		criteria = new LendingSearchCriteria(LendingSearchCriteria.LendingType.RETURNED);
 		criteria.setSchoolgroup(classid);
-		criteria.setReturnTimeselect(LendingSearchCriteria.TimePeriodType.THISWEEK);
+		criteria.setTimeselect(LendingSearchCriteria.TimePeriodType.THISWEEK);
 		List<LoanRecordDisplay> returned = lendingSearch
 				.findLoanRecordsByCriteria(criteria, clientid);
 		summaryreport.setReturnedlist(returned);
@@ -301,7 +292,7 @@ public class LendingServiceImpl implements LendingService {
 	public LoanRecordDao returnBookByBookid(Long bookid, Long clientid) {
 		// find loanrecord
 		// build criteria
-		LendingSearchCriteria criteria = new LendingSearchCriteria();
+		LendingSearchCriteria criteria = new LendingSearchCriteria(LendingSearchCriteria.LendingType.CURRENT_CHECKEDOUT);
 		criteria.setBookid(bookid);
 		criteria.setCheckedoutOnly(true);
 		// search for loan records
@@ -318,7 +309,7 @@ public class LendingServiceImpl implements LendingService {
 	}
 
 	@Override
-	public DailySummaryReport assembleDailySummaryReport(Date date,
+	public DailySummaryReport assembleWeeklySummaryReport(Date date,
 			Long clientid, Boolean includeEmpties) {
 		List<SchoolGroupDao> classes = classService.getClassesForClient(clientid);
 		List<ClassSummaryReport> results = new ArrayList<ClassSummaryReport>();
@@ -335,10 +326,10 @@ public class LendingServiceImpl implements LendingService {
 	}
 
 	@Override
-	public List<LoanRecordDisplay> getLendingHistoryByLender(Long studentid,
+	public List<LoanRecordDisplay> getLendingHistoryByBorrower(Long studentid,
 			Long clientid) {
 		// assemble criteria (studentid only, by checkout date, descending)
-		LendingSearchCriteria criteria = new LendingSearchCriteria();
+		LendingSearchCriteria criteria = new LendingSearchCriteria(LendingSearchCriteria.LendingType.CHECKEDOUT);
 		criteria.setBorrowerid(studentid);
 		criteria.setSortKey(LendingSearchCriteria.SortKey.CHECKEDOUT);
 		criteria.setSortDir(LendingSearchCriteria.SortByDir.DESC);
@@ -354,7 +345,7 @@ public class LendingServiceImpl implements LendingService {
 	public List<LoanRecordDisplay> getLendingHistoryForBook(Long bookid,
 			Long clientid) {
 		// assemble criteria (studentid only, by checkout date, descending)
-		LendingSearchCriteria criteria = new LendingSearchCriteria();
+		LendingSearchCriteria criteria = new LendingSearchCriteria(LendingSearchCriteria.LendingType.CHECKEDOUT);
 		criteria.setBookid(bookid);
 		criteria.setSortKey(LendingSearchCriteria.SortKey.CHECKEDOUT);
 		criteria.setSortDir(LendingSearchCriteria.SortByDir.DESC);

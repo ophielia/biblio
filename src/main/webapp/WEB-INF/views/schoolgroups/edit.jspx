@@ -161,6 +161,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <hr style="clear:both"/>
 <div  id="classlist">
 <h3>${lstudents}</h3>
+<spring:message code="label_class_studentcountnr" arguments="${fn:length(classModel.students)}" htmlEscape="false" />
 <table id="classlist">
 <thead>
 <tr>

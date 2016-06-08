@@ -19,7 +19,7 @@ public class LendingSearchModel {
 
 	public LendingSearchModel() {
 		super();
-		this.criteria = new LendingSearchCriteria();
+		this.criteria = new LendingSearchCriteria(LendingSearchCriteria.LendingType.ALL);
 	}
 
 
@@ -30,7 +30,7 @@ public class LendingSearchModel {
 		this.classselect = classselect;
 		if (classselect!=null) {
 			if (criteria==null) {
-				this.criteria = new LendingSearchCriteria();
+				this.criteria = new LendingSearchCriteria(LendingSearchCriteria.LendingType.ALL);
 			}
 			this.criteria.setClassselect(classselect);
 		}
@@ -42,21 +42,23 @@ public class LendingSearchModel {
 		this.timeselect = timeselect;
 		if (timeselect!=null) {
 			if (criteria==null) {
-				this.criteria = new LendingSearchCriteria();
+				this.criteria = new LendingSearchCriteria(LendingSearchCriteria.LendingType.ALL);
 			}
-			this.criteria.setCheckoutTimeselect(timeselect);
+			this.criteria.setTimeselect(timeselect);
 		}
 	}
 	public Long getLendtypeselect() {
 		return lendtypeselect;
 	}
+	
+	/** Replace with searchmode....**/
 	public void setLendtypeselect(Long lendtypeselect) {
 		this.lendtypeselect = lendtypeselect;
 		if (lendtypeselect!=null) {
 			if (criteria==null) {
-				this.criteria = new LendingSearchCriteria();
+				this.criteria = new LendingSearchCriteria(lendtypeselect);
 			}
-			this.criteria.setLendtypeselect(lendtypeselect);
+			this.criteria.setLendingMode(lendtypeselect);
 		}
 	}
 	public LendingSearchCriteria getCriteria() {

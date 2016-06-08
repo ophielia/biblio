@@ -11,6 +11,8 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
     
 <spring:message code="label_lending_chkoutsuccess" htmlEscape="false" var="ltitle"/>
 
+
+<spring:message code="msg_barcode_checkoutsuccess" arguments="${personname};${booktitle};${bookauthor}" htmlEscape="false" argumentSeparator=";" var="msg"/>
 <spring:message code="label_lending_borrower" htmlEscape="false" var="lborrower"/>
 <spring:message code="label_lending_class" htmlEscape="false" var="lclass"/>
 <spring:message code="label_lending_booktitle" htmlEscape="false" var="lbooktitle"/>
@@ -26,62 +28,21 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 
 <div style="height:150px">
 
-<div class="selfcheckoutcontainer">
+<div class="selfcheckoutcontainer" style="margin-top: 50px;">
 <div class="happyface">  .</div>
 <div class="selfcheckouttext">
 <p class="bigandbold" style="color:white">${msg }</p>
 <div>
-<img height="225px" style="  max-width: 290px;" src="${bookimagelink}"/>
+<img max-height="225px" style="  max-width: 290px;" src="${bookimagelink}"/>
 </div>
 </div>
 </div>
 
-<div style="clear:both"></div>
-
-
-	
-
+<div style="clear:both; margin-top:5px"><spring:url value="/lending/checkout" var="continueurl"/>
+<a href="${continueurl}" class="linkbutton">${bcontinue}</a></div>
 </div>
 
 
-
-
-<!-- 
-<h1>${ltitle}</h1>
-<br></br>
-
-<h2>${msgcheckedoutfor}</h2>
-<table>
-<thead>
-<tr>
-<td>${lborrower}</td>
-<td>${lclass}</td>
-<td>${lbooktitle}</td>
-<td>${lauthor}</td>
-<td>${lcheckedout}</td>
-<td>${lduedate}</td>
-</tr>
-</thead>
-<tbody>
-<c:forEach items="${lendingModel.borrowerCheckedOut}" var="checkedout">
-<tr>
-<td>${checkedout.borrowerfn} ${checkedout.borrowerln} </td>
-<td>${classInfo[checkedout.classid].firstname}</td>
-<td>${checkedout.booktitle} </td>
-<td>${checkedout.author} </td>
-<td> <fmt:formatDate type="date" value="${checkedout.checkedout}" /></td>
-<td> <fmt:formatDate type="date" value="${checkedout.duedate}" /></td>
-</tr>
-</c:forEach>
-</tbody>
-</table>
-<br />
-<c:if test="${!lendingModel.borrowerReachedLimit}" >
-<spring:url value="/lending/selectbook" var="morecheckouturl"/>
-<a href="${morecheckouturl }" class="linkbutton">${bmorebooks}</a>
-</c:if> -->
-<spring:url value="/lending/checkout" var="continueurl"/>
-<a href="${continueurl}" class="linkbutton">${bcontinue}</a>
 
 
 </div>

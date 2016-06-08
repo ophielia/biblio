@@ -226,7 +226,7 @@ public class TestDataServiceImpl implements TestDataService {
 		Long clientid = clientService.getTestClientId();
 		ClientDao client = clientService.getClientForKey(clientid);
 		// return all checked out books
-		LendingSearchCriteria lsc = new LendingSearchCriteria();
+		LendingSearchCriteria lsc = new LendingSearchCriteria(LendingSearchCriteria.LendingType.ALL);
 		List<LoanRecordDisplay> lrs = lendingSearchService.findLoanRecordsByCriteria(lsc, clientid);
 		
 		for (LoanRecordDisplay lrd:lrs) {
@@ -297,9 +297,9 @@ criteria.setSingleStatus(CatalogService.Status.SHELVED);
 		
 		// return books from "last week" - all except 1 or 2
 		for (ClassModel cm:classes) {
-			LendingSearchCriteria lsc = new LendingSearchCriteria();
+			LendingSearchCriteria lsc = new LendingSearchCriteria(LendingSearchCriteria.LendingType.ALL);
 			lsc.setSchoolgroup(cm.getClassid());
-			lsc.setCheckedoutafter(lastweekco);
+			lsc.setStartDate(lastweekco);
 			lsc.setCheckedoutOnly(true);
 			List<LoanRecordDisplay> lrs = lendingSearchService.findLoanRecordsByCriteria(lsc, clientid);
 			

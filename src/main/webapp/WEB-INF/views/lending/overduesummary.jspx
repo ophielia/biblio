@@ -18,12 +18,13 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <spring:message code="label_lendingcheckedout" htmlEscape="false" var="lcheckedout"/>
 <spring:message code="label_lendingduedate" htmlEscape="false" var="lduedate"/>
 <spring:message code="action_lending_printoverdue" htmlEscape="false" var="bprint"/>
-
+<spring:message code="label_overduecount"  arguments="${overduecount}" htmlEscape="false" var="overduecount"/>
 
 
 
 <h1>${ltitle}</h1>
 <br></br>
+<div>${overduecount}</div>
 <table>
 <thead>
 	<tr>

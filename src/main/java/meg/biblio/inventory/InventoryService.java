@@ -1,9 +1,13 @@
 package meg.biblio.inventory;
 
 import java.util.List;
+import java.util.Locale;
+
+import org.springframework.context.MessageSource;
 
 import meg.biblio.catalog.db.dao.BookDao;
 import meg.biblio.common.db.dao.ClientDao;
+import meg.biblio.common.report.TableReport;
 import meg.biblio.inventory.db.dao.InvStackDisplay;
 import meg.biblio.inventory.db.dao.InventoryDao;
 import meg.biblio.inventory.db.dao.InventoryHistoryDao;
@@ -57,6 +61,9 @@ public interface InventoryService {
 	List<InventoryHistoryDao> getDetailForInventory(InventoryDao inventory, long detailtype);
 
 	InventoryStatus getLastCompleted(ClientDao client);
+
+	TableReport getToReconcileReport(ClientDao client, Locale locale,
+			MessageSource messageSource);
 
 	
 }

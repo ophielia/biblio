@@ -179,7 +179,7 @@ public class PDFController {
 		String cxslname = "META-INF/web-resources/transform/" + client.getClasssummaryxslbase() + "-" + lang + ".xsl";
 
 		DailySummaryReport csr = lendingService
-				.assembleDailySummaryReport(new Date(), clientkey,false);
+				.assembleWeeklySummaryReport(new Date(), clientkey,false);
 
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		try {

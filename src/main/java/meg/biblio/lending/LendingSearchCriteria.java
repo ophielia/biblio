@@ -36,7 +36,10 @@ public class LendingSearchCriteria {
 	public final static class LendingType {
 		public final static Long ALL = 1L;
 		public final static Long CHECKEDOUT= 2L;
-		public final static Long OVERDUE = 3L;
+		public final static Long RETURNED = 3L;
+		public final static Long OVERDUE = 4L;
+		public final static Long CURRENT_OVERDUE=5L;
+		public final static Long CURRENT_CHECKEDOUT=6L;
 	}	
 	
 	public final static class SortKey {
@@ -46,6 +49,7 @@ public class LendingSearchCriteria {
 		public final static long CHECKEDOUT = 4L;
 		public final static long TITLE = 5L;
 		public final static long RETURNED = 6L;
+		public final static long LATE=7L;
 	}	
 
 	public static final class SortByDir {
@@ -53,39 +57,62 @@ public class LendingSearchCriteria {
 		public static final long DESC = 2;
 	}
 	
-	private Date checkedoutafter;
-	private Date checkedoutbefore;
-	private Date returnedafter;
-	private Date returnedbefore;
+	private Long lendingMode;
+	private Date startDate;
+	private Date endDate;
 	private Long forschoolgroup;
 	private Long lentToType;
-	private Boolean overdueonly;
 	private Long clientid;
 	private Long borrowerid;
 	private Long bookid;
 	private Boolean checkedout;
-	private Long lendingType;
 	
 	private long sortkey;
 	private long sortdir;
 
 
-	public Date getCheckedoutafter() {
-		return checkedoutafter;
-	}
-
-	public void setCheckedoutafter(Date checkedouton) {
-		this.checkedoutafter = checkedouton;
+	
+	
+	public LendingSearchCriteria(Long lendingMode) {
+		super();
+		this.lendingMode = lendingMode;
 	}
 
 	
 	
-	public Date getCheckedoutbefore() {
-		return checkedoutbefore;
+	public Long getLendingMode() {
+		return lendingMode;
 	}
 
-	public void setCheckedoutbefore(Date checkedoutbefore) {
-		this.checkedoutbefore = checkedoutbefore;
+
+
+	public void setLendingMode(Long lendingMode) {
+		this.lendingMode = lendingMode;
+	}
+
+
+	
+
+	public Date getStartDate() {
+		return startDate;
+	}
+
+
+
+	public void setStartDate(Date startDate) {
+		this.startDate = startDate;
+	}
+
+
+
+	public Date getEndDate() {
+		return endDate;
+	}
+
+
+
+	public void setEndDate(Date endDate) {
+		this.endDate = endDate;
 	}
 
 	public Boolean getCheckedoutOnly() {
@@ -96,21 +123,7 @@ public class LendingSearchCriteria {
 		this.checkedout = checkedout;
 	}
 
-	public Date getReturnedafter() {
-		return returnedafter;
-	}
 
-	public void setReturnedafter(Date returnedon) {
-		this.returnedafter = returnedon;
-	}
-
-	public Date getReturnedbefore() {
-		return returnedbefore;
-	}
-
-	public void setReturnedbefore(Date returnedbefore) {
-		this.returnedbefore = returnedbefore;
-	}
 
 	public Long getBookid() {
 		return bookid;
@@ -136,13 +149,8 @@ public class LendingSearchCriteria {
 		this.lentToType = lentTo;
 	}
 
-	public Boolean getOverdueOnly() {
-		return overdueonly;
-	}
 
-	public void setOverdueOnly(Boolean overdueonly) {
-		this.overdueonly = overdueonly;
-	}
+
 
 	public Long getClientid() {
 		return clientid;
@@ -172,15 +180,12 @@ public class LendingSearchCriteria {
 	}
 
 
-	public void setCheckoutTimeselect(Long timeselect) {
-		setTimeselect(timeselect,false);
-	}
 	
-	public void setReturnTimeselect(Long timeselect) {
-		setTimeselect(timeselect,true);
-	}
 
-	private void setTimeselect(Long timeselect, Boolean forreturn) {
+
+	
+
+	public void setTimeselect(Long timeselect) {
 		if (timeselect!=null) {
 			Date startdate = null;
 			Date enddate = null;
@@ -207,46 +212,16 @@ public class LendingSearchCriteria {
 				
 			}
 			
-			if (forreturn) {
-				setReturnedafter(startdate);
-				setReturnedbefore(enddate);
-			} else {
-				setCheckedoutafter(startdate);	
-				setCheckedoutbefore(enddate);	
-			}
+			
+			this.startDate = startdate;
+			this.endDate=enddate;
+
 			
 		}
 
 	}	
 
 
-	public void setLendtypeselect(Long lendtypeselect) {
-		this.lendingType = lendtypeselect;
-		if (this.lendingType!=null) {
-			if (this.lendingType == LendingType.CHECKEDOUT) {
-				setCheckedoutOnly(true);
-				setOverdueOnly(false);
-			} else if (this.lendingType == LendingType.OVERDUE) {
-				setCheckedoutOnly(true);
-				setOverdueOnly(true);				
-			}
-		} else {
-			setCheckedoutOnly(false);
-			setOverdueOnly(false);
-		}
-	}
-
-	public void reset() {
-		checkedoutafter = null;
-		returnedafter = null;
-		forschoolgroup = null;
-		lentToType = null;
-		overdueonly = null;
-		clientid = null;
-		borrowerid = null;
-		bookid = null;
-		checkedout = null;
-	}
 
 	public void setSortKey(long sortkey) {
 		this.sortkey = sortkey;
@@ -282,5 +257,19 @@ public class LendingSearchCriteria {
 			
 			return getDefaultSortDir();
 		}
+	}
+
+
+
+	public boolean isDateSearch() {
+		// This method also fills in the endDate, if the endDate is missing, with
+		// a default endDate (1 year in the future.
+		if (startDate==null) {
+			return false;
+		} else if (endDate==null) {
+			endDate = DateUtils.getOneYearFromDate(startDate);
+		}
+		
+		return true;
 	}
 }

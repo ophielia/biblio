@@ -182,7 +182,7 @@ public class SchoolGroupController {
     	}
 
     	// get lending history for student
-    	List<LoanRecordDisplay> lendhistory = lendingService.getLendingHistoryByLender(studentid, client.getId());
+    	List<LoanRecordDisplay> lendhistory = lendingService.getLendingHistoryByBorrower(studentid, client.getId());
 
     	// put classmodel in model
     	uiModel.addAttribute("lendinghistory",lendhistory);

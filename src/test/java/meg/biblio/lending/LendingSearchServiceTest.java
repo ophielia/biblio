@@ -34,22 +34,20 @@ public class LendingSearchServiceTest {
 	
 	@Test
 	public void testCriteriaMethods() {
-		LendingSearchCriteria criteria = new LendingSearchCriteria();
+		LendingSearchCriteria criteria = new LendingSearchCriteria(LendingSearchCriteria.LendingType.ALL);
 		Long clientid = 1L;
 		
 		// nothing will be returned - just checking that the sql is generated properly and runnable
 		// criteria - checkedouton, forschoolgroup, lenttotype(Student),overdueonly
-		criteria.setCheckedoutafter(new Date());
+		criteria.setStartDate(new Date());
 		criteria.setSchoolgroup(2L);
 		criteria.setLentToType(LendingSearchCriteria.LentToType.STUDENT);
-		criteria.setOverdueOnly(true);
 
 		// service call
 		List<LoanRecordDisplay> results = lendingSearchService.findLoanRecordsByCriteria(criteria, clientid);
 
 		// history only - returnedon, overdueonly
-		criteria = new LendingSearchCriteria();
-		criteria.setReturnedafter(new Date());
-		criteria.setOverdueOnly(true);
+		criteria = new LendingSearchCriteria(LendingSearchCriteria.LendingType.ALL);
+		criteria.setStartDate(new Date());
 	}
 }

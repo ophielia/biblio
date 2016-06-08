@@ -3,6 +3,7 @@ package meg.biblio.lending;
 import java.util.HashMap;
 import java.util.List;
 
+import meg.biblio.lending.db.dao.PersonDao;
 import meg.biblio.lending.db.dao.SchoolGroupDao;
 import meg.biblio.lending.db.dao.StudentDao;
 import meg.biblio.lending.db.dao.TeacherDao;
@@ -68,6 +69,9 @@ public interface ClassManagementService {
 
 
 	TeacherDao getTeacherForClass(Long clientid, Long classid);
+
+
+	PersonDao getBorrowerById(Long borrowerid, Long clientid);
 
 
 }

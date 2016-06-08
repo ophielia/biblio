@@ -1,11 +1,15 @@
 package meg.biblio.inventory.web;
 
+import java.io.IOException;
 import java.security.Principal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.xml.bind.JAXBException;
+import javax.xml.transform.TransformerException;
 
 import meg.biblio.catalog.CatalogService;
 import meg.biblio.catalog.db.dao.BookDao;
@@ -16,6 +20,8 @@ import meg.biblio.common.LoginService;
 import meg.biblio.common.SelectKeyService;
 import meg.biblio.common.db.dao.ClientDao;
 import meg.biblio.common.db.dao.UserLoginDao;
+import meg.biblio.common.report.ReportService;
+import meg.biblio.common.report.TableReport;
 import meg.biblio.inventory.InventoryService;
 import meg.biblio.inventory.InventoryStatus;
 import meg.biblio.inventory.db.dao.InvStackDisplay;
@@ -24,7 +30,9 @@ import meg.biblio.inventory.db.dao.InventoryHistoryDao;
 import meg.biblio.inventory.web.model.CountModel;
 import meg.biblio.inventory.web.model.ReconcileModel;
 
+import org.apache.fop.apps.FOPException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -32,6 +40,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.servlet.support.RequestContextUtils;
 
 @RequestMapping("/inventory")
 @Controller
@@ -57,6 +67,9 @@ public class InventoryController {
 
 	@Autowired
 	AppSettingService settingService;
+	
+	@Autowired
+	ReportService reportService;	
 
 	@RequestMapping(method = RequestMethod.GET, produces = "text/html")
 	public String showInventoryEntryPoint(Model uiModel,
@@ -437,7 +450,14 @@ public class InventoryController {
 				.getUncountedBooks(client);
 		// get maximum size of list
 		Integer maxreconcile = appSetting.getSettingAsInteger("biblio.inventory.showtoreconcile");
+		// get print maximum
+		Integer maxprint = appSetting.getSettingAsInteger("biblio.inventory.printreconcile");
 		// check if we need to deal with this
+		if (maxprint.intValue()>=uncountedlist.size()) {
+			uiModel.addAttribute("printlist",true);
+		}else {
+			uiModel.addAttribute("printlist",false);
+		}
 		if (maxreconcile.intValue()<uncountedlist.size()) {
 			// get number of results
 			int totaltoreconcile = uncountedlist.size();
@@ -518,6 +538,29 @@ public class InventoryController {
 		uiModel.addAttribute("showmessage",false);
 
 		return "inventory/cancel";
+	}
+	
+	@RequestMapping(value = "/reconcile",method = RequestMethod.POST, params = "print",produces = "text/html")
+	public void printReconcileList(Model uiModel, HttpServletRequest httpServletRequest,HttpServletResponse response, Locale locale,
+			Principal principal) throws IOException, FOPException, TransformerException, JAXBException {
+		ClientDao client = clientService.getCurrentClient(principal);
+
+		WebApplicationContext webAppContext = RequestContextUtils.getWebApplicationContext(httpServletRequest);
+		MessageSource messageSource = (MessageSource) webAppContext.getBean("messageSource");
+		
+		TableReport report = invService.getToReconcileReport(client, locale, messageSource);
+		
+		byte[] pdf = reportService.produceTableReport(report);
+		
+		// prepare response
+		response.setContentType("application/pdf");
+		response.setContentLength(pdf.length);
+
+		// send content to browser
+		response.getOutputStream().write(pdf);
+		response.getOutputStream().flush();
+		
+
 	}
 
 }

@@ -12,7 +12,8 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <spring:message code="label_inv_startdate" htmlEscape="false" var="lstartdate"/>
 <spring:message code="label_inv_completeinv" htmlEscape="false" var="lcompleteinv"/>
 <spring:message code="label_inv_overview" htmlEscape="false" var="loverview"/>
-<spring:message code="label_clientnumber" arguments="${clientname}" htmlEscape="false" var="lbooknr"/>
+<spring:message code="label_print_print" htmlEscape="false" var="lprint"/>
+
 <spring:message code="msg_inv_nouncounted" htmlEscape="false" var="lnouncounted"/>
 <spring:message code="label_inv_reconcilebookpl" htmlEscape="false" var="lreconcilebookpl"/>
 <spring:message code="label_inv_reconcilestatus" htmlEscape="false" var="lreconcilestatus"/>
@@ -20,11 +21,12 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <spring:message code="label_inv_uncounted" htmlEscape="false" var="luncounted"/>
 <spring:message code="button_updateselected" htmlEscape="false" var="lupdatesel"/>
 <spring:message code="label_book_clientclass" arguments="${clientname}" htmlEscape="false" var="lclientclass"/>
-<spring:message code="label_book_classification" htmlEscape="false" var="lshelfclass"/>
-<spring:message code="msg_inv_partialdisplay" htmlEscape="false" var="lpartialdisplay"/>
+<spring:message code="label_clientnumber" arguments="${clientname}" htmlEscape="false" var="lbooknr"/>
 <spring:message code="label_book_note" htmlEscape="false" var="lnote"/>
 <spring:message code="label_book_status" htmlEscape="false" var="lstatus"/>
 <spring:message code="label_book_title" htmlEscape="false" var="ltitle"/>
+<spring:message code="label_book_classification" htmlEscape="false" var="lshelfclass"/>
+<spring:message code="msg_inv_partialdisplay" htmlEscape="false" var="lpartialdisplay"/>
 <spring:message code="label_inv_percentcomplete" arguments="${reconcileModel.inventoryStatus.percentcompleted}" htmlEscape="false" var="lpercentcomplete"/>
 <spring:message code="label_inv_numbercounted" arguments="${reconcileModel.inventoryStatus.countedbooks - reconcileModel.inventoryStatus.refoundbooks},${reconcileModel.inventoryStatus.totaltocount}" htmlEscape="false" var="lxofycounted"/>
 <spring:message code="label_inv_reconcileshown" arguments="${reconcileModel.maxUncounted},${reconcileModel.totalUncounted}" htmlEscape="false" var="lfirstofmany"/>
@@ -64,6 +66,14 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 
 			});
 
+		// print pdf opens in new window
+	   	form = dojo.byId("reconcilebooks");
+	   	on(form, "input[id^='print']:click", function(event){
+   	  		//alert('yippee');
+		  	form.target="_blank";
+		  	form.submit();
+	   	});
+		
 		});
 	</script>
 
@@ -85,8 +95,10 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 </a>
 </div>
 </div>
-<a class="linkbutton" style="margin-top:10px;float:right" href="${currentinvurl}"    >${loverview}</a>
-
+<a class="linkbutton" style="margin-top:10px;float:right" href="${currentinvurl}"    >${loverview}</a><br />
+<c:if test="${printlist != false }">
+<input class="linkbutton" style="clear:both;margin-top:5px;margin-bottom:10px;float:right" id="print" name="print" type="submit" value="${lprint}"></input>
+</c:if>
 <div style="clear:both;margin-top:55px"></div>
 <span class="inlineh2">${luncounted}</span>
 

@@ -34,10 +34,10 @@ import javax.xml.bind.annotation.XmlTransient;
 		@FieldResult(name = "checkedout", column = "checkedout"),
 		@FieldResult(name = "returned", column = "returned"),
 		@FieldResult(name = "duedate", column = "duedate"),
+		@FieldResult(name = "late", column = "late"),
 		@FieldResult(name = "returnedlate", column = "returnedlate"),
 		@FieldResult(name = "currentlyoverdue", column = "currentlyoverdue"),
 		@FieldResult(name = "currentlycheckedout", column = "currentlycheckedout"),
-		@FieldResult(name = "overdue", column = "overdue"),
 		@FieldResult(name = "isteacher", column = "isteacher"),
 		@FieldResult(name = "teacherfirstname", column = "teacherfirstname"),
 		@FieldResult(name = "teacherlastname", column = "teacherlastname")
@@ -64,10 +64,10 @@ public class LoanRecordDisplay {
 	private String teacherfirstname;
 	private String teacherlastname;
 	private Boolean returnedlate;
-	private Boolean currentlyoverdue;
 	private Boolean currentlycheckedout;
-	private Boolean overdue;
+	private Boolean currentlyoverdue;
 	private Boolean isteacher;
+	private Boolean late;
 	
 	
 	
@@ -187,18 +187,12 @@ public class LoanRecordDisplay {
 	}
 
 	@XmlElement
-	public Boolean getCurrentlyoverdue() {
-		return currentlyoverdue;
-	}
-
-	@XmlElement
 	public Boolean getCurrentlycheckedout() {
 		return currentlycheckedout;
 	}
-
-	@XmlElement
-	public Boolean getOverdue() {
-		return overdue;
+	
+	public Boolean getLate() {
+		return late;
 	}
 
 	@XmlElement

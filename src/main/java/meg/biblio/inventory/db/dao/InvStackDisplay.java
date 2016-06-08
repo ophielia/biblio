@@ -19,6 +19,7 @@ public class InvStackDisplay {
 	private Long bookid;
 	private Long clientid;
 	private String clientbooknr;
+	private Long clientbooknrsort;
 	private Long clientshelfcode;
 	private String clientshelfclass;
 	private Long status;
@@ -31,13 +32,14 @@ public class InvStackDisplay {
 
 	
 	
-	public InvStackDisplay(Long bookid, Long clientid, String clientbooknr,
+	public InvStackDisplay(Long bookid, Long clientid, String clientbooknr,Long clientbooknrsort,
 			Long clientshelfcode, String clientshelfclass,Long status, String note, Date counteddate,Boolean tocount, Long userid, Long countstatus,
 			String title) {
 		super();
 		this.bookid = bookid;
 		this.clientid = clientid;
 		this.clientbooknr = clientbooknr;
+		this.clientbooknrsort = clientbooknrsort;
 		this.clientshelfcode = clientshelfcode;
 		this.clientshelfclass = clientshelfclass;
 		this.status = status;

@@ -37,13 +37,13 @@ public interface LendingService {
 	ClassSummaryReport assembleClassSummaryReport(Long classid, Date date,
 			Long clientid);
 
-	DailySummaryReport assembleDailySummaryReport(Date date,
+	DailySummaryReport assembleWeeklySummaryReport(Date date,
 			Long clientid, Boolean includeEmpties);
 
 	List<LoanRecordDisplay> searchLendingHistory(
 			LendingSearchCriteria criteria, Long clientid);
 
-	List<LoanRecordDisplay> getLendingHistoryByLender(Long studentid, Long id);
+	List<LoanRecordDisplay> getLendingHistoryByBorrower(Long studentid, Long id);
 
 	Integer getFirstLendingYearForClient(Long clientid);
 

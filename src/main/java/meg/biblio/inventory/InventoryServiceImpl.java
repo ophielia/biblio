@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -13,6 +14,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.CriteriaUpdate;
 import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Join;
+import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
@@ -20,7 +22,10 @@ import meg.biblio.catalog.CatalogService;
 import meg.biblio.catalog.db.BookRepository;
 import meg.biblio.catalog.db.dao.BookDao;
 import meg.biblio.catalog.db.dao.BookDetailDao;
+import meg.biblio.catalog.db.dao.ClassificationDao;
+import meg.biblio.common.SelectKeyService;
 import meg.biblio.common.db.dao.ClientDao;
+import meg.biblio.common.report.TableReport;
 import meg.biblio.inventory.db.InventoryHistRepository;
 import meg.biblio.inventory.db.InventoryRepository;
 import meg.biblio.inventory.db.dao.InvStackDisplay;
@@ -31,6 +36,7 @@ import meg.biblio.search.SearchService;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,6 +48,12 @@ public class InventoryServiceImpl implements InventoryService {
 	@Autowired
 	SearchService catalogSearch;
 
+	@Autowired
+	SelectKeyService keyService;
+	
+	@Autowired
+	CatalogService catalogService;
+	
 	@Autowired
 	InventoryRepository invRepo;
 
@@ -602,6 +614,60 @@ public class InventoryServiceImpl implements InventoryService {
 		}
 
 	}
+	
+	@Override
+	public TableReport getToReconcileReport(ClientDao client, Locale locale, MessageSource messageSource) {
+	
+			if (locale==null) {
+				locale = Locale.US;
+			}
+			
+			List<InvStackDisplay> toreconcile = getUncountedBooks(client);
+			
+			// lookups
+			HashMap<Long, ClassificationDao> shelfclasses = catalogService
+					.getShelfClassHash(client.getId(), locale.getLanguage());
+			HashMap<Long, String> statusLkup = keyService.getDisplayHashForKey(
+					CatalogService.bookstatuslkup, locale.getLanguage());
+		
+			
+			// create TableReport
+			String title = messageSource.getMessage("label_inv_uncounted",
+					null, locale);
+			// add title
+			TableReport tr = new TableReport(title);
+			tr.setFontsize("10pt");
+			
+			// add column headers
+			Object[] args = {client.getShortname()};
+			String lbooknr = messageSource.getMessage("label_clientnumber", args, locale);
+			String ltitle = messageSource.getMessage("label_book_title",null, locale);
+			String lclientclass = messageSource.getMessage("label_book_clientclass",args, locale);
+			String lstatus = messageSource.getMessage("label_book_status",null, locale) ;
+			String lnote = messageSource.getMessage("label_book_note",null, locale);
+			
+			tr.addColHeader(lbooknr,"2cm");
+			tr.addColHeader(ltitle,"7.5cm");
+			tr.addColHeader(lclientclass);
+			tr.addColHeader(lstatus);
+			
+			// lookups for status
+			
+			for (InvStackDisplay record:toreconcile) {
+				ClassificationDao shelved = shelfclasses.get(record.getClientshelfcode());
+				String textdisplay = shelved!=null?shelved.getTextdisplay():"";
+				String status = record.getStatus()!=null?statusLkup.get(record.getStatus()):"";
+				tr.addValue(record.getClientbooknr());
+				tr.addValue(record.getTitle());
+				tr.addValue(textdisplay);
+				tr.addValue(status);
+			}
+			
+			// return TableReport
+			return tr;
+
+	}
+
 
 	/** Private Internal Methods **/
 	/**
@@ -666,6 +732,7 @@ public class InventoryServiceImpl implements InventoryService {
 		c.select(cb.construct(InvStackDisplay.class,
 				bookroot.get("id").alias("bookid"), bookroot.get("clientid"),
 				bookroot.get("clientbookid").alias("clientbooknr"),
+				bookroot.get("clientbookidsort").alias("clientbooknrsort"),
 				bookroot.get("clientshelfcode"),
 				bookroot.get("clientshelfclass"), bookroot.get("status"),
 				bookroot.get("note"), bookroot.get("counteddate"),
@@ -692,6 +759,13 @@ public class InventoryServiceImpl implements InventoryService {
 		// add order by for stack
 		if (searchtype == StackSearchType.STACK) {
 			c.orderBy(cb.asc(bookroot.get("counteddate")));
+		} else if (searchtype == StackSearchType.UNCOUNTED) {
+			List<Order> orderList = new ArrayList<Order>();
+
+			orderList.add(cb.asc(bookroot.get("clientshelfcode")));
+			orderList.add(cb.asc(bookroot.get("clientbookidsort")));
+
+			c.orderBy(orderList);
 		}
 		
 		TypedQuery<InvStackDisplay> q = entityManager.createQuery(c);

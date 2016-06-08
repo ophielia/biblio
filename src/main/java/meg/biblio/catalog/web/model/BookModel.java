@@ -294,6 +294,10 @@ public class BookModel  implements Serializable {
 		return book.getBookdetail().getDescription();
 	}
 
+	public String getNote() {
+		return book.getNote();
+	}
+	
 	public Long getStatus() {
 		return book.getStatus();
 	}

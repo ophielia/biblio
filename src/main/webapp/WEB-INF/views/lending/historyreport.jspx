@@ -22,7 +22,8 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <spring:message code="label_book_author" htmlEscape="false" var="lauthor"/>    
 <spring:message code="label_lending_checkedout" htmlEscape="false" var="lcheckedout"/>    
 <spring:message code="label_lending_duedate" htmlEscape="false" var="lduedate"/>    
-<spring:message code="label_lendingreturned" htmlEscape="false" var="lreturned"/>    
+<spring:message code="label_lendingreturned" htmlEscape="false" var="lreturned"/>
+<spring:message code="label_overdue" htmlEscape="false" var="loverdue"/>
 <spring:message code="label_lendingtimeperiod" htmlEscape="false" var="ltimeperiod"/>    
 <spring:message code="label_lendingstatus" htmlEscape="false" var="lstatus"/>    
 <spring:message code="button_criteria" htmlEscape="false" var="lcriteria"/>    
@@ -115,6 +116,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 			<th id="aSort4">${lcheckedout}<br />
 			${lduedate}</th>
 			<th id="aSort6">${lreturned}</th>
+			<th id="aSort7">${loverdue}</th>
 		</tr>	 			
 		</thead>
 		<tbody>
@@ -137,13 +139,15 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 								var="bookurl" /> <a class="tableboldlink" href="${bookurl}">${histRec.bookclientid}</a>
 						</td>
 						<td>
-			<a class="tableboldlink" href="${bookurl}">${histRec.booktitle }</a><br></br>
+						
+			<a class="tableboldlink" style="max-width: 125px;" href="${bookurl}">${histRec.booktitle }</a><br></br>
 			<a class="tableboldlink" href="${bookurl}">${histRec.author }</a></td>
 			<td><fmt:formatDate type="date" 
             value="${histRec.checkedout}" /><br /><fmt:formatDate type="date" 
             value="${histRec.duedate }" /></td>
 			<td><fmt:formatDate type="date" 
             value="${histRec.returned  }" /></td>
+            <td style="text-align: center;"><c:if test="${histRec.late}">X</c:if></td>
 					</tr>
 				</c:forEach>		
 		</tbody>

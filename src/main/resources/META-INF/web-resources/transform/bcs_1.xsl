@@ -14,6 +14,9 @@
            <xsl:variable name="ndge" select="barcodes/nudge"/>
  <xsl:variable name="tmar"> 
 <xsl:choose>
+     <xsl:when test="$ndge='-3'">
+        <xsl:text>3.5</xsl:text>
+     </xsl:when>
      <xsl:when test="$ndge='-2'">
         <xsl:text>4.5</xsl:text>
      </xsl:when>
@@ -29,6 +32,9 @@
           <xsl:when test="$ndge='2'">
              <xsl:text>8.5</xsl:text>
      </xsl:when>   
+          <xsl:when test="$ndge='3'">
+             <xsl:text>9.5</xsl:text>
+     </xsl:when>       
      <xsl:otherwise>
         <xsl:text>6.5</xsl:text>
     </xsl:otherwise></xsl:choose>

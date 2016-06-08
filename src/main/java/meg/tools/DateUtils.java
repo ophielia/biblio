@@ -42,6 +42,16 @@ public class DateUtils {
 		}
 	}
 	
+	public static Date getOneYearFromDate(Date startdate) {
+		Calendar cal = new GregorianCalendar();
+		cal.setTime(startdate);
+		// add one year
+		cal.add(Calendar.YEAR, 1);
+		// return date
+		return cal.getTime();
+	}
+		
+	
 	public static Date getFirstDayCurrentMonth(Date currentdate) {
 		Calendar cal = new GregorianCalendar();
 		cal.setTime(currentdate);

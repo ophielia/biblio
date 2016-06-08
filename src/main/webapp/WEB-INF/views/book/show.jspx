@@ -120,6 +120,9 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 	<div>
 	<span class="stress">${ldescription}:</span> ${bookModel.description}
 	</div>	
+		<div>
+	<span class="stress">{lnote}:</span> ${bookModel.note}
+	</div>	
 	
 		
 </div>

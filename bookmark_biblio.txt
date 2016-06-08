@@ -1,64 +1,61 @@
 Branch - usability
 
-	
-class checkout - 
-	done - name goes directly to next page (checkout book)
-	
-class return - 
-	done - book title goes to book display
-	
-weekly summary, overdue books, checked out books
-	done - students names to display
-	done - book title to display
 
 Check - no number entered on book info - should generate error.
+
+Note in book display - needs label
+
+
 	
-checkout manual - make it look the same as with the barcode (checkoutsuccess.jspx)	
-	
-book display - 
-	show only first 10 checkouts - with link to complete history
-		(showhistory.jspx - come up with method. javascript? resubmit page?)
-		 <c:forEach items="${stat.bkoutValues}" var="bkout" varStatus="lncnt">
-				 <c:set var="showmore" value="false"></c:set>
-				 <c:choose>
-				 <c:when test="${lncnt.index>9}">
-				 <c:set var="showmore" value="true"></c:set>
-				 </c:when>
-				 <c:otherwise>
-				 </c:otherwise>
-				 </c:choose>
-				 </c:forEach>
-						 
-		
-add teacher name edit to class overview
-
-class overview - count of students
-
-add change book code to book display
-
-search box on top
-
-student names - first word only to first name, rest to last name
-student names - flag for repeat in class
+later - add change book code to book display
+later - search box on top
+later - student names - first word only to first name, rest to last name
+later - student names - flag for repeat in class
 				displayFirstName - which shows first name only unless repeat. 
 				      if repeat, show firstname, first initial last. 
 				      if first initial last repeat, show firstname lastname.
-
-
-
-
-bugfix - sort in lending history by student name needs to do first name and last name
-future - check addbook - how does it get the new code?
-future - two stage for remove all students from class
-small bug - after printout page class pdf, change of select leads to new page (target...)
-	
-
-
+later - sort in lending history by student name needs to do first name and last name
+later - add teacher name edit to class overview	
+later - 	show only first 10 checkouts - with link to complete history
+later - -small bug - after printout page class pdf, change of select leads to new page (target...)
 
 
 		
 ---- begin commit changes ----
+	done - status column translated to text
+	done - no notes column
+	nevermind - author together with title??
+	done - name goes directly to next page (checkout book)
+	done - book title goes to book display
+	done - students names to display
+	done - book title to display
+	done - sql fix - translate description to french
+done- checkout manual - make it look the same as with the barcode (checkoutsuccess.jspx)
+done - 	check look and feel - a little too far up
+done - add a return / continue button....	
+done - two stage for remove all students from class
+done - lending history doesn't show all records...
+done - check addbook - how does it get the new code?
+done - Bugfix - lending history showing incorrectly  - not showing enough....
+done - 	do we still need criteria.setCheckedoutOnly???
+done - 	currently in getPredicatesForCriteria
+done - clean out LendingSearchCriteria
+done - lending history shows Returnedlate column
+done - class overview - count of students
+done -    printout page for reconciled books
+done - 	test - printout only when 200 or less books
+done - 	add client name to column headers
+	
+---- end commit changes ----
 
+
+----- begin branch changes ----
+
+
+done - check / fix generate new number (max + 1)
+done - make enter number the default
+done -- clear class lists
+done - labels for clear class lists
 done - spiff up class management tools page
 done - check / fix generate new number (max + 1)
 done - make enter number the default
@@ -72,18 +69,6 @@ done - 	delete class
 done - make labels for confirm delete class
 done - class list page - remove edit - only display
 done - name goes to display
-
----- end commit changes ----
-
-
------ begin branch changes ----
-
-
-done - check / fix generate new number (max + 1)
-done - make enter number the default
-done -- clear class lists
-done - labels for clear class lists
-
 
 
 ---- end branch changes ----

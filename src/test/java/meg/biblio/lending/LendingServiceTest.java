@@ -403,10 +403,10 @@ public class LendingServiceTest {
 		
 		
 		// make criteria - basic for all
-		LendingSearchCriteria lsc = new LendingSearchCriteria();
+		LendingSearchCriteria lsc = new LendingSearchCriteria(LendingSearchCriteria.LendingType.ALL);
 		lsc.setClassselect(LendingSearchCriteria.ClassType.ALL);
-		lsc.setCheckoutTimeselect(LendingSearchCriteria.TimePeriodType.ALL);
-		lsc.setLendtypeselect(LendingSearchCriteria.LendingType.ALL);
+		lsc.setTimeselect(LendingSearchCriteria.TimePeriodType.ALL);
+		
 		// run search
 		List<LoanRecordDisplay> results = lendingService.searchLendingHistory(lsc, clientid);
 		int origsize = results.size();

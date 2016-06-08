@@ -22,6 +22,7 @@ import meg.biblio.common.report.DailySummaryReport;
 import meg.biblio.lending.ClassManagementService;
 import meg.biblio.lending.LendingService;
 import meg.biblio.lending.db.dao.LoanRecordDisplay;
+import meg.biblio.lending.db.dao.PersonDao;
 import meg.biblio.lending.db.dao.StudentDao;
 import meg.biblio.lending.web.model.LendingModel;
 import meg.biblio.lending.web.model.TeacherInfo;
@@ -269,9 +270,21 @@ public class LendingController {
 
 		// when removing checkout success page
 		// put title directly into uiModel
-		String booktitle = book.getBookdetail().getTitle();
-		uiModel.addAttribute("booktitle", booktitle);
+
+		PersonDao borrower = classService.getBorrowerById(model.getBorrowerId(), clientid);
 		populateLendingModel(model, uiModel);
+
+		String firstname = borrower.getFirstname();
+		String bookauthor =book.getBookdetail().getAuthorsAsString();
+		String booktitle = book.getBookdetail().getTitle();
+		String bookimg = book.getBookdetail().getImagelink();
+		
+		// ---- put name, book title in uiModel
+		uiModel.addAttribute("personname", firstname);
+		uiModel.addAttribute("booktitle", booktitle);
+		uiModel.addAttribute("bookauthor", bookauthor);
+		uiModel.addAttribute("bookimagelink", bookimg);		
+		
 		
 		// clear book info from model
 		model.setBook(null);
@@ -290,6 +303,8 @@ public class LendingController {
 		List<LoanRecordDisplay> checkedout = lendingService.getCheckedOutBooksForClient(client.getId());
 		// put list directly in uiModel
 		uiModel.addAttribute("checkedoutbooks",checkedout);
+		uiModel.addAttribute("checkedoutcount",checkedout!=null?checkedout.size():0);
+
 		// get classinfo from model
 		HashMap<Long,TeacherInfo> classinfo = model.getClassinfo();
 		if (classinfo == null) {
@@ -311,6 +326,7 @@ public class LendingController {
 		List<LoanRecordDisplay> overdue = lendingService.getOverdueBooksForClient(client.getId());
 		// put list directly in uiModel
 		uiModel.addAttribute("overduebooks",overdue);
+		uiModel.addAttribute("overduecount",overdue!=null?overdue.size():0);
 		boolean printable = overdue!=null && overdue.size()>0;
 		uiModel.addAttribute("printable",printable);
 		
@@ -328,7 +344,7 @@ public class LendingController {
 
 
 		DailySummaryReport csr = lendingService
-				.assembleDailySummaryReport( new Date(), clientkey, true);
+				.assembleWeeklySummaryReport( new Date(), clientkey, true);
 
 		uiModel.addAttribute("dailySummaryReport",csr);
 		uiModel.addAttribute("printable",csr.isPrintable());
