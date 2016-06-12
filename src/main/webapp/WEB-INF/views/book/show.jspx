@@ -18,6 +18,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <spring:message code="label_book_author" htmlEscape="false" var="lauthor"/>
 <spring:message code="label_book_illustrator" htmlEscape="false" var="lillustrator"/>
 <spring:message code="label_book_description" htmlEscape="false" var="ldescription"/>
+<spring:message code="label_book_note" htmlEscape="false" var="lnote"/>
 <spring:message code="label_book_publisher" htmlEscape="false" var="lpublisher"/>
 <spring:message code="label_book_published" htmlEscape="false" var="lpublished"/>
 <spring:message code="label_book_language" htmlEscape="false" var="llanguage"/>
@@ -121,7 +122,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 	<span class="stress">${ldescription}:</span> ${bookModel.description}
 	</div>	
 		<div>
-	<span class="stress">{lnote}:</span> ${bookModel.note}
+	<span class="stress">${lnote}:</span> ${bookModel.note}
 	</div>	
 	
 		

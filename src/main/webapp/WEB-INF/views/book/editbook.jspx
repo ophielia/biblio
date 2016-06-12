@@ -1,4 +1,3 @@
-
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <div xmlns:jsp="http://java.sun.com/JSP/Page"
 	xmlns:page="urn:jsptagdir:/WEB-INF/tags/form"
@@ -28,6 +27,7 @@
 		var="lillustrator" />
 	<spring:message code="label_book_description" htmlEscape="false"
 		var="ldescription" />
+		<spring:message code="label_book_note" htmlEscape="false" var="lnote"/>
 	<spring:message code="label_book_publisher" htmlEscape="false"
 		var="lpublisher" />
 	<spring:message code="label_book_published" htmlEscape="false"
@@ -312,6 +312,7 @@ ${msgsearchagain}
 						</c:forEach>
 					</form:select></div>
 				<div><span class="stress">${ldescription}:</span><form:textarea type="text" path="description" style="width: 300px;height: 150px; vertical-align: top;"></form:textarea></div>
+				<div><span class="stress">${lnote}:</span><form:textarea type="text" path="note" style="width: 300px;height: 150px; vertical-align: top;"></form:textarea></div>
 				<div>
 				<form:input type="hidden" path="authorentry"></form:input>
 				<form:input type="hidden" path="illustratorentry"></form:input>
@@ -319,8 +320,6 @@ ${msgsearchagain}
 				</div>
 			</div>
 			<br /> <br />
-
-
 		</div>
 
 		<div class="accentboxlayout">

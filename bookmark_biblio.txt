@@ -2,8 +2,13 @@ Branch - usability
 
 
 Check - no number entered on book info - should generate error.
+Change number function - 
+	first, move client number to accent box
+		editbook.jspx
+		show.jspx
+		showhistory.jspx
+		
 
-Note in book display - needs label
 
 
 	
@@ -22,29 +27,8 @@ later - -small bug - after printout page class pdf, change of select leads to ne
 
 		
 ---- begin commit changes ----
-	done - status column translated to text
-	done - no notes column
-	nevermind - author together with title??
-	done - name goes directly to next page (checkout book)
-	done - book title goes to book display
-	done - students names to display
-	done - book title to display
-	done - sql fix - translate description to french
-done- checkout manual - make it look the same as with the barcode (checkoutsuccess.jspx)
-done - 	check look and feel - a little too far up
-done - add a return / continue button....	
-done - two stage for remove all students from class
-done - lending history doesn't show all records...
-done - check addbook - how does it get the new code?
-done - Bugfix - lending history showing incorrectly  - not showing enough....
-done - 	do we still need criteria.setCheckedoutOnly???
-done - 	currently in getPredicatesForCriteria
-done - clean out LendingSearchCriteria
-done - lending history shows Returnedlate column
-done - class overview - count of students
-done -    printout page for reconciled books
-done - 	test - printout only when 200 or less books
-done - 	add client name to column headers
+
+done - Note in book display - needs label
 	
 ---- end commit changes ----
 
@@ -69,6 +53,29 @@ done - 	delete class
 done - make labels for confirm delete class
 done - class list page - remove edit - only display
 done - name goes to display
+	done - status column translated to text
+	done - no notes column
+	nevermind - author together with title??
+	done - name goes directly to next page (checkout book)
+	done - book title goes to book display
+	done - students names to display
+	done - book title to display
+	done - sql fix - translate description to french
+done- checkout manual - make it look the same as with the barcode (checkoutsuccess.jspx)
+done - 	check look and feel - a little too far up
+done - add a return / continue button....	
+done - two stage for remove all students from class
+done - lending history doesn't show all records...
+done - check addbook - how does it get the new code?
+done - Bugfix - lending history showing incorrectly  - not showing enough....
+done - 	do we still need criteria.setCheckedoutOnly???
+done - 	currently in getPredicatesForCriteria
+done - clean out LendingSearchCriteria
+done - lending history shows Returnedlate column
+done - class overview - count of students
+done -    printout page for reconciled books
+done - 	test - printout only when 200 or less books
+done - 	add client name to column headers
 
 
 ---- end branch changes ----
