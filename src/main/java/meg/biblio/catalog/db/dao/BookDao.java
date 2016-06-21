@@ -39,8 +39,10 @@ private Long countstatus;
 private Long userid;
 
 	public void setClientbookid(String clientbookid) {
-        this.clientbookid = clientbookid;
+        if (clientbookid!=null) {
+		this.clientbookid = clientbookid.trim();
         setClientbookidsort(clientbookid);
+        }
     }
 	
 	public void setClientbookidsort(String clientbid) {

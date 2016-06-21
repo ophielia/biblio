@@ -42,7 +42,7 @@ ${checkoutcount}
 <td>${classInfo[checkedout.classid].firstname}</td>
 <td>
 <spring:url value="/books/display/${checkedout.bookid}" var="bookurl"/>
-<a href="${bookurl}" class="textlink">${checkedout.booktitle} </a> </td>
+<a href="${bookurl}" class="textlink">(${checkedout.bookclientid}) ${checkedout.booktitle} </a> </td>
 <td>${checkedout.author} </td>
 <td nowrap="true"><fmt:formatDate type="date" value="${checkedout.checkedout}" /></td>
 <td  nowrap="true"><fmt:formatDate type="date" value="${checkedout.duedate}" /></td>

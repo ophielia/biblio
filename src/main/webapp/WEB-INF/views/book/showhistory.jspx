@@ -93,10 +93,7 @@
 	<h1>${pagetitle}</h1>
 
 	<div style="width: 60%; float: left">
-		<div>
-			<span class="stress">${clientname} ${lnumber}:</span>
-			${bookModel.clientbookid}
-		</div>
+
 
 		<div>
 			<span class="stress">${ltitle}:</span> ${bookModel.title}
@@ -155,15 +152,16 @@
 				<span class="stress">${lisbn10}:</span> ${bookModel.isbn10}<br /> <span
 					class="stress">${lisbn13}:</span> ${bookModel.isbn13}
 			</div>
-
-
-
-
-
-
+			
+					<div>
+			<span class="stress">${clientname} ${lnumber}:</span>
+		<c:choose>
+					<c:when test="${bookModel.clientbookid!=null and bookModel.clientbookid!=''  }"> ${bookModel.clientbookid}</c:when>
+					<c:otherwise>- - - - -</c:otherwise></c:choose>
 		</div>
-		<div>
-			<!--  book details -->
+
+<br />
+<!--  book details -->
 
 			<div>
 				<span class="stress">${lillustrator}:</span>
@@ -212,7 +210,12 @@
 
 
 
+
+
+
+
 		</div>
+
 	</div>
 
 </div>

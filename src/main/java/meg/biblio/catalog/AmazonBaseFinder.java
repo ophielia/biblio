@@ -1,9 +1,5 @@
 package meg.biblio.catalog;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -11,22 +7,11 @@ import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Result;
-import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 
-import meg.biblio.catalog.db.PublisherRepository;
-import meg.biblio.catalog.db.SubjectRepository;
 import meg.biblio.catalog.db.dao.BookDetailDao;
 import meg.biblio.catalog.db.dao.FoundDetailsDao;
 import meg.biblio.catalog.db.dao.PublisherDao;
-import meg.biblio.catalog.web.model.BookModel;
 import meg.biblio.common.AppSettingService;
-import meg.biblio.search.SearchService;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,14 +19,6 @@ import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
-import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.books.Books;
-import com.google.api.services.books.BooksRequestInitializer;
-import com.google.api.services.books.Books.Volumes.Get;
-import com.google.api.services.books.model.Volume;
 
 @Component
 public class AmazonBaseFinder extends BaseDetailFinder {

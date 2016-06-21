@@ -13,8 +13,6 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <spring:message code="button_cancel" htmlEscape="false" var="bcancel"/>
 <spring:message code="label_book_create" htmlEscape="false" var="pagetitle"/>
 <spring:message code="label_number" htmlEscape="false" var="lnumber"/>
-<spring:message code="action_book_generatenumber" htmlEscape="false" var="ageneratenr"/>
-<spring:message code="label_or" htmlEscape="false" var="lor"/>
 <spring:message code="label_book_isbnenry" htmlEscape="false" var="lisbn"/>
 <spring:message code="action_book_isbnnotthere" htmlEscape="false" var="isbnnotavail"/>
 <spring:message code="label_book_title" htmlEscape="false" var="ltitle"/>
@@ -34,19 +32,9 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
       ], function (dom,style,focusUtil,on) {
 
 	 focusUtil.focus(dom.byId("isbn10"));
-	 
-	 	<c:if test="${bookModel.createnewid}">
-	 		dojo.byId("clientbookid").disabled="true";
-	 		focusUtil.focus(dom.byId("isbn10"));
-	 	</c:if>
-	 	<c:if test="${bookModel.createnewid==false}">
+
  		focusUtil.focus(dom.byId("clientbookid"));
- 	</c:if>	 	
-		on(dojo.byId("createnewid1"), 'click', function(event) {
-			ischecked = event.currentTarget.checked;
-			dojo.byId("clientbookid").disabled=ischecked;
-			focusUtil.focus(dom.byId("isbn10"));
-		});
+
 		
 		on(dojo.byId("showaddl"), 'click', function(event) {
 			// reveal the additional fields
@@ -67,8 +55,9 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <p>${msgdup} <a href="${dispurl}" class="linkbutton" id="vbook">${bview }</a></p>
 </c:if>
 <div >
-<div class="inputspace">${clientname} ${lnumber}: <form:input path="clientbookid"></form:input><span style="padding-left:5px;padding-right:5px"> ${lor} </span>
-<form:checkbox class="checkboxalign" path="createnewid"></form:checkbox>${ageneratenr}</div>
+<div class="inputspace">${clientname} ${lnumber}: <form:input path="clientbookid"></form:input>
+<span style="padding-left:5px;padding-right:5px"></span>
+</div>
 <div class="inputspace">${lisbn}: <form:input path="isbn10"></form:input>
 <input id="newbook" class="linkbutton" name="newbook" type="submit" value="${aaddcatalog }"></input>
 

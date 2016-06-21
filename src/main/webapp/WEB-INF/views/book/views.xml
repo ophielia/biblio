@@ -34,6 +34,10 @@
         <put-attribute name="body" value="/WEB-INF/views/book/resultlist.jspx"/>
     </definition>    
     
+    <definition extends="default" name="book/changebookid">
+        <put-attribute name="body" value="/WEB-INF/views/book/changebookid.jspx"/>
+    </definition>     
+    
     <definition extends="default" name="book/admin/resultlist">
         <put-attribute name="body" value="/WEB-INF/views/book/adminresultlist.jspx"/>
     </definition>      

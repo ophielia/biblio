@@ -45,7 +45,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <a href="${showurl}" class="textlink">${checkedout.borrowerfn} ${checkedout.borrowerln}</a> </td>
 <td>${classInfo[checkedout.classid].firstname}</td>
 <td><spring:url value="/books/display/${checkedout.bookid}" var="bookurl"/>
-<a href="${bookurl}" class="textlink">${checkedout.booktitle} </a> </td>
+<a href="${bookurl}" class="textlink">(${checkedout.bookclientid}) ${checkedout.booktitle} </a> </td>
 <td>${checkedout.author} </td>
 <td><fmt:formatDate type="date" value="${checkedout.checkedout}" /> </td>
 <td><fmt:formatDate type="date" value="${checkedout.duedate}" /> </td>

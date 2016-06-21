@@ -66,7 +66,27 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <h1>${pagetitle}</h1>
 
 <div style="width:60%;float:left">
+<spring:url value="/books/changebookid/${bookModel.bookid}" var="actionurl" />
+<form:form action="${actionurl}" id="editbook" method="POST" modelAttribute="bookModel">
+	
 
+
+
+	<div>
+		<span class="stress">Current Number${clientname} ${lnumber}:</span> 
+		<c:choose>
+					<c:when test="${bookModel.clientbookid!=null and bookModel.clientbookid!=''  }"> ${bookModel.clientbookid}</c:when>
+					<c:otherwise>- - - - -</c:otherwise></c:choose>  
+	</div>
+<div>
+	<form:errors id="errors" class="errors" path="*" />
+<span class="stress">New ${lnumber}:</span> <form:input path="newClientId"> </form:input>
+				<span> <input class="linkbutton" id="saveandadd" name="saveandadd"
+					type="submit" value="Save New Number" /></span>
+					</div>
+</form:form>	
+	<br />
+	<br />
 	
 	<div>
 	<span class="stress">${ltitle}:</span> ${bookModel.title}
@@ -142,14 +162,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 					 <span class="stress">${lisbn13}:</span>
 					 ${bookModel.isbn13}
 				</div>
-	<div>
-		<span class="stress">${clientname} ${lnumber}:</span> 
-		<c:choose>
-					<c:when test="${bookModel.clientbookid!=null and bookModel.clientbookid!=''  }"> ${bookModel.clientbookid}</c:when>
-					<c:otherwise>- - - - -</c:otherwise></c:choose>  
-				<spring:url value="/books/changeid/${bookModel.bookid}" var="linkurl" />
-				<a href="${linkurl}" class="linkbuttonsmall" id="showaddl">${bedit}</a>
-	</div>
+
 			</div>
 			<div>
 				<spring:url value="/books/update/${bookModel.bookid}" var="linkurl" />

@@ -75,14 +75,10 @@ public class BookController {
 	@RequestMapping(params = "form", produces = "text/html")
 	public String addBookForm(Model uiModel,
 			@RequestParam(value = "shelfcode", required = false) Long shelfcode,
-			@RequestParam(value = "booktype", required = false) Long booktype,
-			@RequestParam(value = "createnewid", required = false) Boolean newid) {
-		if (newid==null) {
-			newid = new Boolean(false);
-		}
+			@RequestParam(value = "booktype", required = false) Long booktype) {
+
 		
 		BookModel bookModel = new BookModel();
-		bookModel.setCreatenewid(newid);
 		bookModel.setStatus(CatalogService.Status.SHELVED);
 		bookModel.setAssignedcode(null);
 		
@@ -277,7 +273,6 @@ public class BookController {
 		Long clientid = client.getId();
 		String shortname = client.getShortname();
 		Long detailstatus = bookModel.getDetailstatus();
-		Boolean createnewid = bookModel.getCreatenewid();
 		
 
 		
@@ -329,10 +324,10 @@ public class BookController {
 			return "redirect:/books/display/"
 					+ bookModel.getBookid().toString();
 		} else {
-			// get current shelf and generate code info (createnewid)
+			// get current shelf and generate code info 
 			Long shelfcode = bookModel.getShelfcode();
 			Long booktype = bookModel.getType();
-			String returnparams = "?form&createnewid=" + createnewid;
+			String returnparams = "?form";
 			if (shelfcode!=null) {
 				returnparams += "&shelfcode=" + shelfcode;
 			}
@@ -475,6 +470,77 @@ FoundDetailsDao fd = fdetails.get(detailidx.intValue());
 		return "book/show";
 	}
 	
+	@RequestMapping(value = "/changeid/{id}", produces = "text/html")
+	public String displayChangeBookId(@PathVariable("id") Long id, Model uiModel,
+			HttpServletRequest httpServletRequest, Principal principal,
+			Locale locale) {
+		ClientDao client = clientService.getCurrentClient(principal);
+
+		// fill lookups
+		fillLookups(uiModel, httpServletRequest, principal, locale);
+		String shortname = client.getShortname();
+		uiModel.addAttribute("clientname", shortname);
+
+		// lookup book
+		BookModel bookModel = null;
+		if (id != null) {
+			bookModel = catalogService.loadBookModel(id);
+		} else {
+			bookModel = new BookModel();
+		}
+		bookModel.setTrackchange(false);
+		// get checkout count
+		Integer count = lendingService.getCheckoutCountForBook(id, client.getId());
+		bookModel.setCheckoutcount(count);
+		uiModel.addAttribute("bookModel", bookModel);
+		return "book/changebookid";
+	}
+	
+	@RequestMapping(value = "/changebookid/{id}", method = RequestMethod.POST,produces = "text/html")
+	public String changeBookId(@PathVariable("id") Long id, BookModel bookModel,Model uiModel,
+			HttpServletRequest httpServletRequest,BindingResult bindingResult, Principal principal,
+			Locale locale) {
+		ClientDao client = clientService.getCurrentClient(principal);
+		String shortname = client.getShortname();
+		
+		
+		// fill lookups
+		fillLookups(uiModel, httpServletRequest, principal, locale);
+		uiModel.addAttribute("clientname", shortname);
+	
+		// get id to be assigned
+		String clientbookid = bookModel.getNewClientId();
+		
+		// validate id
+		bookValidator.validateAssignIdToBook(clientbookid, client, bindingResult);
+		
+
+		// if valid, service call, and return
+		if (!bindingResult.hasErrors()) {
+			// service call
+			catalogService.changeClientBookNr(clientbookid,id,client);
+			
+			// fill bookmodel
+			BookModel bmodel = catalogService.loadBookModel(id);
+	
+			// get checkout count
+			Integer count = lendingService.getCheckoutCountForBook(id, client.getId());
+			bmodel.setCheckoutcount(count);
+			
+			uiModel.addAttribute("bookModel", bmodel);
+			
+			// return display page
+			return "book/show";
+		} else {
+			
+			// if invalid, return with errors
+			return "book/changebookid";
+		}
+		
+
+		
+	}
+	
 	@RequestMapping(value = "/displayhistory/{id}", produces = "text/html")
 	public String displayBookLendingHistory(@PathVariable("id") Long id, Model uiModel,
 			HttpServletRequest httpServletRequest, Principal principal,
@@ -496,6 +562,7 @@ FoundDetailsDao fd = fdetails.get(detailidx.intValue());
 		uiModel.addAttribute("bookModel", bmodel);
 		return "book/showhistory";
 	}	
+
 
 	String encodeUrlPathSegment(String pathSegment,
 			HttpServletRequest httpServletRequest) {

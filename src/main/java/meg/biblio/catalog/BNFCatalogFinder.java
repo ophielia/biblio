@@ -9,13 +9,10 @@ import java.util.List;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import meg.biblio.catalog.db.PublisherRepository;
-import meg.biblio.catalog.db.SubjectRepository;
 import meg.biblio.catalog.db.dao.ArtistDao;
 import meg.biblio.catalog.db.dao.BookDetailDao;
 import meg.biblio.catalog.db.dao.FoundDetailsDao;
 import meg.biblio.common.AppSettingService;
-import meg.biblio.search.SearchService;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.http.client.ClientProtocolException;
@@ -33,10 +30,11 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 @Component
-public class BNFCatalogFinder extends BaseDetailFinder {
+class BNFCatalogFinder extends BaseDetailFinder {
 
-	@Autowired
-	AppSettingService settingService;
+	
+	/*
+
 
 	@Autowired
 	SearchService searchService;
@@ -47,23 +45,29 @@ public class BNFCatalogFinder extends BaseDetailFinder {
 	@Autowired
 	SubjectRepository subjectRepo;
 
+
+*/
+	
+	@Autowired
+	AppSettingService settingService;
+	
 	@Autowired
 	BookMemberService bMemberService;
-
+	
 	/* Get actual class name to be printed on */
 	static Logger log = Logger.getLogger(BNFCatalogFinder.class.getName());
 
-	Boolean lookupwithbnf;
-	Long identifier = 7L;
+	private Boolean lookupwithbnf;
+	private Long identifier = 7L;
 
-	static final String dataquery_titleauthor = "SELECT DISTINCT ?link ?ean ?isbn ?date WHERE { ?manifestation dcterms:title \"TITLE\". ?manifestation rdarelationships:expressionManifested ?expression. ?manifestation bnf-onto:EAN ?ean. ?manifestation dcterms:publisher ?date. ?manifestation bnf-onto:isbn ?isbn. ?manifestation rdfs:seeAlso ?link. ?expression marcrel:aut ?person. ?person foaf:name \"AUTHOR\". }";
-	static final String dataquery_isbn13 = "SELECT DISTINCT ?link WHERE { ?question rdfs:seeAlso ?link. ?question bnf-onto:EAN \"REPLACE\". }";
-	static final String dataquery_isbn10 = "SELECT DISTINCT ?link WHERE { ?question rdfs:seeAlso ?link. ?question bnf-onto:ISBN \"REPLACE\". }";
-	static final String databnfrequest = "http://data.bnf.fr/sparql?default-graph-uri=&query=REPLACE&should-sponge=&format=xml&timeout=0&debug=on";
+	private static final String dataquery_titleauthor = "SELECT DISTINCT ?link ?ean ?isbn ?date WHERE { ?manifestation dcterms:title \"TITLE\". ?manifestation rdarelationships:expressionManifested ?expression. ?manifestation bnf-onto:EAN ?ean. ?manifestation dcterms:publisher ?date. ?manifestation bnf-onto:isbn ?isbn. ?manifestation rdfs:seeAlso ?link. ?expression marcrel:aut ?person. ?person foaf:name \"AUTHOR\". }";
+	private static final String dataquery_isbn13 = "SELECT DISTINCT ?link WHERE { ?question rdfs:seeAlso ?link. ?question bnf-onto:EAN \"REPLACE\". }";
+	private static final String dataquery_isbn10 = "SELECT DISTINCT ?link WHERE { ?question rdfs:seeAlso ?link. ?question bnf-onto:ISBN \"REPLACE\". }";
+	private static final String databnfrequest = "http://data.bnf.fr/sparql?default-graph-uri=&query=REPLACE&should-sponge=&format=xml&timeout=0&debug=on";
 
-	static final String beginparse = "<!--Contenu de la notice-->";
-	static final String newlinemarker = "!|!";
-	static final String newlinemarkersplit = "\\!\\|\\!";
+	private static final String beginparse = "<!--Contenu de la notice-->";
+	private static final String newlinemarker = "!|!";
+	private static final String newlinemarkersplit = "\\!\\|\\!";
 
 	protected boolean isEnabled() throws Exception {
 		if (lookupwithbnf == null) {
@@ -117,14 +121,13 @@ public class BNFCatalogFinder extends BaseDetailFinder {
 
 	}
 
-	protected List<BookIdentifier> findAlternateIdentifiers(
+	private List<BookIdentifier> findAlternateIdentifiers(
 			FinderObject findobj, String authornameoverride) throws Exception {
 		HashMap<String, String> ean2link = new HashMap<String, String>();
 		BookDetailDao bookdetail = findobj.getBookdetail();
 
 		// add params - title and author
 		String querystring = "";
-		String value = "";
 		querystring = dataquery_titleauthor;
 		// replace string in query with values
 		String title = bookdetail.getTitle();
@@ -274,7 +277,6 @@ public class BNFCatalogFinder extends BaseDetailFinder {
 		}
 		// if no catalogurl, do author / title search - to put either in
 		// additionalcodes, or founddetails
-		HashMap<String, String> addlcodeshash = null;
 		if (catalogurl == null) {
 			addlcodessearch = true;
 
@@ -386,7 +388,6 @@ public class BNFCatalogFinder extends BaseDetailFinder {
 		// now, lets get this record....
 		if (searchid != null) {
 			HashMap<String, String> results = new HashMap<String, String>();
-			String alternateauthor = null;
 
 			// now, lets get this record....
 			CloseableHttpClient httpclient = HttpClients.createDefault();
@@ -653,9 +654,11 @@ public class BNFCatalogFinder extends BaseDetailFinder {
 	}
 
 	private String stripAfterText(String stripafter, String tostrip) {
-		int location = tostrip.indexOf(stripafter);
-		if (location > 0) {
-			tostrip = tostrip.substring(0, location - 1);
+		if (tostrip!=null) {
+			int location = tostrip.indexOf(stripafter);
+			if (location > 0) {
+				tostrip = tostrip.substring(0, location - 1);
+			}
 		}
 		return tostrip;
 	}

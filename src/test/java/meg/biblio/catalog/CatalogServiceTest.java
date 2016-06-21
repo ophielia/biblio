@@ -19,6 +19,7 @@ import meg.biblio.catalog.db.dao.BookDetailDao;
 import meg.biblio.catalog.db.dao.PublisherDao;
 import meg.biblio.catalog.web.model.BookModel;
 import meg.biblio.common.ClientService;
+import meg.biblio.common.db.dao.ClientDao;
 import meg.biblio.search.BookSearchCriteria;
 import meg.biblio.search.SearchService;
 
@@ -418,5 +419,39 @@ public class CatalogServiceTest {
 		bmodel = catalogService.loadBookModel(bmodel.getBookid());
 		// ensure that detail status is DETAILNOTFOUND
 		Assert.assertTrue(bmodel.getDetailstatus()==CatalogService.DetailStatus.DETAILNOTFOUND);
+	}
+	
+	@Test 
+	public void testChangeBookNr() {
+		// get existing book
+		Long clientid = clientService.getTestClientId();
+		ClientDao client = clientService.getClientForKey(clientid);
+		BookDao book = new BookDao();
+		book.getBookdetail().setTitle("les trois brigands");
+		ArtistDao author = bMemberService.textToArtistName("Ungerer");
+		List<ArtistDao> authors = new ArrayList<ArtistDao>();
+		authors.add(author);
+		book.getBookdetail().setAuthors(authors);
+
+		BookModel model = new BookModel(book);
+		model = catalogService.createCatalogEntryFromBookModel(clientid, model);
+		
+		// save current clientbooknr
+		String origclientbooknr = model.getClientbookid();
+		
+		// service call - change to client nr 99999
+		catalogService.changeClientBookNr("99999", model.getBookid(), client);
+		
+		// retrieve book
+		BookDao bookck = bookRepo.findOne(model.getBookid());
+		
+		// verify clientbookid, clientsortid, barcode
+		Assert.assertNotNull(bookck);
+		Assert.assertNotNull(bookck.getClientbookid());
+		Assert.assertEquals("99999", book.getClientbookid());
+		Assert.assertNotNull(bookck.getClientbookidsort());
+		Assert.assertEquals(new Long(99999), book.getClientbookidsort());
+		Assert.assertNotNull(bookck.getBarcodeid());
+		Assert.assertEquals("B1000000099999", book.getBarcodeid());
 	}
 }

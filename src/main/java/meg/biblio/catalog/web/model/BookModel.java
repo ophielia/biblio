@@ -14,25 +14,23 @@ import meg.biblio.catalog.db.dao.PublisherDao;
 import meg.biblio.catalog.db.dao.SubjectDao;
 import meg.biblio.lending.db.dao.LoanRecordDisplay;
 
-public class BookModel  implements Serializable {
+public class BookModel implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	private BookDao book;
 
-
 	private String authorname;
 	private String illustratorname;
 	private String publishername;
 	private Long assignDetailId;
-
+	private String newclientid;
 	private String isbnentry;
-	private Boolean createnewid;
 	private String editMode;
 	private String assignedcode;
 	private Boolean showbarcodelinks;
 	List<FoundDetailsDao> founddetails;
-	
+
 	private String authorentry;
 	private String illustratorentry;
 	private String subjectentry;
@@ -40,19 +38,19 @@ public class BookModel  implements Serializable {
 	private Long previousshelfcode;
 	private Long previousbooktype;
 	private Integer checkoutcount;
-	
+
 	private List<LoanRecordDisplay> history;
-	
+
 	// *** constructors ***//
 	public BookModel(BookDao book) {
 		super();
-		if (book.getBookdetail()==null) {
+		if (book.getBookdetail() == null) {
 			BookDetailDao bookdetail = new BookDetailDao();
 			book.setBookdetail(bookdetail);
 		}
 		this.book = book;
 	}
-	
+
 	public BookModel() {
 		super();
 		BookDao book = new BookDao();
@@ -60,7 +58,7 @@ public class BookModel  implements Serializable {
 		book.setBookdetail(bookdetail);
 		this.book = book;
 	}
-	
+
 	// *** getters and setters for book object ***//
 	public BookDao getBook() {
 		return book;
@@ -70,20 +68,14 @@ public class BookModel  implements Serializable {
 		this.book = book;
 	}
 
-
 	public void setBookdetail(BookDetailDao bookdetail) {
 		this.book.setBookdetail(bookdetail);
-		
+
 	}
-	
-	
+
 	public List<FoundDetailsDao> getFounddetails() {
 		return founddetails;
 	}
-	
-	
-
-
 
 	// *** getters and setters for web entry ***//
 	public Long getAssignDetailId() {
@@ -94,7 +86,6 @@ public class BookModel  implements Serializable {
 		this.assignDetailId = assignDetailId;
 	}
 
-	
 	public String getAuthorentry() {
 		return authorentry;
 	}
@@ -136,10 +127,10 @@ public class BookModel  implements Serializable {
 	}
 
 	public String getPublishername() {
-		if (publishername==null) {
+		if (publishername == null) {
 			BookDetailDao bdetail = this.book.getBookdetail();
 			PublisherDao publisher = bdetail.getPublisher();
-			if (publisher!=null) {
+			if (publisher != null) {
 				return publisher.getName();
 			}
 		}
@@ -152,16 +143,18 @@ public class BookModel  implements Serializable {
 
 	// *** getters and setters for book object ***//
 	public void setBookid(Long bookid) {
-		if (bookid!=null) this.book.setId(bookid);
+		if (bookid != null)
+			this.book.setId(bookid);
 	}
 
-	
 	public void setClientid(Long clientid) {
-		if (clientid!=null) this.book.setClientid(clientid);
+		if (clientid != null)
+			this.book.setClientid(clientid);
 	}
 
 	public void setTitle(String title) {
-		if (title!=null) this.book.getBookdetail().setTitle(title);
+		if (title != null)
+			this.book.getBookdetail().setTitle(title);
 	}
 
 	public void setAuthors(List<ArtistDao> authors) {
@@ -177,11 +170,13 @@ public class BookModel  implements Serializable {
 	}
 
 	public void setPublisherkey(PublisherDao publisherkey) {
-		if (publisherkey!=null) this.book.getBookdetail().setPublisher(publisherkey);
+		if (publisherkey != null)
+			this.book.getBookdetail().setPublisher(publisherkey);
 	}
 
 	public void setPublishyear(Long publishyear) {
-		if (publishyear!=null) this.book.getBookdetail().setPublishyear(publishyear);
+		if (publishyear != null)
+			this.book.getBookdetail().setPublishyear(publishyear);
 	}
 
 	public void setIsbn10(String isbn10) {
@@ -193,15 +188,16 @@ public class BookModel  implements Serializable {
 	}
 
 	public void setLanguage(String language) {
-		if (language!=null) this.book.getBookdetail().setLanguage(language);
+		if (language != null)
+			this.book.getBookdetail().setLanguage(language);
 	}
 
 	public void setType(Long type) {
-		if (type!=null) {
+		if (type != null) {
 			// save type in book, for client
 			this.book.setClientbooktype(type);
-			if (type==CatalogService.BookType.FICTION ||
-					type == CatalogService.BookType.NONFICTION) {
+			if (type == CatalogService.BookType.FICTION
+					|| type == CatalogService.BookType.NONFICTION) {
 				// fiction or non-fiction - save through to the bookdetail
 				this.book.getBookdetail().setListedtype(type);
 			}
@@ -209,31 +205,38 @@ public class BookModel  implements Serializable {
 	}
 
 	public void setDescription(String description) {
-		if (description!=null) this.book.getBookdetail().setDescription(description);
+		if (description != null)
+			this.book.getBookdetail().setDescription(description);
 	}
 
 	public void setStatus(Long status) {
-		if (status!=null) this.book.setStatus(status);
+		if (status != null)
+			this.book.setStatus(status);
 	}
 
 	public void setDetailstatus(Long detailstatus) {
-		if (detailstatus!=null) this.book.getBookdetail().setDetailstatus(detailstatus);
+		if (detailstatus != null)
+			this.book.getBookdetail().setDetailstatus(detailstatus);
 	}
 
 	public void setShelfcode(Long shelfclass) {
-		if (shelfclass!=null) this.book.setClientshelfcode(shelfclass);
+		if (shelfclass != null)
+			this.book.setClientshelfcode(shelfclass);
 	}
 
 	public void setShelfclass(String shelfclass) {
-		if (shelfclass!=null) this.book.setClientshelfclass(shelfclass);
+		if (shelfclass != null)
+			this.book.setClientshelfclass(shelfclass);
 	}
-	
+
 	public void setCreatedon(Date createdon) {
-		if (createdon!=null) this.book.setCreatedon(createdon);
+		if (createdon != null)
+			this.book.setCreatedon(createdon);
 	}
 
 	public void setClientbookid(String clientbookid) {
-		if (clientbookid!=null) this.book.setClientbookid(clientbookid);
+		if (clientbookid != null)
+			this.book.setClientbookid(clientbookid);
 	}
 
 	public Long getBookid() {
@@ -261,7 +264,7 @@ public class BookModel  implements Serializable {
 	}
 
 	public PublisherDao getPublisher() {
-		if (book.getBookdetail().getPublisher()!=null) {
+		if (book.getBookdetail().getPublisher() != null) {
 			return book.getBookdetail().getPublisher();
 		}
 		return new PublisherDao();
@@ -285,7 +288,8 @@ public class BookModel  implements Serializable {
 
 	public Long getType() {
 		// check for type in book first (client specific)
-		if (book.getClientbooktype()!=null) return book.getClientbooktype();
+		if (book.getClientbooktype() != null)
+			return book.getClientbooktype();
 		// and then in bookdetail
 		return book.getBookdetail().getListedtype();
 	}
@@ -297,24 +301,22 @@ public class BookModel  implements Serializable {
 	public String getNote() {
 		return book.getNote();
 	}
-	
+
 	public Long getStatus() {
 		return book.getStatus();
 	}
 
-
-	
 	public Long getDetailstatus() {
 		return book.getBookdetail().getDetailstatus();
 	}
 
 	public String getShelfclass() {
-		// returns client shelfclass first, 
+		// returns client shelfclass first,
 		// otherwise, bookdetail shelfclass
-		if (book.getClientshelfclass()!=null) {
+		if (book.getClientshelfclass() != null) {
 			return book.getClientshelfclass();
 		}
-		if (book.getBookdetail()!=null) {
+		if (book.getBookdetail() != null) {
 			return book.getBookdetail().getShelfclass();
 		}
 		return null;
@@ -332,113 +334,111 @@ public class BookModel  implements Serializable {
 		return book.getClientbookid();
 	}
 
-	
-	//***** convenience methods ****//
+	// ***** convenience methods ****//
 	public boolean hasIsbn() {
 		return this.book.getBookdetail().hasIsbn();
 	}
-	
+
 	public String getAuthorsforJS() {
-		if (getAuthors()!=null && getAuthors().size()>0) {
+		if (getAuthors() != null && getAuthors().size() > 0) {
 			StringBuffer jstext = new StringBuffer();
-			for (ArtistDao artist:getAuthors()) {
-				 if (artist.getDisplayName()==null) {
-					 continue;
-				 }
-				 jstext.append(artist.getDisplayName()).append(";");
+			for (ArtistDao artist : getAuthors()) {
+				if (artist.getDisplayName() == null) {
+					continue;
+				}
+				jstext.append(artist.getDisplayName()).append(";");
 			}
-			jstext.setLength(jstext.length()-1);
+			jstext.setLength(jstext.length() - 1);
 			return jstext.toString();
 		}
 		return "";
 	}
-	
+
 	public String getAllAuthorsDisplay() {
-		if (getAuthors()!=null && getAuthors().size()>0) {
+		if (getAuthors() != null && getAuthors().size() > 0) {
 			StringBuffer jstext = new StringBuffer();
-			for (ArtistDao artist:getAuthors()) {
-				 if (artist.getDisplayName()==null) {
-					 continue;
-				 }
-				 jstext.append(artist.getDisplayName()).append(", ");
+			for (ArtistDao artist : getAuthors()) {
+				if (artist.getDisplayName() == null) {
+					continue;
+				}
+				jstext.append(artist.getDisplayName()).append(", ");
 			}
-			jstext.setLength(jstext.length()-2);
+			jstext.setLength(jstext.length() - 2);
 			return jstext.toString();
 		}
 		return "";
-	}	
+	}
 
 	public String getIllustratorsforJS() {
-		if (getIllustrators()!=null && getIllustrators().size()>0) {
+		if (getIllustrators() != null && getIllustrators().size() > 0) {
 			StringBuffer jstext = new StringBuffer();
-			for (ArtistDao artist:getIllustrators()) {
-				 if (artist.getDisplayName()==null) {
-					 continue;
-				 }
-				 jstext.append(artist.getDisplayName()).append(";");
+			for (ArtistDao artist : getIllustrators()) {
+				if (artist.getDisplayName() == null) {
+					continue;
+				}
+				jstext.append(artist.getDisplayName()).append(";");
 			}
-			jstext.setLength(jstext.length()-1);
+			jstext.setLength(jstext.length() - 1);
 			return jstext.toString();
 		}
 		return "";
 	}
-	
+
 	public String getAllIllustratorsDisplay() {
-		if (getIllustrators()!=null && getIllustrators().size()>0) {
+		if (getIllustrators() != null && getIllustrators().size() > 0) {
 			StringBuffer jstext = new StringBuffer();
-			for (ArtistDao artist:getIllustrators()) {
-				 if (artist.getDisplayName()==null) {
-					 continue;
-				 }
-				 jstext.append(artist.getDisplayName()).append(", ");
+			for (ArtistDao artist : getIllustrators()) {
+				if (artist.getDisplayName() == null) {
+					continue;
+				}
+				jstext.append(artist.getDisplayName()).append(", ");
 			}
-			jstext.setLength(jstext.length()-2);
+			jstext.setLength(jstext.length() - 2);
 			return jstext.toString();
 		}
 		return "";
 	}
-	
+
 	public String getSubjectsforJS() {
-		if (getSubjects()!=null && getSubjects().size()>0) {
+		if (getSubjects() != null && getSubjects().size() > 0) {
 			StringBuffer jstext = new StringBuffer();
-			for (SubjectDao subject:getSubjects()) {
-				 if (subject.getListing()==null) {
-					 continue;
-				 }
-				 jstext.append(subject.getListing().trim()).append(";");
+			for (SubjectDao subject : getSubjects()) {
+				if (subject.getListing() == null) {
+					continue;
+				}
+				jstext.append(subject.getListing().trim()).append(";");
 			}
-			jstext.setLength(jstext.length()-1);
+			jstext.setLength(jstext.length() - 1);
 			return jstext.toString();
 		}
 		return "";
 	}
-	
+
 	public String getAllSubjectsDisplay() {
-		if (getSubjects()!=null && getSubjects().size()>0) {
+		if (getSubjects() != null && getSubjects().size() > 0) {
 			StringBuffer jstext = new StringBuffer();
-			for (SubjectDao subject:getSubjects()) {
-				 if (subject.getListing()==null) {
-					 continue;
-				 }
-				 jstext.append(subject.getListing()).append(", ");
+			for (SubjectDao subject : getSubjects()) {
+				if (subject.getListing() == null) {
+					continue;
+				}
+				jstext.append(subject.getListing()).append(", ");
 			}
-			jstext.setLength(jstext.length()-2);
+			jstext.setLength(jstext.length() - 2);
 			return jstext.toString();
 		}
 		return "";
-	}	
-	
-	
+	}
+
 	public ArtistDao getMainAuthor() {
-		if (getAuthors()!=null && getAuthors().size()>0) {
+		if (getAuthors() != null && getAuthors().size() > 0) {
 			ArtistDao author = getAuthors().get(0);
 			return author;
 		}
 		return new ArtistDao();
 	}
-	
+
 	public ArtistDao getMainIllustrator() {
-		if (getIllustrators()!=null && getIllustrators().size()>0) {
+		if (getIllustrators() != null && getIllustrators().size() > 0) {
 			ArtistDao illus = getIllustrators().get(0);
 			return illus;
 		}
@@ -455,21 +455,23 @@ public class BookModel  implements Serializable {
 			book.getBookdetail().setAuthors(authors);
 		}
 	}
-	
+
 	public void setAuthorInBook(ArtistDao author) {
 		if (author != null) {
 			// only set if different
-			if (!getMainAuthor().getDisplayName().equals(author.getDisplayName())) {
+			if (!getMainAuthor().getDisplayName().equals(
+					author.getDisplayName())) {
 				List<ArtistDao> authors = new ArrayList<ArtistDao>();
 				authors.add(author);
 				book.getBookdetail().setAuthors(authors);
 			}
 		}
-	}	
+	}
 
 	public void addIllustratorToBook(ArtistDao illustrator) {
 		if (illustrator != null) {
-			List<ArtistDao> illustrators = book.getBookdetail().getIllustrators();
+			List<ArtistDao> illustrators = book.getBookdetail()
+					.getIllustrators();
 			if (illustrators == null) {
 				illustrators = new ArrayList<ArtistDao>();
 			}
@@ -477,16 +479,16 @@ public class BookModel  implements Serializable {
 			book.getBookdetail().setIllustrators(illustrators);
 		}
 	}
-	
+
 	public void setIllustratorInBook(ArtistDao illust) {
-		if (!getMainIllustrator().getDisplayName().equals(illust.getDisplayName())) {
+		if (!getMainIllustrator().getDisplayName().equals(
+				illust.getDisplayName())) {
 			List<ArtistDao> illusts = new ArrayList<ArtistDao>();
 			illusts.add(illust);
 			book.getBookdetail().setIllustrators(illusts);
 		}
-	}		
+	}
 
-	
 	public void setPublisher(String publishername) {
 		PublisherDao publisher = new PublisherDao();
 		publisher.setName(publishername);
@@ -501,16 +503,10 @@ public class BookModel  implements Serializable {
 		this.isbnentry = isbnentry;
 	}
 
-	public Boolean getCreatenewid() {
-		return createnewid!=null?createnewid:new Boolean(false);
-	}
 
-	public void setCreatenewid(Boolean createnewid) {
-		this.createnewid = createnewid;
-	}
 
 	public String getEditMode() {
-		return editMode!=null?editMode:"";
+		return editMode != null ? editMode : "";
 	}
 
 	public void setEditMode(String editMode) {
@@ -524,9 +520,9 @@ public class BookModel  implements Serializable {
 	public void setAssignedcode(String assignedcode) {
 		this.assignedcode = assignedcode;
 	}
-	
+
 	public void setTrackchange(Boolean trackchange) {
-		if (this.book!=null && this.book.getBookdetail()!=null) {
+		if (this.book != null && this.book.getBookdetail() != null) {
 			this.book.getBookdetail().setTrackchange(trackchange);
 		}
 	}
@@ -541,7 +537,7 @@ public class BookModel  implements Serializable {
 
 	public void setFounddetails(List<FoundDetailsDao> founddetails) {
 		this.founddetails = founddetails;
-		
+
 	}
 
 	public void setBarcode(String barcodeid) {
@@ -551,7 +547,7 @@ public class BookModel  implements Serializable {
 	public void setPreviousShelfcode(Long shelfcode) {
 		previousshelfcode = shelfcode;
 	}
-	
+
 	public Long getPreviousShelfcode() {
 		return previousshelfcode;
 	}
@@ -569,12 +565,12 @@ public class BookModel  implements Serializable {
 	}
 
 	public void setCheckoutcount(Integer checkoutcount) {
-		if (checkoutcount!=null) {
-			this.checkoutcount = checkoutcount;	
+		if (checkoutcount != null) {
+			this.checkoutcount = checkoutcount;
 		} else {
-			this.checkoutcount=0;
+			this.checkoutcount = 0;
 		}
-		
+
 	}
 
 	public void setLendingHistory(List<LoanRecordDisplay> history) {
@@ -584,8 +580,16 @@ public class BookModel  implements Serializable {
 	public List<LoanRecordDisplay> getLendingHistory() {
 		return history;
 	}
-	
-	
 
+	public String getNewClientId() {
+		return newclientid;
+	}
+
+	public void setNewClientId(String newid) {
+		if (newid != null) {
+			this.newclientid = newid.trim();
+		}
+
+	}
 
 }

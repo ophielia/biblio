@@ -241,10 +241,7 @@ ${msgsearchagain}
 
 
 			<div class="elementcontainer">
-				<c:if test="${bookModel.clientbookid!=null}"><div>
-					<span class="stress">${clientname} ${lnumber}:</span> ${bookModel.clientbookid}
-				</div></c:if>
-				<form:input type="hidden" path="bookid"></form:input>
+				
 				<div>
 					<span class="stress">${ltitle}:</span><form:input type="text" path="title"></form:input>
 				</div>
@@ -338,7 +335,13 @@ ${msgsearchagain}
 					 <span class="stress">${lisbn13}:</span>
 					 ${bookModel.isbn13}
 				</div>
-
+<div>
+					<span class="stress">${clientname} ${lnumber}:</span>
+				<c:choose>
+					<c:when test="${bookModel.clientbookid!=null and bookModel.clientbookid!=''  }"> ${bookModel.clientbookid}</c:when>
+					<c:otherwise>- - - - -</c:otherwise></c:choose>
+				</div>
+				<form:input type="hidden" path="bookid"></form:input>
 			</div>
 			
 			<c:if test="${bookModel.bookid ==null}"> 

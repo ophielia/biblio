@@ -1,12 +1,22 @@
 Branch - usability
 
 
-Check - no number entered on book info - should generate error.
+done - Check - no number entered on book info - should generate error.
+done - 	remove generate new number box
+	
 Change number function - 
-	first, move client number to accent box
-		editbook.jspx
-		show.jspx
-		showhistory.jspx
+	done - first, move client number to accent box-editbook.jspx,show.jspx,showhistory.jspx
+	done - next - controller to direct to page
+	done - make page - like edit, but with input box for the id
+	done - controller to save information - verify
+	done - service to change id
+	done - in addBook, a processNewBook function which adds an id if it doesn't exist
+	
+	small front end things  - 
+		in nr display - editbook, show and showhistory, change little link to Change / Modify
+		on changebookid page, need labels for Current (Clientshortname) Number / New Number 
+		??? add message - highest assigned number??
+	
 		
 
 

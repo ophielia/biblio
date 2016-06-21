@@ -87,6 +87,8 @@ public interface CatalogService {
 
 	BookDao findBookById(Long bookid);
 
+	void changeClientBookNr(String newclientbookid, Long bookid, ClientDao client);
+
 
 
 }
