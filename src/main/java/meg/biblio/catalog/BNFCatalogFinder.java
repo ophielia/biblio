@@ -315,6 +315,7 @@ class BNFCatalogFinder extends BaseDetailFinder {
 
 		// now, lets get this record....
 		if (catalogurl != null) {
+			catalogurl = catalogurl + ".intermarc";
 			HashMap<String, String> results = new HashMap<String, String>();
 			String alternateauthor = null;
 

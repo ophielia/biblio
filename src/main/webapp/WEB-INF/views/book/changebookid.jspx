@@ -31,7 +31,9 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <spring:message code="label_book_clientbookid" htmlEscape="false" var="lclientbookid"/>
 <spring:message code="label_book_verified" htmlEscape="false" var="lvfd"/>
 <spring:message code="label_book_subject" htmlEscape="false" var="lsubject"/>
-
+<spring:message code="action_book_savenumberchange" htmlEscape="false" var="bsavechange"/>
+<spring:message code="label_book_newnr" htmlEscape="false" var="lnewnr"/>
+<spring:message code="label_book_currentnr" arguments="${clientname}" htmlEscape="false"  var="lcurrentnr"/>
 
 <spring:message code="button_edit" htmlEscape="false" var="bedit"/>
 <spring:message code="label_book_aboutthis"  htmlEscape="false" var="pagetitle"/>
@@ -73,16 +75,16 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 
 
 	<div>
-		<span class="stress">Current Number${clientname} ${lnumber}:</span> 
+		<span class="stress">${lcurrentnr}:</span> 
 		<c:choose>
 					<c:when test="${bookModel.clientbookid!=null and bookModel.clientbookid!=''  }"> ${bookModel.clientbookid}</c:when>
 					<c:otherwise>- - - - -</c:otherwise></c:choose>  
 	</div>
 <div>
 	<form:errors id="errors" class="errors" path="*" />
-<span class="stress">New ${lnumber}:</span> <form:input path="newClientId"> </form:input>
+<span class="stress">${lnewnr}:</span> <form:input path="newClientId"> </form:input>
 				<span> <input class="linkbutton" id="saveandadd" name="saveandadd"
-					type="submit" value="Save New Number" /></span>
+					type="submit" value="${bsavechange}" /></span>
 					</div>
 </form:form>	
 	<br />

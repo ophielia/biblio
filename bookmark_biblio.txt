@@ -1,28 +1,5 @@
 Branch - usability
 
-
-done - Check - no number entered on book info - should generate error.
-done - 	remove generate new number box
-	
-Change number function - 
-	done - first, move client number to accent box-editbook.jspx,show.jspx,showhistory.jspx
-	done - next - controller to direct to page
-	done - make page - like edit, but with input box for the id
-	done - controller to save information - verify
-	done - service to change id
-	done - in addBook, a processNewBook function which adds an id if it doesn't exist
-	
-	small front end things  - 
-		in nr display - editbook, show and showhistory, change little link to Change / Modify
-		on changebookid page, need labels for Current (Clientshortname) Number / New Number 
-		??? add message - highest assigned number??
-	
-		
-
-
-
-	
-later - add change book code to book display
 later - search box on top
 later - student names - first word only to first name, rest to last name
 later - student names - flag for repeat in class
@@ -33,13 +10,24 @@ later - sort in lending history by student name needs to do first name and last 
 later - add teacher name edit to class overview	
 later - 	show only first 10 checkouts - with link to complete history
 later - -small bug - after printout page class pdf, change of select leads to new page (target...)
-
+later -  add message to changeid page- highest assigned number??
 
 		
 ---- begin commit changes ----
 
 done - Note in book display - needs label
-	
+done - Check - no number entered on book info - should generate error.
+done - 	remove generate new number box
+done - first, move client number to accent box-editbook.jspx,show.jspx,showhistory.jspx
+done - next - controller to direct to page
+done - make page - like edit, but with input box for the id
+done - controller to save information - verify
+done - service to change id
+done - in addBook, a processNewBook function which adds an id if it doesn't exist
+done - in nr display - editbook, show and showhistory, change little link to Change / Modify
+done - on changebookid page, need labels for Current (Clientshortname) Number / New Number 
+done - add change book code to book display		
+
 ---- end commit changes ----
 
 

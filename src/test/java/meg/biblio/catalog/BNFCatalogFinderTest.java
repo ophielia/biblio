@@ -144,7 +144,7 @@ public class BNFCatalogFinderTest {
 		List<ArtistDao> authors = new ArrayList<ArtistDao>();
 		authors.add(author);
 		book.getBookdetail().setAuthors(authors);
-		book.getBookdetail().setIsbn13("9782211206464");
+		book.getBookdetail().setIsbn13("9782211208901");
 
 		FinderObject findobj = new FinderObject(book.getBookdetail(),client);
 		

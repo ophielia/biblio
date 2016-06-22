@@ -34,6 +34,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 
 
 <spring:message code="button_edit" htmlEscape="false" var="bedit"/>
+<spring:message code="action_book_changenumber" htmlEscape="false" var="bchangenr"/>
 <spring:message code="label_book_aboutthis"  htmlEscape="false" var="pagetitle"/>
 
 <spring:message code="msg_lending_nocheckout" htmlEscape="false"  var="msgnocheckout"/>
@@ -148,7 +149,7 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 					<c:when test="${bookModel.clientbookid!=null and bookModel.clientbookid!=''  }"> ${bookModel.clientbookid}</c:when>
 					<c:otherwise>- - - - -</c:otherwise></c:choose>  
 				<spring:url value="/books/changeid/${bookModel.bookid}" var="linkurl" />
-				<a href="${linkurl}" class="linkbuttonsmall" id="showaddl">${bedit}</a>
+				<a href="${linkurl}" class="linkbuttonsmall" id="showaddl">${bchangenr}</a>
 	</div>
 			</div>
 			<div>
