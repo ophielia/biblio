@@ -15,18 +15,6 @@ later -  add message to changeid page- highest assigned number??
 		
 ---- begin commit changes ----
 
-done - Note in book display - needs label
-done - Check - no number entered on book info - should generate error.
-done - 	remove generate new number box
-done - first, move client number to accent box-editbook.jspx,show.jspx,showhistory.jspx
-done - next - controller to direct to page
-done - make page - like edit, but with input box for the id
-done - controller to save information - verify
-done - service to change id
-done - in addBook, a processNewBook function which adds an id if it doesn't exist
-done - in nr display - editbook, show and showhistory, change little link to Change / Modify
-done - on changebookid page, need labels for Current (Clientshortname) Number / New Number 
-done - add change book code to book display		
 
 ---- end commit changes ----
 
@@ -74,6 +62,18 @@ done - class overview - count of students
 done -    printout page for reconciled books
 done - 	test - printout only when 200 or less books
 done - 	add client name to column headers
+done - Note in book display - needs label
+done - Check - no number entered on book info - should generate error.
+done - 	remove generate new number box
+done - first, move client number to accent box-editbook.jspx,show.jspx,showhistory.jspx
+done - next - controller to direct to page
+done - make page - like edit, but with input box for the id
+done - controller to save information - verify
+done - service to change id
+done - in addBook, a processNewBook function which adds an id if it doesn't exist
+done - in nr display - editbook, show and showhistory, change little link to Change / Modify
+done - on changebookid page, need labels for Current (Clientshortname) Number / New Number 
+done - add change book code to book display		
 
 
 ---- end branch changes ----
