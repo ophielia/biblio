@@ -30,6 +30,13 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <spring:message code="label_inv_percentcomplete" arguments="${reconcileModel.inventoryStatus.percentcompleted}" htmlEscape="false" var="lpercentcomplete"/>
 <spring:message code="label_inv_numbercounted" arguments="${reconcileModel.inventoryStatus.countedbooks - reconcileModel.inventoryStatus.refoundbooks},${reconcileModel.inventoryStatus.totaltocount}" htmlEscape="false" var="lxofycounted"/>
 <spring:message code="label_inv_reconcileshown" arguments="${reconcileModel.maxUncounted},${reconcileModel.totalUncounted}" htmlEscape="false" var="lfirstofmany"/>
+<spring:message code="label_inv_counted" htmlEscape="false" var="lcounted"/> 
+<spring:message code="label_inv_foundadded" htmlEscape="false" var="lfoundadded"/> 
+<spring:message code="label_inv_reconcilepast" htmlEscape="false" var="lreconcilepast"/>             
+<spring:message code="label_inv_tocount" htmlEscape="false" var="ltocount"/> 
+<spring:message code="label_inv_startdatelong" htmlEscape="false" var="lstarted"/> 
+
+
     
  <spring:url value="/inventory/complete" var="completeurl"/>
  <script type="text/javascript">
@@ -94,6 +101,28 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 </div>
 </a>
 </div>
+</div>
+
+<div style="    margin-top: 10px;">
+<div style="border: 2px #2E537D dotted;
+    padding: 5px;color:#1B3F68;
+    background-color: #7390B1;font-weight: bolder;">
+    <div style="    margin-bottom: 15px;">
+<span>
+<c:set var="msgcomplete" value="${invincomplete}" />
+${lstarted} <fmt:formatDate type="date" 
+            value="${reconcileModel.inventoryStatus.startdate }" /><br />
+            
+</span>
+</div> 		
+<div style="width:100%;text-align:center">
+<span class="selectspanactive" style="width: 150px;">${ltocount}<br />${reconcileModel.inventoryStatus.totaltocount}</span>
+<span class="selectspanactive" style="width: 150px;">${lcounted}<br />${reconcileModel.inventoryStatus.countedbooks}</span>
+<span class="selectspanactive" style="width: 150px;">${lreconcilepast}<br />${reconcileModel.inventoryStatus.reconciledbooks}</span>
+<span class="selectspanactive" style="width: 150px;">${lfoundadded}<br />${reconcileModel.inventoryStatus.refoundbooks}</span>
+</div>
+</div> 		
+
 </div>
 <a class="linkbutton" style="margin-top:10px;float:right" href="${currentinvurl}"    >${loverview}</a><br />
 <c:if test="${printlist != false }">

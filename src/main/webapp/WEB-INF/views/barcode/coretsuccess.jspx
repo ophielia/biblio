@@ -18,26 +18,20 @@ xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
 <spring:url value="/barcode/checkout" var="actionurl"/>
 
 <script type="text/javascript">
-require(["dojo/dom", "dojo/dom-construct", "dojo/on", "dojo/keys", "dojo/NodeList-traverse", "dojo/domReady!"],
-		function(dom, domConstruct, on, keys) {
-
-		    on(document, "keydown", function(event) {
-		    	var node = dom.byId("code");
-		        //on listens for the keydown events inside of the div node, on all form elements
-		        switch(event.keyCode) {
-		            case keys.ENTER:
-		                    // submit the form
-		                	var frm = dom.byId("generatebookcodes");
-		                	frm.submit();
-		                break;
-		            default:
-		            	key = event.keyCode;
-		            charcode = key;
-		            test = String.fromCharCode(charcode);
-				node.value = (node.value + test).trim();
-		        }
-		    });
-		});
+ require([
+          'dojo/dom',"dijit/focus","dojo/on","dijit/TooltipDialog", "dijit/popup",
+          'dojo/domReady!'
+      ], function (dom,focusUtil,on,TooltipDialog,popup) {
+	 
+	function getIndex(prefix, text) {
+			// gets a substring of the text, starting at the char after the length of the prefix
+			var stripped = text.substr(prefix.length);
+			return stripped;
+		}
+	focusUtil.focus(dom.byId("code"));
+	dojo.byid("code").value="";
+	});
+ 
 
 </script>
 

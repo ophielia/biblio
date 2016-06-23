@@ -758,7 +758,7 @@ public class InventoryServiceImpl implements InventoryService {
 
 		// add order by for stack
 		if (searchtype == StackSearchType.STACK) {
-			c.orderBy(cb.asc(bookroot.get("counteddate")));
+			c.orderBy(cb.desc(bookroot.get("counteddate")));
 		} else if (searchtype == StackSearchType.UNCOUNTED) {
 			List<Order> orderList = new ArrayList<Order>();
 

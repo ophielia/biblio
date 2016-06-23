@@ -475,6 +475,18 @@ public class InventoryController {
 		reconcileModel.setInventoryComplete(isComplete);
 		uiModel.addAttribute("reconcileModel",reconcileModel);
 		
+
+
+		// get history for id
+		List<InventoryHistoryDao> reconciled = invService
+				.getDetailForInventory(current,InventoryService.HistoryType.RECONCILED);
+		List<InventoryHistoryDao> added = invService
+				.getDetailForInventory(current,InventoryService.HistoryType.ADDED);
+		// fill model
+		uiModel.addAttribute("history", reconciled);
+		uiModel.addAttribute("historyadded", added);
+		
+		
 		// fill Lookups
 		fillLookups(uiModel, httpServletRequest, principal, locale);
 		return "inventory/reconcilelist";

@@ -1,7 +1,0 @@
-/* printnudge - additional values */
-/** english **/
-INSERT INTO select_value(id, active, display, disporder, value, version, keyid, languagekey) VALUES ( nextval('hibernate_sequence'), true, '3 steps higher', 0, '-3', 0, (select id from select_key where lookup='printnudge'), 'en');
-INSERT INTO select_value(id, active, display, disporder, value, version, keyid, languagekey) VALUES ( nextval('hibernate_sequence'), true, '3 steps lower', 4, '3', 0, (select id from select_key where lookup='printnudge'), 'en');
-/* french */
-INSERT INTO select_value(id, active, display, disporder, value, version, keyid, languagekey) VALUES ( nextval('hibernate_sequence'), true, '3 pas en haut', 0, '-3', 0, (select id from select_key where lookup='printnudge'), 'fr');
-INSERT INTO select_value(id, active, display, disporder, value, version, keyid, languagekey) VALUES ( nextval('hibernate_sequence'), true, '3 pas en bas', 4, '3', 0, (select id from select_key where lookup='printnudge'), 'fr');
