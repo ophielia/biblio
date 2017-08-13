@@ -1,12 +1,5 @@
 package meg.biblio.common.web;
 
-import java.security.Principal;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-
-import javax.servlet.http.HttpServletRequest;
-
 import meg.biblio.common.ClientService;
 import meg.biblio.common.LoginService;
 import meg.biblio.common.SelectKeyService;
@@ -14,7 +7,6 @@ import meg.biblio.common.db.dao.ClientDao;
 import meg.biblio.common.db.dao.RoleDao;
 import meg.biblio.common.db.dao.UserLoginDao;
 import meg.biblio.common.web.validator.UserLoginValidator;
-
 import org.joda.time.format.DateTimeFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -31,160 +23,165 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import javax.servlet.http.HttpServletRequest;
+import java.security.Principal;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+
 @RequestMapping("/userlogins")
 @Controller
 public class LoginController {
 
-	@Autowired
-	protected LoginService accountService;
+    @Autowired
+    protected LoginService accountService;
 
-	@Autowired
-	protected SelectKeyService keyService;
-	
-	@Autowired
-	protected ClientService clientService;
-	
-	@Autowired
-	protected AuthenticationManager authenticationManager;
-	
-	@Autowired
-	UserLoginValidator userloginValidator;
+    @Autowired
+    protected SelectKeyService keyService;
 
-	@RequestMapping(value = "/create",params = "form", produces = "text/html")
-	public String createForm(Model uiModel,HttpServletRequest request,Principal principal) {
-		ClientDao client = clientService.getCurrentClient(principal);
-		Long clientkey = client.getId();
-		populateEditForm(uiModel, new UserLoginDao(), clientkey, null);
-		return "userlogins/create";
-	}
+    @Autowired
+    protected ClientService clientService;
 
-	@RequestMapping(value = "/create",method = RequestMethod.POST, produces = "text/html")
-	public String create(@ModelAttribute("userLoginDao") UserLoginDao userlogin,
-			BindingResult bindingResult, Model uiModel,
-			HttpServletRequest httpServletRequest, Principal principal) {
-		ClientDao client = clientService.getCurrentClient(principal);
-		Long clientkey =client.getId();
-		userloginValidator.validate(userlogin, bindingResult);
+    @Autowired
+    protected AuthenticationManager authenticationManager;
 
-		if (bindingResult.hasErrors()) {
-			populateEditForm(uiModel, userlogin, clientkey, null);
-			return "userlogins/create";
-		}
-		uiModel.asMap().clear();
-		String origpassword = userlogin.getTextpassword();
-		// use account service to create account
-		userlogin = accountService.createNewUserLogin(userlogin, clientkey);
-		// authenticate account
-		authenticateUserAndSetSession(userlogin.getUsername(), origpassword,
-				httpServletRequest);
+    @Autowired
+    UserLoginValidator userloginValidator;
 
-		return "redirect:/userlogins";
-	}
+    @RequestMapping(value = "/create", params = "form", produces = "text/html")
+    public String createForm(Model uiModel, HttpServletRequest request, Principal principal) {
+        ClientDao client = clientService.getCurrentClient(principal);
+        Long clientkey = client.getId();
+        populateEditForm(uiModel, new UserLoginDao(), clientkey, null);
+        return "userlogins/create";
+    }
 
-	private void authenticateUserAndSetSession(String username,
-			String password, HttpServletRequest request) {
-		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
-				username, password);
+    @RequestMapping(value = "/create", method = RequestMethod.POST, produces = "text/html")
+    public String create(@ModelAttribute("userLoginDao") UserLoginDao userlogin,
+                         BindingResult bindingResult, Model uiModel,
+                         HttpServletRequest httpServletRequest, Principal principal) {
+        ClientDao client = clientService.getCurrentClient(principal);
+        Long clientkey = client.getId();
+        userloginValidator.validate(userlogin, bindingResult);
 
-		// generate session if one doesn't exist
-		request.getSession();
+        if (bindingResult.hasErrors()) {
+            populateEditForm(uiModel, userlogin, clientkey, null);
+            return "userlogins/create";
+        }
+        uiModel.asMap().clear();
+        String origpassword = userlogin.getTextpassword();
+        // use account service to create account
+        userlogin = accountService.createNewUserLogin(userlogin, clientkey);
+        // authenticate account
+        authenticateUserAndSetSession(userlogin.getUsername(), origpassword,
+                httpServletRequest);
 
-		token.setDetails(new WebAuthenticationDetails(request));
-		Authentication authenticatedUser = authenticationManager
-				.authenticate(token);
+        return "redirect:/userlogins";
+    }
 
-		SecurityContextHolder.getContext().setAuthentication(authenticatedUser);
-	}
+    private void authenticateUserAndSetSession(String username,
+                                               String password, HttpServletRequest request) {
+        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
+                username, password);
 
-	@RequestMapping(produces = "text/html")
-	public String list(Model uiModel, HttpServletRequest httpServletRequest, Principal principal)  {
-		// get client key
-		ClientDao client = clientService.getCurrentClient(principal);
-		Long clientkey = client.getId();
-		// get users for client
-		List<UserLoginDao> users = accountService.getUsersForClient(clientkey, false);
-		// put in model
-		uiModel.addAttribute("users",users);
-		// return list view
-		return "userlogins/list";
-	}
+        // generate session if one doesn't exist
+        request.getSession();
+
+        token.setDetails(new WebAuthenticationDetails(request));
+        Authentication authenticatedUser = authenticationManager
+                .authenticate(token);
+
+        SecurityContextHolder.getContext().setAuthentication(authenticatedUser);
+    }
+
+    @RequestMapping(produces = "text/html")
+    public String list(Model uiModel, HttpServletRequest httpServletRequest, Principal principal) {
+        // get client key
+        ClientDao client = clientService.getCurrentClient(principal);
+        Long clientkey = client.getId();
+        // get users for client
+        List<UserLoginDao> users = accountService.getUsersForClient(clientkey, false);
+        // put in model
+        uiModel.addAttribute("users", users);
+        // return list view
+        return "userlogins/list";
+    }
 
 
+    @RequestMapping(value = "/update/{id}", method = RequestMethod.GET, params = "form", produces = "text/html")
+    public String updateForm(@PathVariable("id") Long id, Model uiModel, HttpServletRequest request, Principal principal) {
+        ClientDao client = clientService.getCurrentClient(principal);
+        Long clientkey = client.getId();
+        // does userlogin belong to client
 
-	@RequestMapping(value = "/update/{id}", method = RequestMethod.GET,params = "form", produces = "text/html")
-	public String updateForm(@PathVariable("id") Long id, Model uiModel,HttpServletRequest request,Principal principal) {
-		ClientDao client = clientService.getCurrentClient(principal);
-		Long clientkey = client.getId();
-		// does userlogin belong to client
+        // get userlogin
+        UserLoginDao userlogin = accountService.getUserLoginDaoById(id);
 
-		// get userlogin
-		UserLoginDao userlogin = accountService.getUserLoginDaoById(id);
-		
-		// assure that userlogin belongs to current account
-		long userclientid = userlogin.getClient()!=null?userlogin.getClient().getId().longValue():0;
-		if (clientkey.longValue() == userclientid) {
-			populateEditForm(uiModel, userlogin, clientkey, userlogin.getRole());
-			return "userlogins/edit";
-		}
-		return "redirect:/userlogins";
-	}
+        // assure that userlogin belongs to current account
+        long userclientid = userlogin.getClient() != null ? userlogin.getClient().getId().longValue() : 0;
+        if (clientkey.longValue() == userclientid) {
+            populateEditForm(uiModel, userlogin, clientkey, userlogin.getRole());
+            return "userlogins/edit";
+        }
+        return "redirect:/userlogins";
+    }
 
-	@RequestMapping(value = "/update/{id}",method = RequestMethod.POST, produces = "text/html")
-	public String update(
-			@ModelAttribute("userLoginDao") UserLoginDao userlogin,
-			Model uiModel, BindingResult bindingResult,
-			HttpServletRequest httpServletRequest,Principal principal) {
-		ClientDao client = clientService.getCurrentClient(principal);
-		Long clientkey = client.getId();
-		// does userlogin belong to client
+    @RequestMapping(value = "/update/{id}", method = RequestMethod.POST, produces = "text/html")
+    public String update(
+            @ModelAttribute("userLoginDao") UserLoginDao userlogin,
+            Model uiModel, BindingResult bindingResult,
+            HttpServletRequest httpServletRequest, Principal principal) {
+        ClientDao client = clientService.getCurrentClient(principal);
+        Long clientkey = client.getId();
+        // does userlogin belong to client
 
-		// assure that userlogin belongs to current account
-		long userclientid = userlogin.getClientkey() != null ? userlogin
-				.getClientkey().longValue() : 0;
-		if (clientkey.longValue() == userclientid) {
-			userloginValidator.validateUpdate(userlogin,bindingResult);
-			if (bindingResult.hasErrors()) {
-				populateEditForm(uiModel, userlogin, null, null);
-				return "userlogins/update";
-			}
-			// save changes to userlogin
-			accountService.updateUserLoginDao(userlogin);
-		}
-		// redirect to userlogin list
-		return "redirect:/userlogins";
-	}
+        // assure that userlogin belongs to current account
+        long userclientid = userlogin.getClientkey() != null ? userlogin
+                .getClientkey().longValue() : 0;
+        if (clientkey.longValue() == userclientid) {
+            userloginValidator.validateUpdate(userlogin, bindingResult);
+            if (bindingResult.hasErrors()) {
+                populateEditForm(uiModel, userlogin, null, null);
+                return "userlogins/update";
+            }
+            // save changes to userlogin
+            accountService.updateUserLoginDao(userlogin);
+        }
+        // redirect to userlogin list
+        return "redirect:/userlogins";
+    }
 
-	void populateEditForm(Model uiModel, UserLoginDao userlogin, Long clientkey, RoleDao role) {
-		// set transient fields
-		userlogin.setClientkey(clientkey);
-		if (role!=null) {
-			userlogin.setRolename(role.getRolename());
-		}
-		
-		uiModel.addAttribute("userLoginDao", userlogin);
-		addDateTimeFormatPatterns(uiModel);
-	}
+    void populateEditForm(Model uiModel, UserLoginDao userlogin, Long clientkey, RoleDao role) {
+        // set transient fields
+        userlogin.setClientkey(clientkey);
+        if (role != null) {
+            userlogin.setRolename(role.getRolename());
+        }
 
-	private void addDateTimeFormatPatterns(Model uiModel) {
-		uiModel.addAttribute(
-				"account_createdon_date_format",
-				DateTimeFormat.patternForStyle("M-",
-						LocaleContextHolder.getLocale()));
-	}
-	
-	@ModelAttribute("clientname") 
-	public String getClientName(Principal principal) {
-		ClientDao clientkey = clientService.getCurrentClient(principal);
-		return clientkey.getName();
-	}
-	
+        uiModel.addAttribute("userLoginDao", userlogin);
+        addDateTimeFormatPatterns(uiModel);
+    }
+
+    private void addDateTimeFormatPatterns(Model uiModel) {
+        uiModel.addAttribute(
+                "account_createdon_date_format",
+                DateTimeFormat.patternForStyle("M-",
+                        LocaleContextHolder.getLocale()));
+    }
+
+    @ModelAttribute("clientname")
+    public String getClientName(Principal principal) {
+        ClientDao clientkey = clientService.getCurrentClient(principal);
+        return clientkey.getName();
+    }
+
     @ModelAttribute("roleLkup")
-    public HashMap<String,String> getRoleLkup(HttpServletRequest httpServletRequest,Locale locale) {
-    	String lang = locale.getLanguage();
-    	
-    	HashMap<String, String> langdisps = keyService
-    			.getStringDisplayHashForKey(LoginService.rolelkup, lang);
-    	return langdisps; 
+    public HashMap<String, String> getRoleLkup(HttpServletRequest httpServletRequest, Locale locale) {
+        String lang = locale.getLanguage();
+
+        HashMap<String, String> langdisps = keyService
+                .getStringDisplayHashForKey(LoginService.rolelkup, lang);
+        return langdisps;
     }  	
 /*
  * 

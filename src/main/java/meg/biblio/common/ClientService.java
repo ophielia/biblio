@@ -1,32 +1,28 @@
 package meg.biblio.common;
 
-import java.security.Principal;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-
 import meg.biblio.catalog.Classifier;
 import meg.biblio.common.db.dao.ClientDao;
 import meg.tools.imp.FileConfig;
 import meg.tools.imp.MapConfig;
 
+import java.security.Principal;
+import java.util.List;
+
 public interface ClientService {
 
-	
 
-	public Classifier getClassifierForClient(Long clientkey) throws ClassNotFoundException, InstantiationException, IllegalAccessException;
+    public Classifier getClassifierForClient(Long clientkey) throws ClassNotFoundException, InstantiationException, IllegalAccessException;
 
-	public FileConfig getFileConfigForClient(Long clientkey) throws ClassNotFoundException, InstantiationException, IllegalAccessException;
-	
-	public MapConfig getMapConfigForClient(Long clientkey) throws ClassNotFoundException, InstantiationException, IllegalAccessException;
+    public FileConfig getFileConfigForClient(Long clientkey) throws ClassNotFoundException, InstantiationException, IllegalAccessException;
 
-	public ClientDao getCurrentClient(Principal principal);
+    public MapConfig getMapConfigForClient(Long clientkey) throws ClassNotFoundException, InstantiationException, IllegalAccessException;
 
-	ClientDao getClientForKey(Long key);
+    public ClientDao getCurrentClient(Principal principal);
 
-	public Long getTestClientId();
+    ClientDao getClientForKey(Long key);
 
+    public Long getTestClientId();
 
 
-	public List<ClientDao> getAllClients();
+    public List<ClientDao> getAllClients();
 }

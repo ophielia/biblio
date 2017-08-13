@@ -1,18 +1,19 @@
 package meg.biblio.catalog.db;
-import java.util.List;
 
 import meg.biblio.catalog.db.dao.BookDao;
-
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.roo.addon.layers.repository.jpa.RooJpaRepository;
+import org.springframework.stereotype.Repository;
 
-@RooJpaRepository(domainType = BookDao.class)
-public interface BookRepository {
-	
-	@Query("select r from BookDao as r where r.clientid = :client and r.clientbookid = :clientbookid")
-	List<BookDao> findBookByClientAssignedId(@Param("clientbookid") String clientbookid,@Param("client") Long clientid);
+import java.util.List;
 
-	@Query("select r from BookDao as r where r.barcodeid = :code")
-	BookDao findBookByBarcode(@Param("code") String code);
+@Repository
+public interface BookRepository extends JpaRepository<BookDao, Long> {
+
+    @Query("select r from BookDao as r where r.clientid = :client and r.clientbookid = :clientbookid")
+    List<BookDao> findBookByClientAssignedId(@Param("clientbookid") String clientbookid, @Param("client") Long clientid);
+
+    @Query("select r from BookDao as r where r.barcodeid = :code")
+    BookDao findBookByBarcode(@Param("code") String code);
 }

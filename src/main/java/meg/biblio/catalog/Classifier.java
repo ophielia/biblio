@@ -4,6 +4,6 @@ import meg.biblio.catalog.db.dao.BookDao;
 
 public interface Classifier {
 
-	BookDao classifyBook(BookDao book);
+    BookDao classifyBook(BookDao book);
 
 }

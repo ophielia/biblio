@@ -1,9 +1,10 @@
 package meg.biblio.catalog.db;
+
 import meg.biblio.catalog.db.dao.BookDetailDao;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-import org.springframework.roo.addon.layers.repository.jpa.RooJpaRepository;
-
-@RooJpaRepository(domainType = BookDetailDao.class)
-public interface BookDetailRepository {
+@Repository
+public interface BookDetailRepository extends JpaRepository<BookDetailDao, Long> {
 
 }

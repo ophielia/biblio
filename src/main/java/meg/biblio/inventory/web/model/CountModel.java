@@ -1,73 +1,73 @@
 package meg.biblio.inventory.web.model;
 
-import java.util.List;
-
 import meg.biblio.inventory.InventoryStatus;
 import meg.biblio.inventory.db.dao.InvStackDisplay;
 
+import java.util.List;
+
 public class CountModel {
 
-	private long counttypepref;
-	List<InvStackDisplay> stack;
-	private String barcodeentry;
-	private String manualentry;
-	private InventoryStatus inventoryStatus;
-	
-	public static class CountType {
-		public static final long MANUAL=1;
-		public static final long BARCODE=2;
-	}
-	public void setCountTypePref(long pref) {
-		this.counttypepref=pref;
-	}
+    private long counttypepref;
+    List<InvStackDisplay> stack;
+    private String barcodeentry;
+    private String manualentry;
+    private InventoryStatus inventoryStatus;
 
-	public long getCountTypePref() {
-		return counttypepref;
-	}
+    public static class CountType {
+        public static final long MANUAL = 1;
+        public static final long BARCODE = 2;
+    }
 
-	public void setUserStack(List<InvStackDisplay> stack) {
-		this.stack = stack;
-		
-	}
-	
-	public int getStackCount() {
-		if (this.stack!=null) {
-			return this.stack.size();
-		} else {
-			return 0;
-		}
-	}
+    public void setCountTypePref(long pref) {
+        this.counttypepref = pref;
+    }
 
-	public List<InvStackDisplay> getUserStack() {
-		return stack;
-	}
+    public long getCountTypePref() {
+        return counttypepref;
+    }
 
-	public void setBarcodeentry(String entry) {
-		this.barcodeentry=entry;
-		
-	}
+    public void setUserStack(List<InvStackDisplay> stack) {
+        this.stack = stack;
 
-	public String getBarcodeentry() {
-		return barcodeentry;
-	}
+    }
 
-	public void setManualentry(String entry) {
-		this.manualentry=entry;
-		
-	}
+    public int getStackCount() {
+        if (this.stack != null) {
+            return this.stack.size();
+        } else {
+            return 0;
+        }
+    }
 
-	public String getManualentry() {
-		return manualentry;
-	}
+    public List<InvStackDisplay> getUserStack() {
+        return stack;
+    }
 
-	public void setInventoryStatus(InventoryStatus status) {
-		this.inventoryStatus = status;
-	}
+    public void setBarcodeentry(String entry) {
+        this.barcodeentry = entry;
 
-	public InventoryStatus getInventoryStatus() {
-		return inventoryStatus;
-	}
-	
-	
+    }
+
+    public String getBarcodeentry() {
+        return barcodeentry;
+    }
+
+    public void setManualentry(String entry) {
+        this.manualentry = entry;
+
+    }
+
+    public String getManualentry() {
+        return manualentry;
+    }
+
+    public void setInventoryStatus(InventoryStatus status) {
+        this.inventoryStatus = status;
+    }
+
+    public InventoryStatus getInventoryStatus() {
+        return inventoryStatus;
+    }
+
 
 }

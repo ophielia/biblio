@@ -1,8 +1,9 @@
 package meg.biblio.catalog.db;
+
 import meg.biblio.catalog.db.dao.ArtistDao;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-import org.springframework.roo.addon.layers.repository.jpa.RooJpaRepository;
-
-@RooJpaRepository(domainType = ArtistDao.class)
-public interface ArtistRepository {
+@Repository
+public interface ArtistRepository extends JpaRepository<ArtistDao, Long> {
 }

@@ -2,64 +2,64 @@ package meg.biblio.catalog.web.model;
 
 public class BookImportModel {
 
-	private String contentType;
-	private Integer importListSize;
-	private Integer importedSize;
-	private Integer TotalErrorsSize;
-	private Integer DuplicatesSize;
-	private Integer noIdSize;
-	
-	public String getContentType() {
-		return contentType;
-	}
+    private String contentType;
+    private Integer importListSize;
+    private Integer importedSize;
+    private Integer TotalErrorsSize;
+    private Integer DuplicatesSize;
+    private Integer noIdSize;
 
-	public void setContentType(String contentType) {
-this.contentType=contentType;
-		
-	}
+    public String getContentType() {
+        return contentType;
+    }
 
-	public Integer getImportListSize() {
-		return importListSize;
-	}
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
 
-	public Integer getImportedSize() {
-		return importedSize;
-	}
+    }
 
-	public void setImportListSize(Integer integer) {
-		this.importListSize = integer;
-	}
+    public Integer getImportListSize() {
+        return importListSize;
+    }
 
-	public void setImportedSize(Integer integer) {
-		this.importedSize = integer;
-		
-	}
+    public Integer getImportedSize() {
+        return importedSize;
+    }
 
-	public Integer getTotalErrorsSize() {
-		return TotalErrorsSize;
-	}
+    public void setImportListSize(Integer integer) {
+        this.importListSize = integer;
+    }
 
-	public void setTotalErrorsSize(Integer integer) {
-		this.TotalErrorsSize = integer;
-		
-	}
+    public void setImportedSize(Integer integer) {
+        this.importedSize = integer;
 
-	public Integer getDuplicatesSize() {
-		return DuplicatesSize;
-	}
+    }
 
-	public void setDuplicatesSize(Integer integer) {
-		this.DuplicatesSize = integer;
-		
-	}
+    public Integer getTotalErrorsSize() {
+        return TotalErrorsSize;
+    }
 
-	public Integer getNoIdSize() {
-		return noIdSize;
-	}
+    public void setTotalErrorsSize(Integer integer) {
+        this.TotalErrorsSize = integer;
 
-	public void setNoIdSize(Integer integer) {
-		this.noIdSize = integer;
-		
-	}
+    }
+
+    public Integer getDuplicatesSize() {
+        return DuplicatesSize;
+    }
+
+    public void setDuplicatesSize(Integer integer) {
+        this.DuplicatesSize = integer;
+
+    }
+
+    public Integer getNoIdSize() {
+        return noIdSize;
+    }
+
+    public void setNoIdSize(Integer integer) {
+        this.noIdSize = integer;
+
+    }
 
 }

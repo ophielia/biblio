@@ -1,23 +1,10 @@
 package meg.biblio.lending.web;
 
-import java.io.IOException;
-import java.security.Principal;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.xml.bind.JAXBException;
-import javax.xml.transform.TransformerException;
-
 import meg.biblio.catalog.CatalogService;
 import meg.biblio.catalog.db.dao.BookDao;
 import meg.biblio.common.ClientService;
 import meg.biblio.common.SelectKeyService;
 import meg.biblio.common.db.dao.ClientDao;
-import meg.biblio.common.report.ClassSummaryReport;
 import meg.biblio.common.report.DailySummaryReport;
 import meg.biblio.lending.ClassManagementService;
 import meg.biblio.lending.LendingService;
@@ -27,351 +14,351 @@ import meg.biblio.lending.db.dao.StudentDao;
 import meg.biblio.lending.web.model.LendingModel;
 import meg.biblio.lending.web.model.TeacherInfo;
 import meg.biblio.lending.web.validator.LendingModelValidator;
-
-import org.apache.fop.apps.FOPException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import java.security.Principal;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
 
 @RequestMapping("/lending")
 @SessionAttributes("lendingModel")
 @Controller
 public class LendingController {
 
-	@Autowired 
-	private ServletContext servletContext;
-	
-	@Autowired
-	LendingService lendingService;
+    @Autowired
+    private ServletContext servletContext;
 
-	@Autowired
-	ClassManagementService classService;
-	
-	@Autowired
-	CatalogService catalogService;	
+    @Autowired
+    LendingService lendingService;
 
-	@Autowired
-	SelectKeyService keyService;
+    @Autowired
+    ClassManagementService classService;
 
-	@Autowired
-	ClientService clientService;
+    @Autowired
+    CatalogService catalogService;
 
-	@Autowired
-	LendingModelValidator lendingValidator;
+    @Autowired
+    SelectKeyService keyService;
 
-	@RequestMapping(value="/return",method = RequestMethod.GET, produces = "text/html")
-	public String showReturnPageForClass(LendingModel model, Model uiModel,
-			HttpServletRequest httpServletRequest, Principal principal) {
-		ClientDao client = clientService.getCurrentClient(principal);
-		Long clientid = client.getId();
+    @Autowired
+    ClientService clientService;
 
-		// check for unfilled client and class - will be the case in first call
-		if (model.getClientid()==null) {
-			model.setClientid(clientid);
-		}
-		if (model.getClassid()==null) {
-			if (model.getClassinfo()==null) {
-				// set classinfo in model
-			HashMap<Long,TeacherInfo> classinfo = getClassInfo(clientid);
-			model.setClassInfo(classinfo);
-			} 
+    @Autowired
+    LendingModelValidator lendingValidator;
 
-			Long classid = 0L;
-			if (model.getClassinfo()!=null) {
-				for (Long id:model.getClassinfo().keySet()) {
-					classid = id;
-					break;
-				}
-				model.setClassid(classid);
-			}
-		}
+    @RequestMapping(value = "/return", method = RequestMethod.GET, produces = "text/html")
+    public String showReturnPageForClass(LendingModel model, Model uiModel,
+                                         HttpServletRequest httpServletRequest, Principal principal) {
+        ClientDao client = clientService.getCurrentClient(principal);
+        Long clientid = client.getId();
 
-		// get list of checkedout books for the currentclass
-		List<LoanRecordDisplay> checkedout = lendingService
-				.getCheckedOutBooksForClass(model.getClassid(), clientid);
-		model.setCheckedOutList(checkedout);
+        // check for unfilled client and class - will be the case in first call
+        if (model.getClientid() == null) {
+            model.setClientid(clientid);
+        }
+        if (model.getClassid() == null) {
+            if (model.getClassinfo() == null) {
+                // set classinfo in model
+                HashMap<Long, TeacherInfo> classinfo = getClassInfo(clientid);
+                model.setClassInfo(classinfo);
+            }
 
-		populateLendingModel(model, uiModel);
+            Long classid = 0L;
+            if (model.getClassinfo() != null) {
+                for (Long id : model.getClassinfo().keySet()) {
+                    classid = id;
+                    break;
+                }
+                model.setClassid(classid);
+            }
+        }
 
-		// to return page
-		return "lending/return";
-	}
+        // get list of checkedout books for the currentclass
+        List<LoanRecordDisplay> checkedout = lendingService
+                .getCheckedOutBooksForClass(model.getClassid(), clientid);
+        model.setCheckedOutList(checkedout);
 
-	@RequestMapping(value="/return/selectclass/{id}",method = RequestMethod.POST, produces = "text/html")
-	public String changeReturnClass(@PathVariable("id") Long classid,LendingModel model, Model uiModel,
-			HttpServletRequest httpServletRequest, Principal principal) {
-		ClientDao client = clientService.getCurrentClient(principal);
-		Long clientid = client.getId();
-		// set new classid in model
-		model.setClassid(classid);
-		// get list of checkedout books for the new class
-		List<LoanRecordDisplay> checkedout = lendingService
-				.getCheckedOutBooksForClass(model.getClassid(), clientid);
-		model.setCheckedOutList(checkedout);
+        populateLendingModel(model, uiModel);
 
-		populateLendingModel(model, uiModel);
+        // to return page
+        return "lending/return";
+    }
 
-		// to returnpage
-		return "lending/return";
-	}
+    @RequestMapping(value = "/return/selectclass/{id}", method = RequestMethod.POST, produces = "text/html")
+    public String changeReturnClass(@PathVariable("id") Long classid, LendingModel model, Model uiModel,
+                                    HttpServletRequest httpServletRequest, Principal principal) {
+        ClientDao client = clientService.getCurrentClient(principal);
+        Long clientid = client.getId();
+        // set new classid in model
+        model.setClassid(classid);
+        // get list of checkedout books for the new class
+        List<LoanRecordDisplay> checkedout = lendingService
+                .getCheckedOutBooksForClass(model.getClassid(), clientid);
+        model.setCheckedOutList(checkedout);
 
-	@RequestMapping(value="/return/{id}",method = RequestMethod.POST, produces = "text/html")
-	public String returnBook(@PathVariable("id") Long loanrecordid,LendingModel model, Model uiModel,
-			HttpServletRequest httpServletRequest, Principal principal) {
-		ClientDao client = clientService.getCurrentClient(principal);
+        populateLendingModel(model, uiModel);
 
-		// get loanrecordid - from path or from model
-		Long clientid = client.getId();
-		// return the book
-		lendingService.returnBook(loanrecordid, clientid);
+        // to returnpage
+        return "lending/return";
+    }
 
-		// repopulate checkedout list
-		List<LoanRecordDisplay> checkedout = lendingService
-				.getCheckedOutBooksForClass(model.getClassid(), clientid);
-		model.setCheckedOutList(checkedout);
+    @RequestMapping(value = "/return/{id}", method = RequestMethod.POST, produces = "text/html")
+    public String returnBook(@PathVariable("id") Long loanrecordid, LendingModel model, Model uiModel,
+                             HttpServletRequest httpServletRequest, Principal principal) {
+        ClientDao client = clientService.getCurrentClient(principal);
 
-		populateLendingModel(model, uiModel);
-		// TODO add success elements
-		
-		// to return page (with success message)
-		return "lending/return";
-	}
+        // get loanrecordid - from path or from model
+        Long clientid = client.getId();
+        // return the book
+        lendingService.returnBook(loanrecordid, clientid);
 
-	@RequestMapping(value="/checkout",method = RequestMethod.GET, produces = "text/html")
-	public String showCheckoutPageForClass(LendingModel model, Model uiModel,
-			HttpServletRequest httpServletRequest, Principal principal) {
-		ClientDao client = clientService.getCurrentClient(principal);
-		Long clientid = client.getId();
+        // repopulate checkedout list
+        List<LoanRecordDisplay> checkedout = lendingService
+                .getCheckedOutBooksForClass(model.getClassid(), clientid);
+        model.setCheckedOutList(checkedout);
 
-		// check for unfilled client and class - will be the case in first call
-		if (model.getClientid()==null) {
-			model.setClientid(clientid);
-		}
-		if (model.getClassid()==null) {
-			if (model.getClassinfo()==null) {
-				// set classinfo in model
-			HashMap<Long,TeacherInfo> classinfo = getClassInfo(clientid);
-			model.setClassInfo(classinfo);
-			} 
+        populateLendingModel(model, uiModel);
+        // TODO add success elements
 
-			Long classid = 0L;
-			if (model.getClassinfo()!=null) {
-				for (Long id:model.getClassinfo().keySet()) {
-					classid = id;
-					break;
-				}
-				model.setClassid(classid);
-			}
-		}
+        // to return page (with success message)
+        return "lending/return";
+    }
 
-		// get list of students for class
-		List<StudentDao> studentlist = classService.getStudentsForClass(
-				model.getClassid(), clientid);
-		model.setStudentList(studentlist);
+    @RequestMapping(value = "/checkout", method = RequestMethod.GET, produces = "text/html")
+    public String showCheckoutPageForClass(LendingModel model, Model uiModel,
+                                           HttpServletRequest httpServletRequest, Principal principal) {
+        ClientDao client = clientService.getCurrentClient(principal);
+        Long clientid = client.getId();
 
-		populateLendingModel(model, uiModel);
+        // check for unfilled client and class - will be the case in first call
+        if (model.getClientid() == null) {
+            model.setClientid(clientid);
+        }
+        if (model.getClassid() == null) {
+            if (model.getClassinfo() == null) {
+                // set classinfo in model
+                HashMap<Long, TeacherInfo> classinfo = getClassInfo(clientid);
+                model.setClassInfo(classinfo);
+            }
 
-		// to checkout page
-		return "lending/checkout";
-	}
-	
-	@RequestMapping(value="/checkout/selectclass/{id}",method = RequestMethod.POST, produces = "text/html")
-	public String changeCheckoutClass(@PathVariable("id") Long classid,LendingModel model, Model uiModel,
-			HttpServletRequest httpServletRequest, Principal principal) {
-		ClientDao client = clientService.getCurrentClient(principal);
-		Long clientid = client.getId();
+            Long classid = 0L;
+            if (model.getClassinfo() != null) {
+                for (Long id : model.getClassinfo().keySet()) {
+                    classid = id;
+                    break;
+                }
+                model.setClassid(classid);
+            }
+        }
 
-		// set classid in model
-		model.setClassid(classid);
+        // get list of students for class
+        List<StudentDao> studentlist = classService.getStudentsForClass(
+                model.getClassid(), clientid);
+        model.setStudentList(studentlist);
 
-		// get list of students for class
-		List<StudentDao> studentlist = classService.getStudentsForClass(
-				model.getClassid(), clientid);
-		model.setStudentList(studentlist);
+        populateLendingModel(model, uiModel);
 
-		populateLendingModel(model, uiModel);
+        // to checkout page
+        return "lending/checkout";
+    }
 
-		// to checkout page
-		return "lending/checkout";
-	}
+    @RequestMapping(value = "/checkout/selectclass/{id}", method = RequestMethod.POST, produces = "text/html")
+    public String changeCheckoutClass(@PathVariable("id") Long classid, LendingModel model, Model uiModel,
+                                      HttpServletRequest httpServletRequest, Principal principal) {
+        ClientDao client = clientService.getCurrentClient(principal);
+        Long clientid = client.getId();
 
-	@RequestMapping(value="/checkout/borrower/{id}",method = RequestMethod.POST, produces = "text/html")
-	public String selectBorrowerForCheckout(@PathVariable("id") Long borrowerid,LendingModel model, Model uiModel,
-			BindingResult bindingResult,HttpServletRequest httpServletRequest, Principal principal) {
-		ClientDao client = clientService.getCurrentClient(principal);
-		// new personid from pathparam or model....
-		Long personid = borrowerid;
-		
-		// set studentid in model
-		model.setBorrowerId(personid, model.getStudentList());
-		
-		// validate Student - make sure that hasn't checked out limit
-    	lendingValidator.validateBorrowerEntry(model, bindingResult);
+        // set classid in model
+        model.setClassid(classid);
 
-		if (bindingResult.hasErrors()) {
-			populateLendingModel(model,uiModel);
-			return "lending/checkout";
-		}
+        // get list of students for class
+        List<StudentDao> studentlist = classService.getStudentsForClass(
+                model.getClassid(), clientid);
+        model.setStudentList(studentlist);
+
+        populateLendingModel(model, uiModel);
+
+        // to checkout page
+        return "lending/checkout";
+    }
+
+    @RequestMapping(value = "/checkout/borrower/{id}", method = RequestMethod.POST, produces = "text/html")
+    public String selectBorrowerForCheckout(@PathVariable("id") Long borrowerid, LendingModel model, Model uiModel,
+                                            BindingResult bindingResult, HttpServletRequest httpServletRequest, Principal principal) {
+        ClientDao client = clientService.getCurrentClient(principal);
+        // new personid from pathparam or model....
+        Long personid = borrowerid;
+
+        // set studentid in model
+        model.setBorrowerId(personid, model.getStudentList());
+
+        // validate Student - make sure that hasn't checked out limit
+        lendingValidator.validateBorrowerEntry(model, bindingResult);
+
+        if (bindingResult.hasErrors()) {
+            populateLendingModel(model, uiModel);
+            return "lending/checkout";
+        }
 
 
-		// to book select page
-		return "lending/selectbook";
-	}
+        // to book select page
+        return "lending/selectbook";
+    }
 
-	
-	@RequestMapping(value="/selectbook",method = RequestMethod.GET, produces = "text/html")
-	public String showSelectBookPage(LendingModel model, Model uiModel,
-			HttpServletRequest httpServletRequest, Principal principal) {
 
-		// to book select page
-		return "lending/selectbook";
-	}
-	
-	@RequestMapping(value = "/checkout/selectbook", method = RequestMethod.POST, produces = "text/html")
-	public String checkoutBook(LendingModel model, Model uiModel,
-			BindingResult bindingResult,HttpServletRequest httpServletRequest, Principal principal) {
-		ClientDao client = clientService.getCurrentClient(principal);
-		// bookid from path or model
-		Long clientid = client.getId();
-		String bookid = model.getBookid();
+    @RequestMapping(value = "/selectbook", method = RequestMethod.GET, produces = "text/html")
+    public String showSelectBookPage(LendingModel model, Model uiModel,
+                                     HttpServletRequest httpServletRequest, Principal principal) {
 
-		// put book in model
-		BookDao book = catalogService.findBookByClientBookId(bookid, client);
-		model.setBook(book);
-		model.setBookid(null);
+        // to book select page
+        return "lending/selectbook";
+    }
 
-		// Validation here...
-    	lendingValidator.validateBookEntry(model, bindingResult);
+    @RequestMapping(value = "/checkout/selectbook", method = RequestMethod.POST, produces = "text/html")
+    public String checkoutBook(LendingModel model, Model uiModel,
+                               BindingResult bindingResult, HttpServletRequest httpServletRequest, Principal principal) {
+        ClientDao client = clientService.getCurrentClient(principal);
+        // bookid from path or model
+        Long clientid = client.getId();
+        String bookid = model.getBookid();
 
-		if (bindingResult.hasErrors()) {
-			populateLendingModel(model,uiModel);
-			return "lending/selectbook";
-		}
+        // put book in model
+        BookDao book = catalogService.findBookByClientBookId(bookid, client);
+        model.setBook(book);
+        model.setBookid(null);
 
-		
-		
-		// checkout the book
-		lendingService.checkoutBook(book.getId(), model.getBorrowerId(),
-				clientid);
+        // Validation here...
+        lendingValidator.validateBookEntry(model, bindingResult);
 
-		// put checkout list for user and limit reached into model
-		List<LoanRecordDisplay> checkedoutforuser = lendingService
-				.getCheckedOutBooksForUser(model.getBorrowerId(), clientid);
-		int borrowerlimit = lendingService.getLendLimitForBorrower(
-				model.getBorrowerId(), clientid);
-		model.setBorrowerCheckedOut(checkedoutforuser);
-		model.setBorrowerLimit(borrowerlimit);
+        if (bindingResult.hasErrors()) {
+            populateLendingModel(model, uiModel);
+            return "lending/selectbook";
+        }
 
-		// when removing checkout success page
-		// put title directly into uiModel
 
-		PersonDao borrower = classService.getBorrowerById(model.getBorrowerId(), clientid);
-		populateLendingModel(model, uiModel);
+        // checkout the book
+        lendingService.checkoutBook(book.getId(), model.getBorrowerId(),
+                clientid);
 
-		String firstname = borrower.getFirstname();
-		String bookauthor =book.getBookdetail().getAuthorsAsString();
-		String booktitle = book.getBookdetail().getTitle();
-		String bookimg = book.getBookdetail().getImagelink();
-		
-		// ---- put name, book title in uiModel
-		uiModel.addAttribute("personname", firstname);
-		uiModel.addAttribute("booktitle", booktitle);
-		uiModel.addAttribute("bookauthor", bookauthor);
-		uiModel.addAttribute("bookimagelink", bookimg);		
-		
-		
-		// clear book info from model
-		model.setBook(null);
-		model.setBookid(null);
+        // put checkout list for user and limit reached into model
+        List<LoanRecordDisplay> checkedoutforuser = lendingService
+                .getCheckedOutBooksForUser(model.getBorrowerId(), clientid);
+        int borrowerlimit = lendingService.getLendLimitForBorrower(
+                model.getBorrowerId(), clientid);
+        model.setBorrowerCheckedOut(checkedoutforuser);
+        model.setBorrowerLimit(borrowerlimit);
 
-		// to checkout success page
-		return "lending/checkoutsuccess";
+        // when removing checkout success page
+        // put title directly into uiModel
 
-	}	
-	
-	@RequestMapping(value="/checkout/all",method = RequestMethod.GET, produces = "text/html")
+        PersonDao borrower = classService.getBorrowerById(model.getBorrowerId(), clientid);
+        populateLendingModel(model, uiModel);
+
+        String firstname = borrower.getFirstname();
+        String bookauthor = book.getBookdetail().getAuthorsAsString();
+        String booktitle = book.getBookdetail().getTitle();
+        String bookimg = book.getBookdetail().getImagelink();
+
+        // ---- put name, book title in uiModel
+        uiModel.addAttribute("personname", firstname);
+        uiModel.addAttribute("booktitle", booktitle);
+        uiModel.addAttribute("bookauthor", bookauthor);
+        uiModel.addAttribute("bookimagelink", bookimg);
+
+
+        // clear book info from model
+        model.setBook(null);
+        model.setBookid(null);
+
+        // to checkout success page
+        return "lending/checkoutsuccess";
+
+    }
+
+    @RequestMapping(value = "/checkout/all", method = RequestMethod.GET, produces = "text/html")
     public String showAllCheckedOutBooks(LendingModel model, Model uiModel,
-			HttpServletRequest httpServletRequest, Principal principal) {
-		ClientDao client = clientService.getCurrentClient(principal);
-	    // get list
-		List<LoanRecordDisplay> checkedout = lendingService.getCheckedOutBooksForClient(client.getId());
-		// put list directly in uiModel
-		uiModel.addAttribute("checkedoutbooks",checkedout);
-		uiModel.addAttribute("checkedoutcount",checkedout!=null?checkedout.size():0);
+                                         HttpServletRequest httpServletRequest, Principal principal) {
+        ClientDao client = clientService.getCurrentClient(principal);
+        // get list
+        List<LoanRecordDisplay> checkedout = lendingService.getCheckedOutBooksForClient(client.getId());
+        // put list directly in uiModel
+        uiModel.addAttribute("checkedoutbooks", checkedout);
+        uiModel.addAttribute("checkedoutcount", checkedout != null ? checkedout.size() : 0);
 
-		// get classinfo from model
-		HashMap<Long,TeacherInfo> classinfo = model.getClassinfo();
-		if (classinfo == null) {
-			classinfo = getClassInfo(client.getId());
-			model.setClassInfo(classinfo);
-		}
-		
-		uiModel.addAttribute("classInfo",model.getClassinfo());
-		
-		// to all checked out for client page
-		return "lending/checkoutsummary";
-		}
+        // get classinfo from model
+        HashMap<Long, TeacherInfo> classinfo = model.getClassinfo();
+        if (classinfo == null) {
+            classinfo = getClassInfo(client.getId());
+            model.setClassInfo(classinfo);
+        }
 
-	@RequestMapping(value="/overdue/all",method = RequestMethod.GET, produces = "text/html")
-	public String showAllOverdueBooks(LendingModel model, Model uiModel,
-				HttpServletRequest httpServletRequest, Principal principal) {
-			ClientDao client = clientService.getCurrentClient(principal);
-		// get list
-		List<LoanRecordDisplay> overdue = lendingService.getOverdueBooksForClient(client.getId());
-		// put list directly in uiModel
-		uiModel.addAttribute("overduebooks",overdue);
-		uiModel.addAttribute("overduecount",overdue!=null?overdue.size():0);
-		boolean printable = overdue!=null && overdue.size()>0;
-		uiModel.addAttribute("printable",printable);
-		
-		uiModel.addAttribute("classInfo",getClassInfo(client.getId()));
-		
-		// to all overdue out for client page
-		return "lending/overduesummary";
-		}
-	
-	@RequestMapping(value="/summary/all",method = RequestMethod.GET, produces = "text/html")
-	public String showAllClassSummary(LendingModel model, Model uiModel,
-				HttpServletRequest httpServletRequest, Principal principal) {
-		ClientDao client = clientService.getCurrentClient(principal);
-		Long clientkey = client.getId();
+        uiModel.addAttribute("classInfo", model.getClassinfo());
 
+        // to all checked out for client page
+        return "lending/checkoutsummary";
+    }
 
-		DailySummaryReport csr = lendingService
-				.assembleWeeklySummaryReport( new Date(), clientkey, true);
+    @RequestMapping(value = "/overdue/all", method = RequestMethod.GET, produces = "text/html")
+    public String showAllOverdueBooks(LendingModel model, Model uiModel,
+                                      HttpServletRequest httpServletRequest, Principal principal) {
+        ClientDao client = clientService.getCurrentClient(principal);
+        // get list
+        List<LoanRecordDisplay> overdue = lendingService.getOverdueBooksForClient(client.getId());
+        // put list directly in uiModel
+        uiModel.addAttribute("overduebooks", overdue);
+        uiModel.addAttribute("overduecount", overdue != null ? overdue.size() : 0);
+        boolean printable = overdue != null && overdue.size() > 0;
+        uiModel.addAttribute("printable", printable);
 
-		uiModel.addAttribute("dailySummaryReport",csr);
-		uiModel.addAttribute("printable",csr.isPrintable());
-		
-		// return checkout report 
-		return "lending/checkoutreport";
-		}
-	
+        uiModel.addAttribute("classInfo", getClassInfo(client.getId()));
 
-	
-	private void populateLendingModel(LendingModel model, Model uiModel) {
-		uiModel.addAttribute("lendingModel", model);
+        // to all overdue out for client page
+        return "lending/overduesummary";
+    }
 
-	}
+    @RequestMapping(value = "/summary/all", method = RequestMethod.GET, produces = "text/html")
+    public String showAllClassSummary(LendingModel model, Model uiModel,
+                                      HttpServletRequest httpServletRequest, Principal principal) {
+        ClientDao client = clientService.getCurrentClient(principal);
+        Long clientkey = client.getId();
 
 
-	private HashMap<Long,TeacherInfo> getClassInfo(Long clientid) {
-		HashMap<Long,TeacherInfo> classinfo  = classService.getTeacherByClassForClient(clientid);
-		return classinfo;
-	}
+        DailySummaryReport csr = lendingService
+                .assembleWeeklySummaryReport(new Date(), clientkey, true);
+
+        uiModel.addAttribute("dailySummaryReport", csr);
+        uiModel.addAttribute("printable", csr.isPrintable());
+
+        // return checkout report
+        return "lending/checkoutreport";
+    }
+
+
+    private void populateLendingModel(LendingModel model, Model uiModel) {
+        uiModel.addAttribute("lendingModel", model);
+
+    }
+
+
+    private HashMap<Long, TeacherInfo> getClassInfo(Long clientid) {
+        HashMap<Long, TeacherInfo> classinfo = classService.getTeacherByClassForClient(clientid);
+        return classinfo;
+    }
 
     @ModelAttribute("sectionLkup")
-    public HashMap<Long,String> getSectionLkup(HttpServletRequest httpServletRequest,Locale locale) {
-    	String lang = locale.getLanguage();
+    public HashMap<Long, String> getSectionLkup(HttpServletRequest httpServletRequest, Locale locale) {
+        String lang = locale.getLanguage();
 
-    	HashMap<Long, String> booktypedisps = keyService
-    			.getDisplayHashForKey(ClassManagementService.sectionLkup, lang);
-    	return booktypedisps;
+        HashMap<Long, String> booktypedisps = keyService
+                .getDisplayHashForKey(ClassManagementService.sectionLkup, lang);
+        return booktypedisps;
     }
 }

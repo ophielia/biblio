@@ -1,14 +1,15 @@
 package meg.biblio.catalog.db;
-import java.util.List;
 
 import meg.biblio.catalog.db.dao.ClassificationDao;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-import org.springframework.roo.addon.layers.repository.jpa.RooJpaRepository;
+import java.util.List;
 
-@RooJpaRepository(domainType = ClassificationDao.class)
-public interface ClassificationRepository {
-	
-	public List<ClassificationDao> findByClientidAndLanguage(Long clientid, String language);
-	
-	
+@Repository
+public interface ClassificationRepository extends JpaRepository<ClassificationDao, Long> {
+
+    public List<ClassificationDao> findByClientidAndLanguage(Long clientid, String language);
+
+
 }

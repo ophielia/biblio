@@ -1,216 +1,211 @@
 package meg.biblio.lending.db.dao;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-import javax.persistence.Entity;
-import javax.persistence.EntityResult;
-import javax.persistence.FieldResult;
-import javax.persistence.Id;
-import javax.persistence.SqlResultSetMapping;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 @XmlRootElement(name = "LoanRecord")
 @Entity
 @Table(name = "loanrecorddisplay")
-@SqlResultSetMapping(name = "LRDisp", entities = { 
-		@EntityResult(entityClass = LoanRecordDisplay.class, fields = {
-		@FieldResult(name = "loanrecordid", column = "loanrecordid"),
-		@FieldResult(name = "bookid", column = "bookid"),
-		@FieldResult(name = "classid", column = "classid"),
-		@FieldResult(name = "clientid", column = "clientid"),
-		@FieldResult(name = "borrowerid", column = "borrowerid"),
-		@FieldResult(name = "borrowerfn", column = "borrowerfn"),
-		@FieldResult(name = "borrowerln", column = "borrowerln"),
-		@FieldResult(name = "borrowersection", column = "borrowersection"),
-		@FieldResult(name = "booktitle", column = "booktitle"),
-		@FieldResult(name = "bookclientid", column = "bookclientid"),
-		@FieldResult(name = "bookclientidsort", column = "bookclientidsort"),
-		@FieldResult(name = "author", column = "author"),
-		@FieldResult(name = "shelfclass", column = "shelfclass"),
-		@FieldResult(name = "checkedout", column = "checkedout"),
-		@FieldResult(name = "returned", column = "returned"),
-		@FieldResult(name = "duedate", column = "duedate"),
-		@FieldResult(name = "late", column = "late"),
-		@FieldResult(name = "returnedlate", column = "returnedlate"),
-		@FieldResult(name = "currentlyoverdue", column = "currentlyoverdue"),
-		@FieldResult(name = "currentlycheckedout", column = "currentlycheckedout"),
-		@FieldResult(name = "isteacher", column = "isteacher"),
-		@FieldResult(name = "teacherfirstname", column = "teacherfirstname"),
-		@FieldResult(name = "teacherlastname", column = "teacherlastname")
- }) }, columns = {})
+@SqlResultSetMapping(name = "LRDisp", entities = {
+        @EntityResult(entityClass = LoanRecordDisplay.class, fields = {
+                @FieldResult(name = "loanrecordid", column = "loanrecordid"),
+                @FieldResult(name = "bookid", column = "bookid"),
+                @FieldResult(name = "classid", column = "classid"),
+                @FieldResult(name = "clientid", column = "clientid"),
+                @FieldResult(name = "borrowerid", column = "borrowerid"),
+                @FieldResult(name = "borrowerfn", column = "borrowerfn"),
+                @FieldResult(name = "borrowerln", column = "borrowerln"),
+                @FieldResult(name = "borrowersection", column = "borrowersection"),
+                @FieldResult(name = "booktitle", column = "booktitle"),
+                @FieldResult(name = "bookclientid", column = "bookclientid"),
+                @FieldResult(name = "bookclientidsort", column = "bookclientidsort"),
+                @FieldResult(name = "author", column = "author"),
+                @FieldResult(name = "shelfclass", column = "shelfclass"),
+                @FieldResult(name = "checkedout", column = "checkedout"),
+                @FieldResult(name = "returned", column = "returned"),
+                @FieldResult(name = "duedate", column = "duedate"),
+                @FieldResult(name = "late", column = "late"),
+                @FieldResult(name = "returnedlate", column = "returnedlate"),
+                @FieldResult(name = "currentlyoverdue", column = "currentlyoverdue"),
+                @FieldResult(name = "currentlycheckedout", column = "currentlycheckedout"),
+                @FieldResult(name = "isteacher", column = "isteacher"),
+                @FieldResult(name = "teacherfirstname", column = "teacherfirstname"),
+                @FieldResult(name = "teacherlastname", column = "teacherlastname")
+        })}, columns = {})
 public class LoanRecordDisplay {
 
-@Id
-	private Long loanrecordid;
-	private Long borrowerid;
-	private Long bookid;
-	private Long classid;
-	private Long clientid;
-	private String borrowerfn;
-	private String borrowerln;
-	private Long borrowersection;
-	private String booktitle;
-	private String bookclientid;
-	private Long bookclientidsort;
-	private String author;
-	private Long shelfclass;
-	private Date checkedout;
-	private Date returned;
-	private Date duedate;
-	private String teacherfirstname;
-	private String teacherlastname;
-	private Boolean returnedlate;
-	private Boolean currentlycheckedout;
-	private Boolean currentlyoverdue;
-	private Boolean isteacher;
-	private Boolean late;
-	
-	
-	
-	public Long getLoanrecordid() {
-		return loanrecordid;
-	}
+    @Id
+    private Long loanrecordid;
+    private Long borrowerid;
+    private Long bookid;
+    private Long classid;
+    private Long clientid;
+    private String borrowerfn;
+    private String borrowerln;
+    private Long borrowersection;
+    private String booktitle;
+    private String bookclientid;
+    private Long bookclientidsort;
+    private String author;
+    private Long shelfclass;
+    private Date checkedout;
+    private Date returned;
+    private Date duedate;
+    private String teacherfirstname;
+    private String teacherlastname;
+    private Boolean returnedlate;
+    private Boolean currentlycheckedout;
+    private Boolean currentlyoverdue;
+    private Boolean isteacher;
+    private Boolean late;
 
-	public Long getBorrowerid() {
-		return borrowerid;
-	}
 
-	public Long getBookid() {
-		return bookid;
-	}
+    public Long getLoanrecordid() {
+        return loanrecordid;
+    }
 
-	public Long getClassid() {
-		return classid;
-	}
+    public Long getBorrowerid() {
+        return borrowerid;
+    }
 
-	public Long getClientid() {
-		return clientid;
-	}
+    public Long getBookid() {
+        return bookid;
+    }
 
-	@XmlElement(name = "firstname_borrower")
-	public String getBorrowerfn() {
-		return borrowerfn;
-	}
+    public Long getClassid() {
+        return classid;
+    }
 
-	@XmlElement(name = "lastname_borrower")
-	public String getBorrowerln() {
-		return borrowerln;
-	}
+    public Long getClientid() {
+        return clientid;
+    }
 
-	@XmlElement
-	public String getBooktitle() {
-		return booktitle;
-	}
+    @XmlElement(name = "firstname_borrower")
+    public String getBorrowerfn() {
+        return borrowerfn;
+    }
 
-	@XmlElement
-	public String getBookclientid() {
-		return bookclientid;
-	}
+    @XmlElement(name = "lastname_borrower")
+    public String getBorrowerln() {
+        return borrowerln;
+    }
 
-	@XmlElement(name = "bookauthor")
-	public String getAuthor() {
-		return author;
-	}
+    @XmlElement
+    public String getBooktitle() {
+        return booktitle;
+    }
 
-	@XmlTransient
-	public Long getShelfclass() {
-		return shelfclass;
-	}
+    @XmlElement
+    public String getBookclientid() {
+        return bookclientid;
+    }
 
-	@XmlElement
-	public Date getCheckedout() {
-		return checkedout;
-	}
+    @XmlElement(name = "bookauthor")
+    public String getAuthor() {
+        return author;
+    }
 
-	public String getCheckedoutDisplay() {
+    @XmlTransient
+    public Long getShelfclass() {
+        return shelfclass;
+    }
 
-		
-		if (duedate!=null) {
-			SimpleDateFormat fmt = new SimpleDateFormat("dd-MM-YYYY");
-			return fmt.format(checkedout);	
-		}
-		return "";
-	}
+    @XmlElement
+    public Date getCheckedout() {
+        return checkedout;
+    }
 
-	@XmlElement
-	public Date getReturned() {
-		return returned;
-	}
+    public String getCheckedoutDisplay() {
 
-	public String getReturnedDisplay() {
-		if (duedate!=null) {
-			SimpleDateFormat fmt = new SimpleDateFormat("dd-MM-YYYY");
-			return fmt.format(returned);	
-		}
-		return "";
-		
-	}	
-	@XmlElement
-	public Date getDuedate() {
-		return duedate;
-	}
 
-	public String getDuedateDisplay() {
-		if (duedate!=null) {
-			SimpleDateFormat fmt = new SimpleDateFormat("dd-MM-YYYY");
-			return fmt.format(duedate);	
-		}
-		return "";
-	}	
-	@XmlElement
-	public Boolean getIsoverdue() {
-		if (returned!=null && duedate!=null) {
-			return returned.after(duedate);
-		} else if (returned == null && duedate!=null) {
-			return new Date().after(duedate);
-		}
-		return false;
-	}
+        if (duedate != null) {
+            SimpleDateFormat fmt = new SimpleDateFormat("dd-MM-YYYY");
+            return fmt.format(checkedout);
+        }
+        return "";
+    }
 
-	@XmlElement(name = "firstname_teacher")
-	public String getTeacherfirstname() {
-		return teacherfirstname;
-	}
+    @XmlElement
+    public Date getReturned() {
+        return returned;
+    }
 
-	@XmlElement(name = "lastname_teacher")
-	public String getTeacherlastname() {
-		return teacherlastname;
-	}
+    public String getReturnedDisplay() {
+        if (duedate != null) {
+            SimpleDateFormat fmt = new SimpleDateFormat("dd-MM-YYYY");
+            return fmt.format(returned);
+        }
+        return "";
 
-	@XmlElement
-	public Boolean getReturnedlate() {
-		return returnedlate;
-	}
+    }
 
-	@XmlElement
-	public Boolean getCurrentlycheckedout() {
-		return currentlycheckedout;
-	}
-	
-	public Boolean getLate() {
-		return late;
-	}
+    @XmlElement
+    public Date getDuedate() {
+        return duedate;
+    }
 
-	@XmlElement
-	public Boolean getIsteacher() {
-		return isteacher!=null && isteacher;
-	}
+    public String getDuedateDisplay() {
+        if (duedate != null) {
+            SimpleDateFormat fmt = new SimpleDateFormat("dd-MM-YYYY");
+            return fmt.format(duedate);
+        }
+        return "";
+    }
 
-	public Long getBookclientidsort() {
-		return bookclientidsort;
-	}
+    @XmlElement
+    public Boolean getIsoverdue() {
+        if (returned != null && duedate != null) {
+            return returned.after(duedate);
+        } else if (returned == null && duedate != null) {
+            return new Date().after(duedate);
+        }
+        return false;
+    }
 
-	public Long getBorrowersection() {
-		return borrowersection;
-	}
+    @XmlElement(name = "firstname_teacher")
+    public String getTeacherfirstname() {
+        return teacherfirstname;
+    }
 
-	public void setBorrowersection(Long borrowersection) {
-		this.borrowersection = borrowersection;
-	}
+    @XmlElement(name = "lastname_teacher")
+    public String getTeacherlastname() {
+        return teacherlastname;
+    }
 
-	
+    @XmlElement
+    public Boolean getReturnedlate() {
+        return returnedlate;
+    }
+
+    @XmlElement
+    public Boolean getCurrentlycheckedout() {
+        return currentlycheckedout;
+    }
+
+    public Boolean getLate() {
+        return late;
+    }
+
+    @XmlElement
+    public Boolean getIsteacher() {
+        return isteacher != null && isteacher;
+    }
+
+    public Long getBookclientidsort() {
+        return bookclientidsort;
+    }
+
+    public Long getBorrowersection() {
+        return borrowersection;
+    }
+
+    public void setBorrowersection(Long borrowersection) {
+        this.borrowersection = borrowersection;
+    }
+
+
 }

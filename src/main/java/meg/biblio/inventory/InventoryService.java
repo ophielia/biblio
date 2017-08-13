@@ -1,69 +1,68 @@
 package meg.biblio.inventory;
 
-import java.util.List;
-import java.util.Locale;
-
-import org.springframework.context.MessageSource;
-
 import meg.biblio.catalog.db.dao.BookDao;
 import meg.biblio.common.db.dao.ClientDao;
 import meg.biblio.common.report.TableReport;
 import meg.biblio.inventory.db.dao.InvStackDisplay;
 import meg.biblio.inventory.db.dao.InventoryDao;
 import meg.biblio.inventory.db.dao.InventoryHistoryDao;
+import org.springframework.context.MessageSource;
+
+import java.util.List;
+import java.util.Locale;
 
 public interface InventoryService {
 
 
-	public static final class CountStatus {
-		public static final long COUNTED = 2;
-		public static final long RECONCILED = 3;
-	}
-	
-	public static final class HistoryType {
-		public static final long ADDED = 1;
-		public static final long RECONCILED = 2;
-	}	
+    public static final class CountStatus {
+        public static final long COUNTED = 2;
+        public static final long RECONCILED = 3;
+    }
 
-	public static final String reconcilestatuslkup = "reconcilestatus";
-	
-	InventoryDao beginInventory(ClientDao client);
+    public static final class HistoryType {
+        public static final long ADDED = 1;
+        public static final long RECONCILED = 2;
+    }
 
-	void cancelCurrentInventory(ClientDao client);
+    public static final String reconcilestatuslkup = "reconcilestatus";
 
-	InventoryDao getCurrentInventory(ClientDao client);
+    InventoryDao beginInventory(ClientDao client);
 
-	boolean getInventoryIsComplete(ClientDao client);
+    void cancelCurrentInventory(ClientDao client);
 
-	InventoryStatus getInventoryStatus(InventoryDao inv, ClientDao client);
+    InventoryDao getCurrentInventory(ClientDao client);
 
-	List<InventoryDao> getInventoryList(ClientDao client);
+    boolean getInventoryIsComplete(ClientDao client);
 
-	void countBook(BookDao book, Long userid, ClientDao client, Boolean saveinstack);
+    InventoryStatus getInventoryStatus(InventoryDao inv, ClientDao client);
 
-	void reconcileBook(ClientDao client, Long bookid, Long updatestatus, String note);
+    List<InventoryDao> getInventoryList(ClientDao client);
 
-	void reconcileBookList(ClientDao client, List<Long> bookidlist,
-			Long updatestatus);
+    void countBook(BookDao book, Long userid, ClientDao client, Boolean saveinstack);
 
-	List<InvStackDisplay> getStackForUser(Long userid, ClientDao client);
+    void reconcileBook(ClientDao client, Long bookid, Long updatestatus, String note);
 
-	void clearStackForUser(Long userid, ClientDao client);
+    void reconcileBookList(ClientDao client, List<Long> bookidlist,
+                           Long updatestatus);
 
-	List<InvStackDisplay> getUncountedBooks(ClientDao client);
+    List<InvStackDisplay> getStackForUser(Long userid, ClientDao client);
 
-	InventoryDao finishInventory(ClientDao client);
+    void clearStackForUser(Long userid, ClientDao client);
 
-	List<InventoryDao> getPreviousInventories(ClientDao client);
+    List<InvStackDisplay> getUncountedBooks(ClientDao client);
 
-	InventoryDao getInventoryById(Long invid);
+    InventoryDao finishInventory(ClientDao client);
 
-	List<InventoryHistoryDao> getDetailForInventory(InventoryDao inventory, long detailtype);
+    List<InventoryDao> getPreviousInventories(ClientDao client);
 
-	InventoryStatus getLastCompleted(ClientDao client);
+    InventoryDao getInventoryById(Long invid);
 
-	TableReport getToReconcileReport(ClientDao client, Locale locale,
-			MessageSource messageSource);
+    List<InventoryHistoryDao> getDetailForInventory(InventoryDao inventory, long detailtype);
 
-	
+    InventoryStatus getLastCompleted(ClientDao client);
+
+    TableReport getToReconcileReport(ClientDao client, Locale locale,
+                                     MessageSource messageSource);
+
+
 }

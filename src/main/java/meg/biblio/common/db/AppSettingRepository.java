@@ -1,13 +1,14 @@
 package meg.biblio.common.db;
-import meg.biblio.common.db.dao.AppSettingDao;
 
+import meg.biblio.common.db.dao.AppSettingDao;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.roo.addon.layers.repository.jpa.RooJpaRepository;
+import org.springframework.stereotype.Repository;
 
-@RooJpaRepository(domainType = AppSettingDao.class)
-public interface AppSettingRepository {
+@Repository
+public interface AppSettingRepository extends JpaRepository<AppSettingDao, Long> {
 
-	@Query("select r from AppSettingDao as r where r.key= :key")
-	AppSettingDao findByKey(@Param("key") String key);
+    @Query("select r from AppSettingDao as r where r.key= :key")
+    AppSettingDao findByKey(@Param("key") String key);
 }
