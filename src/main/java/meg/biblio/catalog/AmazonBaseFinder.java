@@ -1,18 +1,9 @@
 package meg.biblio.catalog;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-
 import meg.biblio.catalog.db.dao.BookDetailDao;
 import meg.biblio.catalog.db.dao.FoundDetailsDao;
 import meg.biblio.catalog.db.dao.PublisherDao;
 import meg.biblio.common.AppSettingService;
-
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -20,169 +11,176 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 @Component
 public class AmazonBaseFinder extends BaseDetailFinder {
 
-	@Autowired
-	AppSettingService settingService;
+    @Autowired
+    AppSettingService settingService;
 
-	@Autowired
-	BookMemberService bMemberService;
+    @Autowired
+    BookMemberService bMemberService;
 
-	final static class NameMatchType {
-		public static final long FIRSTINITIAL = 1;
-		public static final long LASTNAME = 2;
-	}
+    final static class NameMatchType {
+        public static final long FIRSTINITIAL = 1;
+        public static final long LASTNAME = 2;
+    }
 
-	/* Get actual class name to be printed on */
-	static Logger log = Logger.getLogger(AmazonBaseFinder.class.getName());
+    /* Get actual class name to be printed on */
+    static Logger log = Logger.getLogger(AmazonBaseFinder.class.getName());
 
-	Boolean lookupwithamazon;
-	String apikeyid;
-	String apisecretkey;
+    Boolean lookupwithamazon;
+    String apikeyid;
+    String apisecretkey;
 
-	private String apiassociatetag;
+    private String apiassociatetag;
 
-	/*
-	 * Use one of the following end-points, according to the region you are
-	 * interested in:
-	 * 
-	 * US: ecs.amazonaws.com CA: ecs.amazonaws.ca UK: ecs.amazonaws.co.uk DE:
-	 * ecs.amazonaws.de FR: ecs.amazonaws.fr JP: ecs.amazonaws.jp
-	 */
-	private static final String ENDPOINT = "ecs.amazonaws.fr";
+    /*
+     * Use one of the following end-points, according to the region you are
+     * interested in:
+     *
+     * US: ecs.amazonaws.com CA: ecs.amazonaws.ca UK: ecs.amazonaws.co.uk DE:
+     * ecs.amazonaws.de FR: ecs.amazonaws.fr JP: ecs.amazonaws.jp
+     */
+    private static final String ENDPOINT = "ecs.amazonaws.fr";
 
-	protected boolean isEnabled() throws Exception {
-		if (lookupwithamazon == null) {
-			lookupwithamazon = settingService
-					.getSettingAsBoolean("biblio.amazon.turnedon");
-		}
-		return lookupwithamazon;
-	}
+    protected boolean isEnabled() throws Exception {
+        if (lookupwithamazon == null) {
+            lookupwithamazon = settingService
+                    .getSettingAsBoolean("biblio.amazon.turnedon");
+        }
+        return lookupwithamazon;
+    }
 
-	@Override
-	public List<FinderObject> findDetailsForList(List<FinderObject> objects,
-			long clientcomplete, Integer batchsearchmax) throws Exception {
-		// check enabled
-		if (isEnabled()) {
+    @Override
+    public List<FinderObject> findDetailsForList(List<FinderObject> objects,
+                                                 long clientcomplete, Integer batchsearchmax) throws Exception {
+        // check enabled
+        if (isEnabled()) {
 
-			// go through list
-			for (FinderObject findobj : objects) {
-				// check eligibility for object (eligible and not complete)
-				if (isEligible(findobj)
-						&& !resultsComplete(findobj, clientcomplete)) {
-					// do search
-					findobj = searchLogic(findobj);
-					// log, process search
-					findobj.logFinderRun(getIdentifier());
+            // go through list
+            for (FinderObject findobj : objects) {
+                // check eligibility for object (eligible and not complete)
+                if (isEligible(findobj)
+                        && !resultsComplete(findobj, clientcomplete)) {
+                    // do search
+                    findobj = searchLogic(findobj);
+                    // log, process search
+                    findobj.logFinderRun(getIdentifier());
 
-				}
-				// build in tiny pause to not exceed requests per second
-				try {
-					Thread.sleep(200); // 1000 milliseconds is one second.
-				} catch (InterruptedException ex) {
-					Thread.currentThread().interrupt();
-				}
-			} // end list loop
-		}
-		// pass to next in chain, or return
-		if (getNext() != null) {
-			objects = getNext().findDetailsForList(objects, clientcomplete,
-					batchsearchmax);
-		}
+                }
+                // build in tiny pause to not exceed requests per second
+                try {
+                    Thread.sleep(200); // 1000 milliseconds is one second.
+                } catch (InterruptedException ex) {
+                    Thread.currentThread().interrupt();
+                }
+            } // end list loop
+        }
+        // pass to next in chain, or return
+        if (getNext() != null) {
+            objects = getNext().findDetailsForList(objects, clientcomplete,
+                    batchsearchmax);
+        }
 
-		return objects;
+        return objects;
 
-	}
+    }
 
-	protected FinderObject searchLogic(FinderObject findobj) throws Exception {
-		boolean isbnsearch = false;
-		BookDetailDao bookdetail = findobj.getBookdetail();
-		if (apikeyid == null) {
-			apikeyid = settingService.getSettingAsString("biblio.am.keyd");
-		}
-		if (apisecretkey == null) {
-			apisecretkey = settingService.getSettingAsString("biblio.am.keys");
+    protected FinderObject searchLogic(FinderObject findobj) throws Exception {
+        boolean isbnsearch = false;
+        BookDetailDao bookdetail = findobj.getBookdetail();
+        if (apikeyid == null) {
+            apikeyid = settingService.getSettingAsString("biblio.am.keyd");
+        }
+        if (apisecretkey == null) {
+            apisecretkey = settingService.getSettingAsString("biblio.am.keys");
 
-		}
-		if (apiassociatetag == null) {
-			apiassociatetag = settingService
-					.getSettingAsString("biblio.am.atag");
-		}
+        }
+        if (apiassociatetag == null) {
+            apiassociatetag = settingService
+                    .getSettingAsString("biblio.am.atag");
+        }
 
-		AmazonSignedRequestHelper helper;
-		try {
-			helper = AmazonSignedRequestHelper.getInstance(ENDPOINT, apikeyid,
-					apisecretkey);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
-		}
+        AmazonSignedRequestHelper helper;
+        try {
+            helper = AmazonSignedRequestHelper.getInstance(ENDPOINT, apikeyid,
+                    apisecretkey);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
 
-		Map<String, String> params = new HashMap<String, String>();
-		// common params
-		params.put("Service", "AWSECommerceService");
-		params.put("Version", "2009-03-31");
-		params.put("ResponseGroup", "Large");
-		params.put("AssociateTag", apiassociatetag);
-		params.put("SearchIndex", "Books");
+        Map<String, String> params = new HashMap<String, String>();
+        // common params
+        params.put("Service", "AWSECommerceService");
+        params.put("Version", "2009-03-31");
+        params.put("ResponseGroup", "Large");
+        params.put("AssociateTag", apiassociatetag);
+        params.put("SearchIndex", "Books");
 
-		// add params by search type (isbn, or other (title, author, publisher)
-		Long currentstatus = bookdetail.getDetailstatus() != null ? bookdetail
-				.getDetailstatus() : 0L;
-		if (bookdetail.hasIsbn()
-				&& currentstatus != CatalogService.DetailStatus.DETAILNOTFOUNDWISBN) {
-			// doing an isbn search
-			if (bookdetail.getIsbn13() != null) {
-				params.put("ItemId", bookdetail.getIsbn13());
-				params.put("IdType", "EAN");
-			} else {
-				params.put("ItemId", bookdetail.getIsbn10());
-				params.put("IdType", "ISBN");
-			}
-			params.put("Operation", "ItemLookup");
-			isbnsearch = true;
-		} else {
-			// searching by title, author, and / or publisher
-			String title = bookdetail.getTitle();
-			String artist = null;
-			String publisher = null;
-			if (bookdetail.getAuthors() != null
-					&& bookdetail.getAuthors().size() > 0) {
-				artist = bookdetail.getAuthors().get(0).getDisplayName();
-			} else {
-				if (bookdetail.getIllustrators() != null
-						&& bookdetail.getIllustrators().size() > 0) {
-					artist = bookdetail.getAuthors().get(0).getDisplayName();
-				}
-			}
-			if (bookdetail.getPublisher() != null) {
-				PublisherDao pub = bookdetail.getPublisher();
-				publisher = pub.getName();
-			}
+        // add params by search type (isbn, or other (title, author, publisher)
+        Long currentstatus = bookdetail.getDetailstatus() != null ? bookdetail
+                .getDetailstatus() : 0L;
+        if (bookdetail.hasIsbn()
+                && currentstatus != CatalogService.DetailStatus.DETAILNOTFOUNDWISBN) {
+            // doing an isbn search
+            if (bookdetail.getIsbn13() != null) {
+                params.put("ItemId", bookdetail.getIsbn13());
+                params.put("IdType", "EAN");
+            } else {
+                params.put("ItemId", bookdetail.getIsbn10());
+                params.put("IdType", "ISBN");
+            }
+            params.put("Operation", "ItemLookup");
+            isbnsearch = true;
+        } else {
+            // searching by title, author, and / or publisher
+            String title = bookdetail.getTitle();
+            String artist = null;
+            String publisher = null;
+            if (bookdetail.getAuthors() != null
+                    && bookdetail.getAuthors().size() > 0) {
+                artist = bookdetail.getAuthors().get(0).getDisplayName();
+            } else {
+                if (bookdetail.getIllustrators() != null
+                        && bookdetail.getIllustrators().size() > 0) {
+                    artist = bookdetail.getAuthors().get(0).getDisplayName();
+                }
+            }
+            if (bookdetail.getPublisher() != null) {
+                PublisherDao pub = bookdetail.getPublisher();
+                publisher = pub.getName();
+            }
 
-			// now put in parameters
-			params.put("Title", title);
-			if (artist != null) {
-				params.put("Author", artist);
-			}
-			if (publisher != null) {
-				params.put("Publisher", publisher);
-			}
+            // now put in parameters
+            params.put("Title", title);
+            if (artist != null) {
+                params.put("Author", artist);
+            }
+            if (publisher != null) {
+                params.put("Publisher", publisher);
+            }
 
-			// standard parameters
-			params.put("Operation", "ItemSearch");
+            // standard parameters
+            params.put("Operation", "ItemSearch");
 
-		}
+        }
 
-		String requestUrl = helper.sign(params);
+        String requestUrl = helper.sign(params);
 
-		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-		DocumentBuilder db = dbf.newDocumentBuilder();
-		Document doc = db.parse(requestUrl);
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        DocumentBuilder db = dbf.newDocumentBuilder();
+        Document doc = db.parse(requestUrl);
 
 		/*
-		 * Transformer transformer = TransformerFactory.newInstance()
+         * Transformer transformer = TransformerFactory.newInstance()
 		 * .newTransformer(); OutputStream out = new BufferedOutputStream(new
 		 * FileOutputStream( new File("C:/Temp/myfile.xml"))); Result output =
 		 * new StreamResult(out);
@@ -193,99 +191,99 @@ public class AmazonBaseFinder extends BaseDetailFinder {
 		 * transformer.transform(input, output);
 		 */
 
-		// make list of Item documents (Item nodes from returned request as
-		// entire document)
-		List<Document> items = new ArrayList<Document>();
-		// get Item nodes from returned documents
-		NodeList itemnodes = doc.getElementsByTagName("Item");
-		// make each node into a new document
-		if (itemnodes != null) {
-			for (int i = 0; i < itemnodes.getLength(); i++) {
-				Node node = itemnodes.item(i);
-				Document newDocument = db.newDocument();
-				Node imported = newDocument.importNode(node, true);
-				newDocument.appendChild(imported);
-				// add document to the list
-				items.add(newDocument);
-			}
-		}
+        // make list of Item documents (Item nodes from returned request as
+        // entire document)
+        List<Document> items = new ArrayList<Document>();
+        // get Item nodes from returned documents
+        NodeList itemnodes = doc.getElementsByTagName("Item");
+        // make each node into a new document
+        if (itemnodes != null) {
+            for (int i = 0; i < itemnodes.getLength(); i++) {
+                Node node = itemnodes.item(i);
+                Document newDocument = db.newDocument();
+                Node imported = newDocument.importNode(node, true);
+                newDocument.appendChild(imported);
+                // add document to the list
+                items.add(newDocument);
+            }
+        }
 
-		// process item documents into bookdetails
-		List<FoundDetailsDao> copiedinfo = copyResultsIntoFoundDetails(items);
+        // process item documents into bookdetails
+        List<FoundDetailsDao> copiedinfo = copyResultsIntoFoundDetails(items);
 
-		// process list according to size - (one, none, or multiple results
-		// found)
-		if (copiedinfo != null) {
-			if (copiedinfo.size() == 0) {
-				Long searchstatus = isbnsearch ? CatalogService.DetailStatus.DETAILNOTFOUNDWISBN
-						: CatalogService.DetailStatus.DETAILNOTFOUND;
-				findobj.setSearchStatus(searchstatus);
-			} else if (copiedinfo.size() == 1) {
-				findobj.setSearchStatus(CatalogService.DetailStatus.DETAILFOUND);
-				FoundDetailsDao found = copiedinfo.get(0);
-				bookdetail = mergeFoundIntoBookDetail(found, bookdetail);
-				findobj.setBookdetail(bookdetail);
-			} else {
-				findobj.setSearchStatus(CatalogService.DetailStatus.MULTIDETAILSFOUND);
-				findobj.setMultiresults(copiedinfo);
-			}
-		} else {
-			// no detail found in data
-			Long searchstatus = isbnsearch ? CatalogService.DetailStatus.DETAILNOTFOUNDWISBN
-					: CatalogService.DetailStatus.DETAILNOTFOUND;
-			findobj.setSearchStatus(searchstatus);
-		}
+        // process list according to size - (one, none, or multiple results
+        // found)
+        if (copiedinfo != null) {
+            if (copiedinfo.size() == 0) {
+                Long searchstatus = isbnsearch ? CatalogService.DetailStatus.DETAILNOTFOUNDWISBN
+                        : CatalogService.DetailStatus.DETAILNOTFOUND;
+                findobj.setSearchStatus(searchstatus);
+            } else if (copiedinfo.size() == 1) {
+                findobj.setSearchStatus(CatalogService.DetailStatus.DETAILFOUND);
+                FoundDetailsDao found = copiedinfo.get(0);
+                bookdetail = mergeFoundIntoBookDetail(found, bookdetail);
+                findobj.setBookdetail(bookdetail);
+            } else {
+                findobj.setSearchStatus(CatalogService.DetailStatus.MULTIDETAILSFOUND);
+                findobj.setMultiresults(copiedinfo);
+            }
+        } else {
+            // no detail found in data
+            Long searchstatus = isbnsearch ? CatalogService.DetailStatus.DETAILNOTFOUNDWISBN
+                    : CatalogService.DetailStatus.DETAILNOTFOUND;
+            findobj.setSearchStatus(searchstatus);
+        }
 
-		// return finderobject
-		return findobj;
+        // return finderobject
+        return findobj;
 
-	}
+    }
 
-	protected FinderObject assignDetail(FinderObject findobj, FoundDetailsDao fd)
-			throws Exception {
-		// initializing
-		if (apikeyid == null) {
-			apikeyid = settingService.getSettingAsString("biblio.am.keyd");
-		}
-		if (apisecretkey == null) {
-			apisecretkey = settingService.getSettingAsString("biblio.am.keys");
+    protected FinderObject assignDetail(FinderObject findobj, FoundDetailsDao fd)
+            throws Exception {
+        // initializing
+        if (apikeyid == null) {
+            apikeyid = settingService.getSettingAsString("biblio.am.keyd");
+        }
+        if (apisecretkey == null) {
+            apisecretkey = settingService.getSettingAsString("biblio.am.keys");
 
-		}
-		if (apiassociatetag == null) {
-			apiassociatetag = settingService
-					.getSettingAsString("biblio.am.atag");
-		}
+        }
+        if (apiassociatetag == null) {
+            apiassociatetag = settingService
+                    .getSettingAsString("biblio.am.atag");
+        }
 
-		AmazonSignedRequestHelper helper;
-		try {
-			helper = AmazonSignedRequestHelper.getInstance(ENDPOINT, apikeyid,
-					apisecretkey);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
-		}
-		Map<String, String> params = new HashMap<String, String>();
-		// common params
-		params.put("Service", "AWSECommerceService");
-		params.put("Version", "2009-03-31");
-		params.put("ResponseGroup", "Large");
-		params.put("AssociateTag", apiassociatetag);
-		BookDetailDao bookdetail = findobj.getBookdetail();
+        AmazonSignedRequestHelper helper;
+        try {
+            helper = AmazonSignedRequestHelper.getInstance(ENDPOINT, apikeyid,
+                    apisecretkey);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+        Map<String, String> params = new HashMap<String, String>();
+        // common params
+        params.put("Service", "AWSECommerceService");
+        params.put("Version", "2009-03-31");
+        params.put("ResponseGroup", "Large");
+        params.put("AssociateTag", apiassociatetag);
+        BookDetailDao bookdetail = findobj.getBookdetail();
 
-		// get searchid from found details
-		String searchid = fd.getSearchserviceid();
+        // get searchid from found details
+        String searchid = fd.getSearchserviceid();
 
-		// do search for identifier
-		if (searchid != null) {
-			// doing an asin search
-			params.put("ItemId", searchid);
-			params.put("IdType", "ASIN");
-			params.put("Operation", "ItemLookup");
-		}
-		String requestUrl = helper.sign(params);
-		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-		DocumentBuilder db = dbf.newDocumentBuilder();
-		Document doc = db.parse(requestUrl);
+        // do search for identifier
+        if (searchid != null) {
+            // doing an asin search
+            params.put("ItemId", searchid);
+            params.put("IdType", "ASIN");
+            params.put("Operation", "ItemLookup");
+        }
+        String requestUrl = helper.sign(params);
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        DocumentBuilder db = dbf.newDocumentBuilder();
+        Document doc = db.parse(requestUrl);
 
 /*
 		Transformer transformer = TransformerFactory.newInstance()
@@ -300,265 +298,265 @@ public class AmazonBaseFinder extends BaseDetailFinder {
 		transformer.setOutputProperty(OutputKeys.INDENT, "yes");
 		transformer.transform(input, output);
 		*/
-		
-		// make list of Item documents (Item nodes from returned request as
-		// entire document)
-		List<Document> items = new ArrayList<Document>();
-		// get Item nodes from returned documents
-		NodeList itemnodes = doc.getElementsByTagName("Item");
-		// make each node into a new document
-		if (itemnodes != null) {
-			for (int i = 0; i < itemnodes.getLength(); i++) {
-				Node node = itemnodes.item(i);
-				Document newDocument = db.newDocument();
-				Node imported = newDocument.importNode(node, true);
-				newDocument.appendChild(imported);
-				// add document to the list
-				items.add(newDocument);
-			}
-		}
-		// process item documents into bookdetails
-		List<FoundDetailsDao> copiedinfo = copyResultsIntoFoundDetails(items);
-		// process list according to size - (one, none, or multiple results
-		// found)
-		if (copiedinfo != null && copiedinfo.size() > 0) {
-			// if results found, update searchstatus
-			findobj.setSearchStatus(CatalogService.DetailStatus.DETAILFOUND);
-			FoundDetailsDao found = copiedinfo.get(0);
-			// copy results into book
-			bookdetail = mergeFoundIntoBookDetail(found, bookdetail);
-			// set bookdetail in findobj
-			findobj.setBookdetail(bookdetail);
-		}
 
-		// return finderobject
-		return findobj;
+        // make list of Item documents (Item nodes from returned request as
+        // entire document)
+        List<Document> items = new ArrayList<Document>();
+        // get Item nodes from returned documents
+        NodeList itemnodes = doc.getElementsByTagName("Item");
+        // make each node into a new document
+        if (itemnodes != null) {
+            for (int i = 0; i < itemnodes.getLength(); i++) {
+                Node node = itemnodes.item(i);
+                Document newDocument = db.newDocument();
+                Node imported = newDocument.importNode(node, true);
+                newDocument.appendChild(imported);
+                // add document to the list
+                items.add(newDocument);
+            }
+        }
+        // process item documents into bookdetails
+        List<FoundDetailsDao> copiedinfo = copyResultsIntoFoundDetails(items);
+        // process list according to size - (one, none, or multiple results
+        // found)
+        if (copiedinfo != null && copiedinfo.size() > 0) {
+            // if results found, update searchstatus
+            findobj.setSearchStatus(CatalogService.DetailStatus.DETAILFOUND);
+            FoundDetailsDao found = copiedinfo.get(0);
+            // copy results into book
+            bookdetail = mergeFoundIntoBookDetail(found, bookdetail);
+            // set bookdetail in findobj
+            findobj.setBookdetail(bookdetail);
+        }
 
-	}
+        // return finderobject
+        return findobj;
 
-	private BookDetailDao mergeFoundIntoBookDetail(FoundDetailsDao found,
-			BookDetailDao bookdetail) {
-		// copy basic info into bookdetail
-		String title = found.getTitle();
-		String imagelink = found.getImagelink();
-		String isbn10 = found.getIsbn10();
-		String isbn13 = found.getIsbn13();
-		String publisher = found.getPublisher();
-		Long publishyear = found.getPublishyear();
-		String language = found.getLanguage();
-		String description = found.getDescription();
-		String authors = found.getAuthors();
+    }
 
-		// set title
-		bookdetail.setTitle(title);
-		bookdetail.setImagelink(imagelink);
+    private BookDetailDao mergeFoundIntoBookDetail(FoundDetailsDao found,
+                                                   BookDetailDao bookdetail) {
+        // copy basic info into bookdetail
+        String title = found.getTitle();
+        String imagelink = found.getImagelink();
+        String isbn10 = found.getIsbn10();
+        String isbn13 = found.getIsbn13();
+        String publisher = found.getPublisher();
+        Long publishyear = found.getPublishyear();
+        String language = found.getLanguage();
+        String description = found.getDescription();
+        String authors = found.getAuthors();
 
-		// isbn- 10 or 13
-		if (isbn10 != null) {
-			bookdetail.setIsbn10(isbn10);
-		}
-		if (isbn13 != null) {
-			bookdetail.setIsbn10(isbn13);
-		}
+        // set title
+        bookdetail.setTitle(title);
+        bookdetail.setImagelink(imagelink);
 
-		// publisher
-		if (publisher != null && bookdetail.getPublisher() == null) {
-			PublisherDao pub = bMemberService.findPublisherForName(publisher);
-			bookdetail.setPublisher(pub);
-		}
+        // isbn- 10 or 13
+        if (isbn10 != null) {
+            bookdetail.setIsbn10(isbn10);
+        }
+        if (isbn13 != null) {
+            bookdetail.setIsbn10(isbn13);
+        }
 
-		// publishyear
-		if (publishyear != null) {
-			bookdetail.setPublishyear(new Long(publishyear));
-		}
+        // publisher
+        if (publisher != null && bookdetail.getPublisher() == null) {
+            PublisherDao pub = bMemberService.findPublisherForName(publisher);
+            bookdetail.setPublisher(pub);
+        }
 
-		// language
-		if (language != null) {
-			bookdetail.setLanguage(language);
-		}
+        // publishyear
+        if (publishyear != null) {
+            bookdetail.setPublishyear(new Long(publishyear));
+        }
 
-		// description
-		if (description.trim().length() > 0) {
-			String origdesc = bookdetail.getDescription();
-			if (origdesc == null
-					|| origdesc.trim().length() < description.length()) {
-				bookdetail.setDescription(description);
-			}
-		}
+        // language
+        if (language != null) {
+            bookdetail.setLanguage(language);
+        }
 
-		// authors
-		// break into a list
-		if (authors != null) {
-			String[] autharray = authors.split(",");
-			List<String> authorlist = new ArrayList<String>();
-			for (int i = 0; i < autharray.length; i++) {
-				String toadd = autharray[i];
-				if (toadd != null && toadd.trim().length() > 0) {
-					authorlist.add(toadd.trim());
-				}
-			}
-			bookdetail = bMemberService.insertAuthorsIntoBookDetail(authorlist,
-					bookdetail);
-		}
+        // description
+        if (description.trim().length() > 0) {
+            String origdesc = bookdetail.getDescription();
+            if (origdesc == null
+                    || origdesc.trim().length() < description.length()) {
+                bookdetail.setDescription(description);
+            }
+        }
 
-		// return bookdetail
-		return bookdetail;
-	}
+        // authors
+        // break into a list
+        if (authors != null) {
+            String[] autharray = authors.split(",");
+            List<String> authorlist = new ArrayList<String>();
+            for (int i = 0; i < autharray.length; i++) {
+                String toadd = autharray[i];
+                if (toadd != null && toadd.trim().length() > 0) {
+                    authorlist.add(toadd.trim());
+                }
+            }
+            bookdetail = bMemberService.insertAuthorsIntoBookDetail(authorlist,
+                    bookdetail);
+        }
 
-	private List<FoundDetailsDao> copyResultsIntoFoundDetails(
-			List<Document> items) throws Exception {
-		Integer maxdetails = settingService
-				.getSettingAsInteger("biblio.amazon.maxdetails");
-		int maxint = maxdetails != null ? maxdetails.intValue() : 5;
+        // return bookdetail
+        return bookdetail;
+    }
 
-		int found = 0;
-		if (items != null && items.size() > 0) {
-			List<FoundDetailsDao> results = new ArrayList<FoundDetailsDao>();
-			for (Document itemdoc : items) {
-				found++;
-				if (found > maxint) {
-					break;
-				}
-				FoundDetailsDao fd = new FoundDetailsDao();
-				fd.setSearchsource(getIdentifier());
+    private List<FoundDetailsDao> copyResultsIntoFoundDetails(
+            List<Document> items) throws Exception {
+        Integer maxdetails = settingService
+                .getSettingAsInteger("biblio.amazon.maxdetails");
+        int maxint = maxdetails != null ? maxdetails.intValue() : 5;
 
-				// gather info
-				Node node = itemdoc.getElementsByTagName("ASIN").item(0);
-				String catalognr = node != null ? node.getTextContent() : "";
+        int found = 0;
+        if (items != null && items.size() > 0) {
+            List<FoundDetailsDao> results = new ArrayList<FoundDetailsDao>();
+            for (Document itemdoc : items) {
+                found++;
+                if (found > maxint) {
+                    break;
+                }
+                FoundDetailsDao fd = new FoundDetailsDao();
+                fd.setSearchsource(getIdentifier());
 
-				node = itemdoc.getElementsByTagName("Title").item(0);
-				String title = node != null ? node.getTextContent() : "";
+                // gather info
+                Node node = itemdoc.getElementsByTagName("ASIN").item(0);
+                String catalognr = node != null ? node.getTextContent() : "";
 
-				NodeList nodes = itemdoc.getElementsByTagName("MediumImage");
-				node = getChildnode("URL", nodes);
-				String imagelink = node != null ? node.getChildNodes().item(0)
-						.getTextContent() : "";
+                node = itemdoc.getElementsByTagName("Title").item(0);
+                String title = node != null ? node.getTextContent() : "";
 
-				nodes = itemdoc.getElementsByTagName("Content");
-				String description = "";
-				for (int i = 0; i < nodes.getLength(); i++) {
-					Node nd = nodes.item(i);
-					String parentnm = nd.getParentNode() != null ? nd
-							.getParentNode().getLocalName() : "";
-					if (parentnm != null && parentnm.equals("EditorialReview")) {
-						String newd = nd.getTextContent();
-						description = newd.length() > description.length() ? newd
-								: description;
-					}
-				}
+                NodeList nodes = itemdoc.getElementsByTagName("MediumImage");
+                node = getChildnode("URL", nodes);
+                String imagelink = node != null ? node.getChildNodes().item(0)
+                        .getTextContent() : "";
 
-				nodes = itemdoc.getElementsByTagName("ISBN");
-				node = nodes.item(0);
-				String isbn = node != null ? node.getTextContent() : "";
+                nodes = itemdoc.getElementsByTagName("Content");
+                String description = "";
+                for (int i = 0; i < nodes.getLength(); i++) {
+                    Node nd = nodes.item(i);
+                    String parentnm = nd.getParentNode() != null ? nd
+                            .getParentNode().getLocalName() : "";
+                    if (parentnm != null && parentnm.equals("EditorialReview")) {
+                        String newd = nd.getTextContent();
+                        description = newd.length() > description.length() ? newd
+                                : description;
+                    }
+                }
 
-				nodes = itemdoc.getElementsByTagName("Language");
-				node = getChildnode("Name", nodes);
-				String rawlanguage = node != null ? node.getTextContent() : "";
+                nodes = itemdoc.getElementsByTagName("ISBN");
+                node = nodes.item(0);
+                String isbn = node != null ? node.getTextContent() : "";
 
-				node = itemdoc.getElementsByTagName("Publisher").item(0);
-				String publisher = node != null ? node.getTextContent() : "";
+                nodes = itemdoc.getElementsByTagName("Language");
+                node = getChildnode("Name", nodes);
+                String rawlanguage = node != null ? node.getTextContent() : "";
 
-				node = itemdoc.getElementsByTagName("PublicationDate").item(0);
-				String publishyear = node != null ? node.getTextContent() : "";
+                node = itemdoc.getElementsByTagName("Publisher").item(0);
+                String publisher = node != null ? node.getTextContent() : "";
 
-				nodes = itemdoc.getElementsByTagName("Author");
-				List<String> authors = new ArrayList<String>();
-				for (int i = 0; i < nodes.getLength(); i++) {
-					Node nd = nodes.item(i);
-					authors.add(nd.getTextContent());
-				}
+                node = itemdoc.getElementsByTagName("PublicationDate").item(0);
+                String publishyear = node != null ? node.getTextContent() : "";
 
-				// continue to next document, if no isbn listed
-				if (isbn == null || isbn.trim().length() == 0) {
-					continue;
-				}
+                nodes = itemdoc.getElementsByTagName("Author");
+                List<String> authors = new ArrayList<String>();
+                for (int i = 0; i < nodes.getLength(); i++) {
+                    Node nd = nodes.item(i);
+                    authors.add(nd.getTextContent());
+                }
 
-				// copy info into book detail
-				// set title
-				fd.setTitle(title);
-				fd.setImagelink(imagelink);
+                // continue to next document, if no isbn listed
+                if (isbn == null || isbn.trim().length() == 0) {
+                    continue;
+                }
 
-				// isbn- 10 or 13
-				if (isbn != null) {
-					String str = isbn.replaceAll("[^\\d.X]", "");
-					if (str.length() > 10) {
-						fd.setIsbn13(str);
-					}
-					fd.setIsbn10(str);
-				}
+                // copy info into book detail
+                // set title
+                fd.setTitle(title);
+                fd.setImagelink(imagelink);
 
-				// publisher
-				if (publisher != null && fd.getPublisher() == null) {
-					fd.setPublisher(publisher);
-				}
+                // isbn- 10 or 13
+                if (isbn != null) {
+                    String str = isbn.replaceAll("[^\\d.X]", "");
+                    if (str.length() > 10) {
+                        fd.setIsbn13(str);
+                    }
+                    fd.setIsbn10(str);
+                }
 
-				// publishyear
-				if (publishyear != null) {
-					if (publishyear.contains("-")) {
-						// chop off after dash
-						publishyear = publishyear.substring(0,
-								publishyear.indexOf("-"));
-						fd.setPublishyear(new Long(publishyear));
-					} else if (publishyear.contains("?")) {
-						// do nothing - vague year
-					} else {
-						fd.setPublishyear(new Long(publishyear));
-					}
-				}
+                // publisher
+                if (publisher != null && fd.getPublisher() == null) {
+                    fd.setPublisher(publisher);
+                }
 
-				// language
-				if (rawlanguage != null) {
-					if (rawlanguage.equals("Français")) {
-						fd.setLanguage("fr");
-					} else if (rawlanguage.equals("Anglais")) {
-						fd.setLanguage("en");
-					}
-					// MM else - help with this else!! some kind of lookup!
-				}
+                // publishyear
+                if (publishyear != null) {
+                    if (publishyear.contains("-")) {
+                        // chop off after dash
+                        publishyear = publishyear.substring(0,
+                                publishyear.indexOf("-"));
+                        fd.setPublishyear(new Long(publishyear));
+                    } else if (publishyear.contains("?")) {
+                        // do nothing - vague year
+                    } else {
+                        fd.setPublishyear(new Long(publishyear));
+                    }
+                }
 
-				// description
-				fd.setDescription(description);
+                // language
+                if (rawlanguage != null) {
+                    if (rawlanguage.equals("Français")) {
+                        fd.setLanguage("fr");
+                    } else if (rawlanguage.equals("Anglais")) {
+                        fd.setLanguage("en");
+                    }
+                    // MM else - help with this else!! some kind of lookup!
+                }
 
-				// authors
-				StringBuilder authorbuilder = new StringBuilder();
-				if (authors != null) {
-					for (String author : authors) {
-						authorbuilder.append(author).append(",");
-					}
-				}
-				if (authorbuilder.length() > 1) {
-					authorbuilder.setLength(authorbuilder.length() - 1);
-				}
-				fd.setAuthors(authorbuilder.toString());
+                // description
+                fd.setDescription(description);
 
-				// add catalog nr
-				fd.setSearchserviceid(catalognr);
+                // authors
+                StringBuilder authorbuilder = new StringBuilder();
+                if (authors != null) {
+                    for (String author : authors) {
+                        authorbuilder.append(author).append(",");
+                    }
+                }
+                if (authorbuilder.length() > 1) {
+                    authorbuilder.setLength(authorbuilder.length() - 1);
+                }
+                fd.setAuthors(authorbuilder.toString());
 
-				// add bookdetail to result list
-				results.add(fd);
+                // add catalog nr
+                fd.setSearchserviceid(catalognr);
 
-			}// end of loop through items
-			return results;
-		}
-		return null;
-	}
+                // add bookdetail to result list
+                results.add(fd);
 
-	private Node getChildnode(String nodename, NodeList nodes) {
-		for (int i = 0; i < nodes.getLength(); i++) {
-			Node nd = nodes.item(i);
-			NodeList children = nd.getChildNodes();
-			for (int j = 0; j < children.getLength(); j++) {
-				Node nnd = children.item(j);
-				if (nnd != null) {
-					String name = nnd.getNodeName();
-					if (name != null && name.equals(nodename)) {
-						return nnd;
-					}
-				}
-			}
+            }// end of loop through items
+            return results;
+        }
+        return null;
+    }
 
-		}
-		return null;
-	}
+    private Node getChildnode(String nodename, NodeList nodes) {
+        for (int i = 0; i < nodes.getLength(); i++) {
+            Node nd = nodes.item(i);
+            NodeList children = nd.getChildNodes();
+            for (int j = 0; j < children.getLength(); j++) {
+                Node nnd = children.item(j);
+                if (nnd != null) {
+                    String name = nnd.getNodeName();
+                    if (name != null && name.equals(nodename)) {
+                        return nnd;
+                    }
+                }
+            }
+
+        }
+        return null;
+    }
 
 }
