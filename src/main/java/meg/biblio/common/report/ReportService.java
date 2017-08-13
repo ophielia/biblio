@@ -1,16 +1,15 @@
 package meg.biblio.common.report;
 
-import java.io.IOException;
+import org.apache.fop.apps.FOPException;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.transform.TransformerException;
-
-import org.apache.fop.apps.FOPException;
+import java.io.IOException;
 
 
 public interface ReportService {
 
-	byte[] produceTableReport(TableReport report) throws FOPException, TransformerException, JAXBException, IOException;
+    byte[] produceTableReport(TableReport report) throws FOPException, TransformerException, JAXBException, IOException;
 
 
 }

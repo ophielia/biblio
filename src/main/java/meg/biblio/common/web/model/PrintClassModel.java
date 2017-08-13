@@ -1,190 +1,189 @@
 package meg.biblio.common.web.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import meg.biblio.lending.db.dao.PersonDao;
 import meg.biblio.lending.db.dao.SchoolGroupDao;
 import meg.biblio.lending.db.dao.StudentDao;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class PrintClassModel {
 
-	private SchoolGroupDao schoolgroup;
-	private Long teacherid;
+    private SchoolGroupDao schoolgroup;
+    private Long teacherid;
 
-	private List<Boolean> checked;
-	private List<String> idref;
+    private List<Boolean> checked;
+    private List<String> idref;
 
-	private Long newClassId;
-	private Long currentClassId;
-	
-	private Long showBorder;
-	private Long nudge;
-	private Long startPos;
-	
-	private Integer rangeFrom;
-	private Integer rangeTo;
-	
-	public static final String startPosLkup="startpos65";
-	public static final String nudgeLkup="printnudge";
-	
-	public List<Boolean> getChecked() {
-		return checked;
-	}
+    private Long newClassId;
+    private Long currentClassId;
 
-	public void setChecked(List<Boolean> checked) {
-		this.checked = checked;
-	}
+    private Long showBorder;
+    private Long nudge;
+    private Long startPos;
 
-	public SchoolGroupDao getSchoolgroup() {
-		return schoolgroup;
-	}
+    private Integer rangeFrom;
+    private Integer rangeTo;
 
-	public void setSchoolgroup(SchoolGroupDao sgroup) {
-		this.schoolgroup = sgroup;
-		this.currentClassId = sgroup.getId();
-		// set teacherid
-		this.teacherid = sgroup.getTeacher().getId();
-		// set checked to all false
-		checked = new ArrayList<Boolean>();
-		idref = new ArrayList<String>();
-		// adding for teacher
-		checked.add(false);
-		idref.add(String.valueOf(this.teacherid));
-		for (StudentDao student : sgroup.getStudents()) {
-			checked.add(false);
-			idref.add(String.valueOf(student.getId()));
-		}
-	}
+    public static final String startPosLkup = "startpos65";
+    public static final String nudgeLkup = "printnudge";
 
-	public Long getTeacherid() {
-		return this.teacherid;
-	}
+    public List<Boolean> getChecked() {
+        return checked;
+    }
 
-	public void setTeacherid(Long teacherid) {
-		this.teacherid = teacherid;
-	}
+    public void setChecked(List<Boolean> checked) {
+        this.checked = checked;
+    }
 
-	public List<PersonDao> getPrintoutList() {
-		List<PersonDao> printout = new ArrayList<PersonDao>();
-		if (schoolgroup != null) {
-			// return teacher
-			printout.add(schoolgroup.getTeacher());
-			// return all students
-			for (StudentDao student : schoolgroup.getStudents()) {
-				printout.add(student);
-			}
-			return printout;
-		}
-		return null;
-	}
+    public SchoolGroupDao getSchoolgroup() {
+        return schoolgroup;
+    }
 
-	public void selectEntireClass() {
-		// set checked to all false
-		if (checked == null) {
-			checked = new ArrayList<Boolean>();
-		} else {
-			checked.clear();
-		}
-		for (int i = 0; i < idref.size(); i++) {
-			checked.add(true);
-		}
-	}
+    public void setSchoolgroup(SchoolGroupDao sgroup) {
+        this.schoolgroup = sgroup;
+        this.currentClassId = sgroup.getId();
+        // set teacherid
+        this.teacherid = sgroup.getTeacher().getId();
+        // set checked to all false
+        checked = new ArrayList<Boolean>();
+        idref = new ArrayList<String>();
+        // adding for teacher
+        checked.add(false);
+        idref.add(String.valueOf(this.teacherid));
+        for (StudentDao student : sgroup.getStudents()) {
+            checked.add(false);
+            idref.add(String.valueOf(student.getId()));
+        }
+    }
 
-	public void setSelectedList(List<String> cachevals) {
-		// go through printout list (students and teachers)
-		// if id is in cachevals, mark corresponding checked as true
-		if (idref != null) {
-			for (int i = 0; i < idref.size(); i++) {
-				if (cachevals.contains(idref.get(i))) {
-					checked.set(i, true);
-				}
+    public Long getTeacherid() {
+        return this.teacherid;
+    }
 
-			}
-		}
-	}
+    public void setTeacherid(Long teacherid) {
+        this.teacherid = teacherid;
+    }
 
-	public List<String> getSelectedValuesAsStrings() {
-		// go through checked. If true, pull id for
-		// corresponding student/teacher id, and add to String list
-		List<String> selectedvalues = new ArrayList<String>();
+    public List<PersonDao> getPrintoutList() {
+        List<PersonDao> printout = new ArrayList<PersonDao>();
+        if (schoolgroup != null) {
+            // return teacher
+            printout.add(schoolgroup.getTeacher());
+            // return all students
+            for (StudentDao student : schoolgroup.getStudents()) {
+                printout.add(student);
+            }
+            return printout;
+        }
+        return null;
+    }
 
-		if (checked != null) {
-			int i = 0;
-			for (Boolean check : checked) {
-				if (check != null && check) {
-					selectedvalues.add(idref.get(i));
-				}
-				i++;
-			}
-		}
-		return selectedvalues;
-	}
+    public void selectEntireClass() {
+        // set checked to all false
+        if (checked == null) {
+            checked = new ArrayList<Boolean>();
+        } else {
+            checked.clear();
+        }
+        for (int i = 0; i < idref.size(); i++) {
+            checked.add(true);
+        }
+    }
 
-	public List<String> getIdref() {
-		return idref;
-	}
+    public void setSelectedList(List<String> cachevals) {
+        // go through printout list (students and teachers)
+        // if id is in cachevals, mark corresponding checked as true
+        if (idref != null) {
+            for (int i = 0; i < idref.size(); i++) {
+                if (cachevals.contains(idref.get(i))) {
+                    checked.set(i, true);
+                }
 
-	public void setIdref(List<String> idref) {
-		this.idref = idref;
-	}
+            }
+        }
+    }
 
-	public Long getCurrentClassId() {
-		return currentClassId;
-	}
+    public List<String> getSelectedValuesAsStrings() {
+        // go through checked. If true, pull id for
+        // corresponding student/teacher id, and add to String list
+        List<String> selectedvalues = new ArrayList<String>();
 
-	public void setCurrentClassId(Long currentClassId) {
-		this.currentClassId = currentClassId;
-	}
+        if (checked != null) {
+            int i = 0;
+            for (Boolean check : checked) {
+                if (check != null && check) {
+                    selectedvalues.add(idref.get(i));
+                }
+                i++;
+            }
+        }
+        return selectedvalues;
+    }
 
-	public Long getNewClassId() {
-		return newClassId;
-	}
+    public List<String> getIdref() {
+        return idref;
+    }
 
-	public void setNewClassId(Long classId) {
-		this.newClassId = classId;
-	}
+    public void setIdref(List<String> idref) {
+        this.idref = idref;
+    }
 
-	public Long getShowBorder() {
-		return showBorder;
-	}
+    public Long getCurrentClassId() {
+        return currentClassId;
+    }
 
-	public void setShowBorder(Long showBorder) {
-		this.showBorder = showBorder;
-	}
+    public void setCurrentClassId(Long currentClassId) {
+        this.currentClassId = currentClassId;
+    }
 
-	public Long getNudge() {
-		return nudge;
-	}
+    public Long getNewClassId() {
+        return newClassId;
+    }
 
-	public void setNudge(Long nudge) {
-		this.nudge = nudge;
-	}
+    public void setNewClassId(Long classId) {
+        this.newClassId = classId;
+    }
 
-	public Long getStartPos() {
-		return startPos;
-	}
+    public Long getShowBorder() {
+        return showBorder;
+    }
 
-	public void setStartPos(Long startPos) {
-		this.startPos = startPos;
-	}
+    public void setShowBorder(Long showBorder) {
+        this.showBorder = showBorder;
+    }
 
-	public Integer getRangeFrom() {
-		return rangeFrom;
-	}
+    public Long getNudge() {
+        return nudge;
+    }
 
-	public void setRangeFrom(Integer rangeFrom) {
-		this.rangeFrom = rangeFrom;
-	}
+    public void setNudge(Long nudge) {
+        this.nudge = nudge;
+    }
 
-	public Integer getRangeTo() {
-		return rangeTo;
-	}
+    public Long getStartPos() {
+        return startPos;
+    }
 
-	public void setRangeTo(Integer rangeTo) {
-		this.rangeTo = rangeTo;
-	}
+    public void setStartPos(Long startPos) {
+        this.startPos = startPos;
+    }
 
+    public Integer getRangeFrom() {
+        return rangeFrom;
+    }
+
+    public void setRangeFrom(Integer rangeFrom) {
+        this.rangeFrom = rangeFrom;
+    }
+
+    public Integer getRangeTo() {
+        return rangeTo;
+    }
+
+    public void setRangeTo(Integer rangeTo) {
+        this.rangeTo = rangeTo;
+    }
 
 
 }

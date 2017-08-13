@@ -1,21 +1,6 @@
 package meg.biblio.common.report;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.util.JAXBSource;
-import javax.xml.transform.Result;
-import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.sax.SAXResult;
-import javax.xml.transform.stream.StreamSource;
-
 import meg.biblio.common.AppSettingService;
-
 import org.apache.fop.apps.FOPException;
 import org.apache.fop.apps.Fop;
 import org.apache.fop.apps.FopFactory;
@@ -26,54 +11,62 @@ import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.util.JAXBSource;
+import javax.xml.transform.*;
+import javax.xml.transform.sax.SAXResult;
+import javax.xml.transform.stream.StreamSource;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
 @Service
 @Transactional
 public class ReportServiceImpl implements ReportService {
 
-	@Autowired
-	AppSettingService appSetting;
+    @Autowired
+    AppSettingService appSetting;
 
-	private FopFactory fopFactory = FopFactory.newInstance();
-	private TransformerFactory tFactory = TransformerFactory.newInstance();
-	
-	@Override
-	public byte[] produceTableReport(TableReport report) throws FOPException, TransformerException, JAXBException, IOException {
-		String cxslbase = "META-INF/web-resources/transform/";
-		String xsl = appSetting.getSettingAsString("biblio.report.tablereportxsl");
-		xsl = cxslbase + xsl;
-		
-		
-		if (report != null && report.getTableValue()!=null && report.getTableValue().size()>0) {
+    private FopFactory fopFactory = FopFactory.newInstance();
+    private TransformerFactory tFactory = TransformerFactory.newInstance();
 
-			ByteArrayOutputStream out = new ByteArrayOutputStream();
-			try {
+    @Override
+    public byte[] produceTableReport(TableReport report) throws FOPException, TransformerException, JAXBException, IOException {
+        String cxslbase = "META-INF/web-resources/transform/";
+        String xsl = appSetting.getSettingAsString("biblio.report.tablereportxsl");
+        xsl = cxslbase + xsl;
 
-				Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, out);
-				JAXBContext context = JAXBContext
-						.newInstance(TableReport.class);
-				JAXBSource source = new JAXBSource(context, report);
 
-				// Setup Transformer
-				Resource resource = new ClassPathResource(xsl);
-				Source xsltSrc = new StreamSource(resource.getFile());
-				Transformer transformer = tFactory.newTransformer(xsltSrc);
+        if (report != null && report.getTableValue() != null && report.getTableValue().size() > 0) {
 
-				// Make sure the XSL transformation's result is piped through to
-				// FOPx
-				Result res = new SAXResult(fop.getDefaultHandler());
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            try {
 
-				// Start the transformation and rendering process
-				transformer.transform(source, res);
+                Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, out);
+                JAXBContext context = JAXBContext
+                        .newInstance(TableReport.class);
+                JAXBSource source = new JAXBSource(context, report);
 
-				return out.toByteArray();
+                // Setup Transformer
+                Resource resource = new ClassPathResource(xsl);
+                Source xsltSrc = new StreamSource(resource.getFile());
+                Transformer transformer = tFactory.newTransformer(xsltSrc);
 
-			} finally {
-				out.close();
-			}
-		}
-		return null;
-	}
-	
-	
-	
+                // Make sure the XSL transformation's result is piped through to
+                // FOPx
+                Result res = new SAXResult(fop.getDefaultHandler());
+
+                // Start the transformation and rendering process
+                transformer.transform(source, res);
+
+                return out.toByteArray();
+
+            } finally {
+                out.close();
+            }
+        }
+        return null;
+    }
+
+
 }

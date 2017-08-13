@@ -4,52 +4,48 @@ import meg.biblio.lending.db.dao.TeacherDao;
 
 public class TeacherInfo {
 
-	private Long id;
-	
-	private Long schoolgroupid;
-	
-	private String firstname;
+    private Long id;
 
-	private String lastname;
-	private String displayname;
+    private Long schoolgroupid;
 
-	
-	
-	
-	public TeacherInfo(TeacherDao teacher) {
-		super();
-		this.id = teacher.getId();
-		this.schoolgroupid = teacher.getSchoolgroup().getId();
-		this.firstname = teacher.getFirstname();
-		this.lastname = teacher.getLastname();
-		this.displayname = teacher.getFulldisplayname();
-	}
+    private String firstname;
 
-	public Long getId() {
-		return id;
-	}
+    private String lastname;
+    private String displayname;
 
-	public Long getSchoolgroupid() {
-		return schoolgroupid;
-	}
 
-	public String getFirstname() {
-		return firstname;
-	}
+    public TeacherInfo(TeacherDao teacher) {
+        super();
+        this.id = teacher.getId();
+        this.schoolgroupid = teacher.getSchoolgroup().getId();
+        this.firstname = teacher.getFirstname();
+        this.lastname = teacher.getLastname();
+        this.displayname = teacher.getFulldisplayname();
+    }
 
-	public String getLastname() {
-		return lastname;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public String getDisplayname() {
-		return displayname;
-	}
+    public Long getSchoolgroupid() {
+        return schoolgroupid;
+    }
 
-	public void setDisplayname(String displayname) {
-		this.displayname = displayname;
-	}
-	
+    public String getFirstname() {
+        return firstname;
+    }
 
-	
-	
+    public String getLastname() {
+        return lastname;
+    }
+
+    public String getDisplayname() {
+        return displayname;
+    }
+
+    public void setDisplayname(String displayname) {
+        this.displayname = displayname;
+    }
+
+
 }
