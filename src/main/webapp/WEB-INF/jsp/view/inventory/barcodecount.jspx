@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page" 
+xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" 
+xmlns:c="http://java.sun.com/jsp/jstl/core" 
+xmlns:spring="http://www.springframework.org/tags" 
+xmlns:form="http://www.springframework.org/tags/form" 
+xmlns:fmt="http://java.sun.com/jsp/jstl/fmt" 
+xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+
+<spring:message code="label_inv_startdate" htmlEscape="false" var="lstartdate"/>
+<spring:message code="label_clientnumber" arguments="${clientname}" htmlEscape="false" var="lbooknr"/>
+<spring:message code="label_inv_clearstack" htmlEscape="false" var="lclearstack"/>
+<spring:message code="label_inv_countbook" htmlEscape="false" var="lcountbook"/>
+<spring:message code="label_inv_countbookpl" htmlEscape="false" var="lcountbookpl"/>
+<spring:message code="label_inv_countstack" htmlEscape="false" var="lcountstack"/>
+<spring:message code="label_inv_countman" htmlEscape="false" var="lcountman"/>
+<spring:message code="label_book" htmlEscape="false" var="lbook"/>
+<spring:message code="entity_editargs" arguments="${lbook}" htmlEscape="false" var="leditbook"/>
+<spring:message code="label_inv_overview" htmlEscape="false" var="loverview"/>
+<spring:message code="label_book_clientclass" arguments="${clientname}" htmlEscape="false" var="lclientclass"/>
+<spring:message code="label_book_classification" htmlEscape="false" var="lshelfclass"/>
+<spring:message code="label_book_title" htmlEscape="false" var="ltitle"/>
+<spring:message code="label_inv_percentcomplete" arguments="${countModel.inventoryStatus.percentcompleted}" htmlEscape="false" var="lpercentcomplete"/>
+<spring:message code="label_inv_numbercounted" arguments="${countModel.inventoryStatus.countedbooks - countModel.inventoryStatus.refoundbooks},${countModel.inventoryStatus.totaltocount}" htmlEscape="false" var="lxofycounted"/>
+
+<spring:url value="/inventory/clearstack" var="clearurl"/>
+<script type="text/javascript">
+ require(['dojo/dom',"dojo/on", "dojo/keys",'dojo/domReady!'], 
+		 function (dom,on,keys) {
+		
+		dojo.byId("barcodeentry").value="";
+		// wire up clear stack button
+		dojo.query("span#clearstack").forEach(function(node) {
+			var id = node.id;
+
+			on(dojo.byId(id), 'click', function(event) {
+				clickedid = event.currentTarget.id;
+				var form = dojo.byId('countbook');
+				form.action = "${clearurl}";
+				form.submit();
+			});
+		});
+
+		on(document, "keydown", function(event) {
+	    	var node = dom.byId("barcodeentry");
+	        //on listens for the keydown events inside of the div node, on all form elements
+	        switch(event.keyCode) {
+	            case keys.ENTER:
+	                    // submit the form
+	                	var frm = dom.byId("countbook");
+	                	frm.submit();
+	                break;
+	            default:
+	            	key = event.keyCode;
+	            charcode = key;
+	            test = String.fromCharCode(charcode);
+			node.value = (node.value + test).trim();
+	        }
+	    });
+		
+	});
+</script>
+    
+    <h1>${lcountbookpl}</h1>
+    
+ <spring:url value="/inventory" var="currentinvurl"/>
+<div >
+    <div class="reportboxlook"><a href="${currentinvurl}"    >
+<div>${lpercentcomplete}</div> 
+<span style="float:right"> ${lstartdate}:<fmt:formatDate type="date" 
+            value="${countModel.inventoryStatus.startdate}" />   </span> ${lxofycounted }
+<div id="progress">
+    <!-- <span id="percent"></span>-->
+    <div id="bar" style="width:${countModel.inventoryStatus.percentcompleted}%"></div>
+</div>
+</a>
+</div>
+</div>
+<a class="linkbutton" style="margin-top:10px;float:right" href="${currentinvurl}"    >${loverview}</a>
+
+
+<spring:url value="/inventory/count" var="actionurl"/>
+<form:form action="${actionurl}" id="countbook" method="POST" modelAttribute="countModel">
+<h2>${lcountstack}</h2>
+
+
+<form:errors id="inventory_errors" class="errors" style="margin-left:0px" />
+
+
+
+
+<div>
+<span class="selectspanactive" id="clearstack" style="float: right;
+    margin-bottom: 15px;" >${lclearstack}</span>
+    <span style="float:right;margin-top:12px">
+    <spring:message code="label_inv_stackcount" arguments="${countModel.stackCount}" htmlEscape="false"/>
+</span></div>
+<table>
+<THEAD>
+<tr>
+<th>${lbooknr}</th>
+<th>${ltitle}</th>
+<th>${lclientclass}</th>
+<th>${lshelfclass}</th>
+<th></th>
+</tr>
+</THEAD>
+<tbody>
+
+<c:forEach var="bookinstack" items="${countModel.userStack}" varStatus="expstatus">
+<tr>
+<td>${bookinstack.clientbooknr}</td>
+<td>${bookinstack.title}</td>
+<td>
+<c:if test="${not empty bookinstack.clientshelfcode}"> 
+<c:set var="shelfcode" value="${classHash[bookinstack.clientshelfcode]}" />
+<c:choose>
+	<c:when test="${ not empty shelfcode.imagedisplay}">
+<span>	<img id="shelfimg" src="${imagebasedir}${shelfcode.imagedisplay}"
+			style="    max-width: 30px;
+    display: block;
+    margin: 0 auto;" /></span>	
+	</c:when>
+	<c:otherwise>
+${shelfcode.textdisplay}
+</c:otherwise>
+</c:choose>
+</c:if></td>
+<td>${bookinstack.clientshelfclass}</td>
+<td><spring:url value="/books/update/${bookinstack.bookid}?from=inv" var="editbook"/>
+<a href="${editbook}" class="linkbutton">${leditbook}</a></td>
+</tr>
+</c:forEach>
+
+</tbody>
+</table>
+<span class="linkbuttonquiet" style="float: right;
+    margin-bottom: 15px;" >
+    
+    <spring:url value="/inventory/count?changepref=1" var="changepref"/>
+<a href="${changepref}" class="linkbutton">${lcountman}</a></span>
+<form:input class="therebutnot" type="text" path="barcodeentry" autocomplete="off"></form:input><br/>
+<form:input  type="hidden" path="countTypePref"></form:input><br/>
+</form:form>
+
+</div>

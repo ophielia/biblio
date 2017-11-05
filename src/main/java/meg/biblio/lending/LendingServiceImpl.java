@@ -293,6 +293,11 @@ public class LendingServiceImpl implements LendingService {
             // return book
             return returnBook(disp.getLoanrecordid(), clientid);
         }
+
+        // should not happen -
+        // book has checked out status of checkedout, but no loan record.  Reset status
+        catalogService.updateBookStatus(bookid,
+                CatalogService.Status.SHELVED);
         return null;
     }
 

@@ -247,18 +247,20 @@ public class BarcodeLendingController {
                 // return book
                 LoanRecordDao lh = lendingService.returnBookByBookid(
                         book.getId(), client.getId());
-
-                firstname = lh.getBorrower().getFirstname();
-                // ---- put name, book title in uiModel
-                uiModel.addAttribute("personname", firstname);
-                uiModel.addAttribute("booktitle", booktitle);
-                uiModel.addAttribute("bookauthor", bookauthor);
-                uiModel.addAttribute("bookimagelink", bookimg);
-                // delete from LendingModel
-                barcodeLendModel.setCode(null);
-                clearUser(barcodeLendModel, uiModel);
-                // return success
-                return "barcode/returnsuccess";
+                if (lh != null) {
+                    firstname = lh.getBorrower().getFirstname();
+                    // ---- put name, book title in uiModel
+                    uiModel.addAttribute("personname", firstname);
+                    uiModel.addAttribute("booktitle", booktitle);
+                    uiModel.addAttribute("bookauthor", bookauthor);
+                    uiModel.addAttribute("bookimagelink", bookimg);
+                    // delete from LendingModel
+                    barcodeLendModel.setCode(null);
+                    clearUser(barcodeLendModel, uiModel);
+                    // return success
+                    return "barcode/returnsuccess";
+                }
+                return "barcode/maincheckout";
             }
         } else {
             if (bindingErrors.hasErrors()) {

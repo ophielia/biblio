@@ -19,7 +19,9 @@ public class BookDao {
     private String clientbookid;
     private Long clientbookidsort;
     private String barcodeid;
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)/*@JoinColumn(name="ID")*/
+    @OneToOne(cascade = CascadeType.ALL,
+            fetch = FetchType.EAGER)
+    @JoinColumn(name="bookdetail")
     private BookDetailDao bookdetail;
     private Long clientbooktype;
     private String note;

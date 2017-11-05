@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page" 
+xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" 
+xmlns:c="http://java.sun.com/jsp/jstl/core" 
+xmlns:spring="http://www.springframework.org/tags" 
+xmlns:form="http://www.springframework.org/tags/form" 
+xmlns:fmt="http://java.sun.com/jsp/jstl/fmt" 
+xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    
+    <spring:message code="label_book_search" var="searchtitle"/>
+    <h1>${searchtitle}</h1>
+
+<spring:message code="label_book_searchkeyword" htmlEscape="false" var="lkeyword"/>    
+<spring:message code="label_book_title" htmlEscape="false" var="ltitle"/>    
+<spring:message code="label_book_author" htmlEscape="false" var="lauthor"/>    
+<spring:message code="label_book_illustrator" htmlEscape="false" var="lillustrator"/>    
+<spring:message code="label_book_bookid" htmlEscape="false" var="lbookid"/>    
+
+<spring:message code="label_book_clientbookid" htmlEscape="false" var="lclientbookid"/>    
+<spring:message code="label_book_classification" htmlEscape="false" var="lshelfclass"/>    
+<spring:message code="label_book_status" htmlEscape="false" var="lstatus"/>    
+<spring:message code="label_book_information" htmlEscape="false" var="linfo"/>    
+<spring:message code="entity_display" htmlEscape="false" var="ldisplay"/>    
+
+<spring:message code="button_sortby" htmlEscape="false" var="lsortby"/>    
+
+<spring:url value="/search" var="actionurl"/>
+<script type="text/javascript">
+ require([
+          'dojo/dom',"dojo/on","dijit/TooltipDialog", "dijit/popup",
+          'dojo/domReady!'
+      ], function (dom,on,TooltipDialog,popup) {
+	 
+
+
+	   	form = dojo.byId("resultlist");
+	   	var sortsel  = dojo.byId("orderbyselect");
+	   	on(sortsel, "change", function(event){
+	   	   // submit the form
+	   	   form.submit();
+	   	});
+	   	
+	   	
+	   		
+	});
+ </script>
+
+
+<form:form action="${actionurl}" id="resultlist" method="PUT" modelAttribute="bookListModel">
+
+<table class="clear">
+<THEAD>
+<tr>
+<td>${lkeyword}</td>
+<td>${ltitle}</td>
+<td>${lauthor}</td>
+<td>${lbookid}</td>
+</tr>
+</THEAD>
+<tbody>
+				<tr>
+					<td>
+						<form:input path="keyword" type="text"></form:input>
+					</td>
+					<td>
+						<form:input path="title" type="text"></form:input>
+					</td>
+					<td>
+						<form:input path="author" type="text"></form:input>
+					</td>
+					<td>
+						<form:input path="clientbookid" type="text"></form:input>
+					</td>
+				</tr>
+			</tbody>
+</table>
+		<spring:message code="button_search" htmlEscape="false" var="search_button"/>
+        <input id="searchbutton" class="linkbutton" type="submit" value="${search_button}"/>
+       <br />
+       <hr />
+       <br />
+		<span style="float: right"> ${lsortby}: <form:select
+				path="orderby" id="orderbyselect">
+				<option value="0" label="- - Select - - " />
+				<c:forEach var="sortitem" items="${sortlist}">
+					<form:option value="${sortitem.value}" label="${sortitem.display}" />
+				</c:forEach>
+			</form:select>
+		</span>
+		<c:choose>
+		<c:when test="${bookListModel.hasPrevious}">
+		<input id="nextbutton" name="first" class="linkbutton" type="submit" value="|&lt;"/>
+        <input id="nextbutton" name="prev" class="linkbutton" type="submit" value="&lt;&lt;"/>
+		</c:when>
+		<c:otherwise>
+		<span class="linkbuttonquiet" >|&lt;</span>
+		<span class="linkbuttonquiet" >&lt;&lt;</span>
+		</c:otherwise>
+		</c:choose>
+		<c:choose>
+		<c:when test="${bookListModel.hasNext}">
+		<input id="nextbutton" name="next" class="linkbutton" type="submit" value="&gt;&gt;"/>
+        <input id="nextbutton" name="last" class="linkbutton" type="submit" value="&gt;|"/>
+        </c:when>
+		<c:otherwise>
+		<span class="linkbuttonquiet" >&gt;&gt;</span>
+		<span class="linkbuttonquiet" >&gt;|</span>
+		</c:otherwise>
+		</c:choose>
+
+        <form:input type="hidden" path="resultcount" />
+        <form:input type="hidden" path="gridColumns" />
+        <form:input type="hidden" path="resultsperpage" />
+        <form:input type="hidden" path="currentpage" />
+		<TABLE class="gridresults">
+
+		<tbody>
+		<spring:url var="emptybook" value="/resources/images/emptybook.gif" />
+ <c:forEach var="bookrow" items="${bookListModel.bookRows}" varStatus="expstatus">
+ 			<tr>
+ 			
+ <c:forEach var="book" items="${bookrow}" varStatus="expstatus">
+		
+  <spring:url value="/books/display/${book.id}" var="editurl"/>
+ <td>
+ <div class="imagecontainer">
+ <c:choose>
+ <c:when test="${book.bookdetail.hasImage}">
+ <a href="${editurl}" class="imagecontainer"><img class="bookimage" src="${book.bookdetail.imagelink}" /></a>
+ </c:when>
+ <c:otherwise>
+<a href="${editurl}" class="imagecontainer"><img class="emptybook" src="${emptybook}" /></a>
+ </c:otherwise>
+ </c:choose>
+ 
+ 
+ 
+ <c:set var="shelfclass" value="${classHash[book.clientshelfcode]}" />
+ <div class="overlay">
+ <a href="${editurl}" class="gridresults"><img id="shelfimg" src="${imagebasedir}${shelfclass.imagedisplay}" width="50x"/></a>
+ </div>
+ </div>
+<div><a href="${editurl}" class="grtext">${book.bookdetail.titleForDisplay}</a></div>
+</td>
+ </c:forEach>			
+ 			
+			</tr>
+ 			
+
+ </c:forEach>		
+ 
+		</tbody>
+		</TABLE>    
+<div>
+		<c:choose>
+		<c:when test="${bookListModel.hasPrevious}">
+		<input id="nextbutton" name="first" class="linkbutton" type="submit" value="|&lt;"/>
+        <input id="nextbutton" name="prev" class="linkbutton" type="submit" value="&lt;&lt;"/>
+		</c:when>
+		<c:otherwise>
+		<span class="linkbuttonquiet" >|&lt;</span>
+		<span class="linkbuttonquiet" >&lt;&lt;</span>
+		</c:otherwise>
+		</c:choose>
+		<c:choose>
+		<c:when test="${bookListModel.hasNext}">
+		<input id="nextbutton" name="next" class="linkbutton" type="submit" value="&gt;&gt;"/>
+        <input id="nextbutton" name="last" class="linkbutton" type="submit" value="&gt;|"/>
+        </c:when>
+		<c:otherwise>
+		<span class="linkbuttonquiet" >&gt;&gt;</span>
+		<span class="linkbuttonquiet" >&gt;|</span>
+		</c:otherwise>
+		</c:choose>
+</div>   
+</form:form>
+
+</div>

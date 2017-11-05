@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:page="urn:jsptagdir:/WEB-INF/tags/form"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:spring="http://www.springframework.org/tags"
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
+	<jsp:directive.page contentType="text/html;charset=UTF-8" />
+	<jsp:output omit-xml-declaration="yes" />
+	<script type="text/javascript">
+		require([ 'dojo/dom','dijit/Dialog','dojo/query', "dojo/dom-style", "dijit/focus",
+				"dojo/on", 'dojo/domReady!' ], function(dom, Dialog,query, style,
+				focusUtil, on) {
+
+			var showoptions = false;
+			var masterstatus = true;
+			
+			startposDialog = new Dialog({
+			        title: '<spring:message code="label_print_positionpopup"/>',
+			        href:'<spring:url value="/positionsinfo" />'	
+			    });
+			
+			  nudgeDialog= new Dialog({
+			        title: '<spring:message code="label_print_nudgepopup"/>',
+			        href:'<spring:url value="/nudgeinfo" />'	
+			    });			
+
+			toggleOptionDisplay(showoptions);
+			// wire up mastercheck
+			on(dojo.byId("mastercheck"), 'click', function(event) {
+				var master = dojo.byId('mastercheck');
+				masterstatus = master.checked;
+				dojo.query("input[name^='checked']").forEach(function(node) {
+					var id = node.id;
+					var box = dojo.byId(id);
+
+					if (masterstatus) {
+						box.checked = true;
+					} else {
+						box.checked = false;
+					}
+				});
+
+			});
+
+			// print pdf opens in new window
+			form = dojo.byId("generatebookcodes");
+			on(form, "input[id^='print']:click", function(event) {
+				//alert('yippee');
+				form.target = "_blank";
+				form.submit();
+			});
+
+			dojo.query("a[id^='potoggle']").forEach(function(node) {
+				var id = node.id;
+
+				on(dojo.byId(id), 'click', function(event) {
+					showoptions = !showoptions;
+					// toggle display of print options
+					toggleOptionDisplay(showoptions);
+				});
+			});
+
+			function toggleOptionDisplay(showoptions) {
+				optionsdiv = dojo.byId("printoptions");
+				showdiv = dojo.byId("showprintoptions");
+				if (showoptions) {
+					dojo.style(optionsdiv, "display", "block");
+					dojo.style(showdiv, "display", "none");
+				} else {
+					dojo.style(optionsdiv, "display", "none");
+					dojo.style(showdiv, "display", "block");
+				}
+
+			}
+		});
+		
+		
+	</script>
+
+
+
+	<spring:message code="button_generate" htmlEscape="false" var="bgen" />
+	<spring:message code="button_cancel" htmlEscape="false" var="bcancel" />
+	<spring:message code="label_generate_class" htmlEscape="false"
+		var="pagetitle" />
+	<spring:message code="label_class" htmlEscape="false" var="lclass" />
+	<spring:message code="label_print_startpos" htmlEscape="false"
+		var="firstpos" />
+	<spring:message code="label_print_border" htmlEscape="false"
+		var="lborder" />
+	<spring:message code="label_print_printnudge" htmlEscape="false"
+		var="lnudge" />
+	<spring:message code="label_print_print" htmlEscape="false"
+		var="lprint" />
+	<spring:message code="label_class_studentname" htmlEscape="false"
+		var="lname" />
+	<spring:message code="label_generate_showoptions" htmlEscape="false"
+		var="showprint" />
+	<spring:message code="label_generate_hideoptions" htmlEscape="false"
+		var="hideprint" />
+
+	<h1>${pagetitle}</h1>
+
+
+	<spring:url value="/generatebarcode/class/custom" var="actionurl" />
+	<form:form action="${actionurl}" id="generatebookcodes"
+		modelAttribute="printClassModel" method="POST">
+		<div class="columnbox cbtwo"
+			style="border-right-style: dotted; padding-right: 15px;">
+
+			${lclass}:
+
+			<form:select path="newClassId" onChange="submit();">
+				<c:forEach items="${classinfo}" var="tmp">
+					<form:option value="${tmp.key}"
+						label="${tmp.value.firstname} ${tmp.value.lastname}" />
+				</c:forEach>
+			</form:select>
+
+
+
+
+			<br />
+
+			<table>
+				<THEAD>
+					<tr>
+						<th style="border-right-width: 0px;"><input id="mastercheck"
+							name="mastercheck" value="true" type="checkbox" /></th>
+						<th style="border-left-width: 0px;">${lname}</th>
+					</tr>
+				</THEAD>
+				<tbody>
+					<c:forEach var="value" items="${printClassModel.printoutList}"
+						varStatus="liststatus">
+						<tr>
+							<td style="border-right-width: 0px;"><form:checkbox
+									path="checked[${liststatus.index}]" /> <form:input
+									path="idref[${liststatus.index}]" value="${uncounted.bookid}"
+									type="hidden"></form:input></td>
+							<td style="border-left-width: 0px; text-align: right">${value.firstname}
+								${value.lastname}</td>
+
+						</tr>
+					</c:forEach>
+				</tbody>
+			</table>
+
+			<form:input path="teacherid" type="hidden">
+			</form:input>
+			<form:input path="currentClassId" type="hidden">
+			</form:input>
+
+		</div>
+
+		<div style="padding-top: 60px; padding-left: 10px;"
+			class="columnbox cbtwo">
+
+			<div id="printoptions" style="display: none;">
+				<div style="text-align: right">${lborder}
+					<form:select path="showBorder">
+						<form:options items="${yesno}" itemValue="value"
+							itemLabel="display" />
+					</form:select>
+				</div>
+				<div style="text-align: right">${firstpos}
+					<form:select path="startPos">
+						<form:options items="${positionselect}" itemValue="value"
+							itemLabel="display" />
+					</form:select>
+					<a class="infobutton" onclick="startposDialog.show();">i</a>
+				</div>
+				<div style="text-align: right">${lnudge}
+					<form:select path="nudge">
+						<form:options items="${nudge}" itemValue="value"
+							itemLabel="display" />
+
+					</form:select>
+					<a class="infobutton" onclick="nudgeDialog.show();">i</a>
+				</div>
+				<div style="display: block; padding-top: 10px; text-align: right;">
+					<a href="#" id="potoggle1">- ${hideprint}</a>
+				</div>
+			</div>
+			<div id="showprintoptions" style="display: block; text-align: right;">
+				<a href="#" id="potoggle2">+ ${showprint}</a>
+			</div>
+
+			<span
+				style="float: right; margin-right: 0px; margin-bottom: 15px; margin-top: 10px;"
+				class="linkbuttonquiet"> <input value="${lprint}"
+				type="submit" name="print" id="print" class="linkbutton"
+				style="width: 125px;" />
+			</span>
+
+		</div>
+
+
+	</form:form>
+</div>

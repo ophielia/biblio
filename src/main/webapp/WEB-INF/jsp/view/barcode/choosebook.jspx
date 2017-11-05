@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page" 
+xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" 
+xmlns:c="http://java.sun.com/jsp/jstl/core" 
+xmlns:spring="http://www.springframework.org/tags" 
+xmlns:form="http://www.springframework.org/tags/form" 
+xmlns:fmt="http://java.sun.com/jsp/jstl/fmt" 
+xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+
+
+<spring:message code="button_generate" htmlEscape="false" var="bgen"/>
+<spring:message code="button_cancel" htmlEscape="false" var="bcancel"/>
+<spring:message code="label_number" htmlEscape="false" var="lnumber"/>
+
+<spring:message code="label_book" htmlEscape="false" var="lbook"/>
+<spring:message code="label_barcode_assignexist" htmlEscape="false" var="lpagetitle"/>
+<spring:message code="action_lending_selectargs" arguments="${lbook}" htmlEscape="false" var="aselect"/>
+
+<spring:url value="/assignbarcode/editbook" var="actionurl"/>
+
+<h1>${lpagetitle}</h1>
+
+<form:form action="${actionurl}" id="generatebookcodes" method="POST" modelAttribute="assignCodeModel">
+
+<div>
+
+<form:errors id="errors" class="errors" path="*" />
+<form:errors id="errors" class="errors" path="existbooknr" />
+<div class="inputspace">${clientname} ${lnumber}: <form:input path="existbooknr"></form:input></div>
+	<input id="existing" name="existing" type="submit" value="${aselect}"></input>
+
+</div>
+
+
+
+
+</form:form>
+</div>

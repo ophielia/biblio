@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page" 
+xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" 
+xmlns:c="http://java.sun.com/jsp/jstl/core" 
+xmlns:spring="http://www.springframework.org/tags" 
+xmlns:form="http://www.springframework.org/tags/form" 
+xmlns:fmt="http://java.sun.com/jsp/jstl/fmt" 
+xmlns:fn="http://java.sun.com/jsp/jstl/functions" 
+xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+
+<spring:message code="action_class_increment" htmlEscape="false" var="pagetitle"/>
+<spring:message code="action_class_incrementshort" htmlEscape="false" var="aincrement"/>
+<spring:message code="message_class_incrementlong" htmlEscape="false" var="mincrement"/>
+<spring:message code="button_cancel" htmlEscape="false" var="bcancel"/>
+<spring:message code="message_class_returnto" htmlEscape="false" var="returnto"/>
+<spring:message code="message_class_incrementsuccess" htmlEscape="false" var="successmsg"/>
+
+
+<h1>${pagetitle}</h1>
+
+<spring:url value="/classes/manage/increment" var="actionurl"/>
+<form:form action="${actionurl}" id="editclass" method="POST" >
+
+<c:choose>
+<c:when test="${incrementsuccess == true }">
+${successmsg}
+<div style="margin-top:25px;text-align:center">
+<spring:url value="/classes/manage" var="returntourl"/>
+<a href="${returntourl}"  class="linkbutton">${returnto}</a>
+</div>
+</c:when>
+<c:otherwise>
+<div> ${mincrement}</div>
+<div style="margin-top:25px;text-align:center">
+<spring:url value="/classes/manage/increment" var="incrementurl"/>
+  <input class="linkbutton" id="save" name="increment" type="submit" value="${aincrement}"/>
+ 
+<spring:url value="/classes/manage" var="cancelurl"/>
+<a href="${cancelurl}"  class="linkbutton">${bcancel}</a>
+</div>
+</c:otherwise>
+</c:choose>
+
+
+
+
+</form:form>
+
+</div>

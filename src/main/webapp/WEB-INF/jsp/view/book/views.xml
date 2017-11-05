@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 2.1//EN" "http://tiles.apache.org/dtds/tiles-config_2_1.dtd">
+<tiles-definitions>
+    <definition extends="default" name="book/create">
+        <put-attribute name="body" value="/WEB-INF/jsp/view/book/create.jspx"/>
+    </definition>
+
+
+    <definition extends="default" name="book/editbook">
+        <put-attribute name="body" value="/WEB-INF/jsp/view/book/editbook.jspx"/>
+    </definition>
+
+         <definition extends="default" name="book/show">
+        <put-attribute name="body" value="/WEB-INF/jsp/view/book/show.jspx"/>
+    </definition>
+
+             <definition extends="default" name="book/showhistory">
+        <put-attribute name="body" value="/WEB-INF/jsp/view/book/showhistory.jspx"/>
+    </definition>
+             <definition extends="default" name="book/choosedetails">
+        <put-attribute name="body" value="/WEB-INF/jsp/view/book/choosedetails.jspx"/>
+    </definition>
+
+    <definition extends="default" name="book/rdstart">
+        <put-attribute name="body" value="/WEB-INF/jsp/view/book/rdstart.jspx"/>
+    </definition>
+
+    <definition extends="default" name="book/rdtarget">
+        <put-attribute name="body" value="/WEB-INF/jsp/view/book/rdtarget.jspx"/>
+    </definition>
+
+
+    <definition extends="default" name="book/resultlist">
+        <put-attribute name="body" value="/WEB-INF/jsp/view/book/resultlist.jspx"/>
+    </definition>
+
+    <definition extends="default" name="book/changebookid">
+        <put-attribute name="body" value="/WEB-INF/jsp/view/book/changebookid.jspx"/>
+    </definition>
+
+    <definition extends="default" name="book/admin/resultlist">
+        <put-attribute name="body" value="/WEB-INF/jsp/view/book/adminresultlist.jspx"/>
+    </definition>      
+    
+</tiles-definitions>

@@ -1,0 +1,25 @@
+<div xmlns:spring="http://www.springframework.org/tags" xmlns:util="urn:jsptagdir:/WEB-INF/tags/util" xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8" />
+    <jsp:output omit-xml-declaration="yes" />
+    <spring:message var="app_name" code="application_name" htmlEscape="false" />
+    <spring:message var="title" code="welcome_titlepane" arguments="${app_name}" htmlEscape="false" />
+
+
+    <h1>
+        <spring:message code="welcome_h3" arguments="${app_name}" />
+    </h1>
+    <P><spring:message code="msg_index_intro"/></P>
+    <div class="columnbox cbthree"><div class="columnboxheader"><spring:message code="msg_index_flexible_hdr"/></div>
+        <spring:message code="msg_index_flexible"/></div>
+    <div class="columnbox cbthree"><div class="columnboxheader"><spring:message code="msg_index_manage_hdr"/></div>
+        <spring:message code="msg_index_manage"/></div>
+    <div class="columnbox cbthree"><div class="columnboxheader"><spring:message code="msg_index_autonomous_hdr"/></div>
+        <spring:message code="msg_index_autonomous"/></div>
+
+    <p style="clear:both; padding-top:30px">
+        <spring:url value="/services" var="servicesurl"/>
+        <spring:message htmlEscape="false" arguments="${servicesurl}" code="msg_index_followout"/></p>
+
+
+
+</div>

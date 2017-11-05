@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page" 
+xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" 
+xmlns:c="http://java.sun.com/jsp/jstl/core" 
+xmlns:spring="http://www.springframework.org/tags" 
+xmlns:form="http://www.springframework.org/tags/form" 
+xmlns:fmt="http://java.sun.com/jsp/jstl/fmt" 
+xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+ 
+<link rel="stylesheet" href="${imagebasedir}/resources/mydojo/widget/css/ShelfClassWidget.css" media="screen"></link>
+<link rel="stylesheet" href="${imagebasedir}/resources/mydojo/widget/css/ShelfClassSelectWidget.css" media="screen"></link>
+    <spring:message code="menu_lendinghistory" var="searchtitle"/>
+    <h1>${searchtitle}</h1>
+
+<spring:message code="label_class" htmlEscape="false" var="lclass"/>    
+<spring:message code="label_print_print" htmlEscape="false" var="lprint"/>    
+<spring:message code="label_class_student" htmlEscape="false" var="lstudent"/>    
+<spring:message code="label_book_clientbookid" htmlEscape="false" var="lbookid"/>    
+<spring:message code="label_book_title" htmlEscape="false" var="ltitle"/>    
+<spring:message code="label_book_author" htmlEscape="false" var="lauthor"/>    
+<spring:message code="label_lending_checkedout" htmlEscape="false" var="lcheckedout"/>    
+<spring:message code="label_lending_duedate" htmlEscape="false" var="lduedate"/>    
+<spring:message code="label_lendingreturned" htmlEscape="false" var="lreturned"/>
+<spring:message code="label_overdue" htmlEscape="false" var="loverdue"/>
+<spring:message code="label_lendingtimeperiod" htmlEscape="false" var="ltimeperiod"/>    
+<spring:message code="label_lendingstatus" htmlEscape="false" var="lstatus"/>    
+<spring:message code="button_criteria" htmlEscape="false" var="lcriteria"/>    
+
+
+<spring:message code="button_sortby" htmlEscape="false" var="lsortby"/>    
+
+<spring:url value="/lendinghistory" var="actionurl"/>
+<script type="text/javascript">
+ require([
+          'dojo/dom',"dojo/on","dijit/TooltipDialog", "dijit/popup",
+          'dojo/domReady!'
+      ], function (dom,on,TooltipDialog,popup) {
+	 
+	function getIndex(prefix, text) {
+			// gets a substring of the text, starting at the char after the length of the prefix
+			var stripped = text.substr(prefix.length);
+			return stripped;
+		}
+
+		// wire up sort buttons
+		dojo.query("th[id^='aSort']").forEach(function(node) {
+			var id = node.id;
+
+			on(dojo.byId(id), 'click', function(event) {
+				clickedid = event.currentTarget.id;
+				sortaction = getIndex('aSort', clickedid);
+				var form = dojo.byId('resultlist');
+				form.action = "${actionurl}/sortby/" + sortaction;
+				form.submit();
+			});
+		});
+		
+		// print pdf opens in new window
+	   	form = dojo.byId("resultlist");
+	   	on(form, "input[id^='print']:click", function(event){
+   	  //alert('yippee');
+		  form.target="_blank";
+		  form.submit();
+	   	});
+
+	});
+ 
+</script>
+
+
+<form:form action="${actionurl}" id="resultlist" method="POST" modelAttribute="lendingSearchModel">
+
+		<table class="clear">
+			<tbody>
+				<tr style="vertical-align: top;">
+					<td>${lcriteria}:</td>
+					<td>${lclass} - <form:select path="classselect">
+							<c:forEach items="${classselect}" var="tmp">
+								<form:option value="${tmp.key}" label="${tmp.value}" />
+							</c:forEach>
+						</form:select></td>
+					<td>${ltimeperiod} - <form:select path="timeselect">
+							<c:forEach items="${timeperiods}" var="tmp">
+								<form:option value="${tmp.key}" label="${tmp.value}" />
+							</c:forEach>
+						</form:select></td>
+					<td>${lstatus} - <form:select path="lendtypeselect">
+							<c:forEach items="${lendtypeselect}" var="tmp">
+								<form:option value="${tmp.key}" label="${tmp.value}" />
+							</c:forEach>
+						</form:select>
+						<form:input type="hidden" path="sorttype"></form:input>
+						<form:input type="hidden" path="sortdir"></form:input>
+						</td>
+						<td><spring:message code="button_display" htmlEscape="false" var="search_button"/>
+						<input style="    margin-bottom: 5px;" class="linkbutton" id="searchbutton" type="submit" value="${search_button}"/>
+						<br />
+						<input class="linkbutton" id="print" name="print" type="submit" value="${lprint}"></input></td>
+				</tr>
+			</tbody>
+		</table>
+		
+        
+<hr />
+<br />
+
+		<TABLE>
+		<thead>		
+			<tr >
+			<th id="aSort1">${lclass}</th>
+			<th id="aSort2">${lstudent}</th>
+			<th id="aSort3">${lbookid}</th>
+			<th id="aSort5">${ltitle} / ${lauthor}</th>
+			<th id="aSort4">${lcheckedout}<br />
+			${lduedate}</th>
+			<th id="aSort6">${lreturned}</th>
+			<th id="aSort7">${loverdue}</th>
+		</tr>	 			
+		</thead>
+		<tbody>
+		
+ <c:forEach var="histRec" items="${historyRecords}" varStatus="bookstatus">
+					<tr>
+			<td>${histRec.teacherfirstname }</td>
+			<td>
+			<c:choose>
+			<c:when test="${histRec.isteacher!=false}">
+<spring:url value="/lendinghistory/class/${histRec.borrowerid}" var="showurl"/>
+<a class="tableboldlink" href="${showurl}">${histRec.borrowerfn } ${histRec.borrowerln }</a>			
+			</c:when>
+			<c:otherwise><spring:url value="/classes/showstudent/${histRec.borrowerid}?from=lend" var="showurl"/>
+<a class="tableboldlink" href="${showurl}">${histRec.borrowerfn } ${histRec.borrowerln }</a>			
+			</c:otherwise>
+			</c:choose>
+			</td>
+						<td><spring:url value="/books/display/${histRec.bookid}"
+								var="bookurl" /> <a class="tableboldlink" href="${bookurl}">${histRec.bookclientid}</a>
+						</td>
+						<td>
+						
+			<a class="tableboldlink" style="max-width: 125px;" href="${bookurl}">${histRec.booktitle }</a><br></br>
+			<a class="tableboldlink" href="${bookurl}">${histRec.author }</a></td>
+			<td><fmt:formatDate type="date" 
+            value="${histRec.checkedout}" /><br /><fmt:formatDate type="date" 
+            value="${histRec.duedate }" /></td>
+			<td><fmt:formatDate type="date" 
+            value="${histRec.returned  }" /></td>
+            <td style="text-align: center;"><c:if test="${histRec.late}">X</c:if></td>
+					</tr>
+				</c:forEach>		
+		</tbody>
+		</TABLE>        
+</form:form>
+
+</div>

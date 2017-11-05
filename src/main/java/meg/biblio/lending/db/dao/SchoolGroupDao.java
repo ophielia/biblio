@@ -13,6 +13,7 @@ import java.util.List;
 public class SchoolGroupDao {
 
     @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name="client")
     private ClientDao client;
 
     @JoinColumn(name = "schoolgroup", insertable = false, updatable = false)

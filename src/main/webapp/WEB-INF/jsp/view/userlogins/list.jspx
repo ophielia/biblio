@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page" 
+xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" 
+xmlns:c="http://java.sun.com/jsp/jstl/core" 
+xmlns:spring="http://www.springframework.org/tags" 
+xmlns:form="http://www.springframework.org/tags/form" 
+xmlns:fmt="http://java.sun.com/jsp/jstl/fmt" 
+xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    
+<spring:message code="label_login_user" htmlEscape="false" var="llogin"/>
+<spring:message code="label_login_title"  arguments="${clientname}" htmlEscape="false" var="ltitle"/>
+<spring:message code="label_login_username" htmlEscape="false" var="lusername"/>
+<spring:message code="label_login_role" htmlEscape="false" var="lrole"/>
+<spring:message code="entity_edit" htmlEscape="false" var="ledit"/>
+<spring:message code="entity_create" arguments="${llogin}" htmlEscape="false" var="lcreate"/>
+
+
+<h1>${ltitle}</h1>
+
+
+<table>
+<thead>
+<tr>
+<td>${lusername}</td>
+<td>${lrole}</td>
+<td></td>
+</tr>
+</thead>
+<tbody>
+<c:forEach items="${users}" var="user">
+<tr>
+<td>${user.username}</td>
+<td>${roleLkup[user.role.rolename]}</td>
+<td>
+<spring:url value="/userlogins/update/${user.id}?form" var="editurl"/>
+<a href="${editurl}">${ledit}</a>
+</td>
+</tr>
+</c:forEach>
+
+
+</tbody>
+
+</table>
+
+<spring:url value="/userlogins/create?form" var="createurl"/>
+<a class="linkbutton" href="${createurl}">${lcreate}</a>
+</div>
+
+

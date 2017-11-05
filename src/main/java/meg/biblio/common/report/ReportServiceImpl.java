@@ -18,6 +18,7 @@ import javax.xml.transform.*;
 import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.stream.StreamSource;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 
 @Service
@@ -27,7 +28,7 @@ public class ReportServiceImpl implements ReportService {
     @Autowired
     AppSettingService appSetting;
 
-    private FopFactory fopFactory = FopFactory.newInstance();
+    private FopFactory fopFactory = FopFactory.newInstance(new File(".").toURI());
     private TransformerFactory tFactory = TransformerFactory.newInstance();
 
     @Override

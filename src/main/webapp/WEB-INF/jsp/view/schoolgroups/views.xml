@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 2.1//EN" "http://tiles.apache.org/dtds/tiles-config_2_1.dtd">
+<tiles-definitions>
+    <definition extends="default" name="schoolgroups/create">
+        <put-attribute name="body" value="/WEB-INF/jsp/view/schoolgroups/create.jspx"/>
+    </definition>
+    
+    <definition extends="default" name="schoolgroups/edit">
+        <put-attribute name="body" value="/WEB-INF/jsp/view/schoolgroups/edit.jspx"/>
+    </definition>
+    <definition extends="default" name="schoolgroups/confirmdelete">
+        <put-attribute name="body" value="/WEB-INF/jsp/view/schoolgroups/confirmdeleteclass.jspx"/>
+    </definition>        
+    <definition extends="default" name="schoolgroups/list">
+        <put-attribute name="body" value="/WEB-INF/jsp/view/schoolgroups/list.jspx"/>
+    </definition>
+    
+    <definition extends="default" name="schoolgroups/settings">
+        <put-attribute name="body" value="/WEB-INF/jsp/view/schoolgroups/settings.jspx"/>
+    </definition>    
+    
+    <definition extends="default" name="schoolgroups/increment">
+        <put-attribute name="body" value="/WEB-INF/jsp/view/schoolgroups/increment.jspx"/>
+    </definition>      
+    
+        <definition extends="default" name="schoolgroups/clearclasslists">
+        <put-attribute name="body" value="/WEB-INF/jsp/view/schoolgroups/clearclasslists.jspx"/>
+    </definition>   
+    
+    <definition extends="default" name="schoolgroups/remove">
+        <put-attribute name="body" value="/WEB-INF/jsp/view/schoolgroups/remove.jspx"/>
+    </definition>    
+    
+    <definition extends="default" name="schoolgroups/editstudent">
+        <put-attribute name="body" value="/WEB-INF/jsp/view/schoolgroups/editstudent.jspx"/>
+    </definition>    
+    
+    <definition extends="default" name="schoolgroups/showstudent">
+        <put-attribute name="body" value="/WEB-INF/jsp/view/schoolgroups/showstudent.jspx"/>
+    </definition>      
+    
+   
+</tiles-definitions>

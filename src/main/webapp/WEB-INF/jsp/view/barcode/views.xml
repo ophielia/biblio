@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 2.1//EN" "http://tiles.apache.org/dtds/tiles-config_2_1.dtd">
+<tiles-definitions>
+	<definition extends="default" name="barcode/generatebookscount">
+		<put-attribute name="body"
+			value="/WEB-INF/jsp/view/barcode/generatebookscount.jspx" />
+	</definition>
+	
+	<definition extends="default" name="barcode/generatebooksrange">
+		<put-attribute name="body"
+			value="/WEB-INF/jsp/view/barcode/generatebooksrange.jspx" />
+	</definition>
+	
+
+	<definition extends="default" name="barcode/generatebookscustom">
+		<put-attribute name="body"
+			value="/WEB-INF/jsp/view/barcode/generatebookscustom.jspx" />
+	</definition>
+	
+	<definition extends="default" name="barcode/generateclass">
+		<put-attribute name="body"
+			value="/WEB-INF/jsp/view/barcode/generateclass.jspx" />
+	</definition>
+	
+	<definition extends="default" name="barcode/generateclasscustom">
+		<put-attribute name="body"
+			value="/WEB-INF/jsp/view/barcode/generateclasscustom.jspx" />
+	</definition>	
+
+	<definition extends="default" name="barcode/maincheckout">
+		<put-attribute name="body"
+			value="/WEB-INF/jsp/view/barcode/comain.jspx" />
+	</definition>
+	
+		<definition extends="default" name="barcode/multicheckout">
+		<put-attribute name="body"
+			value="/WEB-INF/jsp/view/barcode/comulti.jspx" />
+	</definition>
+
+	<definition extends="default" name="barcode/checkoutsuccess">
+		<put-attribute name="body"
+			value="/WEB-INF/jsp/view/barcode/cosuccess.jspx" />
+	</definition>
+
+	<definition extends="default" name="barcode/returnsuccess">
+		<put-attribute name="body"
+			value="/WEB-INF/jsp/view/barcode/coretsuccess.jspx" />
+	</definition>
+		
+	<definition extends="default" name="barcode/personcheckout">
+		<put-attribute name="body"
+			value="/WEB-INF/jsp/view/barcode/coperson.jspx" />
+	</definition>
+
+	<definition extends="default" name="barcode/assigncode">
+		<put-attribute name="body"
+			value="/WEB-INF/jsp/view/barcode/assigncode.jspx" />
+	</definition>
+
+
+	<definition extends="default" name="barcode/assignsuccess">
+		<put-attribute name="body"
+			value="/WEB-INF/jsp/view/barcode/assignsuccess.jspx" />
+	</definition>
+
+	<definition extends="default" name="barcode/choosenewbook">
+		<put-attribute name="body"
+			value="/WEB-INF/jsp/view/barcode/newbook.jspx" />
+	</definition>
+	
+	<definition extends="default" name="barcode/chooseexistbook">
+		<put-attribute name="body"
+			value="/WEB-INF/jsp/view/barcode/choosebook.jspx" />
+	</definition>	
+
+	<definition extends="default" name="barcode/isbnedit">
+		<put-attribute name="body"
+			value="/WEB-INF/jsp/view/barcode/isbnedit.jspx" />
+	</definition>
+
+	<definition extends="default" name="barcode/titleedit">
+		<put-attribute name="body"
+			value="/WEB-INF/jsp/view/barcode/titleedit.jspx" />
+	</definition>
+
+	<definition extends="default" name="barcode/editbook">
+		<put-attribute name="body"
+			value="/WEB-INF/jsp/view/barcode/editbook.jspx" />
+	</definition>
+	
+	<definition extends="default" name="barcode/verify">
+		<put-attribute name="body"
+			value="/WEB-INF/jsp/view/barcode/verify.jspx" />
+	</definition>	
+
+</tiles-definitions>

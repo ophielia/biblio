@@ -34,6 +34,7 @@ import javax.xml.transform.*;
 import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.stream.StreamSource;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.Date;
@@ -55,7 +56,7 @@ public class PDFController {
     @Autowired
     private ServletContext servletContext;
 
-    private FopFactory fopFactory = FopFactory.newInstance();
+    private FopFactory fopFactory = FopFactory.newInstance(new File(".").toURI());
     private TransformerFactory tFactory = TransformerFactory.newInstance();
 
     protected URIResolver uriResolver;
@@ -76,7 +77,7 @@ public class PDFController {
         Long clientkey = client.getId();
         String lang = getShortLangCode(locale.getLanguage());
 
-        String cxslname = "META-INF/web-resources/transform/" + client.getOverduexslbase() + "-" + lang + ".xsl";
+        String cxslname = "/static/transform/"+ client.getOverduexslbase() + "-" + lang + ".xsl";
 
         OverdueBookReport obr = lendingService
                 .assembleOverdueBookReport(clientkey);
@@ -123,7 +124,7 @@ public class PDFController {
         Long clientkey = client.getId();
         String lang = getShortLangCode(locale.getLanguage());
 
-        String cxslname = "META-INF/web-resources/transform/" + client.getClasssummaryxslbase() + "-" + lang + ".xsl";
+        String cxslname = "/static/transform/" + client.getClasssummaryxslbase() + "-" + lang + ".xsl";
 
         ClassSummaryReport csr = lendingService
                 .assembleClassSummaryReport(classid, new Date(), clientkey);
@@ -169,7 +170,7 @@ public class PDFController {
         Long clientkey = client.getId();
         String lang = getShortLangCode(locale.getLanguage());
 
-        String cxslname = "META-INF/web-resources/transform/" + client.getClasssummaryxslbase() + "-" + lang + ".xsl";
+        String cxslname = "/static/transform/" + client.getClasssummaryxslbase() + "-" + lang + ".xsl";
 
         DailySummaryReport csr = lendingService
                 .assembleWeeklySummaryReport(new Date(), clientkey, false);
@@ -215,7 +216,7 @@ public class PDFController {
         ClientDao client = clientService.getCurrentClient(principal);
         Long clientkey = client.getId();
 
-        String cxslname = "META-INF/web-resources/transform/"
+        String cxslname = "/static/transform/"
                 + client.getBarcodesheetxsl() + ".xsl";
 
         if (codeCount != null) {
@@ -271,7 +272,7 @@ public class PDFController {
         Long clientkey = client.getId();
         String username = principal.getName();
 
-        String cxslname = "META-INF/web-resources/transform/"
+        String cxslname = "/static/transform/"
                 + client.getBarcodesheetxsl() + ".xsl";
 
         if (username != null) {
@@ -332,7 +333,7 @@ public class PDFController {
         ClientDao client = clientService.getCurrentClient(principal);
         Long clientkey = client.getId();
 
-        String cxslname = "META-INF/web-resources/transform/"
+        String cxslname = "/static/transform/"
                 + client.getBarcodesheetxsl() + ".xsl";
 
 
@@ -400,7 +401,7 @@ public class PDFController {
         Long clientkey = client.getId();
         String username = principal.getName();
 
-        String cxslname = "META-INF/web-resources/transform/"
+        String cxslname = "/static/transform/"
                 + client.getBarcodesheetxsl() + ".xsl";
 
         if (classId != null) {

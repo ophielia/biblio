@@ -1,31 +1,9 @@
 package meg.biblio.common;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.Locale;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.transform.Result;
-import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.sax.SAXResult;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
-
 import meg.biblio.common.report.BarcodeSheet;
 import meg.biblio.common.report.TableReport;
 import meg.biblio.lending.ClassManagementService;
-import meg.biblio.lending.LendingSearchCriteria;
 import meg.biblio.lending.LendingService;
-
 import org.apache.fop.apps.FOPException;
 import org.apache.fop.apps.Fop;
 import org.apache.fop.apps.FopFactory;
@@ -33,31 +11,44 @@ import org.apache.fop.apps.MimeConstants;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
-@ContextConfiguration(locations = "classpath:/META-INF/spring/applicationContext*.xml")
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.transform.*;
+import javax.xml.transform.sax.SAXResult;
+import javax.xml.transform.stream.StreamSource;
+import java.io.*;
+import java.util.Locale;
+
 @RunWith(SpringJUnit4ClassRunner.class)
+@WebAppConfiguration
+@SpringBootTest
 @Transactional
 public class ReportGeneratorTest {
 
 
 	@Autowired
-	ClassManagementService classService;
+    ClassManagementService classService;
 
 	@Autowired
-	BarcodeService barcodeService;
+    BarcodeService barcodeService;
 
 	@Autowired
-	LendingService lendingService;
+    LendingService lendingService;
 
 	@Autowired
-	ClientService clientService;
+    ClientService clientService;
 
-	private FopFactory fopFactory = FopFactory.newInstance();
+	private FopFactory fopFactory = FopFactory.newInstance(new File(".").toURI());
 	private TransformerFactory tFactory = TransformerFactory.newInstance();
 
+	private String basetestpath = "/Users/margaretmartin/projects/temp/";
 
 	@Test
 	public void markerMethod() {
@@ -76,7 +67,7 @@ public class ReportGeneratorTest {
 		Marshaller m = context.createMarshaller();
 		m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 
-		m.marshal(sheet, new File("C:/Temp/bcsmareschale.xml"));
+		m.marshal(sheet, new File(basetestpath + "bcsmareschale.xml"));
 	}
 	
 	@Test
@@ -131,7 +122,7 @@ public class ReportGeneratorTest {
 
 		// Step 2: Set up output stream.
 		// Note: Using BufferedOutputStream for performance reasons (helpful with FileOutputStreams).
-		OutputStream out = new BufferedOutputStream(new FileOutputStream(new File("C:/Temp/barcodes.pdf")));
+		OutputStream out = new BufferedOutputStream(new FileOutputStream(new File(basetestpath + "barcodes.pdf")));
 
 		try {
 
@@ -140,14 +131,14 @@ public class ReportGeneratorTest {
 			Fop fop = fopFactory.newFop(MimeConstants.MIME_PDF, out);
 
 			//Setup Transformer
-			Source xsltSrc = new StreamSource(new File("C:/Temp/sample.xsl"));
+			Source xsltSrc = new StreamSource(new File(basetestpath + "bcs_1.xsl"));
 			Transformer transformer = tFactory.newTransformer(xsltSrc);
 
 			//Make sure the XSL transformation's result is piped through to FOP
 			Result res = new SAXResult(fop.getDefaultHandler());
 
 			//Setup input
-			Source src = new StreamSource(new File("C:/Temp/sample_en.xml"));
+			Source src = new StreamSource(new File(basetestpath + "bcsmareschale.xml"));
 
 
 			//Start the transformation and rendering process

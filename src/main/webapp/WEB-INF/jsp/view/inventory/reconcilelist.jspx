@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page" 
+xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" 
+xmlns:c="http://java.sun.com/jsp/jstl/core" 
+xmlns:spring="http://www.springframework.org/tags" 
+xmlns:form="http://www.springframework.org/tags/form" 
+xmlns:fmt="http://java.sun.com/jsp/jstl/fmt" 
+xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+ 
+<spring:message code="label_inv_startdate" htmlEscape="false" var="lstartdate"/>
+<spring:message code="label_inv_completeinv" htmlEscape="false" var="lcompleteinv"/>
+<spring:message code="label_inv_overview" htmlEscape="false" var="loverview"/>
+<spring:message code="label_print_print" htmlEscape="false" var="lprint"/>
+
+<spring:message code="msg_inv_nouncounted" htmlEscape="false" var="lnouncounted"/>
+<spring:message code="label_inv_reconcilebookpl" htmlEscape="false" var="lreconcilebookpl"/>
+<spring:message code="label_inv_reconcilestatus" htmlEscape="false" var="lreconcilestatus"/>
+<spring:message code="label_inv_reconcile" htmlEscape="false" var="lreconcile"/>
+<spring:message code="label_inv_uncounted" htmlEscape="false" var="luncounted"/>
+<spring:message code="button_updateselected" htmlEscape="false" var="lupdatesel"/>
+<spring:message code="label_book_clientclass" arguments="${clientname}" htmlEscape="false" var="lclientclass"/>
+<spring:message code="label_clientnumber" arguments="${clientname}" htmlEscape="false" var="lbooknr"/>
+<spring:message code="label_book_note" htmlEscape="false" var="lnote"/>
+<spring:message code="label_book_status" htmlEscape="false" var="lstatus"/>
+<spring:message code="label_book_title" htmlEscape="false" var="ltitle"/>
+<spring:message code="label_book_classification" htmlEscape="false" var="lshelfclass"/>
+<spring:message code="msg_inv_partialdisplay" htmlEscape="false" var="lpartialdisplay"/>
+<spring:message code="label_inv_percentcomplete" arguments="${reconcileModel.inventoryStatus.percentcompleted}" htmlEscape="false" var="lpercentcomplete"/>
+<spring:message code="label_inv_numbercounted" arguments="${reconcileModel.inventoryStatus.countedbooks - reconcileModel.inventoryStatus.refoundbooks},${reconcileModel.inventoryStatus.totaltocount}" htmlEscape="false" var="lxofycounted"/>
+<spring:message code="label_inv_reconcileshown" arguments="${reconcileModel.maxUncounted},${reconcileModel.totalUncounted}" htmlEscape="false" var="lfirstofmany"/>
+<spring:message code="label_inv_counted" htmlEscape="false" var="lcounted"/> 
+<spring:message code="label_inv_foundadded" htmlEscape="false" var="lfoundadded"/> 
+<spring:message code="label_inv_reconcilepast" htmlEscape="false" var="lreconcilepast"/>             
+<spring:message code="label_inv_tocount" htmlEscape="false" var="ltocount"/> 
+<spring:message code="label_inv_startdatelong" htmlEscape="false" var="lstarted"/> 
+
+
+    
+ <spring:url value="/inventory/complete" var="completeurl"/>
+ <script type="text/javascript">
+ require(['dojo/dom',"dojo/on",'dojo/domReady!'], 
+		 function (dom,on) {
+	var masterstatus = false;	
+	 
+		// wire up complete inventory button
+		dojo.query("span#completeinv").forEach(function(node) {
+			var id = node.id;
+
+			on(dojo.byId(id), 'click', function(event) {
+				clickedid = event.currentTarget.id;
+				var form = dojo.byId('reconcilebooks');
+				form.action = "${completeurl}";
+				form.submit();
+			});
+		});
+
+		// wire up mastercheck
+		on(dojo.byId("mastercheck"), 'click', function(event) {
+			var master = dojo.byId('mastercheck');
+			masterstatus = master.checked;
+			dojo.query("input[name^='checked']").forEach(function(node) {
+				var id = node.id;
+				var box = dojo.byId(id);
+				
+				if (masterstatus) {
+						box.checked = true;
+					} else {
+						box.checked =false;
+					}
+				});
+
+			});
+
+		// print pdf opens in new window
+	   	form = dojo.byId("reconcilebooks");
+	   	on(form, "input[id^='print']:click", function(event){
+   	  		//alert('yippee');
+		  	form.target="_blank";
+		  	form.submit();
+	   	});
+		
+		});
+	</script>
+
+    <h1>${lreconcilebookpl}</h1>
+    
+<spring:url value="/inventory/reconcile" var="actionurl"/>
+<form:form action="${actionurl}" id="reconcilebooks" method="POST" modelAttribute="reconcileModel">
+      
+       <spring:url value="/inventory" var="currentinvurl"/>
+<div >
+    <div class="reportboxlook"><a href="${currentinvurl}"    >
+<div>${lpercentcomplete}</div> 
+<span style="float:right"> ${lstartdate}:<fmt:formatDate type="date" 
+            value="${reconcileModel.inventoryStatus.startdate}" />   </span> ${lxofycounted}
+<div id="progress">
+    <!-- <span id="percent"></span>-->
+    <div id="bar" style="width:${reconcileModel.inventoryStatus.percentcompleted}%"></div>
+</div>
+</a>
+</div>
+</div>
+
+<div style="    margin-top: 10px;">
+<div style="border: 2px #2E537D dotted;
+    padding: 5px;color:#1B3F68;
+    background-color: #7390B1;font-weight: bolder;">
+    <div style="    margin-bottom: 15px;">
+<span>
+<c:set var="msgcomplete" value="${invincomplete}" />
+${lstarted} <fmt:formatDate type="date" 
+            value="${reconcileModel.inventoryStatus.startdate }" /><br />
+            
+</span>
+</div> 		
+<div style="width:100%;text-align:center">
+<span class="selectspanactive" style="width: 150px;">${ltocount}<br />${reconcileModel.inventoryStatus.totaltocount}</span>
+<span class="selectspanactive" style="width: 150px;">${lcounted}<br />${reconcileModel.inventoryStatus.countedbooks}</span>
+<span class="selectspanactive" style="width: 150px;">${lreconcilepast}<br />${reconcileModel.inventoryStatus.reconciledbooks}</span>
+<span class="selectspanactive" style="width: 150px;">${lfoundadded}<br />${reconcileModel.inventoryStatus.refoundbooks}</span>
+</div>
+</div> 		
+
+</div>
+<a class="linkbutton" style="margin-top:10px;float:right" href="${currentinvurl}"    >${loverview}</a><br />
+<c:if test="${printlist != false }">
+<input class="linkbutton" style="clear:both;margin-top:5px;margin-bottom:10px;float:right" id="print" name="print" type="submit" value="${lprint}"></input>
+</c:if>
+<div style="clear:both;margin-top:55px"></div>
+<span class="inlineh2">${luncounted}</span>
+
+
+
+<c:choose>
+<c:when test="${reconcileModel.complete}">
+${lnouncounted}
+		<span class="selectspanactive" id="completeinv" style="float: right;
+		    margin-bottom: 15px;" >${lcompleteinv}</span>
+</c:when>
+<c:otherwise>
+
+<c:if test="${reconcileModel.maxUncounted != null }">
+
+<span style="margin-left:10px">(${lfirstofmany})</span></c:if>
+
+<span style="float:right"> 
+<span class="stress">${lreconcilestatus}</span>
+	<form:select path="updateStatus" id="updateStatus">
+			<c:forEach items="${recStatusLkup}" var="tmp" >
+						<form:option value="${tmp.key}"  label="${tmp.value}"/>
+		</c:forEach>
+	</form:select>
+<input class="linkbutton" id="updateStatus" type="submit" name="updatestatus" value="${lupdatesel}"/>   
+</span>
+
+<table>
+<THEAD>
+<tr>
+<th><input id="mastercheck" name="mastercheck" value="false" type="checkbox" /></th>
+<th>${lbooknr}</th>
+<th>${ltitle}</th>
+<th>${lclientclass}</th>
+<th>${lstatus}</th>
+<th>${lnote}</th>
+<th></th>
+</tr>
+</THEAD>
+<tbody>
+
+
+<c:forEach var="uncounted" items="${reconcileModel.uncountedBooks}" varStatus="expstatus">
+<tr>
+<td><div style="margin: 0px auto;text-align: center;"><form:checkbox path="checked[${expstatus.index}]"  />
+					<form:input path="idref[${expstatus.index}]" value="${uncounted.bookid}" type="hidden"></form:input></div></td>
+<td>${uncounted.clientbooknr}</td>
+<td>${uncounted.title}</td>
+<td>
+<c:if test="${not empty uncounted.clientshelfcode}"> 
+<c:set var="shelfcode" value="${classHash[uncounted.clientshelfcode]}" />
+<c:choose>
+	<c:when test="${ not empty shelfcode.imagedisplay}">
+<span>	<img id="shelfimg" src="${imagebasedir}${shelfcode.imagedisplay}"
+			style="    max-width: 30px;
+    display: block;
+    margin: 0 auto;" /></span>	
+	</c:when>
+	<c:otherwise>
+${shelfcode.textdisplay}
+</c:otherwise>
+</c:choose>
+</c:if>
+</td>
+<td>${statusLkup[uncounted.status]}</td>
+<td>${uncounted.note}</td>
+<td><spring:url value="/inventory/reconcile/${uncounted.bookid}" var="reconcilesingle"/>
+<a href="${reconcilesingle}" class="linkbutton">${lreconcile}</a></td>
+</tr>
+</c:forEach>
+
+</tbody>
+</table>
+
+</c:otherwise>
+</c:choose>
+
+
+
+</form:form>
+
+</div>

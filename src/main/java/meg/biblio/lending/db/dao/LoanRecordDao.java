@@ -14,12 +14,15 @@ import java.util.Date;
 public class LoanRecordDao {
 
     @OneToOne
+    @JoinColumn(name="client")
     private ClientDao client;
 
     @OneToOne
+    @JoinColumn(name="book")
     private BookDao book;
 
     @OneToOne
+    @JoinColumn(name="borrower")
     private PersonDao borrower;
 
     @Temporal(TemporalType.DATE)

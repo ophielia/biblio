@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 2.1//EN" "http://tiles.apache.org/dtds/tiles-config_2_1.dtd">
+<tiles-definitions>
+    <definition extends="default" name="lending/return">
+        <put-attribute name="body" value="/WEB-INF/jsp/view/lending/return.jspx"/>
+    </definition>
+    
+    <definition extends="default" name="lending/checkout">
+        <put-attribute name="body" value="/WEB-INF/jsp/view/lending/checkout.jspx"/>
+    </definition>    
+
+    <definition extends="default" name="lending/history">
+        <put-attribute name="body" value="/WEB-INF/jsp/view/lending/historyreport.jspx"/>
+    </definition>   
+    
+       <definition extends="default" name="lending/selectbook">
+        <put-attribute name="body" value="/WEB-INF/jsp/view/lending/selectbook.jspx"/>
+    </definition>  
+    
+        
+       <definition extends="default" name="lending/confirmcheckout">
+        <put-attribute name="body" value="/WEB-INF/jsp/view/lending/confirmcheckout.jspx"/>
+    </definition>  
+    
+        
+       <definition extends="default" name="lending/checkoutsuccess">
+        <put-attribute name="body" value="/WEB-INF/jsp/view/lending/checkoutsuccess.jspx"/>
+    </definition>    
+    
+             <definition extends="default" name="lending/checkoutsummary">
+        <put-attribute name="body" value="/WEB-INF/jsp/view/lending/checkoutsummary.jspx"/>
+    </definition>  
+    
+             <definition extends="default" name="lending/checkoutreport">
+        <put-attribute name="body" value="/WEB-INF/jsp/view/lending/checkoutreport.jspx"/>
+    </definition>  
+        
+             <definition extends="default" name="lending/overduesummary">
+        <put-attribute name="body" value="/WEB-INF/jsp/view/lending/overduesummary.jspx"/>
+    </definition>   
+    
+	<definition extends="default" name="lending/classhistory">
+        <put-attribute name="body" value="/WEB-INF/jsp/view/lending/classhistory.jspx"/>
+    </definition>   
+</tiles-definitions>

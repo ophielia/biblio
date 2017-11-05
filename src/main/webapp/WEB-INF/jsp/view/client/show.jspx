@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <page:show id="ps_meg_biblio_common_db_dao_ClientDao" object="${clientdao}" path="/client" z="/HoVivsej8owW2BUxgLZbjsoksY=">
+        <field:display field="name" id="s_meg_biblio_common_db_dao_ClientDao_name" object="${clientdao}" z="J8KXsdjJSWyzq/B+IDXmME1LjJI="/>
+        <field:display field="importmapconfig" id="s_meg_biblio_common_db_dao_ClientDao_importmapconfig" object="${clientdao}" z="dpBWsvce9+s9O6h4kgmwvOwW1lk="/>
+        <field:display field="importfileconfig" id="s_meg_biblio_common_db_dao_ClientDao_importfileconfig" object="${clientdao}" z="EfpvOEeHaTsPz+igwK6AQNLmrbk="/>
+        <field:display field="classifyimplementation" id="s_meg_biblio_common_db_dao_ClientDao_classifyimplementation" object="${clientdao}" z="BqhZjzHmtuHSmStY1J8B7yXubpo="/>
+        <field:display field="imagepath" id="s_meg_biblio_common_db_dao_ClientDao_imagepath" object="${clientdao}" z="WB8xPTUtvFKC5IgVtbzF7Xiamfk="/>
+        <field:display field="studentcheckouttime" id="s_meg_biblio_common_db_dao_ClientDao_studentcheckouttime" object="${clientdao}" z="LNhHN5nUqgU6buqsxsnqkF3CO/0="/>
+        <field:display field="teachercheckouttime" id="s_meg_biblio_common_db_dao_ClientDao_teachercheckouttime" object="${clientdao}" z="aR12WQrZdKjrwDT9WDNeDAVuuuw="/>
+        <field:display field="studentCOLimit" id="s_meg_biblio_common_db_dao_ClientDao_studentCOLimit" object="${clientdao}" z="9XNC4LEgVpl9ILh6da7ETX3z5cM="/>
+        <field:display field="teacherCOLimit" id="s_meg_biblio_common_db_dao_ClientDao_teacherCOLimit" object="${clientdao}" z="EgVfkJK+cHPog0FWI/BQ742vyZs="/>
+        <field:display field="overduexslbase" id="s_meg_biblio_common_db_dao_ClientDao_overduexslbase" object="${clientdao}" z="sv/2eDTli0ml5YuvRBZl7I30zlc="/>
+        <field:display field="classsummaryxslbase" id="s_meg_biblio_common_db_dao_ClientDao_classsummaryxslbase" object="${clientdao}" z="oVKZgex8/ELA67RqliKxDvnOhUQ="/>
+        <field:display field="clientnr" id="s_meg_biblio_common_db_dao_ClientDao_clientnr" object="${clientdao}" z="pERO8V5Jgc9ZyC+5hFl154c6jlA="/>
+        <field:display field="lastBcBase" id="s_meg_biblio_common_db_dao_ClientDao_lastBcBase" object="${clientdao}" z="TXzAE61baAkiJa+1xIrERWGJup8="/>
+        <field:display field="barcodesheetxsl" id="s_meg_biblio_common_db_dao_ClientDao_barcodesheetxsl" object="${clientdao}" z="X6mXqEntO0Gnr8ge2w1caS0L8t4="/>
+        <field:display field="shortname" id="s_meg_biblio_common_db_dao_ClientDao_shortname" object="${clientdao}" z="tuENR5Oa6irWhjLM7qwW2HCrs6s="/>
+        <field:display field="lastBookNr" id="s_meg_biblio_common_db_dao_ClientDao_lastBookNr" object="${clientdao}" z="9GQHJh84c5/imHaxz7zu52HUEX0="/>
+        <field:display field="usesBarcodes" id="s_meg_biblio_common_db_dao_ClientDao_usesBarcodes" object="${clientdao}" z="A1uzShUNL7dgYJeSlxVnLlkufgo="/>
+        <field:display field="detailCompleteCode" id="s_meg_biblio_common_db_dao_ClientDao_detailCompleteCode" object="${clientdao}" z="jtJF3qqNVcPx3Tnv86eQhhzmvK4="/>
+        <field:display field="idForBarcode" id="s_meg_biblio_common_db_dao_ClientDao_idForBarcode" object="${clientdao}" z="rcTLUy+kQPKaYSRcK0x10VurTJc="/>
+        <field:display field="defaultStatus" id="s_meg_biblio_common_db_dao_ClientDao_defaultStatus" object="${clientdao}" z="sgFCgGWIrwdeXPLK467KRtb+0Rc="/>
+    </page:show>
+</div>

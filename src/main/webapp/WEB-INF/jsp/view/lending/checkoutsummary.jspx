@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<div xmlns:jsp="http://java.sun.com/JSP/Page" 
+xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" 
+xmlns:c="http://java.sun.com/jsp/jstl/core" 
+xmlns:spring="http://www.springframework.org/tags" 
+xmlns:form="http://www.springframework.org/tags/form" 
+xmlns:fmt="http://java.sun.com/jsp/jstl/fmt" 
+xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    
+<spring:message code="label_lending_checkoutsummary" htmlEscape="false" var="ltitle"/>
+<spring:message code="label_lending_borrower" htmlEscape="false" var="lborrower"/>
+<spring:message code="label_lending_class" htmlEscape="false" var="lclass"/>
+<spring:message code="label_lending_booktitle" htmlEscape="false" var="lbooktitle"/>
+<spring:message code="label_lending_author" htmlEscape="false" var="lauthor"/>
+<spring:message code="label_lending_checkedout" htmlEscape="false" var="lcheckedout"/>
+<spring:message code="label_lending_duedate" htmlEscape="false" var="lduedate"/>
+<spring:message code="label_checkedoutcount"  arguments="${checkedoutcount}" htmlEscape="false" var="checkoutcount"/>
+
+
+<h1>${ltitle}</h1>
+<br></br>
+${checkoutcount} 
+<table>
+<thead>
+<tr>
+<th>${lborrower}</th>
+<th>${lclass}</th>
+<th>${lbooktitle}</th>
+<th>${lauthor}</th>
+<th>${lcheckedout}</th>
+<th>${lduedate}</th>
+
+</tr>
+</thead>
+<tbody>
+<c:forEach items="${checkedoutbooks}" var="checkedout">
+<tr>
+<td><spring:url value="/classes/showstudent/${checkedout.borrowerid}" var="showurl"/>
+<a href="${showurl}" class="textlink">${checkedout.borrowerfn} ${checkedout.borrowerln}</a> </td>
+<td>${classInfo[checkedout.classid].firstname}</td>
+<td>
+<spring:url value="/books/display/${checkedout.bookid}" var="bookurl"/>
+<a href="${bookurl}" class="textlink">(${checkedout.bookclientid}) ${checkedout.booktitle} </a> </td>
+<td>${checkedout.author} </td>
+<td nowrap="true"><fmt:formatDate type="date" value="${checkedout.checkedout}" /></td>
+<td  nowrap="true"><fmt:formatDate type="date" value="${checkedout.duedate}" /></td>
+
+</tr>
+</c:forEach>
+
+
+</tbody>
+
+</table>
+
+
+</div>
+
+

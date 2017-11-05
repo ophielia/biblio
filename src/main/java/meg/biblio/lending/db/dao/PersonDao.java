@@ -23,9 +23,11 @@ public class PersonDao {
     private String barcodeid;
 
     @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
+    @JoinColumn(name="client")
     private ClientDao client;
 
     @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name="schoolgroup")
     protected SchoolGroupDao schoolgroup;
 
     private Boolean active;

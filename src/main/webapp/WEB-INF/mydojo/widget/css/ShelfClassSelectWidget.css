@@ -1,0 +1,46 @@
+/* myApp/widget/css/shelfClassWidget.css */
+.shelfClassWidget {
+    /*border: 1px solid black;*/
+    padding: 10px;
+    overflow: hidden; /* I hear this helps clear floats inside */
+    background-color:white
+}
+ 
+.shelfClassWidget h3 {
+    font-size: 1.5em;
+    font-style: italic;
+    text-align: center;
+    margin: 0px;
+}
+ 
+#selectWidgetArrow {
+	    max-width: 15px;
+    max-height: 15px;
+}
+.shelfClassSelectWidget img {
+    max-width: 30px;
+    max-height: 30px;
+}
+
+.shelfClassSelectWidgetCntImg img {
+    margin-bottom:-10px
+        max-width: 50px;
+    max-height: 50px;
+}
+
+.shelfClassSelectWidgetInfo {
+ display: none;
+ position: absolute;
+ padding: 5px;
+ margin-top: 5px;
+ background: white;
+
+}
+
+.shelfClassSelectWidgetText {
+ display: none;
+}
+
+.shelfClassSelectWidgetList {
+ position:absolute;
+}
