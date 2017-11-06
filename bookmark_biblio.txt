@@ -1,5 +1,11 @@
 Branch - usability
 
+       Username: book
+       Password: 940620
+  Database Name: pbiblio
+ Connection URL: postgresql://postgresql:5432/
+
+
 later - search box on top
 later - student names - first word only to first name, rest to last name
 later - student names - flag for repeat in class
@@ -10,9 +16,12 @@ later - sort in lending history by student name needs to do first name and last 
 later - add teacher name edit to class overview	
 later - 	show only first 10 checkouts - with link to complete history
 later - -small bug - after printout page class pdf, change of select leads to new page (target...)
-later -  add message to changeid page- highest assigned number??
+later -  add mes
+sage to changeid page- highest assigned number??
 
-		
+
+
+
 ---- begin commit changes ----
 
 
